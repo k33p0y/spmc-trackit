@@ -8,7 +8,7 @@
    <meta http-equiv="Content-Language" content="en">
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-   <title> {% block title %} {% endblock %} </title>
+   <title> TrackIt {% block title %} {% endblock %} </title>
 
    <meta name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
@@ -18,27 +18,38 @@
    <!-- Icon -->
    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}" />
 
-   <!-- 3rd Party CSS -->
-   <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}"> <!-- Bootstrap 4 -->
-   <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}"> <!-- Fontawesome 5-->
+   <!-- Material Design for Bootstrap fonts and icons -->
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
 
-   <!-- CSS -->
+   <!-- Font Awesome CSS-->
+   <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
+   <!-- Bootstrap Core CSS -->
+   <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap-material-design.min.css' %}">
+   <!-- Custom Base CSS -->
+   <link rel="stylesheet" href="{% static 'src/css/base.css' %}">
 
-   {% block stylesheet %} {% endblock %}
+   {% block style %} {% endblock %}
 
 </head>
 
-<body>
+<body class="bg-light">
    {% block body %}
    {% endblock %}
 </body>
 
-<!-- 3rd party JS -->
-<script type="text/javascript" src="{% static 'vendor/jquery/jquery.min.js' %}"></script> <!-- JQuery 3-->
-<script type="text/javascript" src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script> <!-- Bootstrap 4 -->
-<script type="text/javascript" src="{% static 'vendor/fontawesome/all.min.js' %}"></script> <!-- Fontawesome 5 -->
+<!-- JQuery -->
+<script type="text/javascript" src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="{% static 'vendor/popper/popper.min.js' %}"></script>
+<!-- Bootstrap MD Core JS -->
+<script type="text/javascript" src="{% static 'vendor/bootstrap/js/bootstrap-material-design.min.js' %}"></script>
 
-<!-- JS -->
+<!-- Custom JS -->
+<script>
+   $(document).ready(function () {
+      $('body').bootstrapMaterialDesign();
+   });
+</script>
 
 {% block script %} {% endblock %}
 
