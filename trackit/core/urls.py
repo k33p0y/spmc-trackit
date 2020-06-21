@@ -8,6 +8,7 @@ router.register('api/core/user', UserViewSet)
 
 urlpatterns = [
    path('', views.login, name='login'),
+   path('dashboard/', views.home, name='home'),
 ]
 
 urlpatterns += router.urls

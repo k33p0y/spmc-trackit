@@ -1,3 +1,7 @@
+body {
+   font-size: .875rem !;
+}
+
 .bg-gradient {
    background: rgb(2,0,36);
    background: linear-gradient(145deg, 
@@ -6,3 +10,10 @@
    #1e4470 100%);
 }
 
+.bg-purple {
+   background-color: #6c63bd !important;
+}
+
+.bg-blue {
+   background-color: #1e4470 !important;
+}
