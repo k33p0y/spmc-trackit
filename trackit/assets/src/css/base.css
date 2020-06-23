@@ -6,14 +6,14 @@ body {
    background: rgb(2,0,36);
    background: linear-gradient(145deg, 
    #020024 0%, 
-   #6c63bd  0%, 
-   #1e4470 100%);
+   #395fa1  0%, 
+   #3c4b64 100%);
 }
 
-.bg-purple {
-   background-color: #6c63bd !important;
+.bg-light-blue {
+   background-color: #395fa1 !important;
 }
 
 .bg-blue {
-   background-color: #1e4470 !important;
+   background-color: #3c4b64 !important;
 }

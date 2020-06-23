@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %} | Request{% endblock %}
+{% block title %} | Dashboard{% endblock %}
 
 {% block style %}
 <link rel="stylesheet" href="{% static 'src/css/snippets.css' %}">
@@ -9,17 +9,42 @@
 
 {% block body %}
 
-<nav class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow">
-   <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Company name</a>
-   <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse"
-      data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-   </button>
-   <ul class="navbar-nav px-3">
-      <li class="nav-item text-nowrap">
-         <a class="nav-link" href="#">Sign out</a>
-      </li>
-   </ul>
-</nav>
+<div class="wrapper">
+
+   <!-- Sidebar -->
+   <nav id="sidebar">
+      <div class="sidebar-header">
+         <p class="sidebar-title">Track-It</p>
+      </div>
+
+      <div class="sidebar-body">
+
+      </div>
+      <div class="sidebar-footer">
+
+      </div>
+   </nav>
+
+   <div class="content">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+
+         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+               <li class="nav-item active">
+                  <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">Link</a>
+               </li>
+            </ul>
+         </div>
+      </nav>
+   </div>
+
+</div>
 
 {% endblock %}
