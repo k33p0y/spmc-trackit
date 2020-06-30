@@ -6,20 +6,21 @@
 
 /* Sidebar */
 #sidebar {
-   min-width: 250px;
-   max-width: 250px;
+   min-width: 260px;
+   max-width: 260px;
    min-height: 100vh;
    display: flex;
    flex-flow: column;
-   background: #3c4b64;
+   background: #3b4658;
    color: #fff;
 }
 
 #sidebar .sidebar-header {
    flex: 0 1 auto;
    width: 100%;
-   background-color: #00000034;
+   /* background-color: #00000034; */
    padding:  8px 16px;
+   height: 3.5rem;
 }
 
 #sidebar .sidebar-header .sidebar-title{
@@ -35,9 +36,71 @@
    width: 100%;
 }
 
+#sidebar .sidebar-body .active {
+   color: #ffffff;
+   background-color: #323d52;
+   border-left:3px solid #395fa1;
+}
+
+#sidebar .sidebar-body ul.nav {
+   padding: 10px 0;
+}
+
+#sidebar .sidebar-body ul.sub-nav {
+   text-decoration: none;
+   list-style-type:none;
+   padding:8px;
+   padding-left: 45px;
+}
+
+#sidebar .sidebar-body ul.nav .item-heading {
+   text-transform: uppercase;
+   font-weight: 600;
+   font-size: 11px;
+   color: #858fa3;
+   padding: 12px 18px;
+   margin: 0;
+}
+
+#sidebar .sidebar-body ul.nav .nav-link{
+   text-transform: unset;
+   font-size: 14px !important;
+   color: #a2afc5;
+   padding: 10px 18px;
+}
+
+#sidebar .sidebar-body ul.sub-nav .nav-item {
+   padding: 8px;
+}
+
+
+#sidebar .sidebar-body ul.sub-nav .sub-nav-link {
+   text-decoration: none;
+   font-size: 14px;
+   width: 100%;
+   color: #a2afc5;
+}
+
+#sidebar .sidebar-body ul.nav .nav-link:hover,
+#sidebar .sidebar-body ul.nav .nav-link:focus {
+   color: #ffffff;
+   background-color: #323d52;
+   border-left:3px solid #395fa1;
+}
+
+#sidebar .sidebar-body ul.sub-nav li.nav-item:hover,
+#sidebar .sidebar-body ul.sub-nav li.nav-item:focus {
+   color: #ffffff;
+}
+
+
 #sidebar .sidebar-footer {
    flex: 0 1 auto;
    width: 100%;
+}
+
+.nav-bordered {
+   border-bottom: solid 1px #2e333b59;
 }
 
 /* Navbar */
@@ -47,6 +110,9 @@
 
 .navbar {
    font-size: 14px;
+   border:none !important;
+   background-color: #fff !important;
+   padding: 0 16px;
 }
 
 .navbar .navbar-nav {
@@ -55,4 +121,25 @@
 
 .navbar .navbar-nav a.nav-link {
    padding: 8px !important;
+   text-transform: unset;
+   font-weight: 600;
+   font-size: 12px;
+   height: 3.5rem;
+}
+
+
+.navbar .navbar-nav .nav-item .avatar {
+   height: 35px;
+}
+
+.navbar .navbar-nav a.nav-user {
+   width: 10rem;
+}
+
+.dropdown-toggle::after { 
+   content: none; 
+} 
+
+.navbar .navbar-nav a.nav-link > small {
+   display:block
 }

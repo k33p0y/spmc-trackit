@@ -14,11 +14,57 @@
    <!-- Sidebar -->
    <nav id="sidebar">
       <div class="sidebar-header">
-         <p class="sidebar-title">Track-It</p>
+         <p class="sidebar-title"></p>
       </div>
 
       <div class="sidebar-body">
+         <ul class="nav flex-column">
+            <p class="item-heading">Navigation</p>
+            <li class="nav-item">
+               <a class="nav-link active" href="#">
+                  <i class="fas fa-sm fa-rocket mr-2 icon"></i>
+                  Dashboard <span class="sr-only">(current)</span>
+               </a>
+            </li>
+            <p class="item-heading">Apps</p>
+            <li class="nav-item collapsed" data-toggle="collapse" data-target="#core">
+               <a class="nav-link" href="#">
+                  <i class="fas fa-sm fa-users-cog mr-2 icon"></i>
+                  Core <span class="arrow"></span></a>
+               </a>
+               <ul class="sub-nav collapse" id="core">
+                  <li class="nav-item">
+                     <a class="sub-nav-link" href="#"> menu 1 </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="sub-nav-link" href="#"> menu 2 </a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="sub-nav-link" href="#"> menu 3 </a>
+                  </li>
+               </ul>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="#">
+                  <i class="fas fa-sm fa-cog mr-2 icon"></i>
+                  Configuration</span>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="#">
+                  <i class="fas fa-sm fa-pen mr-2 icon"></i>
+                  Requests</span>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="#">
+                  <i class="fas fa-sm fa-clock mr-2 icon"></i>
+                  Track Logs</span>
+               </a>
+            </li>
 
+            <!-- <p class="item-heading">Reports</p> -->
+         </ul>
       </div>
       <div class="sidebar-footer">
 
@@ -26,22 +72,26 @@
    </nav>
 
    <div class="content">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-         </button>
+      <nav class="navbar navbar-expand-lg navbar-light shadow-sm bg-light">
+         <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+               <a class="nav-link" href="#"><i class="fas fa-bell"></i></a>
+            </li>
+            <li class="nav-item dropdown ml-2">
 
-         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-               <li class="nav-item active">
-                  <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
-               </li>
-            </ul>
-         </div>
+               <a class="nav-user nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  Aldrich Muyco
+                  <small>Administrator</small>
+               </a>
+               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a>
+               </div>
+            </li>
+         </ul>
       </nav>
    </div>
 
