@@ -43,7 +43,8 @@ INSTALLED_APPS = [
    'rest_framework',     
 
     # Django Apps
-    'core'
+    'core',
+    'config'
 ]
 
 MIDDLEWARE = [
