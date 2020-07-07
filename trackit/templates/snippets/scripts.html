@@ -1,0 +1,15 @@
+{% load static %}
+
+<!-- JQuery -->
+<script type="text/javascript" src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="{% static 'vendor/popper/popper.min.js' %}"></script>
+<!-- Bootstrap MD Core JS -->
+<script type="text/javascript" src="{% static 'vendor/bootstrap/js/bootstrap-material-design.min.js' %}"></script>
+
+<!-- Custom JS -->
+<script>
+    $(document).ready(function () {
+        $('body').bootstrapMaterialDesign();
+    });
+</script>

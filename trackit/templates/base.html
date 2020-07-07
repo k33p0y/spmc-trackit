@@ -18,39 +18,33 @@
    <!-- Icon -->
    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}" />
 
-   <!-- Material Design for Bootstrap fonts and icons -->
-   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
-
-   <!-- Font Awesome CSS-->
-   <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
-   <!-- Bootstrap Core CSS -->
-   <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap-material-design.min.css' %}">
-   <!-- Custom Base CSS -->
-   <link rel="stylesheet" href="{% static 'src/css/base.css' %}">
-
-   {% block style %} {% endblock %}
+   <!-- CSS Dependencies -->
+   {% include "snippets/styles.html" %}
+   {% block extrastyle %} {% endblock %}
 
 </head>
 
 <body class="bg-light">
-   {% block body %}
-   {% endblock %}
+
+   <div class="wrapper">
+      <!-- Sidebar -->
+      {% include "snippets/sidebar.html" %}
+
+      <div class="content">
+         <!-- Navbar -->
+         {% include "snippets/navbar.html" %}
+
+         <div class="container-fluid p-3">
+            <!-- Main Content -->
+            {% block content %} {% endblock %}
+         </div>
+
+      </div>
+   </div>
+   <!-- Scripts Dependencies -->
+   {% include "snippets/scripts.html" %}
+   {% block extrascript %} {% endblock %}
+
 </body>
-
-<!-- JQuery -->
-<script type="text/javascript" src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap tooltips -->
-<script type="text/javascript" src="{% static 'vendor/popper/popper.min.js' %}"></script>
-<!-- Bootstrap MD Core JS -->
-<script type="text/javascript" src="{% static 'vendor/bootstrap/js/bootstrap-material-design.min.js' %}"></script>
-
-<!-- Custom JS -->
-<script>
-   $(document).ready(function () {
-      $('body').bootstrapMaterialDesign();
-   });
-</script>
-
-{% block script %} {% endblock %}
 
 </html>
