@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Department, Category, CategoryType
+from .models import Department, Category
 
 # Serializer
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -12,8 +12,3 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-
-class CategoryTypeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = CategoryType

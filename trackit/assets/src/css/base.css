@@ -80,23 +80,57 @@ body {
    margin: 0;
 }
 
-#sidebar .sidebar-body ul.nav .nav-link{
+#sidebar .sidebar-body ul.nav .nav-link {
    text-transform: unset;
    font-size: 14px !important;
    color: #a2afc5;
    padding: 10px 18px;
+   display: flex;
+   align-items: center;
 }
 
-#sidebar .sidebar-body ul.sub-nav .nav-item {
-   padding: 8px;
+#sidebar .sidebar-body ul.nav .nav-link .icon-right {
+   transition: 1s ease-in-out ;   
 }
 
+#sidebar .sidebar-body ul.nav .manu-open .nav-link .icon-right {
+   transform: rotate(20deg);  
+}
 
-#sidebar .sidebar-body ul.sub-nav .sub-nav-link {
-   text-decoration: none;
-   font-size: 14px;
-   width: 100%;
+#sidebar .sidebar-body ul.nav li .nav-treeview {
+   display: block;
+   padding: 4px 0;
+   background-color: #414b5c;
+   max-height: 0; 
+   display: none;
+   overflow: hidden;
+   transition: 0.4s ease-out;
+}
+
+#sidebar .sidebar-body ul.nav li.selected .nav-treeview {
+   max-height: 150px;
+}
+
+#sidebar .sidebar-body ul.nav .nav-treeview .nav-link {
+   display: block;
+   font-size: 14px !important;
    color: #a2afc5;
+   padding: 10px 0;
+   padding-left:2.8rem;
+}
+
+#sidebar .sidebar-body ul.nav .nav-treeview .nav-link:hover,
+#sidebar .sidebar-body ul.nav .nav-treeview .nav-link:focus,
+#sidebar .sidebar-body ul.nav .nav-treeview .nav-link:active  {
+   background-color: unset;
+   border: none;
+   color: #ffffff;
+}
+
+#sidebar .sidebar-body ul.nav .nav-treeview .active {
+   background-color: none;
+   border: none;
+   color: #ffffff;
 }
 
 #sidebar .sidebar-body ul.nav .nav-link:hover,
@@ -113,15 +147,8 @@ body {
    border-left:3px solid #395fa1;
 }
 
-#sidebar .sidebar-body ul.sub-nav .sub-nav-link:hover,
-#sidebar .sidebar-body ul.sub-nav .sub-nav-link:focus,
-#sidebar .sidebar-body ul.sub-nav .sub-nav-link:active  {
-   color: #ffffff;
-}
-
 #sidebar .sidebar-body ul.sub-nav .active {
    color: #ffffff;
-   
 }
 
 #sidebar .sidebar-footer {

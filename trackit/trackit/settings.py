@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 
     # Django Apps
     'core',
-    'config'
+    'config',
 ]
 
 MIDDLEWARE = [
