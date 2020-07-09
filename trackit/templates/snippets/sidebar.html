@@ -1,73 +1,92 @@
+{% load static %}
+
 <!-- Sidebar -->
+<aside class="main-sidebar elevation-4 sidebar-dark-orange">
+   <!-- Brand Logo -->
+   <a href="#" class="brand-link text-center">
+      <span class="brand-text font-weight-light">Admin</span>
+   </a>
 
-<nav id="sidebar">
-    <div class="sidebar-header">
-        <p class="sidebar-title"></p>
-    </div>
+   <!-- Sidebar -->
+   <div class="sidebar">
 
-    {% with request.resolver_match.url_name as url %}
-    <div class="sidebar-body">
-        <ul class="nav flex-column">
-            <p class="item-heading">Navigation</p>
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+
+         {% with request.resolver_match.url_name as url %}
+         <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent text-sm" data-widget="treeview" role="menu"
+            data-accordion="false">
+
+            <li class="nav-header text-muted">NAVIGATION</li>
             <li class="nav-item">
-                <a href=" {% url 'home' %}" class="nav-link {% if url == 'home'%} active {% endif %}">
-                    <i class="fas fa-sm fa-rocket mr-2 icon"></i>
-                    Dashboard <span class="sr-only">(current)</span>
-                </a>
-            </li>
-            <p class="item-heading">Apps</p>
-            <li class="nav-item nav-menu">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-sm fa-users-cog mr-2"></i>
-                    Core
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Users </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Groups </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item nav-menu ">
-                <a href="#" class="nav-link active">
-                    <i class="fas fa-sm fa-users-cog mr-2"></i>
-                    Configuration
-                    <i class="fas fa-xs fa-chevron-right ml-auto icon-right"></i>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Departments </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Categories </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Types </a>
-                    </li>
-                </ul>
+               <a href="{% url 'home' %}" class="nav-link {% if url == 'home' %} active {% endif %}">
+                  <i class="nav-icon fas fa-rocket"></i>
+                  <p> Dashboard</p>
+               </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-sm fa-pen mr-2 icon"></i>
-                    Requests</span>
-                </a>
+               <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-user-cog"></i>
+                  <p>
+                     Core
+                     <i class="right fas fa-angle-left"></i>
+                  </p>
+               </a>
+               <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                     <a href="#" class="nav-link">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>Users</p>
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a href="#" class="nav-link">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>Groups</p>
+                     </a>
+                  </li>
+               </ul>
+            </li>
+            <li class="nav-item {% if url == 'department' or url == 'category' %} menu-open {% endif %}">
+               <a href="#" class="nav-link {% if url == 'department' or url == 'category' %} active {% endif %}">
+                  <i class="nav-icon fas fa-cog"></i>
+                  <p>
+                     Configuration
+                     <i class="right fas fa-angle-left"></i>
+                  </p>
+               </a>
+               <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                     <a href="{% url 'department' %}" class="nav-link {% if url == 'department' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>Department</p>
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a href="{% url 'category' %}" class="nav-link {% if url == 'category' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>Category</p>
+                     </a>
+                  </li>
+               </ul>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-sm fa-clock mr-2 icon"></i>
-                    Track Logs</span>
-                </a>
+               <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-pen"></i>
+                  <p> Request</p>
+               </a>
             </li>
+            <li class="nav-item">
+               <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-location-arrow"></i>
+                  <p> Track Logs</p>
+               </a>
+            </li>
+         </ul>
+         {% endwith %}
 
-            <!-- <p class="item-heading">Reports</p> -->
-        </ul>
-    </div>
-
-
-    <div class="sidebar-footer">
-
-    </div>
-    {% endwith %}
-</nav>
+      </nav>
+      <!-- /.sidebar-menu -->
+   </div>
+   <!-- /.sidebar -->
+</aside>

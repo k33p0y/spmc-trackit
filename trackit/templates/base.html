@@ -1,22 +1,14 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
    <meta charset="utf-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta http-equiv="Content-Language" content="en">
-   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-   <title> TrackIt {% block title %} {% endblock %} </title>
+   <title> Trackit |{% block title %} {% endblock %}</title>
 
-   <meta name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
-   <meta name="description" content="This is an example dashboard created using build-in elements and components.">
-   <meta name="msapplication-tap-highlight" content="no">
-
-   <!-- Icon -->
-   <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}" />
+   <!-- Tell the browser to be responsive to screen width -->
+   <meta name="viewport" content="width=device-width, initial-scale=1">
 
    <!-- CSS Dependencies -->
    {% include "snippets/styles.html" %}
@@ -24,23 +16,26 @@
 
 </head>
 
-<body class="bg-light">
+<body class="hold-transition sidebar-mini text-sm">
 
-   <div class="wrapper">
+   <!-- Site wrapper -->
+   <div class="wrapper text-sm">
+
+      <!-- Navbar -->
+      {% include "snippets/navbar.html" %}
+
       <!-- Sidebar -->
       {% include "snippets/sidebar.html" %}
 
-      <div class="content">
-         <!-- Navbar -->
-         {% include "snippets/navbar.html" %}
-
-         <div class="container-fluid p-3">
-            <!-- Main Content -->
-            {% block content %} {% endblock %}
-         </div>
-
+      <!-- Main Content -->
+      <div class="content-wrapper">
+         {% block content %} {% endblock %}
       </div>
+
    </div>
+
+   {% block modal %} {% endblock %}
+
    <!-- Scripts Dependencies -->
    {% include "snippets/scripts.html" %}
    {% block extrascript %} {% endblock %}
