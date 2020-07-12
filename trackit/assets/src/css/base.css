@@ -1,6 +1,12 @@
-/* Content-header */
+/* Custom Colors */
+input, select {
+   color : #5f6b77 !important;
+}
 
-/* Borders */
+h1, h2,  h3, h4, h5, h6 {
+   color : #3e454d !important;
+}
+
 .bt-primary {border-top: 4px solid #007bff;}
 .bt-secondary {border-top: 4px solid #6c757d;}
 .bt-success {border-top: 4px solid #28a745;}
@@ -30,18 +36,35 @@
 .br-warning {border-right: 4px solid #ffc107;}
 .br-danger {border-right: 4px solid #dc3545;}
 
-/* Buttons  */
-.btn-action {
-    padding: 1px 6px;
+.bg-secondary {background-color: #e3E5ED !important;}
+.bg-orange {background-color: #FD7E14 ;}
+
+.btn-light {
+   background-color: #fff !important;
+   color:#5f6b77 !important;
+}
+.btn-light:hover {
+   background-color: #f5f5f5 !important;
+   color:#475058 !important;
+}
+.btn-light:active {
+   background-color: #f1f1f1 !important;
+   border-color: #f1f1f1 !important;
+   box-shadow: none, 0 0 0 0 #f5f4f4;
 }
 
-.text-sm .btn-action {
-    font-size: 12px !important;
+.btn-orange {
+   background-color: #FD7E14;
+   color:#fff;
 }
-
-#btn-new {
-    margin-top: 8px;
-    font-size: 13px !important; 
+.btn-orange:hover {
+   background-color: #e77619;
+   color:#e3E5ED;
+}
+.btn-orange:active {
+   background-color: #d36c19;
+   border-color: #FD7E14;
+   box-shadow: none, 0 0 0 0 #fd7d145d;
 }
 
 /* Sidebar */
