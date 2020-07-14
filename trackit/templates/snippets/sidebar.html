@@ -24,29 +24,16 @@
                   <p> Dashboard</p>
                </a>
             </li>
+
+            {% comment %}
             <li class="nav-item">
-               <a href="#" class="nav-link">
+               <a href="{% url 'users' %}" class="nav-link {% if url == 'users' %} active {% endif %}">
                   <i class="nav-icon fas fa-user-cog"></i>
-                  <p>
-                     Core
-                     <i class="right fas fa-angle-left"></i>
-                  </p>
+                  <p> Users </p>
                </a>
-               <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                     <a href="#" class="nav-link">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Users</p>
-                     </a>
-                  </li>
-                  <li class="nav-item">
-                     <a href="#" class="nav-link">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Groups</p>
-                     </a>
-                  </li>
-               </ul>
             </li>
+            {% endcomment %}
+
             <li class="nav-item {% if url == 'department' or url == 'category' %} menu-open {% endif %}">
                <a href="#" class="nav-link {% if url == 'department' or url == 'category' %} active {% endif %}">
                   <i class="nav-icon fas fa-cog"></i>

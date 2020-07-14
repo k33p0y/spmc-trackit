@@ -1,10 +1,23 @@
 /* Custom Colors */
 input, select {
    color : #5f6b77 !important;
+   font-size: 12px !important;
 }
 
 h1, h2,  h3, h4, h5, h6 {
    color : #3e454d !important;
+}
+
+th {
+   color : #5f6b77 !important;
+}
+
+td {
+   color : #3e454d !important;
+}
+
+span, i  {
+   font-size: 12px !important;
 }
 
 .bt-primary {border-top: 4px solid #007bff;}
@@ -83,4 +96,38 @@ h1, h2,  h3, h4, h5, h6 {
 
 .sidebar .nav.nav-legacy .nav-item a.nav-link.active {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Tables & Datatables set default styles */
+table,
+.dataTables_wrapper {
+   font-size: 12px;
+}
+
+table th {
+   font-size: 10px;
+   font-weight: 700;
+   text-transform: uppercase;
+   padding:8px 24px 8px 14px!important;
+}
+
+td {
+   font-size: 12px;
+   padding:10px 14px!important;
+}
+
+.dataTables_length {
+   margin:10px 12px;
+   margin-bottom: 4px;
+}
+
+.dataTables_length > label {
+   margin: 0;
+}
+
+
+.dataTables_info,
+.dataTables_paginate {
+   margin:10px 12px !important;
+   margin-top: 4px !important;
 }
