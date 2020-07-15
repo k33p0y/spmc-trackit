@@ -1,7 +1,17 @@
-/* Custom Colors */
-input, select {
+/* Custom Colors, text */
+input, select, label {
    color : #5f6b77 !important;
    font-size: 12px !important;
+}
+
+input:focus,
+select:focus  {
+   border-color: #ff8f34b6 !important;
+}
+
+label {
+   font-weight: normal !important;
+   color: #3e454d !important;
 }
 
 h1, h2,  h3, h4, h5, h6 {
@@ -16,10 +26,15 @@ td {
    color : #3e454d !important;
 }
 
+.text-small,
 span, i  {
    font-size: 12px !important;
 }
 
+i.fas,
+i.far {
+   font-size: 11px !important;
+}
 .bt-primary {border-top: 4px solid #007bff;}
 .bt-secondary {border-top: 4px solid #6c757d;}
 .bt-success {border-top: 4px solid #28a745;}
@@ -80,6 +95,15 @@ span, i  {
    box-shadow: none, 0 0 0 0 #fd7d145d;
 }
 
+.btn-outline-orange {
+   border:1px solid #FD7E14;
+   color:#FD7E14;
+}
+.btn-outline-orange:hover {
+   background-color: #FD7E14;
+   color:#fff;
+}
+
 /* Sidebar */
 .sidebar .nav .nav-header {
    font-size: 12px;
@@ -104,16 +128,26 @@ table,
    font-size: 12px;
 }
 
+table.dataTable {
+   border-bottom-color: 2px;
+}
+
 table th {
    font-size: 10px;
    font-weight: 700;
    text-transform: uppercase;
    padding:8px 24px 8px 14px!important;
+   border: none !important;
 }
 
 td {
    font-size: 12px;
    padding:10px 14px!important;
+}
+
+td > a.action-link i {
+   font-size: 14px !important;
+   margin-right: 6px;
 }
 
 .dataTables_length {
@@ -125,9 +159,44 @@ td {
    margin: 0;
 }
 
-
 .dataTables_info,
 .dataTables_paginate {
    margin:10px 12px !important;
    margin-top: 4px !important;
+}
+
+.table-actions {
+  background-color: red;  
+  display: block;
+  
+}
+
+
+/* Cards */
+.card .card-header .card-actions-left,
+.card .card-header .card-actions-right {
+   margin: 14px;
+   margin-bottom: 0px;
+   display: inline-flex;
+}
+
+.card .card-header .card-actions-left .btn,
+.card .card-header .card-actions-right .btn  {
+   display: flex ;
+   align-items: center;
+   justify-content: center;
+   border-radius: 50%;
+   width: 30px;
+   height: 30px;
+}
+
+.hide {
+   display: none !important;
+}
+
+/* Modals */
+.modal .modal-header,
+.modal .modal-body,
+.modal .modal-footer {
+   padding: 10px 16px !important;
 }
