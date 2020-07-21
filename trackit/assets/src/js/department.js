@@ -1,5 +1,43 @@
 $(document).ready(function () {
-   // Users Tables
+
+   // Select2 Dropdown
+   $('#dd_depthead').select2({
+      allowClear: true,
+      placeholder: 'Head of Department',
+      ajax: {
+         url: '/api/core/user/?format=json',
+         dataType: 'json',
+         type: "GET",
+         quietMillis: 50,
+         processResults: function (data) {
+            var arr = [];
+            var res = data.results
+
+            // Push Array
+            res.forEach(function (value, key) {
+               arr.push({
+                  id: value.id,
+                  text: `${value.first_name} ${value.last_name}`
+               })
+            })
+
+            return {
+               results: arr
+            }
+         }
+      }
+   });
+
+   // Dropdown Variables
+   let dept_head;
+
+   // Capture Dropdown Value
+   $('#dd_depthead').on('change', function () {
+      dept_head = $("#dd_depthead option:selected").val();
+   });
+
+   // GET
+   // List Table
    let table = $('#departmentTable').DataTable({
       "searching": false,
       "responsive": true,
@@ -41,28 +79,36 @@ $(document).ready(function () {
    });
 
 
-   // Add User
-   $("#btnSave").click(function () {
+   // CREATE / PUSH
+   // New Department
+   $("#btnSave").click(function (e) {
+      event.preventDefault();
+
+      // JSON
       var data = {};
-      data.name = $('#deptname').val();
+      data.name = $('#txt_deptname').val();
+      data.department_head = dept_head;
+      data.is_active = true;
+
+      console.log(data);
+
       var success = 1;
 
       if (success == 1) {
          $.ajax({
-            url: 'http://localhost:8000/api/config/department/',
+            url: '/api/config/department/',
             type: 'POST',
             data: data,
-            beforeSend: function (xhr, settings) {
-               xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-            },
             success: function (result) {
-               table.ajax.reload();
+               table.ajax.reload()
                console.log('success')
             },
-            error: function (a, b, c) {
-               console.log(c);
+            error: function (a, b, error) {
+               console.log(error);
             },
-         })
+         }).done(function () {
+            $('#deptNew').modal('toggle');
+         });
       }
    });
 

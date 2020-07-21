@@ -163,12 +163,16 @@ td > a.action-link i {
 .dataTables_paginate {
    margin:10px 12px !important;
    margin-top: 4px !important;
+   font-size: 11px !important;
+}
+
+.dataTables_info {
+   color:#5f6b77;
 }
 
 .table-actions {
   background-color: red;  
-  display: block;
-  
+  display: block; 
 }
 
 

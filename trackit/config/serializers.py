@@ -1,14 +1,28 @@
 from rest_framework import serializers
 
 from .models import Department, Category
+from core.models import User
 
-# Serializer
+# Serializers
+class HeadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id']
+
+
 class DepartmentSerializer(serializers.ModelSerializer):
-    department_head = serializers.StringRelatedField()
 
     class Meta:
         model = Department
-        fields = '__all__'
+        fields = ['id', 'name', 'is_active', 'department_head',]
+        datatables_always_serialize = ('id',)
+
+    # Override method
+    def to_representation(self, instance):
+        rep = super(DepartmentSerializer, self).to_representation(instance)
+        if rep['department_head'] is not None:
+            rep['department_head'] = instance.department_head.first_name + ' ' + instance.department_head.last_name
+        return rep
 
 class CategorySerializer(serializers.ModelSerializer):
 

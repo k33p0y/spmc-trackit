@@ -4,7 +4,7 @@ from core.models import User
 # Create your models here.
 class Department(models.Model):
     name = models.CharField(max_length=255)
-    department_head = models.ForeignKey(User, related_name='dept_head_users', on_delete=models.CASCADE, null=True)
+    department_head = models.ForeignKey(User, related_name='dept_head', on_delete=models.CASCADE, null=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
