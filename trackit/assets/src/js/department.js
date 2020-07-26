@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+   // GET
    // Select2 Dropdown
    $('#dd_depthead').select2({
       allowClear: true,
@@ -28,17 +29,15 @@ $(document).ready(function () {
       }
    });
 
-   // Dropdown Variables
-   let dept_head;
-
    // Capture Dropdown Value
+   let dept_head;
    $('#dd_depthead').on('change', function () {
       dept_head = $("#dd_depthead option:selected").val();
    });
 
    // GET
    // List Table
-   let table = $('#departmentTable').DataTable({
+   let table = $('#dt_department').DataTable({
       "searching": false,
       "responsive": true,
       "lengthChange": false,
@@ -50,9 +49,20 @@ $(document).ready(function () {
          type: "GET",
       },
       "columns": [
-         { data: null },
          { data: "name" },
-         { data: "department_head" },
+         {
+            data: null,
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  if (row.department_head === null) {
+                     data = "";
+                  } else {
+                     data = `${row.department_head.first_name} ${row.department_head.last_name}`;
+                  }
+               }
+               return data
+            }
+         },
          {
             data: null,
             render: function (data, type, row) {
@@ -70,46 +80,74 @@ $(document).ready(function () {
          {
             data: "null",
             render: function (data, type, row) {
-               data = "<a href='#' class='text-warning action-link'> <i class='fas fa-pen'></i> </a>" +
-                  "<a href='#' class='text-danger action-link'> <i class='fas fa-trash'></i> </a>";
+               if (row.department_head === null)
+                  data = `<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
+                     <a href='#' class='text-danger action-link'> <i class='fas fa-trash'></i> </a>`;
+               else {
+                  data = `<a href='#' class='text-warning action-link btn_edit' dept_id='${row.department_head.id}'> <i class='fas fa-pen'></i> </a>
+                     <a href='#' class='text-danger action-link'> <i class='fas fa-trash'></i> </a>`;
+               }
                return data
             },
          }
       ],
    });
 
-
    // CREATE / PUSH
    // New Department
-   $("#btnSave").click(function (e) {
-      event.preventDefault();
-
-      // JSON
-      var data = {};
-      data.name = $('#txt_deptname').val();
-      data.department_head = dept_head;
-      data.is_active = true;
-
-      console.log(data);
-
-      var success = 1;
-
-      if (success == 1) {
-         $.ajax({
-            url: '/api/config/department/',
-            type: 'POST',
-            data: data,
-            success: function (result) {
-               table.ajax.reload()
-               console.log('success')
-            },
-            error: function (a, b, error) {
-               console.log(error);
-            },
-         }).done(function () {
-            $('#deptNew').modal('toggle');
-         });
-      }
+   $('#btn_new').on('click', function (e) {
+      $("#deptModal").modal();
+      $(".modal-title").text('New Department');
+      $('#txt_deptname').val('');
+      $('#dd_depthead').val('');
    });
+
+   // UPDATE / PUT
+   // Edit Department
+   $('#dt_department tbody').on('click', '.btn_edit', function () {
+      let data = table.row($(this).parents('tr')).data();
+      let dept_id = $(this).attr("dept_id");
+
+      // Open Modal
+      // Rename Modal Title
+      $("#deptModal").modal();
+      $(".modal-title").text('Update Department');
+
+      // Populate Fields
+      $('#txt_deptname').val(data['name']);
+      $('#dd_depthead').val(dept_id).trigger("change");
+   });
+
+
+   // $("#btn_save").click(function (e) {
+   //    e.preventDefault();
+
+   //    // JSON
+   //    var data = {};
+   //    data.name = $('#txt_deptname').val();
+   //    data.department_head = dept_head;
+   //    data.is_active = true;
+
+   //    console.log(data);
+
+   //    var success = 1;
+
+   //    if (success == 1) {
+   //       $.ajax({
+   //          url: '/api/config/department/',
+   //          type: 'POST',
+   //          data: data,
+   //          success: function (result) {
+   //             table.ajax.reload()
+   //             console.log('success')
+   //          },
+   //          error: function (a, b, error) {
+   //             console.log(error);
+   //          },
+   //       }).done(function () {
+   //          $('#deptModal').modal('toggle');
+   //       });
+   //    }
+   // });
 
 });

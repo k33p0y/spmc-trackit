@@ -56,17 +56,15 @@
                   <div class="card-actions-left ml-auto">
                      <button class="btn btn-xs btn-outline-secondary mr-2"> <i class="fas fa-print"></i></button>
                      <button class="btn btn-xs btn-outline-secondary mr-2"> <i class="fas fa-redo"></i></button>
-                     <button class="btn btn-xs btn-outline-orange mr-2" id="btn-new" data-toggle="modal"
-                        data-target="#deptNew">
+                     <button class="btn btn-xs btn-outline-orange mr-2" id="btn_new">
                         <i class="fas fa-plus"></i>
                      </button>
                   </div>
                </div>
                <div class="card-body p-1">
-                  <table id="departmentTable" class="table table-hover" width="100%">
+                  <table id="dt_department" class="table table-hover" width="100%">
                      <thead>
                         <tr>
-                           <th>checkbox</th>
                            <th>Name</th>
                            <th>Department Head</th>
                            <th>Status</th>
@@ -86,7 +84,8 @@
 {% endblock %}
 
 {% block modal %}
-<div class="modal fade" id="deptNew" tabindex="-1" role="dialog" aria-labelledby="deptNew" aria-hidden="true">
+<!-- Create -->
+<div class="modal fade" id="deptModal" tabindex="-1" role="dialog" aria-labelledby="deptModal" aria-hidden="true">
    <div class="modal-dialog" role="document">
       <div class="modal-content text-sm">
          <div class="modal-header">
@@ -114,7 +113,7 @@
             <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">
                <span>Cancel</span>
             </button>
-            <button type="button" class="btn btn-sm btn-outline-orange" id="btnSave"><span>Save</span></button>
+            <button type="button" class="btn btn-sm btn-outline-orange" id="btn_save"><span>Save</span></button>
          </div>
       </div>
    </div>

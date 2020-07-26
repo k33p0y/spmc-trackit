@@ -7,10 +7,12 @@ from core.models import User
 class HeadSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id']
+        fields = ['id', 'first_name', 'last_name']
+        read_only_fields = ['first_name', 'last_name']
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
+    department_head = HeadSerializer(required=False)
 
     class Meta:
         model = Department
@@ -18,11 +20,11 @@ class DepartmentSerializer(serializers.ModelSerializer):
         datatables_always_serialize = ('id',)
 
     # Override method
-    def to_representation(self, instance):
-        rep = super(DepartmentSerializer, self).to_representation(instance)
-        if rep['department_head'] is not None:
-            rep['department_head'] = instance.department_head.first_name + ' ' + instance.department_head.last_name
-        return rep
+   #  def to_representation(self, instance):
+   #      rep = super(DepartmentSerializer, self).to_representation(instance)
+   #      if rep['department_head'] is not None:
+   #          rep['department_head'] = instance.department_head.first_name + ' ' + instance.department_head.last_name
+   #      return rep
 
 class CategorySerializer(serializers.ModelSerializer):
 
