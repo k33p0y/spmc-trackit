@@ -14,7 +14,7 @@ label {
    color: #3e454d !important;
 }
 
-h1, h2,  h3, h4, h5, h6 {
+h1, h2,  h3, h4, h5, h6  {
    color : #3e454d !important;
 }
 
@@ -26,8 +26,11 @@ td {
    color : #3e454d !important;
 }
 
-.text-small,
-span, i  {
+.text-xs {
+   font-size: 11px !important;
+}
+
+.text-small {
    font-size: 12px !important;
 }
 
@@ -104,6 +107,10 @@ i.far {
    color:#fff;
 }
 
+.btn span {
+   font-size: 12px;
+}
+
 /* Sidebar */
 .sidebar .nav .nav-header {
    font-size: 12px;
@@ -150,6 +157,11 @@ td > a.action-link i {
    margin-right: 6px;
 }
 
+.table-actions {
+  background-color: red;  
+  display: block; 
+}
+
 .dataTables_length {
    margin:10px 12px;
    margin-bottom: 4px;
@@ -170,11 +182,25 @@ td > a.action-link i {
    color:#5f6b77;
 }
 
-.table-actions {
-  background-color: red;  
-  display: block; 
+.dataTables_paginate .page-link {
+   color: #FD7E14;
+   border: none;
+   border-radius: 50%;
+   margin:1px;
+   line-height: 1.3em;
 }
 
+.dataTables_paginate .page-item.active .page-link {
+   background-color: #FD7E14 !important;
+   border-color: #FD7E14 !important;
+   border-radius: 20px;
+}
+
+
+.dataTables_paginate .page-item.previous .page-link,
+.dataTables_paginate .page-item.next .page-link {
+   border-radius: 20px;
+}
 
 /* Cards */
 .card .card-header .card-actions-left,
@@ -203,4 +229,54 @@ td > a.action-link i {
 .modal .modal-body,
 .modal .modal-footer {
    padding: 10px 16px !important;
+}
+
+/* Forms */
+.select2-container--default.select2-container--open .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--multiple,
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+   border-color: #ff8f34b6 !important;
+}
+
+.select2-container--default .select2-selection--single {
+   font-size: 12px !important;
+}
+
+.select2-container--default .select2-results__options {
+   font-size: 12px !important;
+}
+
+
+[class*="icheck-material"]>input:first-child + label::before {
+   border: 1px solid #ced4da;
+   border-radius: 4px;
+   height: 18px;
+   width: 18px;
+   margin-top: 2px;
+}
+
+[class*="icheck-material"]>input:first-child + label::before:hover{
+   border-color: #ff9800;
+}
+
+
+[class*="icheck-material"]>input[type="checkbox"]:first-child:checked+label::after {
+   width: 5px;
+   height: 11px;
+   transform: translate(6.5px,4.5px) rotate(45deg)
+}
+
+.icheck-material-green>input:first-child:not(:checked):not(:disabled):hover+label::before {
+   border: 1px solid #4caf50 !important;
+   border-radius: 4px !important;
+}
+
+/* Sweet alert */
+.swal2-popup {
+   width:22rem !important;
+}
+
+.swal2-title {
+   font-size: 16px !important;
 }

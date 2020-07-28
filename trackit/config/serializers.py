@@ -1,30 +1,26 @@
 from rest_framework import serializers
+from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 from .models import Department, Category
 from core.models import User
 
 # Serializers
-class HeadSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name']
-        read_only_fields = ['first_name', 'last_name']
 
-
-class DepartmentSerializer(serializers.ModelSerializer):
-    department_head = HeadSerializer(required=False)
+class DepartmentSerializer(WritableNestedModelSerializer):
+    # department_head = HeadSerializer(allow_null=True, required=False, many=False)
 
     class Meta:
         model = Department
         fields = ['id', 'name', 'is_active', 'department_head',]
         datatables_always_serialize = ('id',)
-
-    # Override method
-   #  def to_representation(self, instance):
-   #      rep = super(DepartmentSerializer, self).to_representation(instance)
-   #      if rep['department_head'] is not None:
-   #          rep['department_head'] = instance.department_head.first_name + ' ' + instance.department_head.last_name
-   #      return rep
+        
+    def to_representation(self, instance):
+        self.fields['department_head'] =  UserSerializer(read_only=True)
+        return super(DepartmentSerializer, self).to_representation(instance)
 
 class CategorySerializer(serializers.ModelSerializer):
 

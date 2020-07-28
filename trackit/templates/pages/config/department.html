@@ -67,7 +67,7 @@
                         <tr>
                            <th>Name</th>
                            <th>Department Head</th>
-                           <th>Status</th>
+                           <th>Is Active</th>
                            <th>Action</th>
                         </tr>
                      </thead>
@@ -103,9 +103,16 @@
                </div>
                <div class="form-group">
                   <label>Department Head</label>
-                  <select class="select2bs4" id="dd_depthead" style="width: 100%">
+                  <select class="form-control form-control-sm" id="dd_depthead" style="width: 100%">
                      <option></option>
+                     {% for user in users%}
+                     <option value={{user.id}}>{{user.first_name}} {{user.last_name}}</option>
+                     {% endfor %}
                   </select>
+               </div>
+               <div class="icheck-material-green">
+                  <input type="checkbox" id="chk_status" checked />
+                  <label for="chk_status">Is Active</label>
                </div>
             </form>
          </div>
@@ -113,7 +120,7 @@
             <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">
                <span>Cancel</span>
             </button>
-            <button type="button" class="btn btn-sm btn-outline-orange" id="btn_save"><span>Save</span></button>
+            <button type="submit" class="btn btn-sm btn-outline-orange" id="btn_save"><span>Save</span></button>
          </div>
       </div>
    </div>
