@@ -272,6 +272,15 @@ td > a.action-link i {
    border-radius: 4px !important;
 }
 
+.form-error {
+   border-color:#dc3546a2;
+}
+
+.error-info {
+   color: #dc3545;
+   font-style: italic;
+}
+
 /* Sweet alert */
 .swal2-popup {
    width:22rem !important;

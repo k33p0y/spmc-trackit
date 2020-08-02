@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 from .models import Department, Category
 from core.models import User
@@ -10,8 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name']
 
-class DepartmentSerializer(WritableNestedModelSerializer):
-    # department_head = HeadSerializer(allow_null=True, required=False, many=False)
+class DepartmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Department

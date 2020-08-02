@@ -2,7 +2,7 @@ $(document).ready(function () {
 
    // Local Variables
    let dd_head_id;
-   let chk_status;
+   let chk_status = true;
    let type, url, title;
 
    // GET
@@ -74,11 +74,9 @@ $(document).ready(function () {
    $('#chk_status').click(function () {
       if ($(this).prop("checked") == true) {
          chk_status = true;
-         console.log(chk_status);
       }
       else if ($(this).prop("checked") == false) {
          chk_status = false;
-         console.log(chk_status);
       }
    });
 
@@ -146,7 +144,17 @@ $(document).ready(function () {
       data.department_head = dd_head_id;
       data.is_active = chk_status;
 
-      // Form Validation
+      // Validation
+      if ($('#txt_deptname').val() == '') {
+         $('#txt_deptname').addClass('form-error');
+         $('.error-info').html('*This field cannot be empty <br>');
+         success--;
+      } else {
+         $('#txt_deptname').removeClass('form-error');
+         $('#error-password').html('');
+      }
+
+      // Form is Valid
       if (success == 1) {
          $.ajax({
             url: url,
@@ -158,17 +166,17 @@ $(document).ready(function () {
                   title: title,
                });
                table.ajax.reload();
-               $('#deptModal').modal('toggle');
             },
             error: function (a, b, error) {
                Toast.fire({
                   icon: 'error',
                   title: error,
                });
-               $('#deptModal').modal('toggle');
             },
          }).done(function () {
-
+            $('#deptModal').modal('toggle');
+            $('#dd_depthead').val('').trigger('change');
+            $('#chk_status').prop("checked", true);
          });
       }
    });
