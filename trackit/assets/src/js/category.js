@@ -1,11 +1,11 @@
 $(document).ready(function () {
 
    // Local Variables
-   let dd_head_id;
+   let dd_type_id;
    let chk_status = true;
    let action_type;
    let alert_msg = '';
-   let url = "/api/config/department/";
+   let url = "/api/config/category/";
 
    // Sweet Alert Toast 
    const Toast = Swal.mixin({
@@ -22,7 +22,7 @@ $(document).ready(function () {
 
    // GET
    // List Table
-   let table = $('#dt_department').DataTable({
+   let table = $('#dt_category').DataTable({
       "searching": false,
       "responsive": true,
       "lengthChange": false,
@@ -35,19 +35,7 @@ $(document).ready(function () {
       },
       "columns": [
          { data: "name" },
-         {
-            data: null,
-            render: function (data, type, row) {
-               if (type == 'display') {
-                  if (row.department_head === null) {
-                     data = "";
-                  } else {
-                     data = `${row.department_head.first_name} ${row.department_head.last_name}`;
-                  }
-               }
-               return data
-            }
-         },
+         { data: "category_type.name" },
          {
             data: null,
             render: function (data, type, row) {
@@ -74,15 +62,15 @@ $(document).ready(function () {
    });
 
    // Select2 Config
-   $('#dd_depthead').select2({
+   $('#dd_types').select2({
       allowClear: true,
-      placeholder: 'Select Head of Department',
+      placeholder: 'Select Category Type',
       cache: true,
    });
 
    // Get Dropdown Value
-   $('#dd_depthead').on('change', function () {
-      dd_head_id = $("#dd_depthead option:selected").val();
+   $('#dd_types').on('change', function () {
+      dd_type_id = $("#dd_types option:selected").val();
    });
 
    // Get Checkbox State
@@ -104,15 +92,14 @@ $(document).ready(function () {
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
-      $(".modal-title").text('New Department');
-      $('#txt_deptname').val('');
-      $('#dd_depthead').val('');
+      $(".modal-title").text('New Category Type');
+      $('#txt_categoryname').val('');
    });
 
 
    // UPDATE / PUT
    // Edit Department
-   $('#dt_department tbody').on('click', '.btn_edit', function () {
+   $('#dt_category tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
 
@@ -124,11 +111,11 @@ $(document).ready(function () {
       // Open Modal
       // Rename Modal Title
       $("#formModal").modal();
-      $(".modal-title").text('Update Department');
+      $(".modal-title").text('Update Cataegory');
 
       // Populate Fields
-      $('#txt_deptname').val(dt_data['name']);
-      $('#dd_depthead').val(dt_data['department_head'].id).trigger('change');
+      $('#txt_categoryname').val(dt_data['name']);
+      $('#dd_types').val(dt_data['category_type'].id).trigger('change');
       $('#chk_status').prop("checked", dt_data['is_active']);
    });
 
@@ -139,33 +126,42 @@ $(document).ready(function () {
 
       // Variables
       var data = {}
-      var success = 1;
+      var success = 2;
 
       // Data Values
-      data.name = $('#txt_deptname').val();
-      data.department_head = dd_head_id;
+      data.name = $('#txt_categoryname').val();
+      data.category_type = dd_type_id;
       data.is_active = chk_status;
 
       // Validation
-      if ($('#txt_deptname').val() == '') {
-         $('#txt_deptname').addClass('form-error');
-         $('.error-info').html('*This field cannot be empty');
+      if ($('#txt_categoryname').val() == '') {
+         $('#txt_categoryname').addClass('form-error');
+         $('#error-info-name').html('*This field cannot be empty');
          success--;
       } else {
-         $('#txt_deptname').removeClass('form-error');
-         $('#error-password').html('');
+         $('#txt_categoryname').removeClass('form-error');
+         $('#error-info-name').html('');
+      }
+
+      if ($("#dd_types option:selected").val() == "") {
+         $('.select2-selection--single').css('border-color', '#dc3546a2');
+         $('#error-info-type').html('*This field cannot be empty');
+         success--;
+      } else {
+         $('#dd_types').removeClass('form-error');
+         $('#error-info-type').html('');
       }
 
       // Form is Valid
-      if (success == 1) {
+      if (success == 2) {
          $.ajax({
             url: url,
-            type: type,
+            type: action_type,
             data: data,
             success: function (result) {
                Toast.fire({
                   icon: 'success',
-                  title: title,
+                  title: alert_msg,
                });
                table.ajax.reload();
             },
@@ -176,9 +172,9 @@ $(document).ready(function () {
                });
             },
          }).done(function () {
-            $('#deptModal').modal('toggle');
-            $('#dd_depthead').val('').trigger('change');
+            $('#formModal').modal('hide');
             $('#chk_status').prop("checked", true);
+            $('#dd_types').val('').trigger('change');
          });
       }
    });
@@ -186,11 +182,11 @@ $(document).ready(function () {
    //Modal Cancel
    $('#btn_cancel').click(function () {
       // Reset Fields to Defaults
-      $('#txt_deptname').removeClass('form-error');
+      $('#txt_categoryname').removeClass('form-error');
       $('.select2-selection--single').css('border-color', '');
       $('.error-info').html('');
       $('#chk_status').prop("checked", true);
-      $('#dd_depthead').val('').trigger('change');
+      $('#dd_types').val('').trigger('change');
    });
 
 });

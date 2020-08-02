@@ -239,6 +239,18 @@ td > a.action-link i {
    border-color: #ff8f34b6 !important;
 }
 
+.select2-container--default.select2-container--open .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--multiple,
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+   border-color: #ff8f34b6 !important;
+}
+/* 
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple  {
+   border-color: #dc3546a2 !important;
+} */
+
 .select2-container--default .select2-selection--single {
    font-size: 12px !important;
 }
@@ -251,9 +263,10 @@ td > a.action-link i {
 [class*="icheck-material"]>input:first-child + label::before {
    border: 1px solid #ced4da;
    border-radius: 4px;
-   height: 18px;
-   width: 18px;
-   margin-top: 2px;
+   height: 16px;
+   width: 16px;
+   margin-top: 3px;
+   margin-left: -26px;
 }
 
 [class*="icheck-material"]>input:first-child + label::before:hover{
@@ -262,9 +275,9 @@ td > a.action-link i {
 
 
 [class*="icheck-material"]>input[type="checkbox"]:first-child:checked+label::after {
-   width: 5px;
-   height: 11px;
-   transform: translate(6.5px,4.5px) rotate(45deg)
+   width: 4px;
+   height: 10px;
+   transform: translate(9.5px,5.5px) rotate(45deg)
 }
 
 .icheck-material-green>input:first-child:not(:checked):not(:disabled):hover+label::before {
