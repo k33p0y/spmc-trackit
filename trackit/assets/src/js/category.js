@@ -32,6 +32,11 @@ $(document).ready(function () {
       "ajax": {
          url: `${url}?format=datatables`,
          type: "GET",
+         dataSrc: function (json) {
+            return json.data.filter(function (item) {
+               return item.is_archive == false;
+            });
+         }
       },
       "columns": [
          { data: "name" },
