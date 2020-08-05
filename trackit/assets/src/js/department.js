@@ -3,9 +3,8 @@ $(document).ready(function () {
    // Local Variables
    let dd_head_id;
    let chk_status = true;
-   let action_type;
+   let action_type, url;
    let alert_msg = '';
-   let url = "/api/config/department/";
 
    // Sweet Alert Toast 
    const Toast = Swal.mixin({
@@ -20,7 +19,7 @@ $(document).ready(function () {
       }
    });
 
-   // GET
+   // RETRIEVE / GET
    // List Table
    let table = $('#dt_department').DataTable({
       "searching": false,
@@ -30,7 +29,7 @@ $(document).ready(function () {
       "serverside": true,
       "processing": true,
       "ajax": {
-         url: `${url}?format=datatables`,
+         url: '/api/config/department/?format=datatables',
          type: "GET",
          dataSrc: function (json) {
             return json.data.filter(function (item) {
@@ -71,7 +70,7 @@ $(document).ready(function () {
             data: "null",
             render: function (data, type, row) {
                data = `<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
-                     <a href='#' class='text-danger action-link'> <i class='fas fa-trash'></i> </a>`;
+                     <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
                return data
             },
          }
@@ -101,11 +100,10 @@ $(document).ready(function () {
    });
 
    // CREATE / POST
-   // New Department
    $('#btn_new').on('click', function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
-      url = url
+      url = '/api/config/department/';
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
@@ -114,16 +112,14 @@ $(document).ready(function () {
       $('#dd_depthead').val('');
    });
 
-
    // UPDATE / PUT
-   // Edit Department
    $('#dt_department tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
 
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
-      url = url + `${id}/`;
+      url = `/api/config/department/${id}/`;
       alert_msg = 'Update Successfully';
 
       // Open Modal
@@ -137,16 +133,15 @@ $(document).ready(function () {
       $('#chk_status').prop("checked", dt_data['is_active']);
    });
 
-
    // Submit Form
    $("#btn_save").click(function (e) {
       e.preventDefault();
 
       // Variables
-      var data = {}
-      var success = 1;
+      let data = {}
+      let success = 1;
 
-      // Data Values
+      // Data
       data.name = $('#txt_deptname').val();
       data.department_head = dd_head_id;
       data.is_active = chk_status;
@@ -165,12 +160,12 @@ $(document).ready(function () {
       if (success == 1) {
          $.ajax({
             url: url,
-            type: type,
+            type: action_type,
             data: data,
             success: function (result) {
                Toast.fire({
                   icon: 'success',
-                  title: title,
+                  title: alert_msg,
                });
                table.ajax.reload();
             },
@@ -179,13 +174,52 @@ $(document).ready(function () {
                   icon: 'error',
                   title: error,
                });
+
+               console.log(a)
             },
          }).done(function () {
-            $('#deptModal').modal('toggle');
+            $('#formModal').modal('toggle');
             $('#dd_depthead').val('').trigger('change');
             $('#chk_status').prop("checked", true);
          });
       }
+   });
+
+   // DELETE / PATCH
+   $('#dt_department tbody').on('click', '.btn_delete', function () {
+      let dt_data = table.row($(this).parents('tr')).data();
+      let id = dt_data['id'];
+
+      Swal.fire({
+         title: 'Are you sure?',
+         icon: 'error',
+         showCancelButton: true,
+         confirmButtonText: 'Delete',
+         confirmButtonColor: '#d9534f',
+      }).then((result) => {
+         if (result.value) {
+            $.ajax({
+               url: `/api/config/department/${id}/`,
+               type: 'PATCH',
+               data: {
+                  is_archive: true,
+               },
+               success: function (result) {
+                  Toast.fire({
+                     icon: 'success',
+                     title: 'Delete Successfully',
+                  });
+                  table.ajax.reload();
+               },
+               error: function (a, b, error) {
+                  Toast.fire({
+                     icon: 'error',
+                     title: error,
+                  });
+               },
+            })
+         }
+      })
    });
 
    //Modal Cancel

@@ -2,9 +2,8 @@ $(document).ready(function () {
 
    // Local Variables
    let chk_status = true;
-   let action_type;
+   let action_type, url;
    let alert_msg = '';
-   let url = "/api/config/categorytype/";
 
    // Sweet Alert Toast 
    const Toast = Swal.mixin({
@@ -29,7 +28,7 @@ $(document).ready(function () {
       "serverside": true,
       "processing": true,
       "ajax": {
-         url: `${url}?format=datatables`,
+         url: '/api/config/categorytype/?format=datatables',
          type: "GET",
          dataSrc: function (json) {
             return json.data.filter(function (item) {
@@ -57,7 +56,7 @@ $(document).ready(function () {
             data: "null",
             render: function (data, type, row) {
                data = `<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
-                     <a href='#' class='text-danger action-link'> <i class='fas fa-trash'></i> </a>`;
+                     <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
                return data
             },
          }
@@ -79,7 +78,7 @@ $(document).ready(function () {
    $('#btn_new').on('click', function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
-      url = url
+      url = '/api/config/categorytype/'
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
@@ -96,7 +95,7 @@ $(document).ready(function () {
 
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
-      url = url + `${id}/`;
+      url = `/api/config/categorytype/${id}/`;
       alert_msg = 'Update Successfully';
 
       // Open Modal
@@ -156,6 +155,43 @@ $(document).ready(function () {
             $('#chk_status').prop("checked", true);
          });
       }
+   });
+
+   // DELETE / PATCH
+   $('#dt_category_type tbody').on('click', '.btn_delete', function () {
+      let dt_data = table.row($(this).parents('tr')).data();
+      let id = dt_data['id'];
+
+      Swal.fire({
+         title: 'Are you sure?',
+         icon: 'error',
+         showCancelButton: true,
+         confirmButtonText: 'Delete',
+         confirmButtonColor: '#d9534f',
+      }).then((result) => {
+         if (result.value) {
+            $.ajax({
+               url: `/api/config/categorytype/${id}/`,
+               type: 'PATCH',
+               data: {
+                  is_archive: true,
+               },
+               success: function (result) {
+                  Toast.fire({
+                     icon: 'success',
+                     title: 'Delete Successfully',
+                  });
+                  table.ajax.reload();
+               },
+               error: function (a, b, error) {
+                  Toast.fire({
+                     icon: 'error',
+                     title: error,
+                  });
+               },
+            })
+         }
+      })
    });
 
    //Modal Cancel

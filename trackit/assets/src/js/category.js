@@ -3,9 +3,8 @@ $(document).ready(function () {
    // Local Variables
    let dd_type_id;
    let chk_status = true;
-   let action_type;
+   let action_type, url;
    let alert_msg = '';
-   let url = "/api/config/category/";
 
    // Sweet Alert Toast 
    const Toast = Swal.mixin({
@@ -30,7 +29,7 @@ $(document).ready(function () {
       "serverside": true,
       "processing": true,
       "ajax": {
-         url: `${url}?format=datatables`,
+         url: '/api/config/category/?format=datatables',
          type: "GET",
          dataSrc: function (json) {
             return json.data.filter(function (item) {
@@ -59,7 +58,7 @@ $(document).ready(function () {
             data: "null",
             render: function (data, type, row) {
                data = `<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
-                     <a href='#' class='text-danger action-link'> <i class='fas fa-trash'></i> </a>`;
+                     <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
                return data
             },
          }
@@ -89,11 +88,10 @@ $(document).ready(function () {
    });
 
    // CREATE / POST
-   // New Department
    $('#btn_new').on('click', function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
-      url = url
+      url = '/api/config/category/'
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
@@ -103,14 +101,13 @@ $(document).ready(function () {
 
 
    // UPDATE / PUT
-   // Edit Department
    $('#dt_category tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
 
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
-      url = url + `${id}/`;
+      url = `/api/config/category/${id}/`;
       alert_msg = 'Update Successfully';
 
       // Open Modal
@@ -182,6 +179,80 @@ $(document).ready(function () {
             $('#dd_types').val('').trigger('change');
          });
       }
+   });
+
+   // DELETE / PATCH
+   $('#dt_category tbody').on('click', '.btn_delete', function () {
+      let dt_data = table.row($(this).parents('tr')).data();
+      let id = dt_data['id'];
+
+      Swal.fire({
+         title: 'Are you sure?',
+         icon: 'error',
+         showCancelButton: true,
+         confirmButtonText: 'Delete',
+         confirmButtonColor: '#d9534f',
+      }).then((result) => {
+         if (result.value) {
+            $.ajax({
+               url: `/api/config/category/${id}/`,
+               type: 'PATCH',
+               data: {
+                  is_archive: true,
+               },
+               success: function (result) {
+                  Toast.fire({
+                     icon: 'success',
+                     title: 'Delete Successfully',
+                  });
+                  table.ajax.reload();
+               },
+               error: function (a, b, error) {
+                  Toast.fire({
+                     icon: 'error',
+                     title: error,
+                  });
+               },
+            })
+         }
+      })
+   });
+
+   // DELETE / PATCH
+   $('#dt_department tbody').on('click', '.btn_delete', function () {
+      let dt_data = table.row($(this).parents('tr')).data();
+      let id = dt_data['id'];
+
+      Swal.fire({
+         title: 'Are you sure?',
+         icon: 'error',
+         showCancelButton: true,
+         confirmButtonText: 'Delete',
+         confirmButtonColor: '#d9534f',
+      }).then((result) => {
+         if (result.value) {
+            $.ajax({
+               url: `/api/config/category/${id}/`,
+               type: 'PATCH',
+               data: {
+                  is_archive: true,
+               },
+               success: function (result) {
+                  Toast.fire({
+                     icon: 'success',
+                     title: 'Delete Successfully',
+                  });
+                  table.ajax.reload();
+               },
+               error: function (a, b, error) {
+                  Toast.fire({
+                     icon: 'error',
+                     title: error,
+                  });
+               },
+            })
+         }
+      })
    });
 
    //Modal Cancel
