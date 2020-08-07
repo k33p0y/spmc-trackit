@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+   <title> Trackit | Login </title>
+
+   <!-- Tell the browser to be responsive to screen width -->
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+   <!-- CSS Dependencies -->
+   {% include "snippets/styles.html" %}
+   <link rel="stylesheet" href="{% static 'src/css/core.css' %}">
+
+</head>
+
+<body class="bg-dark text-sm">
+
+   <div class="wrapper small">
+      <div class="wrap">
+         <div class="card mx-auto shadow">
+            <div class="card-body m-0 p-5">
+
+               <h1 class="font-weight-bold text-orange"> Hello There. </h1>
+               <p> Log in to continue</p>
+               <form method="post" novalidate>
+                  {% csrf_token %}
+                  {{ form.as_p }}
+                  <!-- <div class="form-group form-group-sm">
+                     <input type="text" class="form-control" id="txt-username" placeholder="Username">
+                  </div>
+                  <div class="form-group form-group-sm">
+                     <input type="password" class="form-control" id="txt-password" placeholder="Password">
+                  </div> -->
+                  <button type="submit" class="btn btn-outline-orange btn-block btn-login">Login</button>
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Scripts Dependencies -->
+   {% include "snippets/scripts.html" %}
+   <!-- <script type="text/javascript" src="{% static 'src/js/core.js' %}"></script> -->
+
+</body>
+
+</html>

@@ -2,6 +2,19 @@ html, body {
    height:100%;
 }
 
+input {
+   color : #5f6b77 !important;
+}
+
+.btn-outline-orange {
+   border:1px solid #FD7E14 !important;
+   color:#FD7E14;
+}
+.btn-outline-orange:hover {
+   background-color: #FD7E14 !important;
+   color:#fff;
+}
+
 .wrapper {
    min-height: 100%;
 }
@@ -10,40 +23,19 @@ html, body {
    padding-top: 80px;
 }
 
+.dispaly-4 {
+   font-size: 3rem !important;
+}
+
 .card {
    width: 75%;
    border-radius: 15px;
-   -webkit-box-shadow: 0px 0px 20px 0px rgba(110,110,110,0.7);
-   -moz-box-shadow: 0px 0px 20px 0px rgba(110,110,110,0.7);
-   box-shadow: 0px 0px 20px 0px rgba(110,110,110,0.7);
-}
-
-.card h2 {
-   color: #395fa1;
 }
 
 .card p {
-   color: #3c4b64;
+   color: #5f6b77;
 }
 
-.form-control {
-   background-image: linear-gradient(0deg,#395fa1 2px,rgba(33,150,243,0) 0),
-      linear-gradient(0deg,rgba(0,0,0,.26) 1px,transparent 0) !important;
-}
-
-.is-focused .bmd-label-floating {
-   color: #395fa1 !important;
-}
-
-.btn-login {
-   border-radius: 20px !important;
-   color: #fff;
-   background: linear-gradient(90deg, 
-   #020024 0%, 
-   #395fa1  0%, 
-   #3c4b64 100%)
-
-}
 @media (min-width: 1200px) { 
    .card {
       width: 30%;

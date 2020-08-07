@@ -138,10 +138,13 @@ STATICFILES_DIRS = (
 
 AUTH_USER_MODEL = 'core.User'
 
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework.authentication.TokenAuthentication',
+    # ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -151,5 +154,5 @@ REST_FRAMEWORK = {
         'rest_framework_datatables.filters.DatatablesFilterBackend',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
-    'PAGE_SIZE': 50,
+    'PAGE_SIZE': 5,
 }
