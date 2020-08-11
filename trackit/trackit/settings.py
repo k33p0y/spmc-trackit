@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # 3rd Party
     'rest_framework',
     'rest_framework_datatables',
+    'crispy_forms',
     
     # Django Apps
     'core',
@@ -156,3 +157,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
     'PAGE_SIZE': 5,
 }
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
