@@ -137,6 +137,9 @@ $(document).ready(function () {
             url: url,
             type: action_type,
             data: data,
+            beforeSend: function (xhr, settings) {
+               xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            },
             success: function (result) {
                Toast.fire({
                   icon: 'success',
@@ -175,6 +178,9 @@ $(document).ready(function () {
                type: 'PATCH',
                data: {
                   is_archive: true,
+               },
+               beforeSend: function (xhr, settings) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
                },
                success: function (result) {
                   Toast.fire({
