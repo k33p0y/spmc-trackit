@@ -8,5 +8,6 @@ urlpatterns = [
    
    path('', include('core.urls')),
    path('', include('config.urls')),
+   path('', include('requests.urls')),
 ]
    
