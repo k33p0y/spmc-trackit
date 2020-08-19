@@ -8,7 +8,10 @@ from core.models import User
 # Create your models here.
 class FormType(models.Model):
     name =  models.CharField(max_length=255)
+    color = models.CharField(max_length=10, blank=True)
     form_fields = JSONField()
+    is_active = models.BooleanField(default=True)
+    is_archive = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -23,3 +26,5 @@ class Ticket(models.Model):
     requested_by = models.ForeignKey(User, related_name='requestor', on_delete=models.PROTECT)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    is_archive = models.BooleanField(default=False)
