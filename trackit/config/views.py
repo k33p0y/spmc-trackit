@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 from .models import CategoryType
 from core.models import User
+from requests.models import FormType
 
 # Create your views here.
 @login_required
@@ -20,3 +21,7 @@ def category(request):
 @login_required
 def types(request):
    return render(request, 'pages/config/types.html')
+
+@login_required
+def forms(request):
+   return render(request, 'pages/config/forms.html')

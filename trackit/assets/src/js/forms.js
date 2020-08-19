@@ -1,14 +1,15 @@
 $(document).ready(function () {
 
    // Local Variables
-   let dd_head_id;
    let chk_status = true;
    let action_type, url;
    let alert_msg = '';
 
+   // Spectrum Picker
+
    // RETRIEVE / GET
    // List Table
-   let table = $('#dt_department').DataTable({
+   let table = $('#dt_forms').DataTable({
       "searching": false,
       "responsive": true,
       "lengthChange": false,
@@ -17,7 +18,7 @@ $(document).ready(function () {
       "processing": true,
       "pageLength": 4,
       "ajax": {
-         url: '/api/config/department/?format=datatables',
+         url: '/api/requests/formtype/?format=datatables',
          type: "GET",
          dataSrc: function (json) {
             return json.data.filter(function (item) {
@@ -28,15 +29,14 @@ $(document).ready(function () {
       "columns": [
          { data: "name" },
          {
-            data: null,
             render: function (data, type, row) {
-               if (type == 'display') {
-                  if (row.department_head === null) {
-                     data = "";
-                  } else {
-                     data = `${row.department_head.first_name} ${row.department_head.last_name}`;
-                  }
-               }
+               data = `<div class="circle" style="background-color:${row.color};"></div>`;
+               return data
+            }
+         },
+         {
+            render: function (data, type, row) {
+               data = row.form_fields
                return data
             }
          },

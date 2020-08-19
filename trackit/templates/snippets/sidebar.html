@@ -35,9 +35,9 @@
             {% endcomment %}
 
             <li
-               class="nav-item {% if url == 'department' or url == 'category' or url == 'types'  %} menu-open {% endif %}">
+               class="nav-item {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms'  %} menu-open {% endif %}">
                <a href="#"
-                  class="nav-link {% if url == 'department' or url == 'category' or url == 'types' %} active {% endif %}">
+                  class="nav-link {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms' %} active {% endif %}">
                   <i class="nav-icon fas fa-cog"></i>
                   <p>
                      Configuration
@@ -61,6 +61,12 @@
                      <a href="{% url 'types' %}" class="nav-link {% if url == 'types' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p> Category Types</p>
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a href="{% url 'forms' %}" class="nav-link {% if url == 'forms' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p> Form Types </p>
                      </a>
                   </li>
                </ul>

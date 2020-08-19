@@ -3,20 +3,24 @@
 
 {% block title %} Department {% endblock %}
 
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'src/css/form.css' %}">
+{% endblock %}
+
 {% block content %}
 <!-- Content Header -->
 <section class="content-header">
    <div class="container-fluid">
       <div class="row mb-2">
          <div class="col-sm-6">
-            <h5 class="font-weight-bolder">Categories</h5>
+            <h5 class="font-weight-bolder">Form Types </h5>
          </div>
          <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right text-xs">
                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-orange"><i
                         class="fas fa-home"></i></a></li>
                <li class="breadcrumb-item">Configuration</li>
-               <li class="breadcrumb-item">Categories</li>
+               <li class="breadcrumb-item">Form Types</li>
                <li class="breadcrumb-item active">List</li>
             </ol>
          </div>
@@ -54,19 +58,20 @@
                      <button class="btn btn-xs btn-outline-secondary mr-2"> <i class="fas fa-file-word"></i></button>
                   </div> -->
                   <div class="card-actions-left ml-auto">
-                     <button class="btn btn-xs btn-outline-secondary mr-2"> <i class="fas fa-print"></i></button>
-                     <button class="btn btn-xs btn-outline-secondary mr-2"> <i class="fas fa-redo"></i></button>
+                     <!-- <button class="btn btn-xs btn-outline-secondary mr-2"> <i class="fas fa-print"></i></button>
+                     <button class="btn btn-xs btn-outline-secondary mr-2"> <i class="fas fa-redo"></i></button> -->
                      <button class="btn btn-xs btn-outline-orange mr-2" id="btn_new">
                         <i class="fas fa-plus"></i>
                      </button>
                   </div>
                </div>
                <div class="card-body p-1">
-                  <table id="dt_category" class="table table-hover" width="100%">
+                  <table id="dt_forms" class="table table-hover" width="100%">
                      <thead>
                         <tr>
                            <th>Name</th>
-                           <th>Category Type</th>
+                           <th>Color</th>
+                           <th>No of fields</th>
                            <th>Is Active</th>
                            <th>Action</th>
                         </tr>
@@ -98,19 +103,15 @@
             <form id="form_dept">
                <div class="form-group">
                   <label for="nameHelp">Name</label>
-                  <input type="text" class="form-control form-control-sm" id="txt_categoryname"
-                     aria-describedby="nameHelp" placeholder="Enter Category Name">
-                  <small class="error-info" id="error-info-name"></small>
+                  <input type="text" class="form-control form-control-sm" id="txt_typename" aria-describedby="nameHelp"
+                     placeholder="Enter Category Type">
+                  <small class="error-info"></small>
                </div>
                <div class="form-group">
-                  <label>Category Type</label>
-                  <select class="form-control form-control-sm" id="dd_types" style="width: 100%">
-                     <option></option>
-                     {% for type in types %}
-                     <option value={{type.id}}>{{type.name}}</option>
-                     {% endfor %}
-                  </select>
-                  <small class="error-info" id="error-info-type"></small>
+                  <label for="nameHelp">Color</label>
+                  <input type="text" class="form-control form-control-sm" id="txt_color" aria-describedby="nameHelp"
+                     placeholder="Enter Category Type">
+                  <small class="error-info"></small>
                </div>
                <div class="icheck-material-green">
                   <input type="checkbox" id="chk_status" checked />
@@ -131,5 +132,5 @@
 {% endblock %}
 
 {% block extrascript %}
-<script type="text/javascript" src="{% static 'src/js/category.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/forms.js' %}"></script>
 {% endblock %}

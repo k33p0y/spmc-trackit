@@ -12,6 +12,7 @@ urlpatterns = [
    path('config/department', views.department, name='department'),
    path('config/category', views.category, name='category'),
    path('config/types', views.types, name='types'),
+   path('config/forms', views.forms, name='forms'),
 ]
 
 urlpatterns += router.urls
