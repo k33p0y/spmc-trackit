@@ -6,6 +6,10 @@ $(document).ready(function () {
    let alert_msg = '';
 
    // Spectrum Picker
+   $('#txt_color').spectrum({
+      type: "text",
+      showPalette: false,
+   });
 
    // RETRIEVE / GET
    // List Table
@@ -95,9 +99,37 @@ $(document).ready(function () {
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
-      $(".modal-title").text('New Department');
-      $('#txt_deptname').val('');
-      $('#dd_depthead').val('');
+      $(".modal-title").text('New Form');
+      $('#txt_typename').val('');
+      $('#txt_color').val('');
+
+      // Add and Remove fields
+      let count = 4;
+
+      $('#btn_add').click(function () {
+         let row = $('.field_wrapper');
+         row.append(
+            `<div class="row">
+               <div class="col-md-11">
+                  <div class="form-group">
+                     <input type="text" class="form-control form-control-sm" id="txt_fields_${count}"
+                        placeholder="Enter field name">
+                     <small class="error-info"></small>
+                  </div>
+               </div>
+               <div class="col-md-1">
+                  <button type="button" class="btn btn-link btn-sm" id="btn_remove">
+                     <span class="fas fa-xs fa-times"></span>
+                  </button>
+               </div>
+            </div>`
+         )
+         count++;
+      });
+
+      $('.field_wrapper').on('click', '#btn_remove', function () {
+         $(this).parents("div.row").remove()
+      });
    });
 
    // UPDATE / PUT
@@ -219,11 +251,10 @@ $(document).ready(function () {
    //Modal Cancel
    $('#btn_cancel').click(function () {
       // Reset Fields to Defaults
-      $('#txt_deptname').removeClass('form-error');
-      $('.select2-selection--single').css('border-color', '');
+      $('#txt_typename').removeClass('form-error');
       $('.error-info').html('');
       $('#chk_status').prop("checked", true);
-      $('#dd_depthead').val('').trigger('change');
    });
 
 });
+

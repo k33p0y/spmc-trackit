@@ -12,6 +12,7 @@ select:focus  {
 label {
    font-weight: normal !important;
    color: #3e454d !important;
+   margin-bottom: .3rem !important;
 }
 
 h1, h2,  h3, h4, h5, h6  {
@@ -30,7 +31,7 @@ td {
    font-size: 11px !important;
 }
 
-.text-small {
+.text-small, p {
    font-size: 12px !important;
 }
 
@@ -292,6 +293,10 @@ td > a.action-link i {
 .error-info {
    color: #dc3545;
    font-style: italic;
+}
+
+.form-group {
+   margin-bottom: 10px !important;
 }
 
 /* Sweet alert */

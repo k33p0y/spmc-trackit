@@ -3,3 +3,26 @@
    width: 50px !important;
    border-radius: 15px;
 }
+
+.sp-original-input-container {
+   border-radius: .2rem !important
+}
+
+#btn_add,
+#btn_remove {
+   font-size: 12px !important;
+   color: #fd7e14;
+}
+
+#btn_add:hover,
+#btn_remove:hover  {
+   color: #e46e0f;
+}
+
+
+#btn_remove {
+   padding-left: 0;
+   padding-top: 6px;
+   text-align: left;
+   justify-items: center;
+}
