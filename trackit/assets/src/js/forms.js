@@ -104,15 +104,13 @@ $(document).ready(function () {
       $('#txt_color').val('');
 
       // Add and Remove fields
-      let count = 4;
-
       $('#btn_add').click(function () {
          let row = $('.field_wrapper');
          row.append(
             `<div class="row">
                <div class="col-md-11">
                   <div class="form-group">
-                     <input type="text" class="form-control form-control-sm" id="txt_fields_${count}"
+                     <input type="text" class="form-control form-control-sm" id="txt_fields"
                         placeholder="Enter field name">
                      <small class="error-info"></small>
                   </div>
@@ -124,7 +122,6 @@ $(document).ready(function () {
                </div>
             </div>`
          )
-         count++;
       });
 
       $('.field_wrapper').on('click', '#btn_remove', function () {
@@ -162,9 +159,10 @@ $(document).ready(function () {
       let success = 1;
 
       // Data
-      data.name = $('#txt_deptname').val();
-      data.department_head = dd_head_id;
+      data.name = $('#txt_typename').val();
+      data.color = $('#txt_color').val();
       data.is_active = chk_status;
+      data.is_archive = false;
 
       // Validation
       if ($('#txt_deptname').val() == '') {
