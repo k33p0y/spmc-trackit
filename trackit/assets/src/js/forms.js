@@ -33,14 +33,9 @@ $(document).ready(function () {
       "columns": [
          { data: "name" },
          {
+            data: null,
             render: function (data, type, row) {
                data = `<div class="circle" style="background-color:${row.color};"></div>`;
-               return data
-            }
-         },
-         {
-            render: function (data, type, row) {
-               data = row.form_fields
                return data
             }
          },
@@ -48,7 +43,16 @@ $(document).ready(function () {
             data: null,
             render: function (data, type, row) {
                if (type == 'display') {
-
+                  var arr = JSON.parse(row.form_fields);
+                  data = arr.length
+               }
+               return data
+            }
+         },
+         {
+            data: null,
+            render: function (data, type, row) {
+               if (type == 'display') {
                   if (row.is_active == true) {
                      data = "<i class='fas fa-check-circle text-success'></i>";
                   } else {
@@ -59,7 +63,7 @@ $(document).ready(function () {
             }
          },
          {
-            data: "null",
+            data: null,
             render: function (data, type, row) {
                data = `<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
                      <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
@@ -67,18 +71,6 @@ $(document).ready(function () {
             },
          }
       ],
-   });
-
-   // Select2 Config
-   $('#dd_depthead').select2({
-      allowClear: true,
-      placeholder: 'Select Head of Department',
-      cache: true,
-   });
-
-   // Get Dropdown Value
-   $('#dd_depthead').on('change', function () {
-      dd_head_id = $("#dd_depthead option:selected").val();
    });
 
    // Get Checkbox State
@@ -95,7 +87,7 @@ $(document).ready(function () {
    $('#btn_new').on('click', function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
-      url = '/api/config/department/';
+      url = '/api/requests/formtype/';
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
@@ -103,40 +95,18 @@ $(document).ready(function () {
       $('#txt_typename').val('');
       $('#txt_color').val('');
 
-      // Add and Remove fields
-      $('#btn_add').click(function () {
-         let row = $('.field_wrapper');
-         row.append(
-            `<div class="row">
-               <div class="col-md-11">
-                  <div class="form-group">
-                     <input type="text" class="form-control form-control-sm" id="txt_fields"
-                        placeholder="Enter field name">
-                     <small class="error-info"></small>
-                  </div>
-               </div>
-               <div class="col-md-1">
-                  <button type="button" class="btn btn-link btn-sm" id="btn_remove">
-                     <span class="fas fa-xs fa-times"></span>
-                  </button>
-               </div>
-            </div>`
-         )
-      });
-
-      $('.field_wrapper').on('click', '#btn_remove', function () {
-         $(this).parents("div.row").remove()
-      });
+      // Add and Remove Fields
+      customField();
    });
 
    // UPDATE / PUT
-   $('#dt_department tbody').on('click', '.btn_edit', function () {
+   $('#dt_forms tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
 
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
-      url = `/api/config/department/${id}/`;
+      url = `/api/requests/formtype/${id}/`;
       alert_msg = 'Update Successfully';
 
       // Open Modal
@@ -145,9 +115,13 @@ $(document).ready(function () {
       $(".modal-title").text('Update Department');
 
       // Populate Fields
-      $('#txt_deptname').val(dt_data['name']);
-      $('#dd_depthead').val(dt_data['department_head'].id).trigger('change');
+      $('#txt_typename').val(dt_data['name']);
+      $('#txt_color').val(dt_data['color']);
       $('#chk_status').prop("checked", dt_data['is_active']);
+      fillFormValues(dt_data['form_fields']);
+
+      // Add and Remove Fields
+      customField();
    });
 
    // Submit Form
@@ -161,18 +135,11 @@ $(document).ready(function () {
       // Data
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
+      data.form_fields = getFormValues();
       data.is_active = chk_status;
       data.is_archive = false;
 
-      // Validation
-      if ($('#txt_deptname').val() == '') {
-         $('#txt_deptname').addClass('form-error');
-         $('.error-info').html('*This field cannot be empty');
-         success--;
-      } else {
-         $('#txt_deptname').removeClass('form-error');
-         $('#error-password').html('');
-      }
+      console.log(data);
 
       // Form is Valid
       if (success == 1) {
@@ -200,14 +167,13 @@ $(document).ready(function () {
             },
          }).done(function () {
             $('#formModal').modal('toggle');
-            $('#dd_depthead').val('').trigger('change');
             $('#chk_status').prop("checked", true);
          });
       }
    });
 
    // DELETE / PATCH
-   $('#dt_department tbody').on('click', '.btn_delete', function () {
+   $('#dt_forms tbody').on('click', '.btn_delete', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
 
@@ -220,7 +186,7 @@ $(document).ready(function () {
       }).then((result) => {
          if (result.value) {
             $.ajax({
-               url: `/api/config/department/${id}/`,
+               url: `/api/requests/formtype/${id}/`,
                type: 'PATCH',
                data: {
                   is_archive: true,
@@ -256,3 +222,69 @@ $(document).ready(function () {
 
 });
 
+
+function customField() {
+   // Add Fields
+   $('#btn_add').click(function () {
+      let row = $('.field_wrapper');
+      row.append(
+         `<div class="form-row">
+            <div class="form-group col-md-11">
+               <input type="text" class="form-control form-control-sm txt_fields"
+                  placeholder="Enter field name">
+               <small class="error-info"></small>
+            </div>
+            <div class="form-group col-md-1">
+               <button type="button" class="btn btn-link btn-sm" id="btn_remove">
+                  <span class="fas fa-xs fa-times"></span>
+               </button>
+            </div>
+         </div>`
+      );
+   });
+
+   // Remove Fields
+   $('.field_wrapper').on('click', '#btn_remove', function () {
+      $(this).parents("div.form-row").slideUp('fast', function () {
+         $(this).remove();
+      });
+   });
+
+}
+
+function getFormValues() {
+   let fields = [];
+   let parent = $(".field_wrapper");
+   let children = parent.find('div.form-row .txt_fields');
+
+   children.each(function () {
+      fields.push($(this).val());
+   });
+
+   fields = JSON.stringify(fields)
+   return fields
+}
+
+function fillFormValues(form_fields) {
+   let fieldsArr = JSON.parse(form_fields)
+   let row = $(".field_wrapper");
+
+   row.children().remove();
+
+   fieldsArr.forEach(element => {
+      row.append(
+         `<div class="form-row new">
+            <div class="form-group col-md-11">
+               <input type="text" class="form-control form-control-sm txt_fields"
+                  placeholder="Enter field name" value="${element}">
+               <small class="error-info"></small>
+            </div>
+            <div class="form-group col-md-1">
+               <button type="button" class="btn btn-link btn-sm" id="btn_remove">
+                  <span class="fas fa-xs fa-times"></span>
+               </button>
+            </div>
+         </div>`
+      );
+   });
+}
