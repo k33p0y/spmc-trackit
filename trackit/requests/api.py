@@ -3,10 +3,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator
 
-from .serializers import FormTypeSerializer
-from .models import FormType
+from .serializers import RequestFormSerializer
+from .models import RequestForm
 
-class FormTypeViewSet(viewsets.ModelViewSet):    
-   queryset = FormType.objects.all()
-   serializer_class = FormTypeSerializer
+class RequestFormViewSet(viewsets.ModelViewSet):    
+   queryset = RequestForm.objects.all()
+   serializer_class = RequestFormSerializer
    permission_classes = [permissions.IsAuthenticated]

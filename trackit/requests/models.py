@@ -6,10 +6,10 @@ from config.models import Department
 from core.models import User
 
 # Create your models here.
-class FormType(models.Model):
+class RequestForm(models.Model):
     name =  models.CharField(max_length=255)
     color = models.CharField(max_length=10, blank=True)
-    form_fields = JSONField()
+    fields = JSONField()
     is_active = models.BooleanField(default=True)
     is_archive = models.BooleanField(default=False)
 
@@ -19,7 +19,7 @@ class FormType(models.Model):
 # Main Service Request Model
 class Ticket(models.Model):
     ticket_id = models.UUIDField(primary_key=True, editable=False)
-    formtype_id = models.ForeignKey(FormType, related_name='form_type', on_delete=models.PROTECT)
+    request_form_id = models.ForeignKey(RequestForm, related_name='form_type', on_delete=models.PROTECT)
     form_data = JSONField()
     reference_no = models.PositiveIntegerField()
     department = models.ForeignKey(Department, on_delete=models.CASCADE)

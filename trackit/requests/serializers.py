@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from .models import FormType
+from .models import RequestForm
 
 # Serializers
-class FormTypeSerializer(serializers.ModelSerializer):
+class RequestFormSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = FormType
+        model = RequestForm
         fields = '__all__'
