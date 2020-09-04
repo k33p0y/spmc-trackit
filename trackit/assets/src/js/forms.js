@@ -20,9 +20,9 @@ $(document).ready(function () {
       "autoWidth": false,
       "serverside": true,
       "processing": true,
-      "pageLength": 4,
+      "pageLength": 25,
       "ajax": {
-         url: '/api/requests/formtype/?format=datatables',
+         url: '/api/requests/forms/?format=datatables',
          type: "GET",
          dataSrc: function (json) {
             return json.data.filter(function (item) {
@@ -43,7 +43,7 @@ $(document).ready(function () {
             data: null,
             render: function (data, type, row) {
                if (type == 'display') {
-                  var arr = JSON.parse(row.form_fields);
+                  var arr = JSON.parse(row.fields);
                   data = arr.length
                }
                return data
@@ -87,7 +87,7 @@ $(document).ready(function () {
    $('#btn_new').on('click', function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
-      url = '/api/requests/formtype/';
+      url = '/api/requests/forms/';
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
@@ -106,7 +106,7 @@ $(document).ready(function () {
 
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
-      url = `/api/requests/formtype/${id}/`;
+      url = `/api/requests/forms/${id}/`;
       alert_msg = 'Update Successfully';
 
       // Open Modal
@@ -118,7 +118,7 @@ $(document).ready(function () {
       $('#txt_typename').val(dt_data['name']);
       $('#txt_color').val(dt_data['color']);
       $('#chk_status').prop("checked", dt_data['is_active']);
-      fillFieldValues(dt_data['form_fields']);
+      fillFieldValues(dt_data['fields']);
 
       // Add and Remove Fields
       customField();
@@ -135,7 +135,7 @@ $(document).ready(function () {
       // Data
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
-      data.form_fields = getFieldValues();
+      data.fields = getFieldValues();
       data.is_active = chk_status;
       data.is_archive = false;
 
@@ -160,8 +160,6 @@ $(document).ready(function () {
                   icon: 'error',
                   title: error,
                });
-
-               console.log(a)
             },
          }).done(function () {
             $('#formModal').modal('toggle');
@@ -184,7 +182,7 @@ $(document).ready(function () {
       }).then((result) => {
          if (result.value) {
             $.ajax({
-               url: `/api/requests/formtype/${id}/`,
+               url: `/api/requests/forms/${id}/`,
                type: 'PATCH',
                data: {
                   is_archive: true,
@@ -265,8 +263,8 @@ function getFieldValues() {
    return fields
 }
 
-function fillFieldValues(form_fields) {
-   let fieldsArr = JSON.parse(form_fields)
+function fillFieldValues(data) {
+   let fieldsArr = JSON.parse(data)
    let row = $(".field_wrapper");
 
    row.children().remove();

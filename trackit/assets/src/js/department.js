@@ -165,8 +165,6 @@ $(document).ready(function () {
                   icon: 'error',
                   title: error,
                });
-
-               console.log(a)
             },
          }).done(function () {
             $('#formModal').modal('toggle');
