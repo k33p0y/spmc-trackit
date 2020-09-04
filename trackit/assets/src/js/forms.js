@@ -118,7 +118,7 @@ $(document).ready(function () {
       $('#txt_typename').val(dt_data['name']);
       $('#txt_color').val(dt_data['color']);
       $('#chk_status').prop("checked", dt_data['is_active']);
-      fillFormValues(dt_data['form_fields']);
+      fillFieldValues(dt_data['form_fields']);
 
       // Add and Remove Fields
       customField();
@@ -135,11 +135,9 @@ $(document).ready(function () {
       // Data
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
-      data.form_fields = getFormValues();
+      data.form_fields = getFieldValues();
       data.is_active = chk_status;
       data.is_archive = false;
-
-      console.log(data);
 
       // Form is Valid
       if (success == 1) {
@@ -167,7 +165,7 @@ $(document).ready(function () {
             },
          }).done(function () {
             $('#formModal').modal('toggle');
-            $('#chk_status').prop("checked", true);
+            $("#form").trigger("reset");
          });
       }
    });
@@ -235,7 +233,7 @@ function customField() {
                <small class="error-info"></small>
             </div>
             <div class="form-group col-md-1">
-               <button type="button" class="btn btn-link btn-sm" id="btn_remove">
+               <button type="button" class="btn btn-link btn-sm btn_remove">
                   <span class="fas fa-xs fa-times"></span>
                </button>
             </div>
@@ -244,7 +242,7 @@ function customField() {
    });
 
    // Remove Fields
-   $('.field_wrapper').on('click', '#btn_remove', function () {
+   $('.field_wrapper').on('click', '.btn_remove', function () {
       $(this).parents("div.form-row").slideUp('fast', function () {
          $(this).remove();
       });
@@ -252,20 +250,22 @@ function customField() {
 
 }
 
-function getFormValues() {
+function getFieldValues() {
    let fields = [];
    let parent = $(".field_wrapper");
    let children = parent.find('div.form-row .txt_fields');
 
    children.each(function () {
-      fields.push($(this).val());
+      if ($(this).val()) {
+         fields.push($(this).val());
+      }
    });
 
    fields = JSON.stringify(fields)
    return fields
 }
 
-function fillFormValues(form_fields) {
+function fillFieldValues(form_fields) {
    let fieldsArr = JSON.parse(form_fields)
    let row = $(".field_wrapper");
 
@@ -280,7 +280,7 @@ function fillFormValues(form_fields) {
                <small class="error-info"></small>
             </div>
             <div class="form-group col-md-1">
-               <button type="button" class="btn btn-link btn-sm" id="btn_remove">
+               <button type="button" class="btn btn-link btn-sm btn_remove">
                   <span class="fas fa-xs fa-times"></span>
                </button>
             </div>

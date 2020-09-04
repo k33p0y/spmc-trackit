@@ -171,7 +171,8 @@ $(document).ready(function () {
          }).done(function () {
             $('#formModal').modal('toggle');
             $('#dd_depthead').val('').trigger('change');
-            $('#chk_status').prop("checked", true);
+            $("#form").trigger("reset");
+            $('.error-info').html('');
          });
       }
    });

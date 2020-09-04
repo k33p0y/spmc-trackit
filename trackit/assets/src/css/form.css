@@ -9,18 +9,18 @@
 }
 
 #btn_add,
-#btn_remove {
+.btn_remove {
    font-size: 12px !important;
    color: #fd7e14;
 }
 
 #btn_add:hover,
-#btn_remove:hover  {
+.btn_remove:hover  {
    color: #e46e0f;
 }
 
 
-#btn_remove {
+.btn_remove {
    padding-left: 0;
    padding-top: 6px;
    text-align: left;

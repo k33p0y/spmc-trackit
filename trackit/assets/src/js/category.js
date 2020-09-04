@@ -178,8 +178,9 @@ $(document).ready(function () {
             },
          }).done(function () {
             $('#formModal').modal('hide');
-            $('#chk_status').prop("checked", true);
             $('#dd_types').val('').trigger('change');
+            $("#form").trigger("reset");
+            $('.error-info').html('');
          });
       }
    });

@@ -155,7 +155,8 @@ $(document).ready(function () {
             },
          }).done(function () {
             $('#formModal').modal('toggle');
-            $('#chk_status').prop("checked", true);
+            $("#form").trigger("reset");
+            $('.error-info').html('');
          });
       }
    });
