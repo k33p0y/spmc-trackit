@@ -18,8 +18,8 @@ class RequestForm(models.Model):
 
 # Main Service Request Model
 class Ticket(models.Model):
-    ticket_id = models.UUIDField(primary_key=True, editable=False)
-    request_form_id = models.ForeignKey(RequestForm, related_name='form_type', on_delete=models.PROTECT)
+    ticket_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    request_form = models.ForeignKey(RequestForm, related_name='form_type', on_delete=models.PROTECT)
     form_data = JSONField()
     reference_no = models.PositiveIntegerField()
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
