@@ -19,14 +19,6 @@ h1, h2,  h3, h4, h5, h6  {
    color : #3e454d !important;
 }
 
-th {
-   color : #5f6b77 !important;
-}
-
-td {
-   color : #3e454d !important;
-}
-
 .text-xs {
    font-size: 11px !important;
 }
@@ -145,23 +137,46 @@ table.dataTable {
    border: none !important;
 }
 
-table th {
+table.dataTable th {
    font-size:10px;
    font-weight: 700;
    text-transform: uppercase;
    padding:8px 24px 8px 14px!important;
    border: none !important;
+   color : #717c87 !important;
 }
 
-table td  {
+table.dataTable td  {
    font-size: 12px;
-   padding:10px 14px!important;
+   font-weight: 600;
+   padding:12px 14px !important;
+   color: #59626b !important;
+   vertical-align: middle;
 }
 
-table td  > a.action-link i {
+table.dataTable td  > a.action-link i {
    font-size: 14px !important;
    margin-right: 6px;
 }
+
+table.dataTable td  > span.time {
+   font-weight: normal;
+}
+
+table.dataTable td span.td-badge {
+   width: auto !important;
+   padding: 6px 14px !important;
+   border-radius: 5px;
+   font-size: 11px;
+}
+
+table.dataTable tbody tr:hover {
+   background-color: #f2f4fa;
+ }
+  
+ table.dataTable tbody tr:hover > .sorting_1 {
+   background-color: #f2f4fa;
+ }
 
 .dataTables_length {
    margin:10px 12px;
@@ -332,3 +347,4 @@ table td  > a.action-link i {
 .swal2-cancel {
    font-size: 12px !important;
 }
+

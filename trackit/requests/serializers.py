@@ -11,13 +11,13 @@ class RequestFormSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = RequestForm
-        fields = ['id', 'name', 'color', 'fields', 'is_active', 'is_archive',]
+        fields = '__all__'
 
 class TicketSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Ticket
-        fields = ['ticket_id', 'request_form', 'reference_no', 'department', 'requested_by', 'date_created', 'is_active', 'is_archive',]
+        fields = '__all__'
         datatables_always_serialize = ('ticket_id',)
         
     def to_representation(self, instance):
