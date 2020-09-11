@@ -8,7 +8,8 @@ from config.serializers import DepartmentSerializer, UserSerializer
 
 # Serializers
 class RequestFormSerializer(serializers.ModelSerializer):
-    
+    color = serializers.CharField(required=True, max_length=10)
+
     class Meta:
         model = RequestForm
         fields = ['id', 'name', 'color', 'fields', 'is_active', 'is_archive',]
