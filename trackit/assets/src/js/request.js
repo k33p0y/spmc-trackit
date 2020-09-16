@@ -114,7 +114,13 @@ $(document).ready(function () {
 
       $("#formModal").modal();
       $(".modal-title").text('Make Request');
-      $('#txt_typename').val('');
-      $('#txt_color').val('');
    });
 });
+
+
+function generateTicketNo() {
+   let datetime = moment().format('MDYYHHmmss')
+   let ticketnumber = `TN${datetime}`;
+
+   return ticketnumber
+}
