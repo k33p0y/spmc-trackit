@@ -169,10 +169,10 @@ $(document).ready(function () {
                   $('.department-error').html('')
                }
                if (xhr.responseJSON.department_head) {
-                  // $('#dd_depthead').addClass('form-error');
+                  $('.select2-selection--single').css('border-color', '#dc3546a2'); // change border color to red
                   $('.dept-head-error').html(`*${xhr.responseJSON.department_head}`)
                } else {
-                  // $('#dd_depthead').removeClass('form-error');
+                  $('.select2-selection--single').css('border-color', '#ced4da'); // change border color to light gray
                   $('.dept-head-error').html('')
                }
                Toast.fire({
