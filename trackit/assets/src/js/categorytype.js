@@ -147,7 +147,14 @@ $(document).ready(function () {
                });
                table.ajax.reload();
             },
-            error: function (a, b, error) {
+            error: function (xhr, status, error) {
+               if (xhr.responseJSON.name) {
+                  $('#txt_typename').addClass('form-error');
+                  $('.name-error').html(`*${xhr.responseJSON.name}`)
+               } else {
+                  $('#txt_typename').removeClass('form-error');
+                  $('.name-error').html('')
+               }
                Toast.fire({
                   icon: 'error',
                   title: error,
@@ -156,7 +163,7 @@ $(document).ready(function () {
          }).done(function () {
             $('#formModal').modal('toggle');
             $("#form").trigger("reset");
-            $('.error-info').html('');
+            $('.error-info').html(''); 
          });
       }
    });
