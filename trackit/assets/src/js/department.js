@@ -160,7 +160,21 @@ $(document).ready(function () {
                });
                table.ajax.reload();
             },
-            error: function (a, b, error) {
+            error: function (xhr, status, error) {
+               if (xhr.responseJSON.name) {
+                  $('#txt_deptname').addClass('form-error');
+                  $('.department-error').html(`*${xhr.responseJSON.name}`)
+               } else {
+                  $('#txt_deptname').removeClass('form-error');
+                  $('.department-error').html('')
+               }
+               if (xhr.responseJSON.department_head) {
+                  $('.select2-selection--single').css('border-color', '#dc3546a2'); // change border color to red
+                  $('.dept-head-error').html(`*${xhr.responseJSON.department_head}`)
+               } else {
+                  $('.select2-selection--single').css('border-color', '#ced4da'); // change border color to light gray
+                  $('.dept-head-error').html('')
+               }
                Toast.fire({
                   icon: 'error',
                   title: error,

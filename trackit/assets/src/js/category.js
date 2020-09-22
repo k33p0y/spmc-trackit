@@ -170,7 +170,21 @@ $(document).ready(function () {
                });
                table.ajax.reload();
             },
-            error: function (a, b, error) {
+            error: function (xhr, status, error) {
+               if (xhr.responseJSON.name) {
+                  $('#txt_categoryname').addClass('form-error');
+                  $('#error-info-name').html(`*${xhr.responseJSON.name}`)
+               } else {
+                  $('#txt_categoryname').removeClass('form-error');
+                  $('#error-info-name').html('')
+               }
+               if (xhr.responseJSON.category_type) {
+                  $('.select2-selection--single').css('border-color', '#dc3546a2'); // change border color to red
+                  $('#error-info-type').html(`*${xhr.responseJSON.category_type}`)
+               } else {
+                  $('.select2-selection--single').css('border-color', '#ced4da'); // change border color to light gray
+                  $('#error-info-type').html('')
+               }
                Toast.fire({
                   icon: 'error',
                   title: error,

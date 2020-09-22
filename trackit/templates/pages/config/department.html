@@ -95,7 +95,7 @@
                   <label for="nameHelp">Department Name</label>
                   <input type="text" class="form-control form-control-sm" id="txt_deptname" aria-describedby="nameHelp"
                      placeholder="Enter Department / Name of Office">
-                  <small class="error-info"></small>
+                  <small class="error-info department-error"></small>
                </div>
                <div class="form-group">
                   <label>Department Head</label>
@@ -105,6 +105,7 @@
                      <option value={{user.id}}>{{user.first_name}} {{user.last_name}}</option>
                      {% endfor %}
                   </select>
+                  <small class="error-info dept-head-error"></small>
                </div>
                <div class="icheck-material-green">
                   <input type="checkbox" id="chk_status" checked />
