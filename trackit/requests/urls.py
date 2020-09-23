@@ -9,7 +9,7 @@ router.register('api/requests/lists', TicketViewSet)
 
 urlpatterns = [
    path('requests/lists', views.ticket, name='ticket'),
-
+   path('requests/categories/json', views.get_category, name='get_category'),
 ]
 
 urlpatterns += router.urls

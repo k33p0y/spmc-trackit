@@ -92,7 +92,11 @@ $(document).ready(function () {
       ],
    });
 
-   // Select2 Config
+   // LOCAL VARIABLES
+   let form_category = $('#form-group-category');
+   let dd_type_id;
+
+   // SELECT2 CONFIGURATION
    $('#dd_forms').select2({
       allowClear: true,
       placeholder: 'Select Form',
@@ -105,6 +109,14 @@ $(document).ready(function () {
       cache: true,
    });
 
+   $('#dd_categories').select2({
+      allowClear: true,
+      placeholder: 'Select Category',
+      cache: true,
+   });
+
+
+
    // CREATE / POST
    $('#btn_new').on('click', function () {
       // Assign AJAX Action Type and URL
@@ -112,11 +124,47 @@ $(document).ready(function () {
       url = '/api/requests/forms/';
       alert_msg = 'Saved Successfully';
 
+      // Modal
       $("#formModal").modal();
       $(".modal-title").text('Make Request');
+
+      // Setting up forms 
+      form_category.hide();
+
+      // Get Dropdown Value
+      $('#dd_types').on('change', function () {
+         dd_type_id = $("#dd_types option:selected").val();
+
+         $.ajax({
+            url: '/requests/categories/json',
+            type: 'POST',
+            data: {
+               'type_id': dd_type_id
+            },
+            beforeSend: function (xhr, settings) {
+               xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+            success: function (data) {
+               // Show Category Row
+               form_category.slideDown();
+
+               // Empty Dropdown Values
+               $("#dd_categories")
+                  .empty()
+                  .append('<option></option>');
+
+               // Populate Dropdown
+               data.forEach(key => {
+                  $("#dd_categories").append(`<option value='${key.id}'>${key.name}</option>`)
+               });
+            },
+            error: function (xhr, status, error) {
+               console.log(error)
+            },
+         });
+      });
    });
 });
-
 
 function generateTicketNo() {
    let datetime = moment().format('MDYYHHmmss')
