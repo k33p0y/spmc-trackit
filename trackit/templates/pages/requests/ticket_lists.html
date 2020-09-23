@@ -4,7 +4,7 @@
 {% block title %} Requests {% endblock %}
 
 {% block extrastyle %}
-<link rel="stylesheet" href="{% static 'src/css/form.css' %}">
+<link rel="stylesheet" href="{% static 'src/css/requests.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -88,50 +88,114 @@
 {% block modal %}
 <!-- Create -->
 <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-   <div class="modal-dialog modal-lg " role="document">
+   <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content text-sm">
          <div class="modal-header">
             <h6 class="modal-title"></h6>
          </div>
          <div class="modal-body">
+            <div class="line"></div>
+            <ul class="nav nav-pills nav-fill mt-2 mb-2" role="tablist">
+               <li class="nav-item">
+                  <a class="nav-link active" data-toggle="pill" role="tab" href="#step1">
+                     <i class="fas fa-sm fa-folder-open"></i>
+                  </a>
+                  <p class="nav-link-label">Form</p>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link disabled" data-toggle="pill" role="tab" href="#step2">
+                     <i class="fas fa-sm fa-pen"></i>
+                  </a>
+                  <p class="nav-link-label">Fill Up</p>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link disabled" data-toggle="pill" role="tab" href="#step3">
+                     <i class="fas fa-sm fa-upload"></i>
+                  </a>
+                  <p class="nav-link-label">Attachments</p>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link disabled" data-toggle="pill" role="tab" href="#step4">
+                     <i class="fas fa-sm fa-check"></i>
+                  </a>
+                  <p class="nav-link-label">Complete</p>
+               </li>
+            </ul>
+
             <form id="form">
-               <div class="form-group">
-                  <label>Form</label>
-                  <select class="form-control form-control-sm" id="dd_forms" style="width: 100%">
-                     <option></option>
-                     {% for form in forms %}
-                     <option value={{form.id}}>{{form.name}}</option>
-                     {% endfor %}
-                  </select>
-                  <small class="error-info" id="error-info-type"></small>
-               </div>
-               <div class="form-group ">
-                  <label>Category Type</label>
-                  <select class="form-control form-control-sm" id="dd_types" style="width: 100%">
-                     <option></option>
-                     {% for type in types %}
-                     <option value={{type.id}}>{{type.name}}</option>
-                     {% endfor %}
-                  </select>
-                  <small class="error-info" id="error-info-type"></small>
-               </div>
-               <div class="form-group ">
-                  <label>Category</label>
-                  <select class="form-control form-control-sm" id="dd_types" style="width: 100%">
-                     <option></option>
-                     {% for type in types %}
-                     <option value={{type.id}}>{{type.name}}</option>
-                     {% endfor %}
-                  </select>
-                  <small class="error-info" id="error-info-type"></small>
+               <div class="tab-content">
+                  <div class="tab-pane fade show active pt-0" id="step1" role="tabpanel">
+                     <div class=" form-group">
+                        <label>Form</label>
+                        <select class="form-control form-control-sm" id="dd_forms" style="width: 100%">
+                           <option></option>
+                           {% for form in forms %}
+                           <option value={{form.id}}>{{form.name}}</option>
+                           {% endfor %}
+                        </select>
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>
+                     <div class="form-group ">
+                        <label>Category Type</label>
+                        <select class="form-control form-control-sm" id="dd_types" style="width: 100%">
+                           <option></option>
+                           {% for type in types %}
+                           <option value={{type.id}}>{{type.name}}</option>
+                           {% endfor %}
+                        </select>
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>
+                     <div class="form-group" id="form-group-category">
+                        <label>Category</label>
+                        <select class="form-control form-control-sm" id="dd_categories" style="width: 100%">
+                        </select>
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>
+                  </div>
+
+                  <div class="tab-pane fade pt-0" id="step2" role="tabpanel">
+                     <div class=" form-group">
+                        <label for="nameHelp"> Label Field 1</label>
+                        <input type="text" class="form-control form-control-sm" id="txt_deptname"
+                           aria-describedby="nameHelp" placeholder="Enter Department / Name of Office">
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>
+                     <div class=" form-group">
+                        <label for="nameHelp"> Label Field 2</label>
+                        <input type="text" class="form-control form-control-sm" id="txt_deptname"
+                           aria-describedby="nameHelp" placeholder="Enter Department / Name of Office">
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>
+                     <div class=" form-group">
+                        <label for="nameHelp"> Label Field 3</label>
+                        <input type="text" class="form-control form-control-sm" id="txt_deptname"
+                           aria-describedby="nameHelp" placeholder="Enter Department / Name of Office">
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>
+                  </div>
+
+                  <div class="tab-pane fade pt-0" id="step3" role="tabpanel">
+                     <div class="form-group">
+                        <label>Attachments</label>
+                        <div class="custom-file">
+                           <input type="file" class="custom-file-input" id="customFile" name="filename">
+                           <label class="custom-file-label" for="customFile">Choose file</label>
+                        </div>
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>
+                  </div>
                </div>
             </form>
          </div>
-         <div class=" modal-footer">
-            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
+         <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-outline-secondary mr-auto" id="btn_cancel" data-dismiss="modal">
                <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-sm btn-outline-orange" id="btn_save"><span>Save</span></button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_previous" data-dismiss="modal">
+               <span>Previous</span>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-orange" id="btn_next"><span>Next</span></button>
+            <button type="submit" class="btn btn-sm btn-outline-orange hide" id="btn_save"><span>Save</span></button>
          </div>
       </div>
    </div>

@@ -1,0 +1,80 @@
+/* Form Steppers */
+.modal-body .line {
+   position: relative;
+   top: 20px;
+   height: 1px;
+   border: 0;
+   border-top: 1px solid #717c8733;
+   margin: 0 1rem;
+   padding: 0;
+   z-index: 0;
+}
+
+.modal-body .nav .nav-item {
+  z-index: 1 !important;
+}
+
+.modal-body .nav .nav-item .nav-link {
+   height: 26px;
+   width: 26px;
+   margin: auto;
+   border: 1px solid #FD7E14;
+   border-radius: 50%;
+   background-color: #fff;
+   text-align: center;
+   align-items: center;
+   padding: 0;
+}
+
+.modal-body .nav .nav-item .nav-link.disabled {
+   border: 1px solid #ccc;
+}
+
+.modal-body .nav .nav-item .nav-link.disabled > i {
+   color: #ccc;
+}
+.modal-body .nav .nav-item .nav-link:hover,
+.modal-body .nav .nav-item .nav-link.active {
+   background-color: #FD7E14;
+}
+
+.modal-body .nav .nav-item .nav-link > i,
+.modal-body .nav .nav-item .nav-link.active > i,
+.modal-body .nav .nav-item .nav-link.disabled > i  {
+   font-size: 8px !important;
+}
+
+.modal-body .nav .nav-item .nav-link > i {
+   color:#FD7E14;
+}
+
+.modal-body .nav .nav-item .nav-link.active > i,
+.modal-body .nav .nav-item .nav-link.active:hover > i,
+.modal-body .nav .nav-item .nav-link:hover > i { 
+   color:#fff; 
+}
+
+.modal-body .nav .nav-item .nav-link-label {
+   font-size: 8px !important;
+   margin-top: 4px;
+}  
+
+
+/* Custom Upload Form */
+.custom-file-label {
+   height: calc(1.8125rem + 2px);
+   padding: 4px 8px;
+   border-color: #CED4DA;
+   line-height: 1.7;
+   color: #939BA2 !important;
+}
+
+.custom-file-label::after {
+   height: calc(1.8125rem);
+   border-radius: 0 3px 3px 0;
+}
+
+.custom-file-label:focus, 
+#customFile:focus {
+   border-color: #ff8f34b6 !important;
+}
