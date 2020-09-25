@@ -115,8 +115,6 @@ $(document).ready(function () {
       cache: true,
    });
 
-
-
    // CREATE / POST
    $('#btn_new').on('click', function () {
       // Assign AJAX Action Type and URL
@@ -158,17 +156,43 @@ $(document).ready(function () {
                   $("#dd_categories").append(`<option value='${key.id}'>${key.name}</option>`)
                });
             },
-            error: function (xhr, status, error) {
-               console.log(error)
-            },
          });
       });
+
+      // Prev Next Function
+      navigator();
+
    });
 });
 
 function generateTicketNo() {
    let datetime = moment().format('MDYYHHmmss')
-   let ticketnumber = `TN${datetime}`;
+   let ticketnumber = `TN${datetime} `;
 
    return ticketnumber
+}
+
+function navigator() {
+
+   // Next
+   $('.btn-next').click(function () {
+      let tab = $(this).closest('.tab-pane');
+
+      $(`#${tab[0].id}, .nav-pills li.nav-item a`)
+         .removeClass('active');
+
+      $(`.nav-pills li.nav-item a[href="#${tab.next()[0].id}"]`)
+         .addClass('active')
+         .removeClass('disabled');
+
+      tab.next().addClass('show active');
+   });
+
+   // Previous
+   $('.btn-prev').click(function () {
+      let tab = $(this).closest('.tab-pane');
+      $(`#${tab[0].id}, .nav-pills li.nav-item a`).removeClass('active');
+      $(`.nav-pills li.nav-item a[href="#${tab.prev()[0].id}"]`).addClass('active');
+      tab.prev().addClass('show active');
+   });
 }

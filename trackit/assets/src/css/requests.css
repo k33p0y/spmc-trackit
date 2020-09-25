@@ -1,26 +1,19 @@
 /* Form Steppers */
-.modal-body .line {
-   position: relative;
-   top: 20px;
-   height: 1px;
-   border: 0;
-   border-top: 1px solid #717c8733;
-   margin: 0 1rem;
-   padding: 0;
-   z-index: 0;
+.modal-body .nav {
+   padding: 8px 0;
+   margin: 8px 0;
 }
 
 .modal-body .nav .nav-item {
-  z-index: 1 !important;
+   margin: 0 4px;
 }
 
 .modal-body .nav .nav-item .nav-link {
-   height: 26px;
-   width: 26px;
+   height: 6px;
+   width: 100%;
    margin: auto;
-   border: 1px solid #FD7E14;
-   border-radius: 50%;
-   background-color: #fff;
+   background-color: #ccc;
+   border-radius: 2px;
    text-align: center;
    align-items: center;
    padding: 0;
@@ -55,10 +48,24 @@
 }
 
 .modal-body .nav .nav-item .nav-link-label {
-   font-size: 8px !important;
+   font-size: 9px !important;
+   color: #454849;
    margin-top: 4px;
-}  
+   margin-bottom: 0;
+}
 
+.modal-body .tab-content .tab-pane #btn_previous,
+.modal-body .tab-content .tab-pane #btn_next {
+   height: 26px;
+   width: 26px;
+   padding: 0;
+}
+
+.modal-body .tab-content .tab-pane #btn_previous > i,
+.modal-body .tab-content .tab-pane #btn_next  > i {
+   vertical-align: middle !important;
+   padding: 4px;
+}
 
 /* Custom Upload Form */
 .custom-file-label {

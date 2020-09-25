@@ -94,31 +94,22 @@
             <h6 class="modal-title"></h6>
          </div>
          <div class="modal-body">
-            <div class="line"></div>
-            <ul class="nav nav-pills nav-fill mt-2 mb-2" role="tablist">
+            <ul class="nav nav-pills nav-fill" role="tablist">
                <li class="nav-item">
-                  <a class="nav-link active" data-toggle="pill" role="tab" href="#step1">
-                     <i class="fas fa-sm fa-folder-open"></i>
-                  </a>
-                  <p class="nav-link-label">Form</p>
+                  <a class="nav-link active" data-toggle="pill" role="tab" href="#step1"></a>
+                  <!-- <p class="nav-link-label">Form</p> -->
                </li>
                <li class="nav-item">
-                  <a class="nav-link disabled" data-toggle="pill" role="tab" href="#step2">
-                     <i class="fas fa-sm fa-pen"></i>
-                  </a>
-                  <p class="nav-link-label">Fill Up</p>
+                  <a class="nav-link disabled" data-toggle="pill" role="tab" href="#step2"></a>
+                  <!-- <p class="nav-link-label">Fill Up</p> -->
                </li>
                <li class="nav-item">
-                  <a class="nav-link disabled" data-toggle="pill" role="tab" href="#step3">
-                     <i class="fas fa-sm fa-upload"></i>
-                  </a>
-                  <p class="nav-link-label">Attachments</p>
+                  <a class="nav-link disabled" data-toggle="pill" role="tab" href="#step3"></a>
+                  <!-- <p class="nav-link-label">Attachments</p> -->
                </li>
                <li class="nav-item">
-                  <a class="nav-link disabled" data-toggle="pill" role="tab" href="#step4">
-                     <i class="fas fa-sm fa-check"></i>
-                  </a>
-                  <p class="nav-link-label">Complete</p>
+                  <a class="nav-link disabled" data-toggle="pill" role="tab" href="#step4"></a>
+                  <!-- <p class="nav-link-label">Complete</p> -->
                </li>
             </ul>
 
@@ -151,6 +142,16 @@
                         </select>
                         <small class="error-info" id="error-info-type"></small>
                      </div>
+
+                     <div class="text-center mt-3 mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary disabled">
+                           <i class="fas fa-angle-left"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-orange btn-next">
+                           <i class="fas fa-angle-right"></i>
+                        </button>
+                     </div>
+
                   </div>
 
                   <div class="tab-pane fade pt-0" id="step2" role="tabpanel">
@@ -172,6 +173,16 @@
                            aria-describedby="nameHelp" placeholder="Enter Department / Name of Office">
                         <small class="error-info" id="error-info-type"></small>
                      </div>
+
+                     <div class="text-center mt-3 mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-orange btn-prev">
+                           <i class="fas fa-angle-left"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-orange btn-next">
+                           <i class="fas fa-angle-right"></i>
+                        </button>
+                     </div>
+
                   </div>
 
                   <div class="tab-pane fade pt-0" id="step3" role="tabpanel">
@@ -183,18 +194,38 @@
                         </div>
                         <small class="error-info" id="error-info-type"></small>
                      </div>
+
+                     <div class="text-center mt-3 mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-orange btn-prev">
+                           <i class="fas fa-angle-left"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-orange btn-next">
+                           <i class="fas fa-angle-right"></i>
+                        </button>
+                     </div>
+                  </div>
+
+                  <div class="tab-pane fade pt-0" id="step4" role="tabpanel">
+                     <div class="form-group">
+                        YEeyy
+                     </div>
+
+                     <div class="text-center mt-3 mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-orange btn-prev">
+                           <i class="fas fa-angle-left"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary disabled">
+                           <i class="fas fa-angle-right"></i>
+                        </button>
+                     </div>
                   </div>
                </div>
             </form>
          </div>
          <div class="modal-footer">
-            <button type="button" class="btn btn-sm btn-outline-secondary mr-auto" id="btn_cancel" data-dismiss="modal">
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
                <span>Cancel</span>
             </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_previous" data-dismiss="modal">
-               <span>Previous</span>
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-orange" id="btn_next"><span>Next</span></button>
             <button type="submit" class="btn btn-sm btn-outline-orange hide" id="btn_save"><span>Save</span></button>
          </div>
       </div>
