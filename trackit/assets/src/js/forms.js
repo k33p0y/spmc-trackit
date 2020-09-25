@@ -40,14 +40,7 @@ $(document).ready(function () {
             }
          },
          {
-            data: null,
-            render: function (data, type, row) {
-               if (type == 'display') {
-                  var arr = JSON.parse(row.fields);
-                  data = arr.length
-               }
-               return data
-            }
+            data: "fields",
          },
          {
             data: null,
@@ -94,9 +87,11 @@ $(document).ready(function () {
       $(".modal-title").text('New Form');
       $('#txt_typename').val('');
       $('#txt_color').val('');
+      $('#txt_json').val('');
+      
 
       // Add and Remove Fields
-      customField();
+      // customField();
    });
 
    // UPDATE / PUT
@@ -112,16 +107,15 @@ $(document).ready(function () {
       // Open Modal
       // Rename Modal Title
       $("#formModal").modal();
-      $(".modal-title").text('Update Department');
+      $(".modal-title").text('Update Form');
 
       // Populate Fields
       $('#txt_typename').val(dt_data['name']);
       $('#txt_color').val(dt_data['color']);
       $('#chk_status').prop("checked", dt_data['is_active']);
-      fillFieldValues(dt_data['fields']);
-
-      // Add and Remove Fields
-      customField();
+      $('#txt_json').val(dt_data['fields']);
+     
+      //console.log(JSON.parse(dt_data['fields']));
    });
 
    // Submit Form
@@ -135,10 +129,11 @@ $(document).ready(function () {
       // Data
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
-      data.fields = getFieldValues();
+      data.fields = $('#txt_json').val();
       data.is_active = chk_status;
       data.is_archive = false;
 
+      //console.log(JSON.parse(data.fields));
       // Form is Valid
       if (success == 1) {
          $.ajax({
