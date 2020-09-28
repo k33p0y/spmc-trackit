@@ -115,6 +115,9 @@ $(document).ready(function () {
       $('#chk_status').prop("checked", dt_data['is_active']);
       $('#txt_json').val(dt_data['fields']);
      
+
+      prettyPrints();
+
       //console.log(JSON.parse(dt_data['fields']));
    });
 
@@ -129,11 +132,15 @@ $(document).ready(function () {
       // Data
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
-      data.fields = $('#txt_json').val();
+      data.fields = JSON.stringify(JSON.parse($('#txt_json').val()));
+
+  
+      data.fields = $.trim(data.fields);
+      console.log(data.fields);
       data.is_active = chk_status;
       data.is_archive = false;
 
-      //console.log(JSON.parse(data.fields));
+      console.log(JSON.parse(data.fields));
       // Form is Valid
       if (success == 1) {
          $.ajax({
@@ -294,4 +301,11 @@ function fillFieldValues(data) {
          </div>`
       );
    });
+}
+
+function prettyPrints() {
+   var ugly = document.getElementById('txt_json').value;
+   var obj = JSON.parse(ugly);
+   var pretty = JSON.stringify(obj, undefined, 4);
+   document.getElementById('txt_json').value = pretty;
 }
