@@ -20,7 +20,7 @@ $(document).ready(function () {
       "autoWidth": false,
       "serverside": true,
       "processing": true,
-      "pageLength": 5,
+      "pageLength": 25,
       "ajax": {
          url: '/api/requests/forms/?format=datatables',
          type: "GET",
@@ -38,9 +38,6 @@ $(document).ready(function () {
                data = `<div class="circle" style="background-color:${row.color};"></div>`;
                return data
             }
-         },
-         {
-            data: "fields",
          },
          {
             data: null,
@@ -83,15 +80,20 @@ $(document).ready(function () {
       url = '/api/requests/forms/';
       alert_msg = 'Saved Successfully';
 
+      let samp_json = [{
+         "name": "",
+         "type": "",
+         "size": "",
+         "option": [],
+      }];
+
       $("#formModal").modal();
       $(".modal-title").text('New Form');
       $('#txt_typename').val('');
       $('#txt_color').val('');
-      $('#txt_json').val('');
-      
+      $('#txt_json').val(JSON.stringify(samp_json));
 
-      // Add and Remove Fields
-      // customField();
+      prettyJSON();
    });
 
    // UPDATE / PUT
@@ -114,11 +116,9 @@ $(document).ready(function () {
       $('#txt_color').val(dt_data['color']);
       $('#chk_status').prop("checked", dt_data['is_active']);
       $('#txt_json').val(dt_data['fields']);
-     
 
-      prettyPrints();
-
-      //console.log(JSON.parse(dt_data['fields']));
+      // Format Textarea value to JSON
+      prettyJSON();
    });
 
    // Submit Form
@@ -132,15 +132,10 @@ $(document).ready(function () {
       // Data
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
-      data.fields = JSON.stringify(JSON.parse($('#txt_json').val()));
-
-  
-      data.fields = $.trim(data.fields);
-      console.log(data.fields);
+      data.fields = cleanJSON();
       data.is_active = chk_status;
       data.is_archive = false;
 
-      console.log(JSON.parse(data.fields));
       // Form is Valid
       if (success == 1) {
          $.ajax({
@@ -234,78 +229,16 @@ $(document).ready(function () {
 
 });
 
-
-function customField() {
-   // Add Fields
-   $('#btn_add').click(function () {
-      let row = $('.field_wrapper');
-      row.append(
-         `<div class="form-row">
-            <div class="form-group col-md-11">
-               <input type="text" class="form-control form-control-sm txt_fields"
-                  placeholder="Enter field name">
-               <small class="error-info"></small>
-            </div>
-            <div class="form-group col-md-1">
-               <button type="button" class="btn btn-link btn-sm btn_remove">
-                  <span class="fas fa-xs fa-times"></span>
-               </button>
-            </div>
-         </div>`
-      );
-   });
-
-   // Remove Fields
-   $('.field_wrapper').on('click', '.btn_remove', function () {
-      $(this).parents("div.form-row").slideUp('fast', function () {
-         $(this).remove();
-      });
-   });
-
+function prettyJSON() {
+   let obj = JSON.parse($('#txt_json').val());
+   let pretty = JSON.stringify(obj, undefined, 4);
+   $('#txt_json').val(pretty);
 }
 
-function getFieldValues() {
-   let fields = [];
-   let parent = $(".field_wrapper");
-   let children = parent.find('div.form-row .txt_fields');
+function cleanJSON() {
+   let parsed = JSON.parse($('#txt_json').val());
+   let stringed = JSON.stringify(parsed);
+   let clean = $.trim(stringed);
 
-   children.each(function () {
-      if ($(this).val()) {
-         fields.push($(this).val());
-      }
-   });
-
-   fields = JSON.stringify(fields)
-   return fields
-}
-
-function fillFieldValues(data) {
-   let fieldsArr = JSON.parse(data)
-   let row = $(".field_wrapper");
-
-   row.children().remove();
-
-   fieldsArr.forEach(element => {
-      row.append(
-         `<div class="form-row new">
-            <div class="form-group col-md-11">
-               <input type="text" class="form-control form-control-sm txt_fields"
-                  placeholder="Enter field name" value="${element}">
-               <small class="error-info"></small>
-            </div>
-            <div class="form-group col-md-1">
-               <button type="button" class="btn btn-link btn-sm btn_remove">
-                  <span class="fas fa-xs fa-times"></span>
-               </button>
-            </div>
-         </div>`
-      );
-   });
-}
-
-function prettyPrints() {
-   var ugly = document.getElementById('txt_json').value;
-   var obj = JSON.parse(ugly);
-   var pretty = JSON.stringify(obj, undefined, 4);
-   document.getElementById('txt_json').value = pretty;
+   return clean;
 }

@@ -1,11 +1,12 @@
 /* Custom Colors, text */
-input, select, label {
+input, select, textarea, label {
    color : #5f6b77 !important;
    font-size: 12px !important;
 }
 
 input:focus,
-select:focus  {
+select:focus,
+textarea:focus  {
    border-color: #ff8f34b6 !important;
 }
 
@@ -328,7 +329,6 @@ table.dataTable tbody tr:hover {
 .form-group {
    margin-bottom: 10px !important;
 }
-
 /* .form-control-sm {
    height: 30px !important;
    border-color:transparent;
