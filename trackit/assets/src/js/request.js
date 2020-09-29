@@ -94,7 +94,7 @@ $(document).ready(function () {
 
    // LOCAL VARIABLES
    let form_category = $('#form-group-category');
-   let dd_type_id;
+   let dd_type_id, dd_form_id;
 
    // SELECT2 CONFIGURATION
    $('#dd_forms').select2({
@@ -129,7 +129,7 @@ $(document).ready(function () {
       // Setting up forms 
       form_category.hide();
 
-      // Get Dropdown Value
+      // Get Dropdown Values
       $('#dd_types').on('change', function () {
          dd_type_id = $("#dd_types option:selected").val();
 
@@ -159,9 +159,74 @@ $(document).ready(function () {
          });
       });
 
+      $('#dd_forms').on('change', function () {
+         dd_form_id = $("#dd_forms option:selected").val();
+         $(".custom-form").empty();
+
+         $.ajax({
+            url: `/api/requests/forms/${dd_form_id}`,
+            type: 'GET',
+            success: function (data) {
+               let form = JSON.parse(data.fields);
+
+               // Load form
+               form.forEach(key => {
+
+                  var name = key.title;
+                  var type = key.type;
+                  var size = key.size;
+                  var option = key.option;
+
+                  // TextBox
+                  if (type == "text" && size == "short") {
+                     $(".custom-form").append(
+                        `<div class=" form-group">
+                           <label for="nameHelp"> ${name} </label>
+                           <input type="text" class="form-control form-control-sm" id="txt_deptname"
+                              aria-describedby="nameHelp" placeholder="Enter ${name}">
+                           <small class="error-info" id="error-info-type"></small>
+                        </div>`
+                     );
+                  }
+
+                  // TextArea
+                  if (type == "text" && size == "long") {
+                     $(".custom-form").append(
+                        `<div class=" form-group">
+                           <label for="nameHelp"> ${name} </label>
+                           <textarea class="form-control form-control-sm" placeholder="Enter ${name}"
+                              rows="2"></textarea>
+                           <small class="error-info" id="error-info-type"></small>
+                        </div>`
+                     );
+                  }
+
+                  // Radio
+                  if (type == "radio") {
+                     $(".custom-form").append(
+                        `<div class=" form-group">
+                           <label for="nameHelp"> ${name}</label>
+                           <div class="form-radio"></div>
+                           <small class="error-info" id="error-info-type"></small>
+                        </div>`
+                     );
+
+                     option.forEach(data => {
+                        $(".form-radio").append(
+                           `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                              <input type="radio" id="radio_${data}" name="errortype" />
+                              <label for="radio_${data}">${data}</label>
+                           </div>`
+                        );
+                     });
+                  }
+               });
+            },
+         });
+      });
+
       // Prev Next Function
       navigator();
-
    });
 });
 
@@ -173,18 +238,14 @@ function generateTicketNo() {
 }
 
 function navigator() {
-
    // Next
    $('.btn-next').click(function () {
       let tab = $(this).closest('.tab-pane');
-
       $(`#${tab[0].id}, .nav-pills li.nav-item a`)
          .removeClass('active');
-
       $(`.nav-pills li.nav-item a[href="#${tab.next()[0].id}"]`)
          .addClass('active')
          .removeClass('disabled');
-
       tab.next().addClass('show active');
    });
 
@@ -195,4 +256,8 @@ function navigator() {
       $(`.nav-pills li.nav-item a[href="#${tab.prev()[0].id}"]`).addClass('active');
       tab.prev().addClass('show active');
    });
+}
+
+function generateForm() {
+
 }

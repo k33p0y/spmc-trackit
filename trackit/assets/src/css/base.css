@@ -309,10 +309,10 @@ table.dataTable tbody tr:hover {
 [class*="icheck-material"]>input[type="checkbox"]:first-child:checked+label::after {
    width: 4px;
    height: 10px;
-   transform: translate(9.5px,5.5px) rotate(45deg)
+   transform: translate(9.5px,5.5px) rotate(45deg);
 }
 
-.icheck-material-green>input:first-child:not(:checked):not(:disabled):hover+label::before {
+.icheck-material-green>input[type="checkbox"]:first-child:not(:checked):not(:disabled):hover+label::before {
    border: 1px solid #4caf50 !important;
    border-radius: 4px !important;
 }
