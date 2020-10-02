@@ -80,12 +80,19 @@ $(document).ready(function () {
       url = '/api/requests/forms/';
       alert_msg = 'Saved Successfully';
 
-      let samp_json = [{
-         "name": "",
-         "type": "",
-         "size": "",
-         "option": [],
-      }];
+      let samp_json = {
+         "ihomp": [{
+            "name": "",
+            "fields": [{
+               "type": "",
+               "size": null,
+               "option": [],
+               "answer": ""
+            }]
+         }]
+      }
+
+
 
       $("#formModal").modal();
       $(".modal-title").text('New Form');
@@ -93,7 +100,7 @@ $(document).ready(function () {
       $('#txt_color').val('');
       $('#txt_json').val(JSON.stringify(samp_json));
 
-      prettyJSON();
+      prettyPrint();
    });
 
    // UPDATE / PUT
@@ -115,10 +122,10 @@ $(document).ready(function () {
       $('#txt_typename').val(dt_data['name']);
       $('#txt_color').val(dt_data['color']);
       $('#chk_status').prop("checked", dt_data['is_active']);
-      $('#txt_json').val(dt_data['fields']);
+      $('#txt_json').val(JSON.stringify(dt_data['fields']));
 
       // Format Textarea value to JSON
-      prettyJSON();
+      prettyPrint();
    });
 
    // Submit Form
@@ -229,7 +236,7 @@ $(document).ready(function () {
 
 });
 
-function prettyJSON() {
+function prettyPrint() {
    let obj = JSON.parse($('#txt_json').val());
    let pretty = JSON.stringify(obj, undefined, 4);
    $('#txt_json').val(pretty);

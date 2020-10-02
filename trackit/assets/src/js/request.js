@@ -206,59 +206,87 @@ function generateForm(form_id) {
       url: `/api/requests/forms/${form_id}`,
       type: 'GET',
       success: function (data) {
-         let form = JSON.parse(data.fields);
+         let forms = data.fields;
+
 
          // Load form
-         form.forEach(key => {
+         forms.ihomp.forEach(form => {
 
-            var name = key.title;
-            var type = key.type;
-            var size = key.size;
-            var option = key.option;
+            let name = form.name;
+            let fields = form.fields;
 
-            // TextBox
-            if (type == "text" && size == "short") {
-               $(".custom-form").append(
-                  `<div class=" form-group">
-                     <label for="nameHelp"> ${name} </label>
-                     <input type="text" class="form-control form-control-sm" id="txt_deptname"
-                        aria-describedby="nameHelp" placeholder="Enter ${name}">
-                     <small class="error-info" id="error-info-type"></small>
-                  </div>`
-               );
-            }
+            fields.forEach(field => {
 
-            // TextArea
-            if (type == "text" && size == "long") {
-               $(".custom-form").append(
-                  `<div class=" form-group">
-                     <label for="nameHelp"> ${name} </label>
-                     <textarea class="form-control form-control-sm" placeholder="Enter ${name}"
-                        rows="2"></textarea>
-                     <small class="error-info" id="error-info-type"></small>
-                  </div>`
-               );
-            }
+               let type = field.type;
+               let size = field.size;
+               let option = field.option;
+               let answer = field.answer;
 
-            // Radio
-            if (type == "radio") {
-               $(".custom-form").append(
-                  `<div class=" form-group">
-                     <label for="nameHelp"> ${name}</label>
-                     <div class="form-radio"></div>
-                     <small class="error-info" id="error-info-type"></small>
-                  </div>`
-               );
-
-               option.forEach(data => {
-                  $(".form-radio").append(
-                     `<div class="icheck-material-orange icheck-inline m-0 mr-3">
-                        <input type="radio" id="radio_${data}" name="errortype" />
-                        <label for="radio_${data}">${data}</label>
+               // Short Text / Textbox
+               if (type == "text" && size == "short") {
+                  $(".custom-form").append(
+                     `<div class=" form-group">
+                        <label for="nameHelp"> ${name} </label>
+                        <input type="text" class="form-control form-control-sm" id="txt_deptname"
+                           aria-describedby="nameHelp" placeholder="Enter ${name}">
+                        <small class="error-info" id="error-info-type"></small>
                      </div>`
                   );
-               });
-            }
+               }
+
+               // Long Text / TextArea
+               if (type == "text" && size == "long") {
+                  $(".custom-form").append(
+                     `<div class=" form-group">
+                        <label for="nameHelp"> ${name} </label>
+                        <textarea class="form-control form-control-sm" placeholder="Enter ${name}"
+                           rows="2"></textarea>
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>`
+                  );
+               }
+
+               // Radio
+               if (type == "radio") {
+                  $(".custom-form").append(
+                     `<div class=" form-group">
+                        <label for="nameHelp"> ${name}</label>
+                        <div class="form-radio"></div>
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>`
+                  );
+
+                  option.forEach(data => {
+                     $(".form-radio").append(
+                        `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                           <input type="radio" id="radio_${data}" name="errortype" />
+                           <label for="radio_${data}">${data}</label>
+                        </div>`
+                     );
+                  });
+               }
+
+               // Checkbox
+               if (type == "check") {
+                  $(".custom-form").append(
+                     `<div class=" form-group">
+                        <label for="nameHelp"> ${name}</label>
+                        <div class="form-radio"></div>
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>`
+                  );
+
+                  option.forEach(data => {
+                     $(".form-radio").append(
+                        `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                           <input type="checkbox" id="check_${data}" name="errortype" />
+                           <label for="check_${data}">${data}</label>
+                        </div>`
+                     );
+                  });
+               }
+
+            });
          });
       },
    });

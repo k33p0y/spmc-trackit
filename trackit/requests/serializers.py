@@ -6,6 +6,8 @@ from core.models import User
 
 from config.serializers import DepartmentSerializer, UserSerializer
 
+import json
+
 # Serializers
 class RequestFormSerializer(serializers.ModelSerializer):
     color = serializers.CharField(required=True, max_length=10)
