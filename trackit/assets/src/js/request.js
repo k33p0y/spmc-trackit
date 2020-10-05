@@ -93,7 +93,7 @@ $(document).ready(function () {
    });
 
    // LOCAL VARIABLES
-   let dd_type_id, dd_form_id;
+   let dd_type_id, dd_form_id, dd_department_id, dd_category_id;
 
    // SELECT2 CONFIGURATION
    $('#dd_forms').select2({
@@ -114,11 +114,17 @@ $(document).ready(function () {
       cache: true,
    });
 
+   $('#dd_department').select2({
+      allowClear: true,
+      placeholder: 'Select Department',
+      cache: true,
+   });
+
    // CREATE / POST
    $('#btn_new').on('click', function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
-      url = '/api/requests/forms/';
+      url = '/api/requests/lists/';
       alert_msg = 'Saved Successfully';
 
       // Modal
@@ -129,20 +135,89 @@ $(document).ready(function () {
       $('#form-group-category').hide();
 
       // Get Dropdown Values
+      $('#dd_forms').on('change', function () {
+         dd_form_id = $("#dd_forms option:selected").val();
+         generateForm(dd_form_id)
+      });
+
       $('#dd_types').on('change', function () {
          dd_type_id = $("#dd_types option:selected").val();
          getCategory(dd_type_id);
       });
 
-      $('#dd_forms').on('change', function () {
-         dd_form_id = $("#dd_forms option:selected").val();
-         generateForm(dd_form_id)
+      $('#dd_categories').on('change', function () {
+         dd_category_id = $("#dd_categories option:selected").val();
+      });
+
+      $('#dd_departments').on('change', function () {
+         dd_department_id = $("#dd_departments option:selected").val();
       });
 
       // Prev Next Function
       navigator();
    });
 });
+
+// Submit Form
+$("#btn_save").click(function (e) {
+   e.preventDefault();
+
+   // Variables
+   let data = {}
+   let success = 1;
+
+   // Data
+   data.ticket_no = '2020100001';
+   data.request_form = dd_form_id;
+   data.form_data = {};
+   data.category = dd_category_id;
+   data.department = dd_department_id;
+   data.is_active = true;
+   data.is_archive = false;
+
+   // Form is Valid
+   // if (success == 1) {
+   //    $.ajax({
+   //       url: url,
+   //       type: action_type,
+   //       data: data,
+   //       beforeSend: function (xhr, settings) {
+   //          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+   //       },
+   //       success: function (result) {
+   //          Toast.fire({
+   //             icon: 'success',
+   //             title: alert_msg,
+   //          });
+   //          table.ajax.reload();
+   //       },
+   //       error: function (xhr, status, error) {
+   //          if (xhr.responseJSON.name) {
+   //             $('#txt_typename').addClass('form-error');
+   //             $('.name-error').html(`*${xhr.responseJSON.name}`)
+   //          } else {
+   //             $('#txt_typename').removeClass('form-error');
+   //             $('.name-error').html('')
+   //          }
+   //          if (xhr.responseJSON.color) {
+   //             $('#txt_color').addClass('form-error');
+   //             $('.color-error').html(`*${xhr.responseJSON.color}`)
+   //          } else {
+   //             $('#txt_color').removeClass('form-error');
+   //             $('.color-error').html('')
+   //          }
+   //          Toast.fire({
+   //             icon: 'error',
+   //             title: error,
+   //          });
+   //       },
+   //    }).done(function () {
+   //       $('#formModal').modal('toggle');
+   //       $("#form").trigger("reset");
+   //    });
+   // }
+});
+
 
 function generateTicketNo() {
    let datetime = moment().format('MDYYHHmmss')
@@ -208,12 +283,13 @@ function generateForm(form_id) {
       success: function (data) {
          let forms = data.fields;
 
-
          // Load form
-         forms.ihomp.forEach(form => {
+         forms.client.forEach(form => {
 
-            let name = form.name;
+            let label = form.name;
             let fields = form.fields;
+
+            let name_id = label.toLowerCase().replace(/ /g, "_");
 
             fields.forEach(field => {
 
@@ -226,9 +302,9 @@ function generateForm(form_id) {
                if (type == "text" && size == "short") {
                   $(".custom-form").append(
                      `<div class=" form-group">
-                        <label for="nameHelp"> ${name} </label>
-                        <input type="text" class="form-control form-control-sm" id="txt_deptname"
-                           aria-describedby="nameHelp" placeholder="Enter ${name}">
+                        <label for="nameHelp"> ${label} </label>
+                        <input type="text" class="form-control form-control-sm" id="txt_${name_id}"
+                           aria-describedby="nameHelp" placeholder="Enter ${label}">
                         <small class="error-info" id="error-info-type"></small>
                      </div>`
                   );
@@ -238,9 +314,9 @@ function generateForm(form_id) {
                if (type == "text" && size == "long") {
                   $(".custom-form").append(
                      `<div class=" form-group">
-                        <label for="nameHelp"> ${name} </label>
-                        <textarea class="form-control form-control-sm" placeholder="Enter ${name}"
-                           rows="2"></textarea>
+                        <label for="nameHelp"> ${label} </label>
+                        <textarea class="form-control form-control-sm" placeholder="Enter ${label}"
+                           rows="2" id="txt_${name_id}"></textarea>
                         <small class="error-info" id="error-info-type"></small>
                      </div>`
                   );
@@ -250,7 +326,7 @@ function generateForm(form_id) {
                if (type == "radio") {
                   $(".custom-form").append(
                      `<div class=" form-group">
-                        <label for="nameHelp"> ${name}</label>
+                        <label for="nameHelp"> ${label}</label>
                         <div class="form-radio"></div>
                         <small class="error-info" id="error-info-type"></small>
                      </div>`
@@ -270,7 +346,7 @@ function generateForm(form_id) {
                if (type == "check") {
                   $(".custom-form").append(
                      `<div class=" form-group">
-                        <label for="nameHelp"> ${name}</label>
+                        <label for="nameHelp"> ${label}</label>
                         <div class="form-radio"></div>
                         <small class="error-info" id="error-info-type"></small>
                      </div>`

@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from config.models import Category, CategoryType
+from config.models import Category, CategoryType, Department
 from .models import Ticket, RequestForm
 
 # Create your views here.
@@ -11,8 +11,9 @@ def ticket(request):
    tickets = Ticket.objects.all()
    forms= RequestForm.objects.all()
    types =  CategoryType.objects.all()
+   departments =  Department.objects.all()
 
-   context = {'forms': forms, 'types': types}
+   context = {'forms': forms, 'types': types, 'departments':departments}
    return render(request, 'pages/requests/ticket_lists.html', context)
 
 @login_required
