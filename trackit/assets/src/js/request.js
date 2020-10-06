@@ -114,7 +114,7 @@ $(document).ready(function () {
       cache: true,
    });
 
-   $('#dd_department').select2({
+   $('#dd_departments').select2({
       allowClear: true,
       placeholder: 'Select Department',
       cache: true,
@@ -284,85 +284,140 @@ function generateForm(form_id) {
          let forms = data.fields;
 
          // Load form
-         forms.client.forEach(form => {
+         forms.forEach(form => {
 
-            let label = form.name;
+            let label = form.title;
             let fields = form.fields;
+            let attr_id = form.attr_id;
+            let is_admin = form.is_admin;
 
-            let name_id = label.toLowerCase().replace(/ /g, "_");
+            if (is_admin == false) {
+               fields.forEach(field => {
 
-            fields.forEach(field => {
+                  let name = field.name;
+                  let type = field.type;
+                  let size = field.size;
+                  let option = field.option;
+                  let answer = field.answer;
 
-               let type = field.type;
-               let size = field.size;
-               let option = field.option;
-               let answer = field.answer;
-
-               // Short Text / Textbox
-               if (type == "text" && size == "short") {
-                  $(".custom-form").append(
-                     `<div class=" form-group">
-                        <label for="nameHelp"> ${label} </label>
-                        <input type="text" class="form-control form-control-sm" id="txt_${name_id}"
-                           aria-describedby="nameHelp" placeholder="Enter ${label}">
+                  if (fields.length > 1) {
+                     // Short Text / Textbox
+                     $(".custom-form").append(
+                        `<div class="form-group">
+                        <label> ${label} </label>
+                        <div class="type-group"></div>
                         <small class="error-info" id="error-info-type"></small>
                      </div>`
-                  );
-               }
-
-               // Long Text / TextArea
-               if (type == "text" && size == "long") {
-                  $(".custom-form").append(
-                     `<div class=" form-group">
-                        <label for="nameHelp"> ${label} </label>
-                        <textarea class="form-control form-control-sm" placeholder="Enter ${label}"
-                           rows="2" id="txt_${name_id}"></textarea>
-                        <small class="error-info" id="error-info-type"></small>
-                     </div>`
-                  );
-               }
-
-               // Radio
-               if (type == "radio") {
-                  $(".custom-form").append(
-                     `<div class=" form-group">
-                        <label for="nameHelp"> ${label}</label>
-                        <div class="form-radio"></div>
-                        <small class="error-info" id="error-info-type"></small>
-                     </div>`
-                  );
-
-                  option.forEach(data => {
-                     $(".form-radio").append(
-                        `<div class="icheck-material-orange icheck-inline m-0 mr-3">
-                           <input type="radio" id="radio_${data}" name="errortype" />
-                           <label for="radio_${data}">${data}</label>
-                        </div>`
                      );
-                  });
-               }
 
-               // Checkbox
-               if (type == "check") {
-                  $(".custom-form").append(
-                     `<div class=" form-group">
-                        <label for="nameHelp"> ${label}</label>
-                        <div class="form-radio"></div>
-                        <small class="error-info" id="error-info-type"></small>
-                     </div>`
-                  );
+                     if (type == "text" && size == "short") {
+                        $(".type-group").append(
+                           `<input type="text" class="form-control form-control-sm" id="${attr_id}" placeholder="Enter ${label}">`
+                        );
+                     }
 
-                  option.forEach(data => {
-                     $(".form-radio").append(
-                        `<div class="icheck-material-orange icheck-inline m-0 mr-3">
-                           <input type="checkbox" id="check_${data}" name="errortype" />
-                           <label for="check_${data}">${data}</label>
+                     if (type == "text" && size == "long") {
+                        $(".type-group").append(
+                           `<textarea class="form-control form-control-sm" placeholder="Enter ${label}" rows="2" id="${attr_id}"></textarea>`
+                        );
+                     }
+
+                     if (type == "radio") {
+                        var counter = 1;
+                        option.forEach(data => {
+                           $(".type-group").append(
+                              `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                              <input type="radio" id="radio${counterd}" name="${attr_id}" />
+                              <label for="radio${counter}">${data}</label>
+                           </div>`
+                           );
+                           counter++;
+                        });
+                     }
+
+                     if (type == "check") {
+                        var counter = 1;
+                        option.forEach(data => {
+                           $(".type-group").append(
+                              `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                              <input type="checkbox" id="check${counter}"/>
+                              <label for="check${counter}">${data}</label>
+                           </div>`
+                           );
+                           counter++;
+                        });
+                     }
+
+                  } else {
+                     // Short Text / Textbox
+                     if (type == "text" && size == "short") {
+                        $(".custom-form").append(
+                           `<div class=" form-group">
+                           <label> ${label} </label>
+                           <input type="text" class="form-control form-control-sm" id="${attr_id}" placeholder="Enter ${label}">
+                           <small class="error-info" id="error-info-type"></small>
                         </div>`
-                     );
-                  });
-               }
+                        );
+                     }
 
-            });
+                     // Long Text / TextArea
+                     if (type == "text" && size == "long") {
+                        $(".custom-form").append(
+                           `<div class=" form-group">
+                           <label> ${label} </label>
+                           <textarea class="form-control form-control-sm" placeholder="Enter ${label}" rows="2" id="${attr_id}"></textarea>
+                           <small class="error-info" id="error-info-type"></small>
+                        </div>`
+                        );
+                     }
+
+                     // Radio
+                     if (type == "radio") {
+                        var counter = 1;
+                        $(".custom-form").append(
+                           `<div class=" form-group">
+                           <label> ${label} </label>
+                           <div class="type-group"></div>
+                           <small class="error-info" id="error-info-type"></small>
+                        </div>`
+                        );
+
+                        option.forEach(data => {
+                           $(".type-group").append(
+                              `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                              <input type="radio" id="radio${counter}" name="${attr_id}" />
+                              <label for="radio${counter}">${data}</label>
+                           </div>`
+                           );
+                           counter++;
+                        });
+                     }
+
+                     // Checkbox
+                     if (type == "check") {
+                        var counter = 1;
+                        $(".custom-form").append(
+                           `<div class=" form-group">
+                           <label> ${label}</label>
+                           <div class="type-group"></div>
+                           <small class="error-info" id="error-info-type"></small>
+                        </div>`
+                        );
+
+                        option.forEach(data => {
+                           $(".type-group").append(
+                              `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                              <input type="checkbox" id="check${counter}"/>
+                              <label for="check${counter}">${data}</label>
+                           </div>`
+                           );
+                           counter++;
+                        });
+                     }
+                  }
+
+               });
+            }
          });
       },
    });
