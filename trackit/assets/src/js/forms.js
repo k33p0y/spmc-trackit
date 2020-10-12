@@ -80,19 +80,20 @@ $(document).ready(function () {
       url = '/api/requests/forms/';
       alert_msg = 'Saved Successfully';
 
-      let samp_json = {
-         "ihomp": [{
-            "name": "",
-            "fields": [{
+      let samp_json = [{
+         "title": "",
+         "fields": [
+            {
+               "id": "",
+               "name": null,
+               "size": "",
                "type": "",
-               "size": null,
-               "option": [],
-               "answer": ""
-            }]
-         }]
-      }
-
-
+               "answer": null,
+               "option": null
+            }
+         ],
+         "is_admin": true
+      }]
 
       $("#formModal").modal();
       $(".modal-title").text('New Form');
@@ -135,11 +136,12 @@ $(document).ready(function () {
       // Variables
       let data = {}
       let success = 1;
+      let json_field = JSON.parse($('#txt_json').val());
 
       // Data
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
-      data.fields = cleanJSON();
+      data.fields = cleanJSON(json_field);
       data.is_active = chk_status;
       data.is_archive = false;
 
@@ -240,12 +242,4 @@ function prettyPrint() {
    let obj = JSON.parse($('#txt_json').val());
    let pretty = JSON.stringify(obj, undefined, 4);
    $('#txt_json').val(pretty);
-}
-
-function cleanJSON() {
-   let parsed = JSON.parse($('#txt_json').val());
-   let stringed = JSON.stringify(parsed);
-   let clean = $.trim(stringed);
-
-   return clean;
 }
