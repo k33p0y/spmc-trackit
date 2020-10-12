@@ -25,3 +25,11 @@ class TicketViewSet(viewsets.ModelViewSet):
    queryset = Ticket.objects.all()
    serializer_class = TicketSerializer
    permission_classes = [permissions.IsAuthenticated]
+
+   def perform_create(self, serializer):
+      data = serializer.validated_data['form_data']
+      serializer.save(form_data=json.loads(data))
+
+   def perform_update(self, serializer):
+      data = serializer.validated_data['form_data']
+      instance = serializer.save(form_data=json.loads(data))

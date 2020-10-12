@@ -4,7 +4,7 @@ from .models import RequestForm, Ticket
 from config.models import Department
 from core.models import User
 
-from config.serializers import DepartmentSerializer, UserSerializer
+from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer
 
 import json
 
@@ -16,6 +16,11 @@ class RequestFormSerializer(serializers.ModelSerializer):
         model = RequestForm
         fields = '__all__'
 
+class RequestFormReadOnlySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RequestForm
+        fields = ['id', 'name', 'color']
+
 class TicketSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -26,5 +31,6 @@ class TicketSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         self.fields['requested_by'] = UserSerializer(read_only=True)
         self.fields['department'] = DepartmentSerializer(read_only=True)
-        self.fields['request_form'] = RequestFormSerializer(read_only=True)
+        self.fields['request_form'] = RequestFormReadOnlySerializer(read_only=True)
+        self.fields['category'] = CategorySerializer(read_only=True)
         return super(TicketSerializer, self).to_representation(instance)
