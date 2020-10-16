@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator
 
-from .serializers import DepartmentSerializer, CategorySerializer, CategoryTypeSerializer
-from .models import Department, Category, CategoryType
+from .serializers import DepartmentSerializer, CategorySerializer, CategoryTypeSerializer, StatusSerializer
+from .models import Department, Category, CategoryType, Status
 
 # Viewset API
 class DepartmentViewSet(viewsets.ModelViewSet):    
@@ -20,4 +20,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class CategoryTypeViewSet(viewsets.ModelViewSet):    
    serializer_class = CategoryTypeSerializer
    queryset = CategoryType.objects.all()
+   permission_classes = [permissions.IsAuthenticated]
+
+class StatusViewSet(viewsets.ModelViewSet):
+   serializer_class = StatusSerializer
+   queryset = Status.objects.filter(is_archive=False, is_active=True)
    permission_classes = [permissions.IsAuthenticated]

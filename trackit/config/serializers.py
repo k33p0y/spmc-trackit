@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Department, Category, CategoryType
+from .models import Department, Category, CategoryType, Status
 from core.models import User
 
 # Serializers
@@ -40,3 +40,8 @@ class CategorySerializer(serializers.ModelSerializer):
         self.fields['category_type'] =  CategoryTypeSerializer(read_only=True)
         return super(CategorySerializer, self).to_representation(instance)
 
+class StatusSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Status
+        fields = ['id', 'name', 'is_active', 'is_archive',]
