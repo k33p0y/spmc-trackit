@@ -3,80 +3,102 @@
 
 {% block title %} Dashboard {% endblock %}
 
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'src/css/dashboard.css' %}">
+{% endblock %}
+
 {% block content %}
 <!-- Content Header -->
 <section class="content-header">
-    <div class="container-fluid">
-       <div class="row mb-2">
-          <div class="col-sm-6">
-             <h5 class="font-weight-bolder">Dashboard</h5>
-          </div>
-          <div class="col-sm-6">
-             <ol class="breadcrumb float-sm-right text-xs">
-                <li class="breadcrumb-item active"><i class="fas fa-home"></i></li>
-             </ol>
-          </div>
-       </div>
-    </div>
- </section>
- 
- <!-- /.content -->
- <section class="content">
-    <div class="container-fluid">
-       <!-- Default box -->
-       <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row" >
-                            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.</div>
-                            <div class="col-12 text-center">
-                                <h1 style="margin-bottom: 0px;">22</h1>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.</div>
-                            <div class="col text-center">
-                                <h1 style="margin-bottom: 0px;">22</h1>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.</div>
-                            <div class="col text-center">
-                                <h1 style="margin-bottom: 0px;">22</h1>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.</div>
-                            <div class="col text-center">
-                                <h1 style="margin-bottom: 0px;">22</h1>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-       </div>
-    </div>
+	<div class="container-fluid">
+		<div class="row mb-2">
+			<div class="col-sm-6">
+				<h5 class="font-weight-bolder">Dashboard</h5>
+			</div>
+			<div class="col-sm-6">
+				<ol class="breadcrumb float-sm-right text-xs">
+					<li class="breadcrumb-item active"><i class="fas fa-home"></i></li>
+				</ol>
+			</div>
+		</div>
+	</div>
+</section>
 
- </section>
+<!-- /.content -->
+<section class="content">
+	<div class="container-fluid">
+
+		<div class="dashcards">
+			<!-- Default box -->
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-4">
+					<a href="#" class>
+						<div class="card text-center p-3">
+							<p class="card-title">Users</p>
+							<div class="card-body m-0 p-0 row">
+								<div class="col-4">
+									<span class="card-no">30</span>
+									<p class="card-label m-0">Total Users</p>
+								</div>
+								<div class="col-4">
+									<span class="card-no">2</span>
+									<p class="card-label m-0">Total Users</p>
+								</div>
+								<div class="col-4">
+									<span class="card-no">12</span>
+									<p class="card-label m-0">Total Users</p>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-4">
+					<a href="#" class>
+						<div class="card text-center p-3">
+							<p class="card-title">Requests</p>
+							<div class="card-body m-0 p-0 row">
+								<div class="col-4">
+									<span class="card-no">500</span>
+									<p class="card-label m-0">Total Users</p>
+								</div>
+								<div class="col-4">
+									<span class="card-no">354</span>
+									<p class="card-label m-0">Total Users</p>
+								</div>
+								<div class="col-4">
+									<span class="card-no">125</span>
+									<p class="card-label m-0">Total Users</p>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-4">
+					<a href="#" class>
+						<div class="card text-center p-3">
+							<p class="card-title">Forms</p>
+							<div class="card-body m-0 p-0 row">
+								<div class="col-4">
+									<span class="card-no">10</span>
+									<p class="card-label m-0">Total Users</p>
+								</div>
+								<div class="col-4">
+									<span class="card-no">10</span>
+									<p class="card-label m-0">Total Users</p>
+								</div>
+								<div class="col-4">
+									<span class="card-no">10</span>
+									<p class="card-label m-0">Total Users</p>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</section>
 <!-- /.content -->
 {% endblock %}
 
