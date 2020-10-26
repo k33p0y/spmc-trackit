@@ -9,7 +9,7 @@ from core.models import User
 class RequestForm(models.Model):
     name =  models.CharField(max_length=255)
     color = models.CharField(max_length=10, blank=True)
-    status = models.ManyToManyField(Status, related_name='forms')
+    status = models.ManyToManyField(Status, related_name='forms', blank=True)
     fields = JSONField()
     is_active = models.BooleanField(default=True)
     is_archive = models.BooleanField(default=False)
