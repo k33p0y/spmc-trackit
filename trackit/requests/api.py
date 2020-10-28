@@ -12,14 +12,6 @@ class RequestFormViewSet(viewsets.ModelViewSet):
    queryset = RequestForm.objects.all()
    serializer_class = RequestFormSerializer
    permission_classes = [permissions.IsAuthenticated]
-
-   def perform_create(self, serializer):
-      fields_data = serializer.validated_data['fields']
-      serializer.save(fields=json.loads(fields_data))
-
-   def perform_update(self, serializer):
-      fields_data = serializer.validated_data['fields']
-      instance = serializer.save(fields=json.loads(fields_data))
          
 class TicketViewSet(viewsets.ModelViewSet):    
    queryset = Ticket.objects.all()

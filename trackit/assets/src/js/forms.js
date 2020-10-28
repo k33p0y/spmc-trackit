@@ -4,6 +4,12 @@ $(document).ready(function () {
    let chk_status = true;
    let action_type, url;
    let alert_msg = '';
+   let axiosConfig = {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "X-CSRFToken": csrftoken,
+      
+   };
 
    // Spectrum Picker
    $('#txt_color').spectrum({
@@ -141,51 +147,46 @@ $(document).ready(function () {
       // Data
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
-      data.fields = cleanJSON(json_field);
+      data.fields = json_field;
       data.is_active = chk_status;
       data.is_archive = false;
 
       // Form is Valid
       if (success == 1) {
-         $.ajax({
+         axios({
+            method: action_type,
             url: url,
-            type: action_type,
             data: data,
-            beforeSend: function (xhr, settings) {
-               xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            },
-            success: function (result) {
-               Toast.fire({
-                  icon: 'success',
-                  title: alert_msg,
-               });
-               table.ajax.reload();
-            },
-            error: function (xhr, status, error) {
-               if (xhr.responseJSON.name) {
-                  $('#txt_typename').addClass('form-error');
-                  $('.name-error').html(`*${xhr.responseJSON.name}`)
-               } else {
-                  $('#txt_typename').removeClass('form-error');
-                  $('.name-error').html('')
-               }
-               if (xhr.responseJSON.color) {
-                  $('#txt_color').addClass('form-error');
-                  $('.color-error').html(`*${xhr.responseJSON.color}`)
-               } else {
-                  $('#txt_color').removeClass('form-error');
-                  $('.color-error').html('')
-               }
-               Toast.fire({
-                  icon: 'error',
-                  title: error,
-               });
-            },
-         }).done(function () {
+            headers: axiosConfig,
+         }).then(function (response) { // success
+            Toast.fire({
+               icon: 'success',
+               title: alert_msg,
+            });
             $('#formModal').modal('toggle');
             $("#form").trigger("reset");
+            table.ajax.reload();
+         }).catch(function (error) { // error
+            if (error.response.data.name) {
+               $('#txt_typename').addClass('form-error');
+               $('.name-error').html(`*${error.response.data.name}`)
+            } else {
+               $('#txt_typename').removeClass('form-error');
+               $('.name-error').html('')
+            }
+            if (error.response.data.color) {
+               $('#txt_color').addClass('form-error');
+               $('.color-error').html(`*${error.response.data.color}`)
+            } else {
+               $('#txt_color').removeClass('form-error');
+               $('.color-error').html('')
+            }
+            Toast.fire({
+               icon: 'error',
+               title: error,
+            });
          });
-      }
+      };
    });
 
    // DELETE / PATCH
@@ -201,31 +202,29 @@ $(document).ready(function () {
          confirmButtonColor: '#d9534f',
       }).then((result) => {
          if (result.value) {
-            $.ajax({
+            axios({
+               headers: axiosConfig,
                url: `/api/requests/forms/${id}/`,
-               type: 'PATCH',
+               method: "PATCH",
                data: {
                   is_archive: true,
                },
-               beforeSend: function (xhr, settings) {
-                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
-               },
-               success: function (result) {
-                  Toast.fire({
-                     icon: 'success',
-                     title: 'Delete Successfully',
-                  });
-                  table.ajax.reload();
-               },
-               error: function (a, b, error) {
-                  Toast.fire({
-                     icon: 'error',
-                     title: error,
-                  });
-               },
-            })
-         }
-      })
+            }).then(function (response) {
+               console.log(response)
+               Toast.fire({
+                  icon: 'success',
+                  title: 'Deleted Successfully',
+               });
+               table.ajax.reload();
+            }).catch(function (error) {
+               console.log(error.response)
+               Toast.fire({
+                  icon: 'error',
+                  title: error,
+               });
+            });
+         };
+      });
    });
 
    //Modal Cancel
