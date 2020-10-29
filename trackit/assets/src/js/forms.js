@@ -225,14 +225,12 @@ $(document).ready(function () {
                   is_archive: true,
                },
             }).then(function (response) {
-               console.log(response)
                Toast.fire({
                   icon: 'success',
                   title: 'Deleted Successfully',
                });
                table.ajax.reload();
             }).catch(function (error) {
-               console.log(error.response)
                Toast.fire({
                   icon: 'error',
                   title: error,

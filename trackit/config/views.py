@@ -27,3 +27,7 @@ def forms(request):
    status_qs = Status.objects.filter(is_active=True, is_archive=False)
    context = {'status_qs': status_qs}
    return render(request, 'pages/config/forms.html', context)
+
+@login_required
+def status_list(request):
+   return render(request, 'pages/config/status.html')

@@ -14,6 +14,7 @@ urlpatterns = [
    path('config/category', views.category, name='category'),
    path('config/types', views.types, name='types'),
    path('config/forms', views.forms, name='forms'),
+   path('config/status', views.status_list, name='status_list'),
 ]
 
 urlpatterns += router.urls

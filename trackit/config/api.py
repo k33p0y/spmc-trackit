@@ -24,5 +24,5 @@ class CategoryTypeViewSet(viewsets.ModelViewSet):
 
 class StatusViewSet(viewsets.ModelViewSet):
    serializer_class = StatusSerializer
-   queryset = Status.objects.filter(is_archive=False, is_active=True)
+   queryset = Status.objects.all()
    permission_classes = [permissions.IsAuthenticated]

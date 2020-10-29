@@ -1,0 +1,121 @@
+{% extends '../../base.html' %}
+{% load static %}
+
+{% block title %} Status {% endblock %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block content %}
+<!-- Content Header -->
+<section class="content-header">
+   <div class="container-fluid">
+      <div class="row mb-2">
+         <div class="col-sm-6">
+            <h5 class="font-weight-bolder">Status </h5>
+         </div>
+         <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-xs">
+               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-orange"><i
+                        class="fas fa-home"></i></a></li>
+               <li class="breadcrumb-item">Configuration</li>
+               <li class="breadcrumb-item">Status</li>
+               <li class="breadcrumb-item active">List</li>
+            </ol>
+         </div>
+      </div>
+   </div>
+</section>
+
+<!-- /.content -->
+<section class="content">
+   <div class="container-fluid">
+      <!-- Default box -->
+      <div class="row">
+         <div class="col-lg-12">
+            <div class="card bg-secondary mt-2 mb-2">
+               <div class="card-body row p-1 d-flex align-items-center">
+                  <div class="col">
+                     <form>
+                        <div class="form-row align-items-center m-0">
+                           <div class="col-sm-3 p-0 mr-2">
+                              <input type="search" class="form-control form-control-sm" placeholder="Search">
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+                  <div class="col-auto card-actions">
+                     <button class="btn btn-xs btn-light"> <i class="fas fa-print"></i></button>
+                     <button class="btn btn-xs btn-light"> <i class="fas fa-redo"></i></button>
+                     <button class="btn btn-xs btn-orange" id="btn_new">
+                        <i class="fas fa-plus"></i>
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="row">
+         <div class="col-12 col-sm-12">
+            <div class="card mt-2 mb-2">
+               <div class="card-body p-1">
+                  <table id="dt_forms" class="table table-hover" width="100%">
+                     <thead>
+                        <tr>
+                           <th>Name</th>
+                           <th>Is Active</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+
+   </div>
+
+
+</section>
+{% endblock %}
+
+{% block modal %}
+<!-- Create -->
+<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content text-sm">
+         <div class="modal-header">
+            <h6 class="modal-title"></h6>
+         </div>
+         <div class="modal-body">
+            <form id="form">
+               <div class="form-group"> <!-- Name-->
+                  <label>Name</label>
+                  <input type="text" class="form-control form-control-sm" id="txt_typename"
+                     placeholder="Enter form name">
+                  <small class="error-info name-error"></small>
+               </div>
+               <div class="icheck-material-green m-0"> <!-- Is Active-->
+                  <input type="checkbox" id="chk_status" checked />
+                  <label for="chk_status">Is Active</label>
+               </div>
+
+            </form>
+         </div>
+         <div class=" modal-footer">
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
+               <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-sm btn-outline-orange" id="btn_save"><span>Save</span></button>
+         </div>
+      </div>
+   </div>
+</div>
+
+{% endblock %}
+
+{% block extrascript %}
+<script type="text/javascript" src="{% static 'src/js/status.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/js/axios-0.21.0.min.js' %}"></script>
+{% endblock %}

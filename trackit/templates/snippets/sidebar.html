@@ -35,9 +35,9 @@
             {% endcomment %}
 
             <li
-               class="nav-item {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms'  %} menu-open {% endif %}">
+               class="nav-item {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms' or url == 'status_list'  %} menu-open {% endif %}">
                <a href="#"
-                  class="nav-link {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms' %} active {% endif %}">
+                  class="nav-link {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms' or url == 'status_list' %} active {% endif %}">
                   <i class="nav-icon fas fa-cog"></i>
                   <p>
                      Configuration
@@ -60,13 +60,19 @@
                   <li class="nav-item">
                      <a href="{% url 'types' %}" class="nav-link {% if url == 'types' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
-                        <p> Category Types</p>
+                        <p>Category Types</p>
                      </a>
                   </li>
                   <li class="nav-item">
                      <a href="{% url 'forms' %}" class="nav-link {% if url == 'forms' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
-                        <p> Forms </p>
+                        <p>Forms</p>
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a href="{% url 'status_list' %}" class="nav-link {% if url == 'status_list' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>Status</p>
                      </a>
                   </li>
                </ul>
