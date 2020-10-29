@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from .models import CategoryType
+from .models import CategoryType, Status
 from core.models import User
 from requests.models import RequestForm
 
@@ -24,4 +24,6 @@ def types(request):
 
 @login_required
 def forms(request):
-   return render(request, 'pages/config/forms.html')
+   status_qs = Status.objects.filter(is_active=True, is_archive=False)
+   context = {'status_qs': status_qs}
+   return render(request, 'pages/config/forms.html', context)

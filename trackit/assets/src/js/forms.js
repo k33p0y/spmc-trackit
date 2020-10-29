@@ -17,6 +17,18 @@ $(document).ready(function () {
       showPalette: false,
    });
 
+   // Select2 Config
+   $('#select2_status').select2({
+      allowClear: true,
+      placeholder: 'Select Status/es',
+      // cache: true,
+   });
+
+   // clear form status select2 field on modal close
+   $('#formModal').on('hidden.bs.modal', function (e) {
+      $('#select2_status').val([]).trigger('change');
+   })
+
    // RETRIEVE / GET
    // List Table
    let table = $('#dt_forms').DataTable({
@@ -128,6 +140,7 @@ $(document).ready(function () {
       // Populate Fields
       $('#txt_typename').val(dt_data['name']);
       $('#txt_color').val(dt_data['color']);
+      $('#select2_status').val(dt_data['status']).trigger('change');
       $('#chk_status').prop("checked", dt_data['is_active']);
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
 
@@ -147,6 +160,7 @@ $(document).ready(function () {
       // Data
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
+      data.status = $('#select2_status').val();
       data.fields = json_field;
       data.is_active = chk_status;
       data.is_archive = false;
@@ -165,6 +179,7 @@ $(document).ready(function () {
             });
             $('#formModal').modal('toggle');
             $("#form").trigger("reset");
+            $('#select2_status').val([]).trigger('change');
             table.ajax.reload();
          }).catch(function (error) { // error
             if (error.response.data.name) {
@@ -233,6 +248,7 @@ $(document).ready(function () {
       $('#txt_typename').removeClass('form-error');
       $('.error-info').html('');
       $('#chk_status').prop("checked", true);
+      $('#select2_status').val([]).trigger('change');
    });
 
 });

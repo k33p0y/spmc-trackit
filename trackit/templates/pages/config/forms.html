@@ -104,6 +104,16 @@
                   <small class="error-info color-error"></small>
                </div>
                <div class="form-group">
+                  <label>Status</label>
+                  <select class="form-control form-control-sm" id="select2_status" style="width: 100%" name="statuses[]" multiple="multiple">
+                     <option></option>
+                     {% for status in status_qs %}
+                     <option value={{status.id}}>{{status}}</option>
+                     {% endfor %}
+                  </select>
+                  <small class="error-info status-error"></small>
+               </div>
+               <div class="form-group">
                   <label>Form Field Data </label>
 
                   <textarea class="form-control form-control-sm" placeholder="Enter form data" id="txt_json"
