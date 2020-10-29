@@ -1,0 +1,22 @@
+.dashcards a:link,
+.dashcards a:visited,
+.dashcards a:hover,
+.dashcards a:active {
+    text-decoration: none !important;
+    color: #3e454d !important;
+}
+
+.card .card-title {
+    font-size: 12px !important;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.card .card-body .card-no {
+    font-size: 24px !important;
+    font-weight: bold;
+}
+
+.card .card-body .card-label {
+    font-size: 9px !important;
+}
