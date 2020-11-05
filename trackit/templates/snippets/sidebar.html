@@ -71,16 +71,33 @@
                   </li>
                </ul>
             </li>
-            <li class="nav-item">
-               <a href="{% url 'ticket' %}" class="nav-link {% if url == 'ticket' %} active {% endif %}">
+            <li class="nav-item {% if url == 'ticket' or url == 'boards' %} menu-open {% endif %}">
+               <a href="#" class="nav-link {% if url == 'ticket' or url == 'boards' %} active {% endif %}">
                   <i class="nav-icon fas fa-pen"></i>
-                  <p> Request</p>
+                  <p>
+                     Request
+                     <i class="right fas fa-angle-left"></i>
+                  </p>
                </a>
+               <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                     <a href="{% url 'ticket' %}" class="nav-link {% if url == 'ticket' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>Lists</p>
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a href="{% url 'boards' %}" class="nav-link {% if url == 'boards' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>Boards</p>
+                     </a>
+                  </li>
+               </ul>
             </li>
             <li class="nav-item">
                <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-location-arrow"></i>
-                  <p> Track Logs</p>
+                  <p> Track Requests</p>
                </a>
             </li>
          </ul>

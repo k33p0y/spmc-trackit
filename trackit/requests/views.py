@@ -17,6 +17,13 @@ def ticket(request):
    return render(request, 'pages/requests/ticket_lists.html', context)
 
 @login_required
+def boards(request):
+   forms= RequestForm.objects.all()
+   
+   context = {'forms':forms}
+   return render(request, 'pages/requests/boards.html', context)
+
+@login_required
 def get_category(request):
    cat_type = request.POST.get('type_id', None)
 
