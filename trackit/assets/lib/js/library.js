@@ -13,14 +13,6 @@ const Toast = Swal.mixin({
    }
 });
 
-// Clean JSON
-function cleanJSON(obj) {
-   let stringed = JSON.stringify(obj);
-   let clean = $.trim(stringed);
-
-   return clean;
-}
-
 function navigator() {
    // Next
    $('.btn-next').click(function () {
