@@ -4,12 +4,7 @@ $(document).ready(function () {
    let chk_status = true;
    let action_type, url;
    let alert_msg = '';
-   let axiosConfig = {
-      "Content-Type": "application/json;charset=UTF-8",
-      "Access-Control-Allow-Origin": "*",
-      "X-CSRFToken": csrftoken,
 
-   };
 
    // Spectrum Picker
    $('#txt_color').spectrum({
