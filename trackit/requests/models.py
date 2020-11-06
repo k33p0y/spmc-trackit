@@ -9,7 +9,7 @@ from core.models import User
 class RequestForm(models.Model):
     name =  models.CharField(max_length=255)
     color = models.CharField(max_length=10, blank=True)
-    status = models.ManyToManyField(Status, related_name='forms', blank=True)
+    status = models.ManyToManyField(Status, related_name='forms', blank=True, through='RequestFormStatus')
     fields = JSONField()
     is_active = models.BooleanField(default=True)
     is_archive = models.BooleanField(default=False)
@@ -31,3 +31,13 @@ class Ticket(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     is_archive = models.BooleanField(default=False)
+
+class RequestFormStatus(models.Model):
+    form = models.ForeignKey(RequestForm, on_delete=models.CASCADE)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE)
+    order = models.PositiveSmallIntegerField(null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.status
