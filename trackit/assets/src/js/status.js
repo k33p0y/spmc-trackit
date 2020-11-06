@@ -80,7 +80,7 @@ $(document).ready(function () {
        alert_msg = 'Saved Successfully';
  
        $("#formModal").modal();
-       $(".modal-title").text('New Form');
+       $(".modal-title").text('New Status');
        $('#txt_typename').val('');
     });
  
