@@ -5,7 +5,6 @@ $(document).ready(function () {
    let action_type, url;
    let alert_msg = '';
 
-
    // Spectrum Picker
    $('#txt_color').spectrum({
       type: "text",
@@ -13,11 +12,13 @@ $(document).ready(function () {
    });
 
    // Select2 Config
-   $('#select2_status').select2({
+   $('.select2_status').select2({
       allowClear: true,
-      placeholder: 'Select Status/es',
+      placeholder: 'Select Status',
       // cache: true,
    });
+
+
 
    // clear form status select2 field on modal close
    $('#formModal').on('hidden.bs.modal', function (e) {
@@ -48,7 +49,7 @@ $(document).ready(function () {
          {
             data: null,
             render: function (data, type, row) {
-               data = `<div class="circle" style="background-color:${row.color};"></div>`;
+               data = `<div class= "circle" style = "background-color:${row.color};" ></div>`;
                return data
             }
          },
@@ -68,8 +69,8 @@ $(document).ready(function () {
          {
             data: null,
             render: function (data, type, row) {
-               data = `<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
-                     <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
+               data = `<a href = '#' class= 'text-warning action-link btn_edit' > <i class='fas fa-pen'></i> </a>
+                  <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
                return data
             },
          }
@@ -110,6 +111,7 @@ $(document).ready(function () {
 
       $("#formModal").modal();
       $(".modal-title").text('New Form');
+      $("#btn_delete").hide()
       $('#txt_typename').val('');
       $('#txt_color').val('');
       $('#txt_json').val(JSON.stringify(samp_json));
@@ -122,20 +124,27 @@ $(document).ready(function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
 
+      // Create new Array
+      let status = new Array();
+      dt_data['status'].forEach(data => {
+         status.push(data.id);
+      });
+
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
-      url = `/api/requests/forms/${id}/`;
+      url = `/ api / requests / forms / ${id} / `;
       alert_msg = 'Update Successfully';
 
       // Open Modal
-      // Rename Modal Title
+      // Modal Config
       $("#formModal").modal();
       $(".modal-title").text('Update Form');
+      $("#btn_delete").show();
 
       // Populate Fields
       $('#txt_typename').val(dt_data['name']);
       $('#txt_color').val(dt_data['color']);
-      $('#select2_status').val(dt_data['status']).trigger('change');
+      $('#select2_status').val(status).trigger('change');
       $('#chk_status').prop("checked", dt_data['is_active']);
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
 
@@ -179,14 +188,14 @@ $(document).ready(function () {
          }).catch(function (error) { // error
             if (error.response.data.name) {
                $('#txt_typename').addClass('form-error');
-               $('.name-error').html(`*${error.response.data.name}`)
+               $('.name-error').html(`* ${error.response.data.name}`)
             } else {
                $('#txt_typename').removeClass('form-error');
                $('.name-error').html('')
             }
             if (error.response.data.color) {
                $('#txt_color').addClass('form-error');
-               $('.color-error').html(`*${error.response.data.color}`)
+               $('.color-error').html(`* ${error.response.data.color}`)
             } else {
                $('#txt_color').removeClass('form-error');
                $('.color-error').html('')
@@ -214,7 +223,7 @@ $(document).ready(function () {
          if (result.value) {
             axios({
                headers: axiosConfig,
-               url: `/api/requests/forms/${id}/`,
+               url: `/ api / requests / forms / ${id} / `,
                method: "PATCH",
                data: {
                   is_archive: true,
@@ -244,10 +253,28 @@ $(document).ready(function () {
       $('#select2_status').val([]).trigger('change');
    });
 
+   // Remove Status Fields
+   $('.form-wrapper').on('click', '.btn-remove', function () {
+      $(this).parents("div.form-row").remove()
+   });
 });
+
 
 function prettyPrint() {
    let obj = JSON.parse($('#txt_json').val());
    let pretty = JSON.stringify(obj, undefined, 4);
    $('#txt_json').val(pretty);
+}
+
+function getStatus() {
+   let status = new Array();
+
+   $.ajax({
+      url: '/api/config/status/',
+      type: "GET",
+      async: false,
+      success: function (data) {
+         console.log(data.result)
+      }
+   });
 }

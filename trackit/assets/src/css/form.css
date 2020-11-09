@@ -8,21 +8,46 @@
    border-radius: .2rem !important
 }
 
+#btn_add {
+   margin: 0;
+   padding: 0;
+}
+
+#btn_delete {
+   font-size: 12px !important;
+}
+
 #btn_add,
-.btn_remove {
+.btn-remove {
    font-size: 12px !important;
    color: #fd7e14;
 }
 
 #btn_add:hover,
-.btn_remove:hover  {
+.btn-remove:hover  {
    color: #e46e0f;
 }
 
+.modal .modal-md {
+   max-width: 650px !important;
+}
 
-.btn_remove {
-   padding-left: 0;
-   padding-top: 6px;
-   text-align: left;
-   justify-items: center;
+.modal-body .nav.nav-tabs {
+   border-bottom: 2px solid #dee2e6;
+}
+
+.modal-body .nav .nav-item {
+   margin-bottom: -2px;
+   padding: 6  px 16px;
+   font-size: 10px;
+   font-weight: bold;
+   text-transform: uppercase;
+   color: #95a4b5;
+   border:none;   
+   transition: ease-in-out;
+}
+
+.modal-body .nav .nav-item.active {
+   border-bottom: 2px solid #FD7E14;
+   color: #5f6b77;
 }

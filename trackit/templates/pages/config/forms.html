@@ -85,49 +85,90 @@
 {% block modal %}
 <!-- Create -->
 <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-   <div class="modal-dialog" role="document">
+   <div class="modal-dialog modal-md" role="document">
       <div class="modal-content text-sm">
          <div class="modal-header">
             <h6 class="modal-title"></h6>
          </div>
          <div class="modal-body">
             <form id="form">
-               <div class="form-group">
-                  <label>Name</label>
-                  <input type="text" class="form-control form-control-sm" id="txt_typename"
-                     placeholder="Enter form name">
-                  <small class="error-info name-error"></small>
-               </div>
-               <div class="form-group ">
-                  <label>Color</label>
-                  <input type="text" class="form-control form-control-sm" id="txt_color" placeholder="Choose color">
-                  <small class="error-info color-error"></small>
-               </div>
-               <div class="form-group">
-                  <label>Status</label>
-                  <select class="form-control form-control-sm" id="select2_status" style="width: 100%" name="statuses[]" multiple="multiple">
-                     <option></option>
-                     {% for status in status_qs %}
-                     <option value={{status.id}}>{{status}}</option>
-                     {% endfor %}
-                  </select>
-                  <small class="error-info status-error"></small>
-               </div>
-               <div class="form-group">
-                  <label>Form Field Data </label>
 
-                  <textarea class="form-control form-control-sm" placeholder="Enter form data" id="txt_json"
-                     rows="12"></textarea>
-                  <small class="error-info"></small>
-               </div>
-               <div class="icheck-material-green m-0">
-                  <input type="checkbox" id="chk_status" checked />
-                  <label for="chk_status">Is Active</label>
+               <nav>
+                  <div class="nav nav-tabs mb-2" id="nav-tab" role="tablist">
+                     <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#details" role="tab"
+                        aria-controls="nav-home" aria-selected="true">Details</a>
+                     <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#status" role="tab"
+                        aria-controls="nav-profile" aria-selected="false">Status</a>
+                     <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#fields" role="tab"
+                        aria-controls="nav-contact" aria-selected="false">Form Fields</a>
+                  </div>
+               </nav>
+
+               <div class="tab-content" id="nav-tabContent">
+                  <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="nav-home-tab">
+
+                     <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" class="form-control form-control-sm" id="txt_typename"
+                           placeholder="Enter form name">
+                        <small class="error-info name-error"></small>
+                     </div>
+                     <div class="form-group">
+                        <label>Color</label>
+                        <input type="text" class="form-control form-control-sm" id="txt_color"
+                           placeholder="Choose color">
+                        <small class="error-info color-error"></small>
+                     </div>
+
+                     <div class="icheck-material-green m-0">
+                        <input type="checkbox" id="chk_status" checked />
+                        <label for="chk_status">Is Active</label>
+                     </div>
+                  </div>
+                  <div class="tab-pane fade" id="status" role="tabpanel" aria-labelledby="nav-profile-tab">
+                     <div class="form-row">
+                        <div class="col-8"><label>Status</label></div>
+                        <div class="col-4"> <label>Order</label></div>
+                     </div>
+                     {% for i in "x"|rjust:"3" %}
+                     <div class="form-row">
+                        <div class="form-group col-8">
+                           <select class="form-control form-control-sm select2_status" style="width: 100%">
+                              <option></option>
+                              {% for status in status_qs %}
+                              <option value={{status.id}}>{{status}}</option>
+                              {% endfor %}
+                           </select>
+                           <small class="error-info status-error"></small>
+                        </div>
+                        <div class="form-group col-3">
+                           <input type="number" class="form-control form-control-sm" id="txt_num"
+                              placeholder=" Enter No">
+                           <small class="error-info name-error"></small>
+                        </div>
+                     </div>
+                     {% endfor %}
+                     <div class="form-wrapper"></div>
+                     <button type="button" class="btn btn-link" id="btn_add">
+                        <i class="fas fa-xs fa-plus"></i>
+                        <span>Add a another status</span>
+                     </button>
+
+                  </div>
+                  <div class="tab-pane fade" id="fields" role="tabpanel" aria-labelledby="nav-contact-tab">
+                     <div class="form-group">
+                        <label>JSON</label>
+                        <textarea class="form-control form-control-sm" placeholder="Enter form data" id="txt_json"
+                           rows="14"></textarea>
+                        <small class="error-info"></small>
+                     </div>
+                  </div>
                </div>
 
             </form>
          </div>
-         <div class=" modal-footer">
+         <div class="modal-footer">
+            <a class="text-danger mr-auto" id="btn_delete"> Delete </a>
             <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
                <span>Cancel</span>
             </button>
@@ -136,10 +177,46 @@
       </div>
    </div>
 </div>
-
 {% endblock %}
 
 {% block extrascript %}
+<script>
+   // Add Status 
+   $('#btn_add').click(function () {
+      const form_row = $('.form-wrapper');
+
+      form_row.append(
+         `<div class="form-row">
+            <div class="form-group col-8">
+               <select class="form-control form-control-sm select2_status" style="width: 100%">
+                  <option></option>
+                  {% for status in status_qs %}
+                  <option value={{status.id}}>{{status}}</option>
+                  {% endfor %}
+               </select>
+               <small class="error-info status-error"></small>
+            </div>
+            <div class="form-group col-3">
+               <input type="number" class="form-control form-control-sm" id="txt_num="
+                  placeholder="Enter No">
+               <small class="error-info name-error"></small>
+            </div>
+            <div class="form-group col-1">
+               <button type="button" class="btn btn-sm btn-block btn-remove">
+                  <i class="fas fa-times"></i>
+               </button>
+            </div>
+         </div>`
+      )
+
+      // Select2 Config
+      $('.select2_status').select2({
+         allowClear: true,
+         placeholder: 'Select Status',
+         // cache: true,
+      });
+   });
+
+</script>
 <script type="text/javascript" src="{% static 'src/js/forms.js' %}"></script>
-<script type="text/javascript" src="{% static 'lib/js/axios-0.21.0.min.js' %}"></script>
 {% endblock %}
