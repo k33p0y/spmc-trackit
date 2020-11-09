@@ -1,6 +1,5 @@
 asgiref==3.2.7
 Django==3.0.7
-django-crispy-forms==1.9.2
 django-mysql==3.8.1
 djangorestframework==3.11.0
 djangorestframework-datatables==0.5.2

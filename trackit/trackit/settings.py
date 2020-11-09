@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     # 3rd Party
     'rest_framework',
     'rest_framework_datatables',
-    'crispy_forms',
     
     # Django Apps
     'core',
