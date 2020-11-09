@@ -130,25 +130,26 @@
                         <div class="col-8"><label>Status</label></div>
                         <div class="col-4"> <label>Order</label></div>
                      </div>
-                     {% for i in "x"|rjust:"3" %}
-                     <div class="form-row">
-                        <div class="form-group col-8">
-                           <select class="form-control form-control-sm select2_status" style="width: 100%">
-                              <option></option>
-                              {% for status in status_qs %}
-                              <option value={{status.id}}>{{status}}</option>
-                              {% endfor %}
-                           </select>
-                           <small class="error-info status-error"></small>
+                     <div class="form-wrapper">
+                        {% for i in "x"|rjust:"3" %}
+                        <div class="form-row">
+                           <div class="form-group col-8">
+                              <select class="form-control form-control-sm select2_status" style="width: 100%">
+                                 <option></option>
+                                 {% for status in status_qs %}
+                                 <option value={{status.id}}>{{status}}</option>
+                                 {% endfor %}
+                              </select>
+                              <small class="error-info status-error"></small>
+                           </div>
+                           <div class="form-group col-3">
+                              <input type="number" class="form-control form-control-sm" id="txt_num"
+                                 placeholder=" Enter No">
+                              <small class="error-info name-error"></small>
+                           </div>
                         </div>
-                        <div class="form-group col-3">
-                           <input type="number" class="form-control form-control-sm" id="txt_num"
-                              placeholder=" Enter No">
-                           <small class="error-info name-error"></small>
-                        </div>
+                        {% endfor %}
                      </div>
-                     {% endfor %}
-                     <div class="form-wrapper"></div>
                      <button type="button" class="btn btn-link" id="btn_add">
                         <i class="fas fa-xs fa-plus"></i>
                         <span>Add a another status</span>
