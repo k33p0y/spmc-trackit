@@ -152,54 +152,53 @@ $(document).ready(function () {
 
       // Variables
       const success = 1;
-      const json_field = JSON.parse($('#txt_json').val());
+
 
       // Data
-      let data = {}
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
       data.status = getStatusOrder();
-      data.fields = json_field;
+      data.fields = JSON.parse($('#txt_json').val());
       data.is_active = chk_status;
       data.is_archive = false;
 
       // // Form is Valid
-      // if (success == 1) {
-      //    axios({
-      //       method: action_type,
-      //       url: url,
-      //       data: data,
-      //       headers: axiosConfig,
-      //    }).then(function (response) { // success
-      //       Toast.fire({
-      //          icon: 'success',
-      //          title: alert_msg,
-      //       });
-      //       $('#formModal').modal('toggle');
-      //       $("#form").trigger("reset");
-      //       $('#select2_status').val([]).trigger('change');
-      //       table.ajax.reload();
-      //    }).catch(function (error) { // error
-      //       if (error.response.data.name) {
-      //          $('#txt_typename').addClass('form-error');
-      //          $('.name-error').html(`* ${error.response.data.name}`)
-      //       } else {
-      //          $('#txt_typename').removeClass('form-error');
-      //          $('.name-error').html('')
-      //       }
-      //       if (error.response.data.color) {
-      //          $('#txt_color').addClass('form-error');
-      //          $('.color-error').html(`* ${error.response.data.color}`)
-      //       } else {
-      //          $('#txt_color').removeClass('form-error');
-      //          $('.color-error').html('')
-      //       }
-      //       Toast.fire({
-      //          icon: 'error',
-      //          title: error,
-      //       });
-      //    });
-      // };
+      if (success == 1) {
+         axios({
+            method: action_type,
+            url: url,
+            data: data,
+            headers: axiosConfig,
+         }).then(function (response) { // success
+            Toast.fire({
+               icon: 'success',
+               title: alert_msg,
+            });
+            $('#formModal').modal('toggle');
+            $("#form").trigger("reset");
+            $('#select2_status').val([]).trigger('change');
+            table.ajax.reload();
+         }).catch(function (error) { // error
+            if (error.response.data.name) {
+               $('#txt_typename').addClass('form-error');
+               $('.name-error').html(`* ${error.response.data.name}`)
+            } else {
+               $('#txt_typename').removeClass('form-error');
+               $('.name-error').html('')
+            }
+            if (error.response.data.color) {
+               $('#txt_color').addClass('form-error');
+               $('.color-error').html(`* ${error.response.data.color}`)
+            } else {
+               $('#txt_color').removeClass('form-error');
+               $('.color-error').html('')
+            }
+            Toast.fire({
+               icon: 'error',
+               title: error,
+            });
+         });
+      };
    });
 
    // DELETE / PATCH

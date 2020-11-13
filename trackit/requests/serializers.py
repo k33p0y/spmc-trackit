@@ -1,20 +1,29 @@
 from rest_framework import serializers
 
-from .models import RequestForm, Ticket
-from config.models import Department
+from .models import RequestForm, Ticket, RequestFormStatus
+from config.models import Department, Status
 from core.models import User
-
-from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer
+from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer
+from django.db import transaction
 
 import json
 
 # Serializers
+class RequestFormStatusSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='status.id')
+    name = serializers.ReadOnlyField(source='status.name')
+
+    class Meta: 
+        model = RequestFormStatus
+        fields = ('id', 'name', 'order')
+
 class RequestFormSerializer(serializers.ModelSerializer):
-    color = serializers.CharField(required=True, max_length=10)
+    status = RequestFormStatusSerializer(source="requestformstatus_set", many=True, read_only=True)
 
     class Meta:
         model = RequestForm
-        fields = '__all__'
+        fields = ['id', 'name', 'color', 'is_active', 'is_archive', 'status']
+        depth = 1
 
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):
     class Meta:

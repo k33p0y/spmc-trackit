@@ -44,4 +44,4 @@ class StatusSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Status
-        fields = ['id', 'name', 'is_active', 'is_archive',]
+        fields = ['id', 'name', 'is_active', 'is_archive', 'forms']
