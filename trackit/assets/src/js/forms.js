@@ -139,7 +139,6 @@ $(document).ready(function () {
       $('#txt_typename').val(dt_data['name']);
       $('#txt_color').val(dt_data['color']);
       $('#select2_status').val(status).trigger('change');
-      $('#chk_status').prop("checked", dt_data['is_active']);
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
 
       // Format Textarea value to JSON
@@ -152,7 +151,7 @@ $(document).ready(function () {
 
       // Variables
       const success = 1;
-
+      const data = new Object()
 
       // Data
       data.name = $('#txt_typename').val();

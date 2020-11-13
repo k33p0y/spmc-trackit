@@ -18,11 +18,12 @@ class RequestFormStatusSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'order')
 
 class RequestFormSerializer(serializers.ModelSerializer):
+    color = serializers.CharField(required=True, max_length=10)
     status = RequestFormStatusSerializer(source="requestformstatus_set", many=True, read_only=True)
 
     class Meta:
         model = RequestForm
-        fields = ['id', 'name', 'color', 'is_active', 'is_archive', 'status']
+        fields = ['id', 'name', 'color', 'fields', 'is_active', 'is_archive', 'status']
         depth = 1
 
     @transaction.atomic
