@@ -267,10 +267,12 @@ function getStatusOrder() {
       const status = $(this).find('div.form-group select');
       const order = $(this).find('div.form-group input');
 
-      arr.push({
-         'status': status.val(),
-         'order': order.val()
-      });
+      if (status.val() != '' && order.val() != '') {
+         arr.push({
+            'status': status.val(),
+            'order': order.val()
+         });
+      }
    });
 
    return arr
