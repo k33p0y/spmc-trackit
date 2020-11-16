@@ -126,7 +126,7 @@ $(document).ready(function () {
 
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
-      url = `/ api / requests / forms / ${id} / `;
+      url = `/api/requests/forms/${id}/`;
       alert_msg = 'Update Successfully';
 
       // Open Modal
@@ -215,7 +215,7 @@ $(document).ready(function () {
          if (result.value) {
             axios({
                headers: axiosConfig,
-               url: `/ api / requests / forms / ${id} / `,
+               url: `/api/requests/forms/${id}/ `,
                method: "PATCH",
                data: {
                   is_archive: true,

@@ -208,41 +208,26 @@ $(document).ready(function () {
       data.is_archive = false;
       data.requested_by = actor;
 
-      // Form is Valid
-      // if (success == 1) {
-      //    $.ajax({
-      //       url: url,
-      //       type: action_type,
-      //       data: data,
-      //       beforeSend: function (xhr, settings) {
-      //          xhr.setRequestHeader("X-CSRFToken", csrftoken);
-      //       },
-      //       success: function (result) {
-      //          Toast.fire({
-      //             icon: 'success',  
-      //             title: alert_msg,
-      //          });
-      //          table.ajax.reload();
-      //       },
-      //       error: function (xhr, status, error) {
-      //          console.log(xhr)
-
-      //          Toast.fire({
-      //             icon: 'error',
-      //             title: error,
-      //          });
-      //       },
-      //    }).done(function () {
-      //       $('#formModal').modal('toggle');
-      //       $("#form").trigger("reset");
-      //    });
-      // }
+      if (success == 1) {
+         axios({
+            method: action_type,
+            url: url,
+            data: data,
+            headers: axiosConfig,
+         }).then(function (response) { // success
+            Toast.fire({
+               icon: 'success',
+               title: alert_msg,
+            });
+            $('#formModal').modal('toggle');
+            $("#form").trigger("reset");
+            table.ajax.reload();
+         }).catch(function (error) { // error
+            Toast.fire({
+               icon: 'error',
+               title: error,
+            });
+         });
+      };
    });
 });
-
-function generateTicketNo() {
-   let datetime = moment().format('MDYYHHmmss')
-   let ticketnumber = `TN${datetime} `;
-
-   return ticketnumber
-}

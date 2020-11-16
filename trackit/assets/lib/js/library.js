@@ -300,10 +300,7 @@ function getFormValues(forms) {
       });
    });
 
-   console.log(fields_arr)
-
-   clean = cleanJSON(fields_arr);
-   return clean;
+   return fields_arr;
 }
 
 
