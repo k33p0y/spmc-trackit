@@ -199,7 +199,7 @@ $(document).ready(function () {
       let success = 1;
 
       // Data
-      data.ticket_no = '2020100001';
+      data.ticket_no = '';
       data.request_form = dd_form_id;
       data.form_data = getFormValues(fields_arr);
       data.category = dd_category_id;

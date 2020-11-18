@@ -1,5 +1,7 @@
 import uuid
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django_mysql.models import JSONField
 
 from config.models import Department, Category, Status
@@ -46,3 +48,9 @@ class RequestFormStatus(models.Model):
 
     def __str__(self):
         return self.status
+
+@receiver(post_save, sender=Ticket)
+def save_ticket_no(sender, instance, **kwargs):
+    instance_id = instance.ticket_id
+    ticket_num = str(instance_id)[-10:].upper()
+    Ticket.objects.filter(pk=instance.pk).update(ticket_no=ticket_num)
