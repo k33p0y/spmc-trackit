@@ -18,12 +18,29 @@ $(document).ready(function () {
       // cache: true,
    });
 
-
-
    // clear form status select2 field on modal close
    $('#formModal').on('hidden.bs.modal', function (e) {
       $('#select2_status').val([]).trigger('change');
    })
+
+   // Add Status Fields
+   $('#btn_add').click(function () {
+      const form_wrapper = $('.form-wrapper');
+      form_wrapper.append(form_row)
+
+      // Select2 Config
+      $('.select2_status').select2({
+         allowClear: true,
+         placeholder: 'Select Status',
+         // cache: true,
+      });
+   });
+
+   // Remove Status Fields
+   $('.form-wrapper').on('click', '.btn-remove', function () {
+      $(this).parents("div.form-row").remove()
+   });
+
 
    // RETRIEVE / GET
    // List Table
@@ -116,13 +133,26 @@ $(document).ready(function () {
       $('#txt_color').val('');
       $('#txt_json').val(JSON.stringify(samp_json));
 
+      const form_wrapper = $('.form-row-extras').empty();
+      for (let i = 0; i <= 2; i++) {
+         form_wrapper.append(form_row)
+
+         // Select2 Config
+         $('.select2_status').select2({
+            allowClear: true,
+            placeholder: 'Select Status',
+            // cache: true,
+         });
+      }
+
       prettyPrint();
    });
 
    // UPDATE / PUT
    $('#dt_forms tbody').on('click', '.btn_edit', function () {
-      let dt_data = table.row($(this).parents('tr')).data();
-      let id = dt_data['id'];
+      const dt_data = table.row($(this).parents('tr')).data();
+      const id = dt_data['id'];
+      const status = dt_data['status'];
 
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
@@ -134,12 +164,14 @@ $(document).ready(function () {
       $("#formModal").modal();
       $(".modal-title").text('Update Form');
       $("#btn_delete").show();
+      $(".form-wrapper").empty();
+      updateStatusOrder(status)
 
       // Populate Fields
       $('#txt_typename').val(dt_data['name']);
       $('#txt_color').val(dt_data['color']);
-      $('#select2_status').val(status).trigger('change');
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
+      setStatusOrder(status)
 
       // Format Textarea value to JSON
       prettyPrint();
@@ -160,6 +192,8 @@ $(document).ready(function () {
       data.fields = JSON.parse($('#txt_json').val());
       data.is_active = chk_status;
       data.is_archive = false;
+
+      console.log(data)
 
       // // Form is Valid
       if (success == 1) {
@@ -245,10 +279,6 @@ $(document).ready(function () {
       $('#select2_status').val([]).trigger('change');
    });
 
-   // Remove Status Fields
-   $('.form-wrapper').on('click', '.btn-remove', function () {
-      $(this).parents("div.form-row").remove()
-   });
 });
 
 
@@ -262,6 +292,8 @@ function getStatusOrder() {
    const arr = new Array();
    const form_row = $(".form-wrapper div.form-row");
 
+   console.log(form_row);
+
    form_row.each(function () {
       const status = $(this).find('div.form-group select');
       const order = $(this).find('div.form-group input');
@@ -274,5 +306,16 @@ function getStatusOrder() {
       }
    });
 
+   console.log(arr);
    return arr
+}
+
+function setStatusOrder(status) {
+   let counter = 1;
+
+   status.forEach(stat => {
+      $(`#status_${counter}`).val(stat.id).trigger('change');
+      $(`#order_${counter}`).val(stat.order);
+      counter++;
+   });
 }

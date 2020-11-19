@@ -75,10 +75,7 @@
             </div>
          </div>
       </div>
-
    </div>
-
-
 </section>
 {% endblock %}
 
@@ -131,24 +128,24 @@
                         <div class="col-4"> <label>Order</label></div>
                      </div>
                      <div class="form-wrapper">
-                        {% for i in "x"|rjust:"3" %}
                         <div class="form-row">
                            <div class="form-group col-8">
                               <select class="form-control form-control-sm select2_status" style="width: 100%">
                                  <option></option>
                                  {% for status in status_qs %}
-                                 <option value={{status.id}}>{{status}}</option>
+                                 <option value={{status.id}}> {{status}}
+                                 </option>
                                  {% endfor %}
                               </select>
                               <small class="error-info status-error"></small>
                            </div>
                            <div class="form-group col-3">
                               <input type="number" class="form-control form-control-sm txt_order"
-                                 placeholder=" Enter No">
+                                 placeholder="Enter No">
                               <small class="error-info name-error"></small>
                            </div>
                         </div>
-                        {% endfor %}
+                        <div class="form-row-extras"></div>
                      </div>
                      <button type="button" class="btn btn-link" id="btn_add">
                         <i class="fas fa-xs fa-plus"></i>
@@ -168,6 +165,7 @@
 
             </form>
          </div>
+
          <div class="modal-footer">
             <a class="text-danger mr-auto btn_delete" id="btn_delete"> Delete </a>
             <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
@@ -182,41 +180,64 @@
 
 {% block extrascript %}
 <script>
-   // Add Status 
-   $('#btn_add').click(function () {
-      const form_row = $('.form-wrapper');
+   const form_row = `<div class="form-row">
+      <div class="form-group col-8">
+         <select class="form-control form-control-sm select2_status" style="width: 100%">
+            <option></option>
+            {% for status in status_qs %}
+            <option value={{status.id}}>{{status}}</option>
+            {% endfor %}
+         </select>
+         <small class="error-info status-error"></small>
+      </div>
+      <div class="form-group col-3">
+         <input type="number" class="form-control form-control-sm txt_order"
+            placeholder="Enter No">
+         <small class="error-info name-error"></small>
+      </div>
+      <div class="form-group col-1">
+         <button type="button" class="btn btn-sm btn-block btn-remove">
+            <i class="fas fa-times"></i>
+         </button>
+      </div>
+   </div>`;
 
-      form_row.append(
-         `<div class="form-row">
-            <div class="form-group col-8">
-               <select class="form-control form-control-sm select2_status" style="width: 100%">
-                  <option></option>
-                  {% for status in status_qs %}
-                  <option value={{status.id}}>{{status}}</option>
-                  {% endfor %}
-               </select>
-               <small class="error-info status-error"></small>
-            </div>
-            <div class="form-group col-3">
-               <input type="number" class="form-control form-control-sm" id="txt_num="
-                  placeholder="Enter No">
-               <small class="error-info name-error"></small>
-            </div>
-            <div class="form-group col-1">
-               <button type="button" class="btn btn-sm btn-block btn-remove">
-                  <i class="fas fa-times"></i>
-               </button>
-            </div>
-         </div>`
-      )
+   function updateStatusOrder(status) {
+      const form_wrapper = $('.form-wrapper');
+      let counter = 1;
 
-      // Select2 Config
-      $('.select2_status').select2({
-         allowClear: true,
-         placeholder: 'Select Status',
-         // cache: true,
+      status.forEach(stat => {
+         form_wrapper.append(
+            `<div class="form-row">
+               <div class="form-group col-8">
+                  <select class="form-control form-control-sm select2_status" id="status_${counter}" style="width: 100%">
+                     <option></option>
+                     {% for status in status_qs %}
+                     <option value={{status.id}}>{{status}}</option>
+                     {% endfor %}
+                  </select>
+                  <small class="error-info status-error"></small>
+               </div>
+               <div class="form-group col-3">
+                  <input type="number" class="form-control form-control-sm txt_order" id="order_${counter}" placeholder="Enter No">
+                  <small class="error-info name-error"></small>
+               </div>
+               <div class="form-group col-1">
+                  <button type="button" class="btn btn-sm btn-block btn-remove">
+                     <i class="fas fa-times"></i>
+                  </button>
+               </div>
+            </div>`
+         )
+         counter++;
+
+         // Select2 Config
+         $('.select2_status').select2({
+            allowClear: true,
+            placeholder: 'Select Status',
+         })
       });
-   });
+   }
 
 </script>
 <script type="text/javascript" src="{% static 'src/js/forms.js' %}"></script>
