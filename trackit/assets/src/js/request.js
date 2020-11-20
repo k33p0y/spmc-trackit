@@ -23,14 +23,7 @@ $(document).ready(function () {
          }
       },
       "columns": [
-         { data: "ticket_id" },
-         {
-            data: null,
-            render: function (data, type, row) {
-               data = 'tests';
-               return data
-            }
-         },
+         { data: "ticket_no" }, // Ticket No
          {
             data: null,
             render: function (data, type, row) {
@@ -39,7 +32,19 @@ $(document).ready(function () {
                }
                return data
             }
-         },
+         }, // Request Type
+         {
+            data: null,
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  let category = row.category.name
+                  let category_type = row.category.category_type.name
+
+                  data = `<p class="title mb-1">${category}</p><span class="sub-title">${category_type}</span>`
+               }
+               return data
+            }
+         }, // Category
          {
             data: null,
             render: function (data, type, row) {
@@ -48,7 +53,7 @@ $(document).ready(function () {
                }
                return data
             }
-         },
+         }, // Department
          {
             data: null,
             render: function (data, type, row) {
@@ -56,11 +61,11 @@ $(document).ready(function () {
                   var date = moment(row.date_created).format('DD MMMM YYYY');
                   var time = moment(row.date_created).format('h:mm:ss a');
 
-                  data = `<p class="date mb-1">${date}</p><span class="time">${time}</span>`
+                  data = `<p class="title mb-1">${date}</p><span class="sub-title">${time}</span>`
                }
                return data
             },
-         },
+         }, // Date
          {
             data: null,
             render: function (data, type, row) {
@@ -69,7 +74,16 @@ $(document).ready(function () {
                }
                return data
             },
-         },
+         }, // User 
+         {
+            data: null,
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = row.status
+               }
+               return data
+            },
+         }, // Status 
          {
             data: null,
             render: function (data, type, row) {
@@ -83,7 +97,7 @@ $(document).ready(function () {
                }
                return data
             }
-         },
+         }, // Is Active
          {
             data: "null",
             render: function (data, type, row) {
@@ -91,7 +105,7 @@ $(document).ready(function () {
                          <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
                return data
             },
-         }
+         } // Action
       ],
    });
 

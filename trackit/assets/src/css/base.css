@@ -159,9 +159,14 @@ table.dataTable td  > a.action-link i {
    font-size: 14px !important;
    margin-right: 6px;
 }
+/* 
+table.dataTable td  > p.title {
+   
+} */
 
-table.dataTable td  > span.time {
+table.dataTable td  > span.sub-title {
    font-weight: normal;
+   font-size: 11px;
 }
 
 table.dataTable td span.td-badge {
