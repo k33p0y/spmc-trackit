@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from .api import RequestFormViewSet, TicketViewSet, RequestFormStatusViewSet
+from .api import RequestFormViewSet, TicketViewSet, RequestFormStatusViewSet, CRUDEventList
 from . import views
 
 router = routers.DefaultRouter()
@@ -12,6 +12,7 @@ urlpatterns = [
    path('requests/lists', views.ticket, name='ticket'),
    path('requests/boards', views.boards, name='boards'),
    path('requests/categories/json', views.get_category, name='get_category'),
+   path('api/<str:ticket_num>/logs/', CRUDEventList.as_view()), # easyaudit_crudevent api
 ]
 
 urlpatterns += router.urls
