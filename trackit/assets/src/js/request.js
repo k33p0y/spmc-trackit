@@ -220,7 +220,6 @@ $(document).ready(function () {
       data.department = dd_department_id;
       data.is_active = true;
       data.is_archive = false;
-      data.requested_by = actor;
 
       if (success == 1) {
          axios({
@@ -237,6 +236,8 @@ $(document).ready(function () {
             $("#form").trigger("reset");
             table.ajax.reload();
          }).catch(function (error) { // error
+            console.log(error.response)
+
             Toast.fire({
                icon: 'error',
                title: error,

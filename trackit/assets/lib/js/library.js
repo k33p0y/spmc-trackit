@@ -1,6 +1,3 @@
-// Get User
-const actor = JSON.parse($('#user_id').text());
-
 // Headers CSRF 
 function getCookie(name) {
    let cookieValue = null;
@@ -25,7 +22,6 @@ const axiosConfig = {
    "Access-Control-Allow-Origin": "*",
    "X-CSRFToken": csrftoken,
 };
-
 
 // Sweet Alert Toast
 const Toast = Swal.mixin({
@@ -108,13 +104,15 @@ function doTheThing(form_id) {
 function generateForm(forms) {
    $(".custom-form").empty();
 
+   console.log(forms)
+
    forms.forEach(form => {
 
       let title = form.title;
-      let form_field = form.form_field;
+      let form_field = form.fields;
       let is_admin = form.is_admin;
 
-      if (form_field.length > 1) {
+      if (form_field.length >= 1) {
          $(".custom-form").append(
             `<div class="form-group">
                <label> ${title} </label>
@@ -221,7 +219,7 @@ function getFormValues(forms) {
 
    forms.forEach(form => {
       let title = form.title;
-      let form_field = form.form_field;
+      let form_field = form.fields;
       let is_admin = form.is_admin;
       let answer, fields;
 

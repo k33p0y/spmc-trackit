@@ -10,37 +10,38 @@ import json
 
 # Serializers
 class RequestFormStatusSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source='status.id')
-    name = serializers.ReadOnlyField(source='status.name')
+   id = serializers.ReadOnlyField(source='status.id')
+   name = serializers.ReadOnlyField(source='status.name')
 
-    class Meta: 
-        model = RequestFormStatus
-        fields = ('id', 'name', 'order')
+   class Meta: 
+      model = RequestFormStatus
+      fields = ('id', 'name', 'order')
 
 class RequestFormSerializer(serializers.ModelSerializer):
-    color = serializers.CharField(required=True, max_length=10)
-    status = RequestFormStatusSerializer(source="requestformstatus_set", many=True, read_only=True)
+   color = serializers.CharField(required=True, max_length=10)
+   status = RequestFormStatusSerializer(source="requestformstatus_set", many=True, read_only=True)
 
-    class Meta:
-        model = RequestForm
-        fields = ['id', 'name', 'color', 'fields', 'is_active', 'is_archive', 'status']
-        depth = 1
+   class Meta:
+      model = RequestForm
+      fields = ['id', 'name', 'color', 'fields', 'is_active', 'is_archive', 'status']
+      depth = 1
 
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RequestForm
-        fields = ['id', 'name', 'color']
+   class Meta:
+      model = RequestForm
+      fields = ['id', 'name', 'color']
 
 class TicketSerializer(serializers.ModelSerializer):
+   requested_by = UserSerializer(read_only=True)
     
-    class Meta:
-        model = Ticket
-        fields = '__all__'
-        datatables_always_serialize = ('ticket_id',)
+   class Meta:
+      model = Ticket
+      fields = '__all__'
+      datatables_always_serialize = ('ticket_id',)
         
-    def to_representation(self, instance):
-        self.fields['requested_by'] = UserSerializer(read_only=True)
-        self.fields['department'] = DepartmentSerializer(read_only=True)
-        self.fields['request_form'] = RequestFormReadOnlySerializer(read_only=True)
-        self.fields['category'] = CategorySerializer(read_only=True)
-        return super(TicketSerializer, self).to_representation(instance)
+   def to_representation(self, instance):
+      # self.fields['requested_by'] = UserSerializer(read_only=True)
+      self.fields['department'] = DepartmentSerializer(read_only=True)
+      self.fields['request_form'] = RequestFormReadOnlySerializer(read_only=True)
+      self.fields['category'] = CategorySerializer(read_only=True)
+      return super(TicketSerializer, self).to_representation(instance)
