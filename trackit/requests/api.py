@@ -13,8 +13,7 @@ class RequestFormViewSet(viewsets.ModelViewSet):
    serializer_class = RequestFormSerializer
    permission_classes = [permissions.IsAuthenticated]
 
-
-   def create(self, request, *args, **kwargs):
+   def create(self, request):
       name = request.data['name']
       color = request.data['color']
       fields = request.data['fields']
@@ -31,6 +30,35 @@ class RequestFormViewSet(viewsets.ModelViewSet):
          RequestFormStatus(form=request_form, status_id=status_id, order=order).save()
 
       serializer = RequestFormSerializer(request_form)
+      return Response(serializer.data)
+
+   def update(self, request, pk):
+      # Instance
+      request_form = RequestForm.objects.get(pk=pk)
+      request_form.name = request.data['name']
+      request_form.color = request.data['color']
+      request_form.fields = request.data['fields']
+      request_form.is_active = request.data['is_active']
+      request_form.is_archive = request.data['is_archive']
+      request_form.save()
+
+      RequestFormStatus.objects.filter(form=pk).delete()
+      status_dict = request.data['status']
+      
+      for stat in status_dict:
+         status_id = stat['status']
+         order = stat['order']
+         RequestFormStatus(form=request_form, status_id=status_id, order=order).save()
+
+      serializer = RequestFormSerializer(request_form)
+      return Response(serializer.data)
+
+   def partial_update(self, request, pk):
+      request_form = RequestForm.objects.get(pk=pk)
+      request_form.is_archive = request.data['is_archive']
+      request_form.save()
+
+      serializer = RequestFormSerializer(request_form, partial=True)
       return Response(serializer.data)
 
 class TicketViewSet(viewsets.ModelViewSet):    

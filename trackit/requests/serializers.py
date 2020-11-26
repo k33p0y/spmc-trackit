@@ -26,35 +26,6 @@ class RequestFormSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'color', 'fields', 'is_active', 'is_archive', 'status']
         depth = 1
 
-    # @transaction.atomic
-    # def create(self, validated_data):
-    #     status_dict = self.context['request'].data['status']
-    #     request_form = RequestForm.objects.create(**validated_data)
-
-    #     for stat in status_dict:
-    #         status = stat['status']
-    #         order = stat['order']
-    #         RequestFormStatus.objects.create(form=request_form, status_id=status, order=order)
-            
-    #     return request_form
-
-
-    @transaction.atomic
-    def update(self, instance, validated_data):
-        status_dict = self.context['request'].data['status']
-        RequestFormStatus.objects.filter(form=instance).delete()
-
-        for stat in status_dict:
-            status = stat['status']
-            order = stat['order']
-            RequestFormStatus(form=instance, status_id=status, order=order).save()
-
-        instance.__dict__.update(**validated_data)
-        instance.save()
-        return instance
-
-    
-
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = RequestForm
