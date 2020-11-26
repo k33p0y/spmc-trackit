@@ -12,7 +12,8 @@ urlpatterns = [
    path('requests/lists', views.ticket, name='ticket'),
    path('requests/boards', views.boards, name='boards'),
    path('requests/categories/json', views.get_category, name='get_category'),
-   path('api/<str:ticket_num>/logs/', CRUDEventList.as_view()), # easyaudit_crudevent api
+   path('requests/track', views.ticket_log_list, name='ticket_log_list'),
+   path('api/ticket/logs/', CRUDEventList.as_view()), # easyaudit_crudevent api
 ]
 
 urlpatterns += router.urls

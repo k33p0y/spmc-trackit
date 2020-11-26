@@ -29,8 +29,9 @@ class CRUDEventList(generics.ListAPIView):
    permission_classes = [permissions.IsAuthenticated]
 
    def get_queryset(self):
-      ticket_num = self.kwargs['ticket_num']
-      if len(ticket_num) < 10: # if ticket number is less than 10 characters, return none
+      ticket_num = self.request.GET.get('tracking_num', None)
+
+      if not ticket_num or len(ticket_num) < 10: # if ticket number is less than 10 characters, return none
          return CRUDEvent.objects.none()
       else:
          return CRUDEvent.objects.filter(object_id__icontains=ticket_num)

@@ -95,11 +95,14 @@ class ChoiceField(serializers.ChoiceField):
 
 class CRUDEventSerializer(serializers.ModelSerializer):
     event_type = ChoiceField(choices=CRUDEvent.TYPES)
+    changed_fields = serializers.JSONField()
 
     class Meta:
         model = CRUDEvent
         fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields']
 
     def to_representation(self, instance):
+        if instance.changed_fields:
+            instance.changed_fields = json.loads(instance.changed_fields) # convert changed_fields from string to JSON
         self.fields['user'] = UserSerializer(read_only=True)
         return super(CRUDEventSerializer, self).to_representation(instance)
