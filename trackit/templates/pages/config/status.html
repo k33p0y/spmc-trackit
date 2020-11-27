@@ -48,7 +48,7 @@
                      <button class="btn btn-xs btn-light"> <i class="fas fa-print"></i></button>
                      <button class="btn btn-xs btn-light"> <i class="fas fa-redo"></i></button>
                      <button class="btn btn-xs btn-orange" id="btn_new">
-                        <i class="fas fa-plus"></i>
+                        <i class="fas fa-plus"></i> <span>New</span>
                      </button>
                   </div>
                </div>
@@ -90,13 +90,15 @@
          </div>
          <div class="modal-body">
             <form id="form">
-               <div class="form-group"> <!-- Name-->
+               <div class="form-group">
+                  <!-- Name-->
                   <label>Name</label>
                   <input type="text" class="form-control form-control-sm" id="txt_typename"
                      placeholder="Enter status name">
                   <small class="error-info name-error"></small>
                </div>
-               <div class="icheck-material-green m-0"> <!-- Is Active-->
+               <div class="icheck-material-green m-0">
+                  <!-- Is Active-->
                   <input type="checkbox" id="chk_status" checked />
                   <label for="chk_status">Is Active</label>
                </div>

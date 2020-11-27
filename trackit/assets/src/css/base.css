@@ -1,4 +1,8 @@
 /* Custom Colors, text */
+html * {
+   font-family: Arial, Helvetica, sans-serif;
+}
+
 input, select, textarea, label {
    color : #5f6b77 !important;
    font-size: 12px !important;
@@ -245,10 +249,17 @@ table.dataTable tbody tr:hover {
 }
 
 .card .card-body .card-actions .btn {
-   width: 30px;
+   width: auto;
    height: 30px;
+   padding:2px 8px;
    border-radius: .2rem;
    /* border-color: #e3E5ED !important; */
+}
+
+.card .card-body .card-actions .btn span {
+   font-size: 12px;
+   /* text-transform: uppercase; */
+   margin:0 4px;
 }
 
 .card-table {
