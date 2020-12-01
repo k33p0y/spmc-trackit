@@ -1,0 +1,60 @@
+.container-fluid {
+   color: #59626b;
+   font-size: 12px;
+}
+
+.card-form .card-header {
+   background-color: #e3E5ED 
+}
+
+.card-form .card-header .card-title,
+.card-form .card-header .card-toggle-icon {
+   font-size: 10px;
+   font-weight: bold;
+   text-transform: uppercase;
+   color: #717c87;
+}
+
+.card-form .card-body .body-info {
+   color: #59626b;
+   font-size: 12px;
+   font-style: italic;
+}
+
+.card-form .card-body .form-group>label {
+   color: #59626b !important;
+   font-weight:bold !important;
+   font-size: 10px !important;
+}
+
+/* Custom Upload Form */
+.card-form .card-body .upload-wrapper {
+   width: 100%;
+   height: 200px;
+   border: 1.5px dashed #cdd5df;
+   background-color: #e3e5ed3d;
+}
+
+.card-form .card-body .upload-content > i {
+   font-size: 32px !important;
+   color: #b5bdc4;
+}
+
+.card-form .card-body .upload-content > p {
+   color: #939BA2;
+   font-size: 14px !important;
+   font-weight: bold;
+}
+
+.card-form .card-body .upload-content .upload-info {
+   color: #b5bdc4;
+   font-size: 12px !important;
+   font-style: italic;
+}
+
+.container-fluid .form-actions .btn {
+   padding-left: 12px;
+   padding-right: 12px;
+   margin-left: 6px;
+}
+

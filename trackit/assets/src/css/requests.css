@@ -66,22 +66,3 @@
    vertical-align: middle !important;
    padding: 4px;
 }
-
-/* Custom Upload Form */
-.custom-file-label {
-   height: calc(1.8125rem + 2px);
-   padding: 4px 8px;
-   border-color: #CED4DA;
-   line-height: 1.7;
-   color: #939BA2 !important;
-}
-
-.custom-file-label::after {
-   height: calc(1.8125rem);
-   border-radius: 0 3px 3px 0;
-}
-
-.custom-file-label:focus, 
-#customFile:focus {
-   border-color: #ff8f34b6 !important;
-}

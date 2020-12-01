@@ -110,6 +110,20 @@ i.far {
    color:#fff;
 }
 
+
+.btn-link-neutral {
+   color: #59626b;
+}
+.btn-link-orange {
+   color: #FD7E14;
+}
+.btn-link-orange:hover,
+.btn-link-orange:focus,
+.btn-link-orange:active,
+.btn-link-neutral:hover  {
+   color: #e77619;
+}
+
 .btn span {
    font-size: 12px;
 }
