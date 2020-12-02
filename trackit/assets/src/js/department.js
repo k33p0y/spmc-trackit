@@ -44,7 +44,7 @@ $(document).ready(function () {
             data: null,
             render: function (data, type, row) {
                if (type == 'display') {
-
+                  data = '';
                   if (row.is_active == true) {
                      data = "<i class='fas fa-check-circle text-success'></i>";
                   } else {
