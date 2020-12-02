@@ -29,6 +29,7 @@
 </section>
 
 <!-- /.content -->
+{% if perms.requests.view_requestform %}
 <section class="content">
    <div class="container-fluid">
       <!-- Default box -->
@@ -76,7 +77,14 @@
          </div>
       </div>
    </div>
+   <input type="hidden" id="changeTicketHidden" value="{% if perms.requests.change_ticket %}true{% else %}false{% endif %}">
+   <input type="hidden" id="deleteTicketHidden" value="{% if perms.requests.delete_ticket %}true{% else %}false{% endif %}">
 </section>
+{% else %}
+   <section class="content">
+      You don't have permission to view this page
+   </section>
+{% endif %}
 {% endblock %}
 
 {% block modal %}
