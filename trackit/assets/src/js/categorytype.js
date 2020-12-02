@@ -55,8 +55,13 @@ $(document).ready(function () {
          {
             data: "null",
             render: function (data, type, row) {
-               data = `<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
-                     <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
+               data = '';
+               if($('#changeTypeHidden').val() == 'true') {
+                  data = data + "<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>";
+               }
+               if($('#deleteTypeHidden').val() == 'true') {
+                  data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
+               }
                return data
             },
          }

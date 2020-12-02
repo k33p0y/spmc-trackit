@@ -25,6 +25,7 @@
 </section>
 
 <!-- /.content -->
+{% if perms.config.view_categorytype %}
 <section class="content">
    <div class="container-fluid">
       <!-- Default box -->
@@ -44,9 +45,11 @@
                   <div class="col-auto card-actions">
                      <button class="btn btn-xs btn-light"> <i class="fas fa-print"></i></button>
                      <button class="btn btn-xs btn-light"> <i class="fas fa-redo"></i></button>
+                     {% if perms.config.add_categorytype %}
                      <button class="btn btn-xs btn-orange" id="btn_new">
                         <i class="fas fa-plus"></i>
                      </button>
+                     {% endif %}
                   </div>
                </div>
             </div>
@@ -72,9 +75,14 @@
       </div>
 
    </div>
-
-
+   <input type="hidden" id="changeTypeHidden" value="{% if perms.config.change_categorytype %}true{% else %}false{% endif %}">
+   <input type="hidden" id="deleteTypeHidden" value="{% if perms.config.delete_categorytype %}true{% else %}false{% endif %}">
 </section>
+{% else %}
+   <section class="content">
+      You don't have permission to view this page
+   </section>
+{% endif %}
 {% endblock %}
 
 {% block modal %}
