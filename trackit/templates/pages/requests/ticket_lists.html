@@ -13,7 +13,7 @@
    <div class="container-fluid">
       <div class="row mb-2">
          <div class="col-sm-6">
-            <h5 class="font-weight-bolder">Request Lists</h5>
+            <h5 class="font-weight-bolder">My Requests</h5>
          </div>
          <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right text-xs">
@@ -49,9 +49,9 @@
                      <button class="btn btn-xs btn-light"> <i class="fas fa-print"></i></button>
                      <button class="btn btn-xs btn-light"> <i class="fas fa-redo"></i></button>
                      {% if perms.requests.add_ticket %}
-                     <button class="btn btn-xs btn-orange" id="btn_new">
+                     <a href="{% url 'create_ticket' %}" class="btn btn-xs btn-orange" id="btn_new">
                         <i class="fas fa-plus"></i> <span>New</span>
-                     </button>
+                     </a>
                      {% endif %}
                   </div>
                </div>
@@ -85,9 +85,9 @@
    </div>
 </section>
 {% else %}
-   <section class="content">
-      You don't have permission to view this page
-   </section>
+<section class="content">
+   You don't have permission to view this page
+</section>
 {% endif %}
 {% endblock %}
 

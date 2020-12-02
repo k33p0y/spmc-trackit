@@ -70,15 +70,18 @@
                      </a>
                   </li>
                   <li class="nav-item">
-                     <a href="{% url 'status_list' %}" class="nav-link {% if url == 'status_list' %} active {% endif %}">
+                     <a href="{% url 'status_list' %}"
+                        class="nav-link {% if url == 'status_list' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p>Status</p>
                      </a>
                   </li>
                </ul>
             </li>
-            <li class="nav-item {% if url == 'ticket' or url == 'boards' %} menu-open {% endif %}">
-               <a href="#" class="nav-link {% if url == 'ticket' or url == 'boards' %} active {% endif %}">
+            <li
+               class="nav-item {% if url == 'ticket' or url == 'boards' or  url == 'create_ticket' %} menu-open {% endif %}">
+               <a href="#"
+                  class="nav-link {% if url == 'ticket' or url == 'boards' or url == 'create_ticket' %} active {% endif %}">
                   <i class="nav-icon fas fa-pen"></i>
                   <p>
                      Request
@@ -87,21 +90,29 @@
                </a>
                <ul class="nav nav-treeview">
                   <li class="nav-item">
-                     <a href="{% url 'ticket' %}" class="nav-link {% if url == 'ticket' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Lists</p>
-                     </a>
-                  </li>
-                  <li class="nav-item">
                      <a href="{% url 'boards' %}" class="nav-link {% if url == 'boards' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p>Boards</p>
                      </a>
                   </li>
+                  <li class="nav-item">
+                     <a href="{% url 'create_ticket' %}"
+                        class="nav-link {% if url == 'create_ticket' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>Make Request</p>
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a href="{% url 'ticket' %}" class="nav-link {% if url == 'ticket' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>My Requests</p>
+                     </a>
+                  </li>
                </ul>
             </li>
             <li class="nav-item">
-               <a href="{% url 'ticket_log_list' %}" class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}">
+               <a href="{% url 'ticket_log_list' %}"
+                  class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}">
                   <i class="nav-icon fas fa-location-arrow"></i>
                   <p> Track Requests</p>
                </a>

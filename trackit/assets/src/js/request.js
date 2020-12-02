@@ -167,10 +167,6 @@ $(document).ready(function () {
       url = '/api/requests/lists/';
       alert_msg = 'Saved Successfully';
 
-      // Modal
-      $("#formModal").modal();
-      $(".modal-title").text('Make Request');
-
       // Hide Category Form Dropdown
       $('#form-group-category').hide();
 
