@@ -28,6 +28,7 @@
 </section>
 
 <!-- /.content -->
+{% if perms.requests.view_ticket %}
 <section class="content">
    <div class="container-fluid">
       <!-- Default box -->
@@ -47,9 +48,11 @@
                   <div class="col-auto card-actions">
                      <button class="btn btn-xs btn-light"> <i class="fas fa-print"></i></button>
                      <button class="btn btn-xs btn-light"> <i class="fas fa-redo"></i></button>
+                     {% if perms.requests.add_ticket %}
                      <button class="btn btn-xs btn-orange" id="btn_new">
                         <i class="fas fa-plus"></i>
                      </button>
+                     {% endif %}
                   </div>
                </div>
             </div>
@@ -81,6 +84,11 @@
       </div>
    </div>
 </section>
+{% else %}
+   <section class="content">
+      You don't have permission to view this page
+   </section>
+{% endif %}
 {% endblock %}
 
 {% block modal %}

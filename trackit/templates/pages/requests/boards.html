@@ -29,6 +29,7 @@
 </section>
 
 <!-- /.content -->
+{% if perms.requests.view_ticket %}
 <section class="content">
     <div class="container-fluid">
         <!-- Default box -->
@@ -119,6 +120,11 @@
         </div>
     </div>
 </section>
+{% else %}
+   <section class="content">
+      You don't have permission to view this page
+   </section>
+{% endif %}
 {% endblock %}
 
 
