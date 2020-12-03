@@ -32,13 +32,12 @@
 {% if perms.requests.add_ticket %}
 <section class="content">
    <div class="container-fluid accordion" id="accordionWrapper">
-      <!-- Default box -->
       <div class="row">
          <div class="col-12 col-sm-12">
             <div class="card card-form mt-2 mb-1">
                <a href="#collapseOne" data-toggle="collapse" aria-expanded="true" aria-controls="collapseOne">
                   <div class="card-header p-2" id="headingOne">
-                     <div class="card-title">Request Detail</div>
+                     <div class="card-title">Request Details</div>
                   </div>
                </a>
                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionWrapper">
@@ -46,25 +45,12 @@
                      <form>
                         <div class="form-row">
                            <div class="form-group col-md-6">
-                              <label>Department</label>
-                              <select class="form-control form-control-sm" id="dd_departments" style="width: 100%">
-                                 <option></option>
-                              </select>
-                              <small class="error-info" id="error-info-type"></small>
-                           </div>
-                           <div class="form-group col-md-6">
-                              <label>Request Form</label>
-                              <select class="form-control form-control-sm" id="dd_forms" style="width: 100%">
-                                 <option></option>
-                              </select>
-                              <small class="error-info" id="error-info-type"></small>
-                           </div>
-                        </div>
-                        <div class="form-row">
-                           <div class="form-group col-md-6">
                               <label>Category Type</label>
                               <select class="form-control form-control-sm" id="dd_types" style="width: 100%">
                                  <option></option>
+                                 {% for type in types %}
+                                 <option value={{type.id}}>{{type.name}}</option>
+                                 {% endfor %}
                               </select>
                               <small class="error-info" id="error-info-type"></small>
                            </div>
@@ -77,6 +63,29 @@
                               <small class="error-info" id="error-info-type"></small>
                            </div>
                         </div>
+                        <div class="form-row">
+                           <div class="form-group col-md-6">
+                              <label>Department</label>
+                              <select class="form-control form-control-sm" id="dd_departments" style="width: 100%">
+                                 <option></option>
+                                 {% for department in departments %}
+                                 <option value={{department.id}}>{{department.name}}</option>
+                                 {% endfor %}
+                              </select>
+                              <small class="error-info" id="error-info-type"></small>
+                           </div>
+                           <div class="form-group col-md-6">
+                              <label>Request Form</label>
+                              <select class="form-control form-control-sm" id="dd_forms" style="width: 100%">
+                                 <option></option>
+                                 {% for form in forms %}
+                                 <option value={{form.id}}>{{form.name}}</option>
+                                 {% endfor %}
+                              </select>
+                              <small class="error-info" id="error-info-type"></small>
+                           </div>
+                        </div>
+
                      </form>
                   </div>
                </div>

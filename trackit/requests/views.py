@@ -8,17 +8,16 @@ from .models import Ticket, RequestForm
 # Create your views here.
 @login_required
 def ticket(request):
-   tickets = Ticket.objects.all()
-   forms= RequestForm.objects.all()
-   types =  CategoryType.objects.all()
-   departments =  Department.objects.all()
-
-   context = {'forms': forms, 'types': types, 'departments':departments}
-   return render(request, 'pages/requests/ticket_lists.html', context)
+   return render(request, 'pages/requests/ticket_lists.html')
 
 @login_required
 def create_ticket(request):
-   return render(request, 'pages/requests/ticket_new.html')
+   forms= RequestForm.objects.filter(is_active=True, is_archive=False)
+   types =  CategoryType.objects.filter(is_active=True, is_archive=False)
+   departments =  Department.objects.filter(is_active=True, is_archive=False)
+   
+   context = {'forms': forms, 'types': types, 'departments':departments}
+   return render(request, 'pages/requests/ticket_new.html', context)
 
 @login_required
 def boards(request):
