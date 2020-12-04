@@ -9,9 +9,15 @@ from .models import RequestForm, Ticket, RequestFormStatus
 import json
 
 class RequestFormViewSet(viewsets.ModelViewSet):    
-   queryset = RequestForm.objects.all()
+   # queryset = RequestForm.objects.all()
    serializer_class = RequestFormSerializer
-   permission_classes = [permissions.IsAuthenticated]
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+
+   def get_queryset(self):
+      if not self.request.user.has.perm('requests.view_ticket'):
+         return Department.objects.none()
+      else:
+         return Department.objects.all().order_by('id')
 
    def create(self, request):
       name = request.data['name']
@@ -64,9 +70,21 @@ class RequestFormViewSet(viewsets.ModelViewSet):
 class TicketViewSet(viewsets.ModelViewSet):    
    queryset = Ticket.objects.all()
    serializer_class = TicketSerializer
-   permission_classes = [permissions.IsAuthenticated]
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+
+   def get_queryset(self):
+      if not self.request.user.has.perm('requests.view_ticket'):
+         return Department.objects.none()
+      else:
+         return Department.objects.all().order_by('id')
 
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
    queryset = RequestFormStatus.objects.all()
    serializer_class = RequestFormStatusSerializer
-   permission_classes = [permissions.IsAuthenticated]
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+
+   def get_queryset(self):
+      if not self.request.user.has.perm('requests.view_ticket'):
+         return Department.objects.none()
+      else:
+         return Department.objects.all().order_by('id')
