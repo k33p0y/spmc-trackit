@@ -5,6 +5,8 @@ from django.shortcuts import render
 from config.models import Category, CategoryType, Department
 from .models import Ticket, RequestForm
 
+import json
+
 # Create your views here.
 @login_required
 def ticket(request):
@@ -28,12 +30,16 @@ def boards(request):
 
 @login_required
 def get_category(request):
-   cat_type = request.POST.get('type_id', None)
+   # decode byte string
+   body_unicode = request.body.decode('utf-8')
+   data = json.loads(body_unicode)
+   
+   type_id = data['type_id']
 
-   categories = Category.objects.filter(category_type = cat_type, is_active=True, is_archive=False).values('id', 'name')
-   data = list(categories)
+   categories = Category.objects.filter(category_type = type_id, is_active=True, is_archive=False).values('id', 'name')
+   category_lists = list(categories)
 
-   return JsonResponse(data, safe=False)
+   return JsonResponse(category_lists, safe=False)
 
 def ticket_log_list(request):
    return render(request, 'pages/requests/track.html', {})

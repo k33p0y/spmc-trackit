@@ -43,6 +43,27 @@ $(document).ready(function () {
 
    $('#dd_types').on('change', function () { // category type dropdown
       dd_type_id = $("#dd_types option:selected").val();
+
+      axios({
+         method: 'POST',
+         url: '/requests/categories/json',
+         data: {
+            'type_id': dd_type_id
+         },
+         headers: axiosConfig,
+      }).then(function (response) { // success
+
+         // Empty Dropdown Values
+         $("#dd_categories")
+            .empty()
+            .append('<option></option>')
+            .removeAttr('disabled');
+
+         // Populate Dropdown
+         response.data.forEach(key => {
+            $("#dd_categories").append(`<option value='${key.id}'>${key.name}</option>`)
+         });
+      });
    });
 
    $('#dd_categories').on('change', function () { // categories dropdown
