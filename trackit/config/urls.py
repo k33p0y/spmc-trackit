@@ -4,10 +4,10 @@ from .api import DepartmentViewSet, CategoryViewSet, CategoryTypeViewSet, Status
 from . import views
 
 router = routers.DefaultRouter()
-router.register('api/config/department', DepartmentViewSet)
-router.register('api/config/category', CategoryViewSet)
-router.register('api/config/categorytype', CategoryTypeViewSet)
-router.register('api/config/status', StatusViewSet)
+router.register('api/config/department', DepartmentViewSet, basename='Department')
+router.register('api/config/category', CategoryViewSet, basename='Category')
+router.register('api/config/categorytype', CategoryTypeViewSet, basename='CategoryType')
+router.register('api/config/status', StatusViewSet, basename='Status')
 
 urlpatterns = [
    path('config/department', views.department, name='department'),

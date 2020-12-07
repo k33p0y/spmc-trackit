@@ -25,6 +25,7 @@
 </section>
 
 <!-- /.content -->
+{% if perms.config.view_department %}
 <section class="content">
    <div class="container-fluid">
       <!-- Default box -->
@@ -44,9 +45,11 @@
                   <div class="col-auto card-actions">
                      <button class="btn btn-xs btn-light"> <i class="fas fa-print"></i></button>
                      <button class="btn btn-xs btn-light"> <i class="fas fa-redo"></i></button>
+                     {% if perms.config.add_department %}
                      <button class="btn btn-xs btn-orange" id="btn_new">
                         <i class="fas fa-plus"></i> <span>New</span>
                      </button>
+                     {% endif %}
                   </div>
                </div>
             </div>
@@ -73,9 +76,15 @@
       </div>
 
    </div>
-
+   <input type="hidden" id="changeDepartmentHidden" value="{% if perms.config.change_department %}true{% else %}false{% endif %}">
+   <input type="hidden" id="deleteDepartmentHidden" value="{% if perms.config.delete_department %}true{% else %}false{% endif %}">
 
 </section>
+{% else %}
+   <section class="content">
+      You don't have permission to view this page
+   </section>
+{% endif %}
 {% endblock %}
 
 {% block modal %}

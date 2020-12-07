@@ -44,7 +44,7 @@ $(document).ready(function () {
             data: null,
             render: function (data, type, row) {
                if (type == 'display') {
-
+                  data = '';
                   if (row.is_active == true) {
                      data = "<i class='fas fa-check-circle text-success'></i>";
                   } else {
@@ -57,8 +57,13 @@ $(document).ready(function () {
          {
             data: "null",
             render: function (data, type, row) {
-               data = `<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
-                     <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
+               data = '';
+               if($('#changeDepartmentHidden').val() == 'true') {
+                  data = data + "<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>";
+               }
+               if($('#deleteDepartmentHidden').val() == 'true') {
+                  data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
+               }
                return data
             },
          }
