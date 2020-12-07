@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_datatables',
     'crispy_forms',
+    'easyaudit',
     
     # Django Apps
     'core',
@@ -58,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'easyaudit.middleware.easyaudit.EasyAuditMiddleware', # easyaudit middleware
 ]
 
 ROOT_URLCONF = 'trackit.urls'
@@ -160,3 +162,16 @@ REST_FRAMEWORK = {
 }
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# Easy Audit configs
+DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS = False # disable URL request (GET, POST, PUT, PATCH) logs
+DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = [ # list of models that Easy Audit will ignore ('appname.model_name')
+    # auth app
+    'auth.group',
+    # core app
+    'core.user',
+    # config app
+    'config.department', 'config.categorytype', 'config.category', 'config.status',
+    # requests app
+    'requests.requestform', 'requests.requestformstatus',
+]

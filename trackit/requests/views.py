@@ -31,3 +31,6 @@ def get_category(request):
    data = list(categories)
 
    return JsonResponse(data, safe=False)
+
+def ticket_log_list(request):
+   return render(request, 'pages/requests/track.html', {})
