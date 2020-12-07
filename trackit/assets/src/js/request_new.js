@@ -47,6 +47,7 @@ $(document).ready(function () {
       }).then(function (response) { // clear div elements
          $('.body-info').remove();
          $('.form-wrapper').empty();
+         $(".form-admin-wrapper").empty();
 
          return response.data.fields
       }).then(function (response) { // generate form fields
@@ -56,9 +57,17 @@ $(document).ready(function () {
             const title = data.title;
             const form_field = data.form_field;
             const is_admin = data.is_admin;
+            let form_wrapper;
+
+            if (is_admin == true) {
+               form_wrapper = $(".form-admin-wrapper")
+               $('.separator').removeClass('d-none');
+            } else {
+               form_wrapper = $(".form-wrapper")
+            }
 
             if (form_field.length > 1) {
-               $('.form-wrapper').append(
+               form_wrapper.append(
                   `<div class="form-group">
                      <label> ${title} </label>
                      <div class="type-group"></div>
@@ -103,7 +112,7 @@ $(document).ready(function () {
 
             } else {
                if (form_field.type == "text") {
-                  $('.form-wrapper').append(
+                  form_wrapper.append(
                      `<div class=" form-group">
                         <label> ${title} </label>
                         <input type="text" class="form-control form-control-sm" id="${form_field.id}" placeholder="Enter ${title}">
@@ -112,7 +121,7 @@ $(document).ready(function () {
                   );
                }
                if (form_field.type == "textarea") {
-                  $('.form-wrapper').append(
+                  form_wrapper.append(
                      `<div class=" form-group">
                         <label> ${title} </label>
                         <textarea class="form-control form-control-sm" id="${form_field.id}" placeholder="Enter ${title}" rows="2"></textarea>
@@ -121,7 +130,7 @@ $(document).ready(function () {
                   );
                }
                if (form_field.type == "radio") {
-                  $('.form-wrapper').append(
+                  form_wrapper.append(
                      `<div class=" form-group">
                         <label> ${title} </label>
                         <div class="radio-group"></div>
@@ -138,7 +147,7 @@ $(document).ready(function () {
                   });
                }
                if (form_field.type == "check") {
-                  $('.form-wrapper').append(
+                  form_wrapper.append(
                      `<div class=" form-group">
                         <label> ${title}</label>
                         <div class="check-group"></div>

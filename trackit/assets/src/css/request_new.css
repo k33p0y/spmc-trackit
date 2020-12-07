@@ -58,3 +58,24 @@
    margin-left: 6px;
 }
 
+/* Separator */
+.separator {
+   display: flex;
+   align-items: center;
+   text-align: center;
+   font-style: italic;
+   font-size: 10px;
+   margin-top: 12px;
+   margin-bottom: 6px;
+}
+.separator::before, .separator::after {
+   content: '';
+   flex: 1;
+   border-bottom: 1px solid #cdd5df;
+}
+.separator::before {
+   margin-right: .25em;
+}
+.separator::after {
+   margin-left: .25em;
+}
