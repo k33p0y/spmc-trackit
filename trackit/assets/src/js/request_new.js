@@ -34,11 +34,135 @@ $(document).ready(function () {
 
    $('#dd_forms').on('change', function () { // request form dropdown
       dd_form_id = $("#dd_forms option:selected").val();
-      doTheThing(dd_form_id)
-         .then((data) => {
-            fields_arr = data.fields;
-            generateForm(fields_arr);
-         })
+      // doTheThing(dd_form_id)
+      //    .then((data) => {
+      //       fields_arr = data.fields;
+      //       generateForm(fields_arr);
+      //    })
+
+      axios({
+         method: 'GET',
+         url: `/api/requests/forms/${dd_form_id}`,
+         headers: axiosConfig,
+      }).then(function (response) { // clear div elements
+         $('.body-info').remove();
+         $('.form-wrapper').empty();
+
+         return response.data.fields
+      }).then(function (response) { // generate form fields
+
+         response.forEach(data => {
+
+            const title = data.title;
+            const form_field = data.form_field;
+            const is_admin = data.is_admin;
+
+            if (form_field.length > 1) {
+               $('.form-wrapper').append(
+                  `<div class="form-group">
+                     <label> ${title} </label>
+                     <div class="type-group"></div>
+                     <small class="error-info" id="error-info-type"></small>
+                  </div>`
+               );
+
+               form_field.forEach(field => {
+                  if (field.type == "text") {
+                     $(".type-group").append(
+                        `<input type="text" class="form-control form-control-sm" id="${field.id}" placeholder="Enter ${title}">`
+                     );
+                  }
+                  if (field.type == "textarea") {
+                     $(".type-group").append(
+                        `<textarea class="form-control form-control-sm" id="${field.id}" placeholder="Enter ${title}" rows="2"></textarea>`
+                     );
+                  }
+                  if (field.type == "radio") {
+                     field.option.forEach(opt => {
+                        $(".type-group").append(
+                           `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                        <input type="radio" id="${opt.id}" name="${field.id}" />
+                        <label for="${opt.id}">${opt.name}</label>
+                     </div>`
+                        );
+                     });
+                  }
+                  if (field.type == "check") {
+                     counter = 1;
+                     field.option.forEach(opt => {
+                        $(".type-group").append(
+                           `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                        <input type="checkbox" id="${opt.id}"/>
+                        <label for="${opt.id}">${opt.name}</label>
+                     </div>`
+                        );
+                        counter++;
+                     });
+                  }
+               });
+
+            } else {
+               if (form_field.type == "text") {
+                  $('.form-wrapper').append(
+                     `<div class=" form-group">
+                        <label> ${title} </label>
+                        <input type="text" class="form-control form-control-sm" id="${form_field.id}" placeholder="Enter ${title}">
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>`
+                  );
+               }
+               if (form_field.type == "textarea") {
+                  $('.form-wrapper').append(
+                     `<div class=" form-group">
+                        <label> ${title} </label>
+                        <textarea class="form-control form-control-sm" id="${form_field.id}" placeholder="Enter ${title}" rows="2"></textarea>
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>`
+                  );
+               }
+               if (form_field.type == "radio") {
+                  $('.form-wrapper').append(
+                     `<div class=" form-group">
+                        <label> ${title} </label>
+                        <div class="radio-group"></div>
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>`
+                  );
+                  form_field.option.forEach(opt => {
+                     $(".radio-group").append(
+                        `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                           <input type="radio" id="${opt.id}" name="${form_field.id}" />
+                           <label for="${opt.id}">${opt.name}</label>
+                        </div>`
+                     );
+                  });
+               }
+               if (form_field.type == "check") {
+                  $('.form-wrapper').append(
+                     `<div class=" form-group">
+                        <label> ${title}</label>
+                        <div class="check-group"></div>
+                        <small class="error-info" id="error-info-type"></small>
+                     </div>`
+                  );
+
+                  form_field.option.forEach(opt => {
+                     $(".check-group").append(
+                        `<div class="icheck-material-orange icheck-inline m-0 mr-3">
+                           <input type="checkbox" id="${opt.id}"/>
+                           <label for="${opt.id}">${opt.name}</label>
+                        </div>`
+                     );
+                  });
+               }
+            }
+         });
+
+         return response
+      }).then(function (response) { // generate form fields
+         $('#collapseTwo').removeAttr('data-parent').collapse()
+      });
+
    });
 
    $('#dd_types').on('change', function () { // category type dropdown
