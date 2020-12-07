@@ -10,15 +10,14 @@ from easyaudit.models import CRUDEvent
 import json
 
 class RequestFormViewSet(viewsets.ModelViewSet):    
-   # queryset = RequestForm.objects.all()
    serializer_class = RequestFormSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      if not self.request.user.has.perm('requests.view_ticket'):
-         return Department.objects.none()
+      if not self.request.user.has_perm('requests.view_ticket'):
+         return RequestForm.objects.none()
       else:
-         return Department.objects.all().order_by('id')
+         return RequestForm.objects.all().order_by('id')
 
    def create(self, request):
       name = request.data['name']
@@ -61,37 +60,34 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       return Response(serializer.data)
 
    def partial_update(self, request, pk):
-      request_form = RequestForm.objects.get(pk=pk)
-      request_form.is_archive = request.data['is_archive']
+      request_form = RequestForm.o= request.data['is_archive']
       request_form.save()
 
       serializer = RequestFormSerializer(request_form, partial=True)
       return Response(serializer.data)
 
 class TicketViewSet(viewsets.ModelViewSet):    
-   queryset = Ticket.objects.all()
    serializer_class = TicketSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      if not self.request.user.has.perm('requests.view_ticket'):
-         return Department.objects.none()
+      if not self.request.user.has_perm('requests.view_ticket'):
+         return Ticket.objects.none()
       else:
-         return Department.objects.all().order_by('id')
+         return Ticket.objects.all()
 
    def perform_create(self, serializer):
       serializer.save(requested_by=self.request.user)
 
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
-   queryset = RequestFormStatus.objects.all()
    serializer_class = RequestFormStatusSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      if not self.request.user.has.perm('requests.view_ticket'):
-         return Department.objects.none()
+      if not self.request.user.has_perm('requests.view_ticket'):
+         return RequestFormStatus.objects.none()
       else:
-         return Department.objects.all().order_by('id')
+         return RequestFormStatus.objects.all().order_by('id')
 
 class CRUDEventList(generics.ListAPIView):
    serializer_class = CRUDEventSerializer

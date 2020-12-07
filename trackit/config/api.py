@@ -13,40 +13,37 @@ class DepartmentViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      if not self.request.user.has.perm('config.view_department'):
+      if not self.request.user.has_perm('config.view_department'):
          return Department.objects.none()
       else:
          return Department.objects.all().order_by('id')
 
 class CategoryViewSet(viewsets.ModelViewSet):    
-   # serializer_class = CategorySerializer
-   # queryset = Category.objects.all()
+   serializer_class = CategorySerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      if not self.request.user.has.perm('config.view_category'):
-         return Department.objects.none()
+      if not self.request.user.has_perm('config.view_category'):
+         return Category.objects.none()
       else:
-         return Department.objects.all().order_by('id')
+         return Category.objects.all().order_by('id')
 
 class CategoryTypeViewSet(viewsets.ModelViewSet):    
-   # serializer_class = CategoryTypeSerializer
-   # queryset = CategoryType.objects.all()
+   serializer_class = CategoryTypeSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      if not self.request.user.has.perm('config.view_categorytype'):
-         return Department.objects.none()
+      if not self.request.user.has_perm('config.view_categorytype'):
+         return CategoryType.objects.none()
       else:
-         return Department.objects.all().order_by('id')
+         return CategoryType.objects.all().order_by('id')
 
 class StatusViewSet(viewsets.ModelViewSet):
    serializer_class = StatusSerializer
-   # queryset = Status.objects.all()
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      if not self.request.user.has.perm('config.view_status'):
-         return Department.objects.none()
+      if not self.request.user.has_perm('config.view_status'):
+         return Status.objects.none()
       else:
-         return Department.objects.all().order_by('id')
+         return Status.objects.all().order_by('id')
