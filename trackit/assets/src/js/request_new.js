@@ -35,11 +35,6 @@ $(document).ready(function () {
 
    $('#dd_forms').on('change', function () { // request form dropdown
       dd_form_id = $("#dd_forms option:selected").val();
-      // doTheThing(dd_form_id)
-      //    .then((data) => {
-      //       fields_arr = data.fields;
-      //       generateForm(fields_arr);
-      //    })
 
       axios({
          method: 'GET',
