@@ -32,6 +32,7 @@
 {% if perms.requests.add_ticket %}
 <section class="content">
    <div class="container-fluid accordion" id="accordionWrapper">
+      <div class="overlay d-none"></div>
       <div class="row">
          <div class="col-12 col-sm-12">
             <div class="card card-form mt-2 mb-1">
@@ -85,7 +86,6 @@
                               <small class="error-info" id="error-info-type"></small>
                            </div>
                         </div>
-
                      </form>
                   </div>
                </div>
@@ -147,8 +147,8 @@
 
       <div class="form-actions mt-2 d-flex flex-row-reverse">
          <button type="submit" class="btn btn-sm btn-orange" id="btn_save"><span>Submit</span></button>
-         <button type="submit" class="btn btn-sm btn-light" id="btn_save"><span>Submit and add another</span></button>
-         <button type="button" class="btn btn-sm btn-light" id="btn_save"><span>Back</span></button>
+         <button type="submit" class="btn btn-sm btn-light"><span>Submit and add another</span></button>
+         <a href="{% url 'ticket' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
       </div>
    </div>
 </section>
