@@ -101,7 +101,9 @@ $(document).ready(function () {
          {
             data: "null",
             render: function (data, type, row) {
-               data = `<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
+               var id = row.ticket_id;
+
+               data = `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
                          <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
                return data
             },
@@ -109,45 +111,31 @@ $(document).ready(function () {
       ],
    });
 
-   // CREATE / POST
-   $('#btn_new').on('click', function () {
-      // Assign AJAX Action Type and URL
-      action_type = 'POST';
-      url = '/api/requests/lists/';
-      alert_msg = 'Saved Successfully';
+   // // UPDATE / PUT
+   // $('#dt_requests tbody').on('click', '.btn_edit', function () {
+   //    let dt_data = table.row($(this).parents('tr')).data();
+   //    let id = dt_data['id'];
+   //    let form_data = dt_data['form_data'];
 
-      // Hide Category Form Dropdown
-      $('#form-group-category').hide();
+   //    // Assign AJAX Action Type/Method and URL
+   //    action_type = 'PUT';
+   //    url = `/api/requests/lists/${id}/`;
+   //    alert_msg = 'Update Successfully';
 
-      // Prev Next Function
-      navigator();
-   });
+   //    // Open Modal
+   //    // Rename Modal Title
+   //    $("#formModal").modal();
+   //    $(".modal-title").text('Update Requests');
 
-   // UPDATE / PUT
-   $('#dt_requests tbody').on('click', '.btn_edit', function () {
-      let dt_data = table.row($(this).parents('tr')).data();
-      let id = dt_data['id'];
-      let form_data = dt_data['form_data'];
+   //    // Populate Fields
+   //    $('#dd_departments').val(dt_data['department'].id).trigger('change');
+   //    $('#dd_forms').val(dt_data['request_form'].id).trigger('change');
+   //    $('#dd_types').val(dt_data['category'].category_type.id).trigger('change');
+   //    $('#dd_categories').val(dt_data['category'].id).trigger('change');
 
-      // Assign AJAX Action Type/Method and URL
-      action_type = 'PUT';
-      url = `/api/requests/lists/${id}/`;
-      alert_msg = 'Update Successfully';
-
-      // Open Modal
-      // Rename Modal Title
-      $("#formModal").modal();
-      $(".modal-title").text('Update Requests');
-
-      // Populate Fields
-      $('#dd_departments').val(dt_data['department'].id).trigger('change');
-      $('#dd_forms').val(dt_data['request_form'].id).trigger('change');
-      $('#dd_types').val(dt_data['category'].category_type.id).trigger('change');
-      $('#dd_categories').val(dt_data['category'].id).trigger('change');
-
-      // Prev Next Function
-      navigator();
-   });
+   //    // Prev Next Function
+   //    navigator();
+   // });
 
    // Submit Form
    $("#btn_save").click(function (e) {

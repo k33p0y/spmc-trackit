@@ -11,6 +11,7 @@ router.register('api/requests/form-status', RequestFormStatusViewSet, basename='
 urlpatterns = [
    path('requests/lists', views.ticket, name='ticket'),
    path('requests/new', views.create_ticket, name='create_ticket'),
+   path('requests/<uuid:ticket_id>/detail', views.detail_ticket, name='detail_ticket'),
    path('requests/boards', views.boards, name='boards'),
    path('requests/categories/json', views.get_category, name='get_category'),
    path('requests/track', views.ticket_log_list, name='ticket_log_list'),

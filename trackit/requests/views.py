@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from config.models import Category, CategoryType, Department
 from .models import Ticket, RequestForm
@@ -10,7 +10,8 @@ import json
 # Create your views here.
 @login_required
 def ticket(request):
-   return render(request, 'pages/requests/ticket_lists.html')
+   tickets = Ticket.objects.all()
+   return render(request, 'pages/requests/ticket_lists.html', {tickets: tickets})
 
 @login_required
 def create_ticket(request):
@@ -20,6 +21,12 @@ def create_ticket(request):
    
    context = {'forms': forms, 'types': types, 'departments':departments}
    return render(request, 'pages/requests/ticket_new.html', context)
+
+@login_required
+def detail_ticket(request, ticket_id):
+   tickets = get_object_or_404(Ticket, ticket_id=ticket_id)
+   
+   return render(request, 'pages/requests/ticket_detail.html', {'ticket': tickets})
 
 @login_required
 def boards(request):
