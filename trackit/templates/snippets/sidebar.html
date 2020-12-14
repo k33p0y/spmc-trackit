@@ -79,9 +79,9 @@
                </ul>
             </li>
             <li
-               class="nav-item {% if url == 'ticket' or url == 'boards' or  url == 'create_ticket' %} menu-open {% endif %}">
+               class="nav-item {% if url == 'ticket' or url == 'boards' or  url == 'create_ticket' or url == 'detail_ticket' %} menu-open {% endif %}">
                <a href="#"
-                  class="nav-link {% if url == 'ticket' or url == 'boards' or url == 'create_ticket' %} active {% endif %}">
+                  class="nav-link {% if url == 'ticket' or url == 'boards' or url == 'create_ticket' or url == 'detail_ticket' %} active {% endif %}">
                   <i class="nav-icon fas fa-pen"></i>
                   <p>
                      Request
@@ -103,7 +103,8 @@
                      </a>
                   </li>
                   <li class="nav-item">
-                     <a href="{% url 'ticket' %}" class="nav-link {% if url == 'ticket' %} active {% endif %}">
+                     <a href="{% url 'ticket' %}"
+                        class="nav-link {% if url == 'ticket' or url == 'detail_ticket' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p>My Requests</p>
                      </a>
