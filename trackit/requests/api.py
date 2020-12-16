@@ -60,7 +60,8 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       return Response(serializer.data)
 
    def partial_update(self, request, pk):
-      request_form = RequestForm.o= request.data['is_archive']
+      request_form = RequestForm.objects.get(pk=pk)
+      request_form.is_archive = request.data['is_archive']
       request_form.save()
 
       serializer = RequestFormSerializer(request_form, partial=True)
