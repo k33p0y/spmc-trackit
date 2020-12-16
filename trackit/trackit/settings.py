@@ -179,3 +179,11 @@ DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = [ # list of models that Easy Audi
 
 # Django Channels
 ASGI_APPLICATION = 'trackit.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}

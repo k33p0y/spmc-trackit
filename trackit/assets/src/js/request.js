@@ -245,4 +245,15 @@ $(document).ready(function () {
          });
       };
    });
+
+   $(".card-actions").on("click", ".btn-create-ws", function(){
+      let ans = prompt('Enter deparment', '');
+      if(ans) {
+         socket.send(
+            JSON.stringify(
+               {message: `${ans}`, num: 0, bool: true}
+            )
+         )
+      };
+   });
 });
