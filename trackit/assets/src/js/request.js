@@ -352,6 +352,64 @@ $(document).ready(function () {
          });
       };
    });
+
+   $("#btn_update").click(function (e) {
+      e.preventDefault();
+
+      // Variables
+      let data = {}
+      let success = 1;
+
+      // Data
+      data.ticket_no = '';
+      data.request_form = dd_form_id;
+      data.form_data = getFormValues(data_obj);
+      data.category = dd_category_id;
+      data.department = dd_department_id;
+      data.is_active = true;
+      data.is_archive = false;
+
+      if (success == 1) {
+         axios({
+            method: 'PATCH',
+            url: `/api/requests/lists/`,
+            data: data,
+            headers: axiosConfig,
+         }).then(function (response) { // success
+            // disable submit button
+            $(this).attr('disabled', true)
+            $.when(
+               Toast.fire({
+                  icon: 'success',
+                  title: 'Submit Successfully',
+               }),
+               $('.overlay').removeClass('d-none')
+            ).then(function () {
+               $(location).attr('href', '/requests/lists')
+            });
+
+         }).catch(function (error) { // error
+            console.log(error.response)
+
+            Toast.fire({
+               icon: 'error',
+               title: error,
+            });
+         });
+      };
+   });
+
+   $(".card-actions").on("click", ".btn-create-ws", function(){
+      let ans = prompt('Enter deparment', '');
+      if(ans) {
+         socket.send(
+            JSON.stringify(
+               {message: `${ans}`, num: 0, bool: true}
+            )
+         )
+      };
+   });
+   
 });
 
 // Get form Values
@@ -442,3 +500,4 @@ function getFormValues(data_obj) {
 
    return form_fields_obj;
 }
+

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 3rd Party
+    'channels',
     'rest_framework',
     'rest_framework_datatables',
     'crispy_forms',
@@ -175,3 +176,14 @@ DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = [ # list of models that Easy Audi
     # requests app
     'requests.requestform', 'requests.requestformstatus',
 ]
+
+# Django Channels
+ASGI_APPLICATION = 'trackit.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(config('REDIS_HOST'), config('REDIS_PORT'))],
+        },
+    },
+}

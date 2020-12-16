@@ -1,0 +1,27 @@
+<script>
+    let loc = window.location
+    let wsStart = loc.protocol == "https:" ? "wss://" : "ws://";
+    let url = wsStart + loc.host + '/ws/notifications/';
+    const socket = new WebSocket(url)
+
+    socket.onopen = function(event) {
+        console.log('connection is open')
+        //socket.send('thanks for connecting') // send to websocket backend
+    }
+
+    socket.onmessage = function(event) {
+        console.log(event)
+        //console.log(JSON.parse(event.data))
+        console.log('message received')
+    }
+
+    socket.onclose = function(event) {
+        //console.log(event)
+        console.log('connection is closed')
+    }
+
+    socket.onerror = function(event) {
+        console.log(event)
+        console.log('something went wrong')
+    }
+</script>
