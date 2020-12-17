@@ -1,0 +1,39 @@
+{% if form.form_field.type == 'text' %}
+<div class="form-group">
+    <label> {{form.title}} </label>
+    <input type="text" class="form-control form-control-sm" id="{{form.form_field.id}}" value="{{form.form_field.answer}}" placeholder="Enter {{form.title}}">
+    <small class="error-info" id="error-info-type"></small>
+</div>
+{% elif form.form_field.type == 'textarea' %}
+<div class="form-group">
+    <label> {{form.title}} </label>
+    <textarea class="form-control form-control-sm" id="{{form.form_field.id}}" placeholder="Enter {{form.title}}" rows="2">{{form.form_field.answer}}</textarea>
+    <small class="error-info" id="error-info-type"></small>
+</div>
+{% elif form.form_field.type == 'radio' %}
+<div class="form-group">
+    <label> {{form.title}} </label>
+    <div class="radio-group">
+        {% for opt in form.form_field.option %}
+        <div class="icheck-material-orange icheck-inline m-0 mr-3">
+        <input type="radio" id="{{opt.id}}" name="{{form.form_field.id}}" {% if opt.id == form.form_field.answer.key %} checked {% endif %}/>
+        <label for="{{opt.id}}">{{opt.name}}</label>
+        </div>
+        {% endfor %}
+    </div>
+    <small class="error-info" id="error-info-type"></small>
+</div>
+{% elif form.form_field.type == 'check' %}
+<div class="form-group">
+    <label> {{form.title}} </label>
+    <div class="check-group">
+        {% for opt in form.form_field.option %}
+        <div class="icheck-material-orange icheck-inline m-0 mr-3">
+        <input type="checkbox" id="{{opt.id}}" {% if opt.id == form.form_field.answer.key %} checked {% endif %}/>
+        <label for="{{opt.id}}">{{opt.name}}</label>
+        </div>
+        {% endfor %}
+    </div>
+    <small class="error-info" id="error-info-type"></small>
+</div>
+{% endif %}

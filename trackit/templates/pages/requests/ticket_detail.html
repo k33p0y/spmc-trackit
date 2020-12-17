@@ -31,18 +31,17 @@
 <!-- /.content -->
 {% if perms.requests.edit_ticket %}
 <section class="content">
-   <div class="container-fluid accordion" id="accordionWrapper">
+   <div class="container-fluid">
       <div class="overlay d-none"></div>
-
-      <div class="row">
+      <div class="row" id="row-information">
          <div class="col-12 col-sm-12">
             <div class="card card-form mt-2 mb-1">
-               <a href="#collapseOne" data-toggle="collapse" aria-expanded="true" aria-controls="collapseOne">
-                  <div class="card-header p-2" id="headingOne">
+               <a href="#collapseInformation" data-toggle="collapse" aria-expanded="true" aria-controls="collapseInformation">
+                  <div class="card-header p-2">
                      <div class="card-title">Ticket Information</div>
                   </div>
                </a>
-               <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionWrapper">
+               <div id="collapseInformation" class="collapse show">
                   <div class="card-body p-3">
                      <div class="row">
                         <div class="col-sm-12 col-md-12 col-lg-12">
@@ -54,7 +53,7 @@
                         <div class="col-sm-6 col-md-4 col-lg-4">
                            <div class="card card-detail mt-2 mb-1">
                               <p class="context">{{tickets.requested_by}}</p>
-                              <span class="label">Requestor</span>
+                              <span class="label">Requested By</span>
                            </div>
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-4">
@@ -93,15 +92,15 @@
             </div>
          </div>
       </div>
-      <div class="row">
+      <div class="row" id="row-details">
          <div class="col-12 col-sm-12">
             <div class="card card-form mt-2 mb-1">
-               <a href="#collapseTwo" data-toggle="collapse" aria-expanded="true" aria-controls="collapseTwo">
-                  <div class="card-header p-2" id="headingTwo">
+               <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
+                  <div class="card-header p-2">
                      <div class="card-title">Request Details</div>
                   </div>
                </a>
-               <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionWrapper">
+               <div id="collapseDetails" class="collapse show">
                   <div class="card-body p-3">
                      <form>
                         <div class="form-row">
@@ -132,123 +131,79 @@
             </div>
          </div>
       </div>
-      <div class="row">
+      <div class="row" id="row-field">
          <div class="col-12 col-sm-12">
             <div class="card card-form mt-2 mb-1">
-               <a href="#collapseThree" data-toggle="collapse" aria-expanded="false" aria-controls="collapseThree">
-                  <div class="card-header p-2" id="headingThree">
+               <a href="#collapseFields" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFields">
+                  <div class="card-header p-2">
                      <div class="card-title">Form Fields</div>
                   </div>
                </a>
-               <div id="collapseThree" class="collapse show" aria-labelledby="headingThree" data-parent="#accordionWrapper">
+               <div id="collapseFields" class="collapse show">
                   <div class="card-body p-3">
-                  <form>
+                     <div class="form-wrapper">
                      {% for form in tickets.form_data %}
-                        {% if form.is_admin == False %}
-                           <div class="form-wrapper">
-                           {% if form.form_field.type == 'text' %}
+                        {% if form.is_admin != True %}
+                           {% if form.form_field|length < 5 %}
                               <div class="form-group">
-                                 <label> {{form.title}} </label>
-                                 <input type="text" class="form-control form-control-sm" id="{{form.form_field.id}}" value="{{form.form_field.answer}}">
-                                 <small class="error-info" id="error-info-type"></small>
-                              </div>
-                           {% elif form.form_field.type == 'textarea' %}
-                              <div class="form-group">
-                                 <label> {{form.title}} </label>
-                                 <textarea class="form-control form-control-sm" id="{{form.form_field.id}}" placeholder="Enter {{form.title}}" rows="2"> {{form.form_field.answer}}</textarea>
-                                 <small class="error-info" id="error-info-type"></small>
-                              </div>
-                           {% elif form.form_field.type == 'radio' %}
-                              <div class="form-group">
-                                 <label> {{form.title}} </label>
-                                 <div class="radio-group">
-                                    {% for opt in form.form_field.option %}
-                                    <div class="icheck-material-orange icheck-inline m-0 mr-3">
-                                       <input type="radio" id="{{opt.id}}" name="{{form.form_field.id}}" {% if opt.id == form.form_field.answer.key %} checked {% endif %}/>
-                                       <label for="{{opt.id}}">{{opt.name}}</label>
-                                    </div>
-                                    {% endfor %}
+                                 <label> {{form.title}}  </label>
+                                 <div class="type-group">
+                                    {% include '../../snippets/form2.html' %}
                                  </div>
                                  <small class="error-info" id="error-info-type"></small>
                               </div>
-                           {% elif form.form_field.type == 'check' %}
-                              <div class="form-group">
-                                 <label> {{form.title}} </label>
-                                 <div class="check-group">
-                                    {% for opt in form.form_field.option %}
-                                    <div class="icheck-material-orange icheck-inline m-0 mr-3">
-                                       <input type="checkbox" id="{{opt.id}}" {% if opt.id == form.form_field.answer.key %} checked {% endif %}/>
-                                       <label for="{{opt.id}}">{{opt.name}}</label>
-                                    </div>
-                                    {% endfor %}
-                                 </div>
-                                 <small class="error-info" id="error-info-type"></small>
-                              </div>
+                           {% else %}
+                              {% include '../../snippets/form.html' %}
                            {% endif %}
-                           </div>
                         {% endif %}
                      {% endfor %}
-                     <div class="separator"> To be filled out by IHOMP</div>     
-                     {% for form in tickets.form_data %}
-                        {% if form.is_admin == True %}
-                           <div class="form-wrapper">
-                           {% if form.form_field.type == 'text' %}
-                              <div class="form-group">
-                                 <label> {{form.title}} </label>
-                                 <input type="text" class="form-control form-control-sm" id="{{form.form_field.id}}" value="{{form.form_field.answer}}" placeholder="Enter {{form.title}}">
-                                 <small class="error-info" id="error-info-type"></small>
-                              </div>
-                           {% elif form.form_field.type == 'textarea' %}
-                              <div class="form-group">
-                                 <label> {{form.title}} </label>
-                                 <textarea class="form-control form-control-sm" id="{{form.form_field.id}}" placeholder="Enter {{form.title}}" rows="2"></textarea>
-                                 <small class="error-info" id="error-info-type"></small>
-                              </div>
-                           {% elif form.form_field.type == 'radio' %}
-                              <div class="form-group">
-                                 <label> {{form.title}} </label>
-                                 <div class="radio-group">
-                                    {% for opt in form.form_field.option %}
-                                    <div class="icheck-material-orange icheck-inline m-0 mr-3">
-                                       <input type="radio" id="{{opt.id}}" name="{{form.form_field.id}}" {% if opt.id == form.form_field.answer.key %} checked {% endif %}/>
-                                       <label for="{{opt.id}}">{{opt.name}}</label>
-                                    </div>
-                                    {% endfor %}
-                                 </div>
-                                 <small class="error-info" id="error-info-type"></small>
-                              </div>
-                           {% elif form.form_field.type == 'check' %}
-                              <div class="form-group">
-                                 <label> {{form.title}} </label>
-                                 <div class="check-group">
-                                    {% for opt in form.form_field.option %}
-                                    <div class="icheck-material-orange icheck-inline m-0 mr-3">
-                                       <input type="checkbox" id="{{opt.id}}" {% if opt.id == form.form_field.answer.key %} checked {% endif %}/>
-                                       <label for="{{opt.id}}">{{opt.name}}</label>
-                                    </div>
-                                    {% endfor %}
-                                 </div>
-                                 <small class="error-info" id="error-info-type"></small>
-                              </div>
-                           {% endif %}
-                           </div>
-                        {% endif %}
-                     {% endfor %}
-                     </form>  
+                     </div>
                   </div>
                </div>
             </div>
          </div>
       </div>
-      <div class="row">
+      <div class="row" id="row-field-admin">
          <div class="col-12 col-sm-12">
             <div class="card card-form mt-2 mb-1">
-               <a href="#collapseFour" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFour">
-                  <div class="card-header p-2" id="headingFour">
+               <a href="#collapseFieldsAdmin" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFieldsAdmin">
+                  <div class="card-header p-2">
+                     <div class="card-title">Form Fields (To be filled by Admin)</div>
+                  </div>
+               </a>
+               <div id="collapseFieldsAdmin" class="collapse show">
+                  <div class="card-body p-3">
+                     <div class="form-admin-wrapper">
+                        {% for form in tickets.form_data %}
+                           {% if form.is_admin == True %}
+                              {% if form.form_field|length < 5 %}
+                                 <div class="form-group">
+                                    <label> {{form.title}}  </label>
+                                    <div class="type-group">
+                                       {% include '../../snippets/form2.html' %}
+                                    </div>
+                                    <small class="error-info" id="error-info-type"></small>
+                                 </div>
+                              {% else %}
+                                 {% include '../../snippets/form.html' %}
+                              {% endif %}
+                           {% endif %}
+                        {% endfor %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row" id="row-attachment">
+         <div class="col-12 col-sm-12">
+            <div class="card card-form mt-2 mb-1">
+               <a href="#collapseAttachment" data-toggle="collapse" aria-expanded="false" aria-controls="collapseAttachment">
+                  <div class="card-header p-2">
                      <div class="card-title">Attachments</div>
                   </div>
                </a>
-               <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionWrapper">
+               <div class="collapse" id="collapseAttachment">
                   <div class="card-body p-3">
                      <div class="upload-wrapper d-flex justify-content-center">
                         <div class="d-flex align-items-center">
@@ -265,11 +220,14 @@
             </div>
          </div>
       </div>
-
-      <div class="form-actions mt-2 d-flex flex-row-reverse">
-         <button type="submit" class="btn btn-sm btn-orange" id="btn_update"><span>Save</span></button>
-         <button type="submit" class="btn btn-sm btn-light"><span>Save and continue editing</span></button>
-         <a href="{% url 'ticket' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
+      <div class="row pt-2 pb-5" id="row-buttons">
+         <div class="col-12">
+            <div class="form-actions mt-2 d-flex flex-row-reverse">
+               <button type="submit" class="btn btn-sm btn-orange" id="btn_update"><span>Save</span></button>
+               <button type="submit" class="btn btn-sm btn-light"><span>Save and continue editing</span></button>
+               <a href="{% url 'ticket' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
+            </div>
+         </div>
       </div>
    </div>
 </section>

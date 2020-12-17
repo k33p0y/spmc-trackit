@@ -1,0 +1,21 @@
+{% for field in form.form_field %}
+    {% if field.type == 'text' %}
+    <input type="text" class="form-control form-control-sm" id="{{field.id}}" value="{{field.answer}}" placeholder="Enter {{field.name}}">
+    {% elif field.type == 'textarea' %}
+    <textarea class="form-control form-control-sm" id="{{field.id}}" value="{{field.answer}}" placeholder="Enter {{field.name}}" rows="2"></textarea>
+    {% elif field.type == 'radio' %}
+        {% for opt in field.option %}
+        <div class="icheck-material-orange icheck-inline m-0 mr-3">
+            <input type="radio" id="{{opt.id}}" name="{{field.id}}" {% if opt.id == field.answer.key %} checked {% endif %} />
+            <label for="{{opt.id}}">{{opt.name}}</label>
+            </div>
+        {% endfor %}
+    {% elif field.type == 'check' %}
+        {% for opt in field.option %}
+        <div class="icheck-material-orange icheck-inline m-0 mr-3">
+            <input type="checkbox" id="{{opt.id}}" {% if opt.id == field.answer.key %} checked {% endif %}/>
+            <label for="{{opt.id}}">{{opt.name}}</label>
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endfor %}
