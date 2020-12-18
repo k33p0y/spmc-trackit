@@ -46,44 +46,64 @@
                      <div class="row">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                            <div class="card card-detail mt-2 mb-1">
-                              <p class="context">{{tickets.ticket_no}}</p>
-                              <span class="label">Ticket No</span>
+                              <div class="card-body p-0 m-0">
+                                 <p class="context">{{tickets.ticket_no}}</p>
+                                 <span class="label">Ticket No</span>
+                              </div>
                            </div>
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-4">
                            <div class="card card-detail mt-2 mb-1">
-                              <p class="context">{{tickets.requested_by}}</p>
-                              <span class="label">Requested By</span>
+                              <div class="card-body p-0 m-0">
+                                 <p class="context">{{tickets.requested_by}}</p>
+                                 <span class="label">Requested By</span>
+                              </div>
                            </div>
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-4">
                            <div class="card card-detail mt-2 mb-1">
-                              <p class="context">{{tickets.date_created|date:"d F Y h:i A"}}</p>
-                              <span class="label">Date Created</span>
+                              <div class="card-body p-0 m-0">
+                                 <p class="context">{{tickets.date_created|date:"d F Y h:i A"}}</p>
+                                 <span class="label">Date Created</span>
+                              </div>
                            </div>
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-4">
                            <div class="card card-detail mt-2 mb-1">
-                              <p class="context">{{tickets.date_modified|date:"d F Y h:i A"}}</p>
-                              <span class="label">Date Modified</span>
+                              <div class="card-body p-0 m-0">
+                                 <p class="context">{{tickets.date_modified|date:"d F Y h:i A"}}</p>
+                                 <span class="label">Date Modified</span>
+                              </div>
                            </div>
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-4">
                            <div class="card card-detail mt-2 mb-1">
-                              <p class="context" id="ticket_id" ticket_id="{{tickets.request_form.id}}">{{tickets.request_form}}</p>
-                              <span class="label">Request Form</span>
+                              <div class="card-body p-0 m-0">
+                                 <p class="context" id="form_id" form_id="{{tickets.request_form.id}}">{{tickets.request_form}}</p>
+                                 <span class="label">Request Form</span>
+                              </div>
                            </div>
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-4">
                            <div class="card card-detail mt-2 mb-1">
-                              <p class="context">{{tickets.status}}</p>
-                              <span class="label">Status</span>
+                              <div class="card-body p-0 m-0">
+                                 <p class="context">{{tickets.status}}</p>
+                                 <span class="label">Status</span>
+                              </div>
                            </div>
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-4">
                            <div class="card card-detail mt-2 mb-1">
-                              <p class="context">{% if tickets.is_active == True %} Active {% else %} In Active {% endif %}</p>
-                              <span class="label">Is Active</span>
+                              <div class="card-body p-0 m-0 d-flex align-items-center">
+                                 <div class="mr-auto">
+                                    <p class="context">{% if tickets.is_active == True %} Active {% else %} In Active {% endif %}</p>
+                                    <span class="label">Is Active</span>
+                                 </div>
+                                 <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitch1" {% if tickets.is_active %} checked {% endif %} >
+                                    <label class="custom-control-label" for="customSwitch1"></label>
+                                 </div>
+                              </div>
                            </div>
                         </div>
                      </div>
@@ -223,7 +243,7 @@
       <div class="row pt-2 pb-5" id="row-buttons">
          <div class="col-12">
             <div class="form-actions mt-2 d-flex flex-row-reverse">
-               <button type="submit" class="btn btn-sm btn-orange" id="btn_update"><span>Save</span></button>
+               <button type="submit" class="btn btn-sm btn-orange" id="btn_update" ticket_id="{{tickets.ticket_id}}"><span>Save</span></button>
                <button type="submit" class="btn btn-sm btn-light"><span>Save and continue editing</span></button>
                <a href="{% url 'ticket' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
             </div>

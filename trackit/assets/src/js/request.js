@@ -358,45 +358,46 @@ $(document).ready(function () {
 
       // Variables
       let data = {}
-      let success = 1;
+      let success = 0;
+      let ticket_id = $(this).attr('ticket_id')
+      console.log(ticket_id)
 
       // Data
       data.ticket_no = '';
-      data.request_form = dd_form_id;
-      data.form_data = getFormValues(data_obj);
+      data.form_data = 'getFormValues(data_obj)';
       data.category = dd_category_id;
       data.department = dd_department_id;
       data.is_active = true;
       data.is_archive = false;
 
-      if (success == 1) {
-         axios({
-            method: 'PATCH',
-            url: `/api/requests/lists/`,
-            data: data,
-            headers: axiosConfig,
-         }).then(function (response) { // success
-            // disable submit button
-            $(this).attr('disabled', true)
-            $.when(
-               Toast.fire({
-                  icon: 'success',
-                  title: 'Submit Successfully',
-               }),
-               $('.overlay').removeClass('d-none')
-            ).then(function () {
-               $(location).attr('href', '/requests/lists')
-            });
+      // if (success == 1) {
+      //    axios({
+      //       method: 'PATCH',
+      //       url: `/api/requests/lists/${ticket_id}`,
+      //       data: data,
+      //       headers: axiosConfig,
+      //    }).then(function (response) { // success
+      //       // disable submit button
+      //       $(this).attr('disabled', true)
+      //       $.when(
+      //          Toast.fire({
+      //             icon: 'success',
+      //             title: 'Submit Successfully',
+      //          }),
+      //          $('.overlay').removeClass('d-none')
+      //       ).then(function () {
+      //          $(location).attr('href', '/requests/lists')
+      //       });
 
-         }).catch(function (error) { // error
-            console.log(error.response)
+      //    }).catch(function (error) { // error
+      //       console.log(error.response)
 
-            Toast.fire({
-               icon: 'error',
-               title: error,
-            });
-         });
-      };
+      //       Toast.fire({
+      //          icon: 'error',
+      //          title: error,
+      //       });
+      //    });
+      // };
    });
 
    $(".card-actions").on("click", ".btn-create-ws", function(){
