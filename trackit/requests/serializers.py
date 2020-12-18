@@ -32,6 +32,11 @@ class RequestFormReadOnlySerializer(serializers.ModelSerializer):
       model = RequestForm
       fields = ['id', 'name', 'color']
 
+class StatusReadOnlySerializer(serializers.ModelSerializer):
+   class Meta:
+      model = Status
+      fields = ['id', 'name']
+
 class TicketSerializer(serializers.ModelSerializer):
    requested_by = UserSerializer(read_only=True)
     
@@ -41,7 +46,7 @@ class TicketSerializer(serializers.ModelSerializer):
       datatables_always_serialize = ('ticket_id',)
         
    def to_representation(self, instance):
-      # self.fields['requested_by'] = UserSerializer(read_only=True)
+      self.fields['status'] = StatusReadOnlySerializer(read_only=True)
       self.fields['department'] = DepartmentSerializer(read_only=True)
       self.fields['request_form'] = RequestFormReadOnlySerializer(read_only=True)
       self.fields['category'] = CategorySerializer(read_only=True)
