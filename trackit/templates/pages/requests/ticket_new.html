@@ -109,7 +109,7 @@
             </div>
          </div>
       </div>
-      <div class="row" id="row-field-admin">
+      <div class="row" id="row-field-admin" hidden>
          <div class="col-12 col-sm-12">
             <div class="card card-form mt-2 mb-1">
                <a href="#collapseFieldsAdmin" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFieldsAdmin">
@@ -129,7 +129,7 @@
       <div class="row" id="row-attachment">
          <div class="col-12 col-sm-12">
             <div class="card card-form mt-2 mb-1">
-               <a href="#collapseAttachment" data-toggle="collapse" aria-expanded="false" aria-controls="collapseAttachment">
+               <a href="#collapseAttachment" data-toggle="collapse show" aria-expanded="false" aria-controls="collapseAttachment">
                   <div class="card-header p-2">
                      <div class="card-title">Attachments</div>
                   </div>
@@ -170,5 +170,5 @@
 {% endblock %}
 
 {% block extrascript %}
-<script type="text/javascript" src="{% static 'src/js/request.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/request_new.js' %}"></script>
 {% endblock %}

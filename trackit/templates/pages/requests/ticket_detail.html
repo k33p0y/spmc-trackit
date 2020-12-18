@@ -100,8 +100,8 @@
                                     <span class="label">Is Active</span>
                                  </div>
                                  <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitch1" {% if tickets.is_active %} checked {% endif %} >
-                                    <label class="custom-control-label" for="customSwitch1"></label>
+                                    <input type="checkbox" class="custom-control-input" id="is_active_switch" {% if tickets.is_active %} checked {% endif %} >
+                                    <label class="custom-control-label" for="is_active_switch"></label>
                                  </div>
                               </div>
                            </div>
@@ -126,7 +126,7 @@
                         <div class="form-row">
                            <div class="form-group col-md-6">
                               <label>Category ({{tickets.category.category_type.name}})</label>
-                              <select class="form-control form-control-sm" id="dd_categories" style="width: 100%">
+                              <select class="form-control form-control-sm" id="dd_edit_categories" style="width: 100%">
                                  <option></option>
                                  {% for category in categories %}
                                  <option value={{category.id}} {% if category.id == tickets.category.id %} selected {% endif %} >{{category.name}}</option>
@@ -136,7 +136,7 @@
                            </div>
                            <div class="form-group col-md-6">
                               <label>Department</label>
-                              <select class="form-control form-control-sm" id="dd_departments" style="width: 100%">
+                              <select class="form-control form-control-sm" id="dd_edit_departments" style="width: 100%">
                                  <option></option>
                                  {% for department in departments %}
                                  <option value={{department.id}} {% if department.id == tickets.department.id %} selected {% endif %} >{{department.name}}</option>
