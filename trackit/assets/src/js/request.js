@@ -330,6 +330,9 @@ $(document).ready(function () {
             data: data,
             headers: axiosConfig,
          }).then(function (response) { // success
+            socket.send(
+               JSON.stringify({ticket_id: response.data.ticket_id}) // send ticket_id to websocket
+            )
             // disable submit button
             $(this).attr('disabled', true)
             $.when(
