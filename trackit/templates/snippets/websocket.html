@@ -5,8 +5,7 @@
     const socket = new WebSocket(url)
 
     socket.onopen = function(event) {
-        console.log('connection is open')
-        //socket.send('thanks for connecting') // send to websocket backend
+        $('.online-status').addClass('text-success')
     }
 
     socket.onmessage = function(event) {
@@ -16,8 +15,7 @@
     }
 
     socket.onclose = function(event) {
-        //console.log(event)
-        console.log('connection is closed')
+        $('.online-status').removeClass('text-success');
     }
 
     socket.onerror = function(event) {
