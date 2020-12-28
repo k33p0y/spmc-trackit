@@ -151,15 +151,19 @@ $(document).ready(function () {
       let data = {}
       let success = 0;
       let is_active = ($('#is_active_switch').is(":checked")) ? true : false;
-      let ticket_id = $(this).attr('ticket_id')
-
+      
+      const ticket_id = $(this).attr('ticket_id')
+      const form_id = $('#form_id').attr('form_id');
+      
       // Data
-      // data.form_data = getFormValues(ticket_id);
+      data.form_data = getFormDetailValues();
       data.category = category;
       data.department = department;
       data.is_active = is_active;
       data.status = 2;
       data.is_archive = false;
+
+      // console.log(data)
       
       axios({
          method: 'PATCH',
@@ -190,6 +194,48 @@ $(document).ready(function () {
    });
 });
 
-function getFormDetailValues(ticket_id) {
+function getFormDetailValues() {
+   const form_fields = $('.form_field_detail');
+   const form_data = new Array()
+   
+   form_fields.each(function(index, val) {
 
+      console.log(val)
+      
+      if ($(this).children().length > 0) {
+         let node = $(this).children();
+         var answer = new Array();
+         var type;
+
+         node.each(function(index, element) {
+            const field = $(this).find('input');
+            const label = $(this).find('label');
+
+            // Set type of field
+            type = field.attr('type');
+
+            // Push to array
+            answer.push({
+               "option_id": field.attr('id'),
+               "option_name" : label.text(),
+               "option_value" : (field.is(":checked")) ? true : false
+            });
+         });
+      }
+      
+      if (val.type == 'text' || val.type == 'textarea') {
+         var answer = $(`#${val.id}`).val()
+         var type = val.type;
+      }
+
+      form_data.push({
+         "id" : val.id,
+         "type" : type,
+         "value" : answer 
+      });  
+   });
+
+   console.log(form_data)
+
+   return form_data;
 }
