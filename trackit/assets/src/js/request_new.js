@@ -93,10 +93,15 @@ $(document).ready(function () {
                         );
                      });
                   }
-                  if (field.type == "check") {
-                     counter = 1;
-                     field.option.forEach(opt => {
-                     category_type      });
+                  if (field.type == "checkbox") {
+							field.option.forEach(opt => {
+								$(".type-group").append(
+									`<div class="icheck-material-orange icheck-inline m-0 mr-3">
+										<input type="checkbox" id="${opt.id}"/>
+										<label for="${opt.id}">${opt.name}</label>
+									</div>`
+								);
+							});
                   }
                });
 
@@ -136,7 +141,7 @@ $(document).ready(function () {
                      );
                   });
                }
-               if (form_field.type == "check") {
+               if (form_field.type == "checkbox") {
                   form_wrapper.append(
                      `<div class=" form-group">
                            <label> ${title}</label>
@@ -201,10 +206,10 @@ $(document).ready(function () {
 
       // Data
       data.ticket_no = '';
-      data.request_form = dd_form_id;
+      data.request_form = request_form;
       data.form_data = getFormValues(data_obj);
-      data.category = dd_category_id;
-      data.department = dd_department_id;
+      data.category = category;
+      data.department = department;
       data.is_active = true;
       data.is_archive = false;
 
@@ -241,91 +246,58 @@ $(document).ready(function () {
  
  // Get form Values
  function getFormValues(data_obj) {
-    let form_fields_obj = new Array();
- 
-    data_obj.forEach(data => {
-       const title = data.title;
-       const form_field = data.form_field;
-       const is_admin = data.is_admin;
-       let answer, fields;
- 
-       if (form_field.length > 1) {
-          fields = new Array();
- 
-          form_field.forEach(field => {
-             if (field.type == "text" || field.type == "textarea") { // textfield
-                answer = $(`#${field.id}`).val();
-             }
-             if (field.type == "radio") { // radio button
-                field.option.forEach(opt => {
-                   if ($(`#${opt.id}`).is(":checked")) {
-                      answer = new Object();
-                      answer.key = opt.id;
-                      answer.value = true;
-                   }
-                });
-             }
-             if (field.type == "check") { // checkbox
-                answer = new Array();
-                field.option.forEach(opt => {
-                   if ($(`#${opt.id}`).is(":checked")) {
-                      answer.push({
-                         "key": opt.id,
-                         "value": true
-                      })
-                   }
-                });
-             }
- 
-             fields.push({
-                "id": field.id,
-                "name": field.name,
-                "type": field.type,
-                "option": field.option,
-                "answer": answer,
-             });
-          });
-       } else {
-          if (form_field.type == "text" || form_field.type == "textarea") { // texfield
-             answer = $(`#${form_field.id}`).val();
-          }
-          if (form_field.type == "radio") { // radio button
-             form_field.option.forEach(opt => {
-                if ($(`#${opt.id}`).is(":checked")) {
-                   answer = new Object();
-                   answer.key = opt.id;
-                   answer.value = true;
-                }
-             });
-          }
-          if (form_field.type == "check") { // checkbox
-             answer = new Array();
-             form_field.option.forEach(opt => {
-                if ($(`#${opt.id}`).is(":checked")) {
-                   answer.push({
-                      "key": opt.id,
-                      "value": true
-                   })
-                }
-             });
-          }
- 
-          fields = new Object();
-          fields.id = form_field.id;
-          fields.name = form_field.name;
-          fields.type = form_field.type;
-          fields.option = form_field.option;
-          fields.answer = answer;
-       }
- 
-       form_fields_obj.push({
-          "title": title,
-          "form_field": fields,
-          "is_admin": is_admin,
-       });
-    });
- 
-    return form_fields_obj;
+	let form_fields_obj = new Array();
+
+	data_obj.forEach(data => {
+		const form_field = data.form_field;
+		let answer;
+
+		if (form_field.length > 1) {
+			form_field.forEach(field => {
+				if (field.type == "text" || field.type == "textarea") { // textfield
+					answer = $(`#${field.id}`).val();
+				}
+				if (field.type == "radio" || field.type == "checkbox") { // radio button
+					answer = new Array();
+					field.option.forEach(opt => {
+						answer.push({
+							"option_id": opt.id,
+							"option_name" : opt.name,
+							"option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
+						})
+					});
+				}
+
+				form_fields_obj.push({
+					"id":  field.id,
+					"type": field.type,
+					"value" : answer
+				});
+			});
+		} else {
+			if (form_field.type == "text" || form_field.type == "textarea") { // textfield
+				answer = $(`#${form_field.id}`).val();
+			}
+			if (form_field.type == "radio" || form_field.type == "checkbox") { // radio button
+				answer = new Array();
+				form_field.option.forEach(opt => {
+					answer.push({
+						"option_id": opt.id,
+						"option_name" : opt.name,
+						"option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
+					})
+				});
+			}
+
+			form_fields_obj.push({
+				"id":  form_field.id,
+				"type": form_field.type,
+				"value" : answer
+			});
+		}
+	});
+
+	return form_fields_obj;
  }
  
  
