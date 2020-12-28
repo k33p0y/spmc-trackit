@@ -29,7 +29,7 @@
 </section>
 
 <!-- /.content -->
-{% if perms.requests.view_ticket %}
+{% if request.user.is_superuser %}
 <section class="content">
     <div class="container-fluid">
         <!-- Default box -->
