@@ -35,3 +35,7 @@ const Toast = Swal.mixin({
       toast.addEventListener('mouseleave', Swal.resumeTimer)
    }
 });
+
+let getUserNotifications = function (){
+   return axios.get('/api/user/notifications/',).then(response=>response.data).catch(response=>response.data)
+};

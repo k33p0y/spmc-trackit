@@ -82,7 +82,7 @@ class CRUDEventSerializer(serializers.ModelSerializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ['log', 'user', 'unread']
+        fields = ['id', 'log', 'user', 'unread']
 
     def to_representation(self, instance):
         self.fields['user'] = UserSerializer(read_only=True)
