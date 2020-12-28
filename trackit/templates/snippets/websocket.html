@@ -13,6 +13,7 @@
         //console.log(event)
         //console.log(JSON.parse(event.data))
         DisplayNotifications();
+        $('#dt_requests').ajax.reload()
     }
 
     socket.onclose = function(event) {
@@ -38,6 +39,8 @@
                 }
                 $('.new-notifications-count').html(unread_count)
                 
+                var save = $('.dropdown-notifications-div .dropdown-notifications-title').detach();
+                $('.dropdown-notifications-div').empty().append(save);
                 for (i=0; i<notifications.length; i++){
                     user = `${notifications[i].user.first_name} ${notifications[i].user.last_name}`
                     action = `${notifications[i].log.event_type}`
@@ -47,7 +50,7 @@
                     ticket_no = `${notifications[i].log.object_id}`.substr(notifications[i].log.object_id.length - 10).toUpperCase()
                     $('.dropdown-notifications-div').append(
                         `<div class="dropdown-divider"></div>
-                        <a href="" class="dropdown-item">
+                        <a href="/requests/track" class="dropdown-item">
                            <span class="text-bolder text-sm">${ticket_no}</span>
                            <span class="text-muted text-sm">${action} by ${user}</span>
                            <span class="float-right text-muted text-sm"></span>
