@@ -22,7 +22,7 @@ $(document).ready(function () {
       "columns": [
          { data: "ticket_no" }, // Ticket No
          {
-            data: null,
+            data: "request_form",
             render: function (data, type, row) {
                if (type == 'display') {
                   data = `<span class="td-badge" style="background-color:${row.request_form.color}">${row.request_form.name}</span>`
@@ -31,7 +31,7 @@ $(document).ready(function () {
             }
          }, // Request Type
          {
-            data: null,
+            data: "category",
             render: function (data, type, row) {
                if (type == 'display') {
                   let category = row.category.name
@@ -43,7 +43,7 @@ $(document).ready(function () {
             }
          }, // Category
          {
-            data: null,
+            data: "department",
             render: function (data, type, row) {
                if (type == 'display') {
                   data = row.department.name
@@ -52,7 +52,7 @@ $(document).ready(function () {
             }
          }, // Department
          {
-            data: null,
+            data: 'date_created',
             render: function (data, type, row) {
                if (type == 'display') {
                   var date = moment(row.date_created).format('DD MMMM YYYY');
@@ -62,9 +62,23 @@ $(document).ready(function () {
                }
                return data
             },
-         }, // Date
+         }, // Date Create
+         { 
+            data: "date_modified",
+            visible : false,
+            searchable : false,
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  var date = moment(row.date_modified).format('DD MMMM YYYY');
+                  var time = moment(row.date_modified).format('h:mm:ss a');
+
+                  data = `<p class="title mb-1">${date}</p><span class="sub-title">${time}</span>`
+               }
+               return data
+            },
+         }, // Date Update
          {
-            data: null,
+            data: "requested_by",
             render: function (data, type, row) {
                if (type == 'display') {
                   data = `${row.requested_by.first_name} ${row.requested_by.last_name}`
@@ -73,7 +87,7 @@ $(document).ready(function () {
             },
          }, // User 
          {
-            data: null,
+            data: "status",
             render: function (data, type, row) {
                if (type == 'display') {
                   data = row.status.name
@@ -82,7 +96,7 @@ $(document).ready(function () {
             },
          }, // Status 
          {
-            data: null,
+            data: "is_active",
             render: function (data, type, row) {
                if (type == 'display') {
 
@@ -106,6 +120,7 @@ $(document).ready(function () {
             },
          } // Action
       ],
+      "order": [[ 5, "desc" ]],
    });
 
    // SELECT2 CONFIGURATION
