@@ -148,15 +148,9 @@ $(document).ready(function () {
       category = $($(this), "option:selected").val();
    });
 
-   $(".card-actions").on("click", ".btn-create-ws", function(){
-      let ans = prompt('Enter deparment', '');
-      if(ans) {
-         socket.send(
-            JSON.stringify(
-               {message: `${ans}`, num: 0, bool: true}
-            )
-         )
-      };
+   // RELOAD TABLE
+   $("#btn_reload").click(function () {
+      table.ajax.reload();
    });
 
    $("#btn_update").click(function (e) {

@@ -197,5 +197,10 @@ $(document).ready(function () {
        $('#chk_status').prop("checked", true);
        $('#select2_status').val([]).trigger('change');
     });
+
+    // RELOAD TABLE
+   $("#btn_reload").click(function () {
+      table.ajax.reload();
+   });
  
  });

@@ -221,4 +221,9 @@ $(document).ready(function () {
       $('#chk_status').prop("checked", true);
    });
 
+   // RELOAD TABLE
+   $("#btn_reload").click(function () {
+      table.ajax.reload();
+   });
+
 });

@@ -291,4 +291,9 @@ $(document).ready(function () {
       $('#dd_types').val('').trigger('change');
    });
 
+   // RELOAD TABLE
+   $("#btn_reload").click(function () {
+      table.ajax.reload();
+   });
+
 });

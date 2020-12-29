@@ -305,6 +305,11 @@ $(document).ready(function () {
       $('#select2_status').val([]).trigger('change');
    });
 
+   // RELOAD TABLE
+   $("#btn_reload").click(function () {
+      table.ajax.reload();
+   });
+
 });
 
 
