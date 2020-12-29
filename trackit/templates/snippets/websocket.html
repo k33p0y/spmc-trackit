@@ -13,7 +13,6 @@
         //console.log(event)
         //console.log(JSON.parse(event.data))
         DisplayNotifications();
-        $('#dt_requests').ajax.reload()
     }
 
     socket.onclose = function(event) {
@@ -57,6 +56,9 @@
                         </a>`
                     )
                 }
+                $('.dropdown-notifications-div a').click(function(){
+                    localStorage.setItem("ticketNumber", $(this).children().first().html());
+                })
             } else {
                 $('.dropdown-notifications-title').html(`0 Notication`)
             }
