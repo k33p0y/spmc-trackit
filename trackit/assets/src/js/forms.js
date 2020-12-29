@@ -62,16 +62,36 @@ $(document).ready(function () {
          }
       },
       "columns": [
-         { data: "name" },
+         { data: "name" }, // Name
          {
-            data: null,
+            data: "color",
             render: function (data, type, row) {
                data = `<div class= "circle" style = "background-color:${row.color};" ></div>`;
                return data
             }
-         },
+         }, // Color
          {
-            data: null,
+            data: 'date_created',
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  var datetime = moment(row.date_created).format('MMM DD, YYYY h:mm:ss a');
+                  data = `<p class="title mb-1">${datetime}</p>`
+               }
+               return data
+            },
+         }, // Date Create
+         {
+            data: 'date_created',
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  var datetime = moment(row.date_modified).format('MMM DD, YYYY h:mm:ss a');
+                  data = `<p class="title mb-1">${datetime}</p>`
+               }
+               return data
+            },
+         }, // Date Update
+         {
+            data: "is_active",
             render: function (data, type, row) {
                if (type == 'display') {
                   if (row.is_active == true) {
@@ -82,7 +102,7 @@ $(document).ready(function () {
                }
                return data
             }
-         },
+         }, // Is Active
          {
             data: null,
             render: function (data, type, row) {
@@ -97,6 +117,7 @@ $(document).ready(function () {
             },
          }
       ],
+      "order": [[ 3, "desc" ]],
    });
 
    // Get Checkbox State
