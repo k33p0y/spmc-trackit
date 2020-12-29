@@ -3,7 +3,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django_mysql.models import JSONField
-
+from django.contrib.auth.models import Group
+from easyaudit.models import CRUDEvent
 from config.models import Department, Category, Status
 from core.models import User
 
@@ -13,6 +14,7 @@ class RequestForm(models.Model):
     color = models.CharField(max_length=10, blank=True)
     status = models.ManyToManyField(Status, related_name='forms', blank=True, through='RequestFormStatus')
     fields = JSONField()
+    group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_archive = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -48,6 +50,11 @@ class RequestFormStatus(models.Model):
 
     def __str__(self):
         return self.status
+
+class Notification(models.Model):
+    log = models.ForeignKey(CRUDEvent, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    unread = models.BooleanField(default=True)
 
 @receiver(post_save, sender=Ticket)
 def save_ticket_no(sender, instance, **kwargs):

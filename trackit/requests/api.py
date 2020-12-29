@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator
 
-from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer
-from .models import RequestForm, Ticket, RequestFormStatus
+from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer, NotificationSerializer
+from .models import RequestForm, Ticket, RequestFormStatus, Notification
 from easyaudit.models import CRUDEvent
 
 import json
@@ -101,3 +101,18 @@ class CRUDEventList(generics.ListAPIView):
          return CRUDEvent.objects.none()
       else:
          return CRUDEvent.objects.filter(object_id__icontains=ticket_num)
+
+class NotificationViewSet(viewsets.ModelViewSet):
+   serializer_class = NotificationSerializer
+
+   def get_queryset(self):
+      if not self.request.user.has_perm('requests.view_notification'):
+         return Notification.objects.none()
+      else:
+         return Notification.objects.select_related('user').filter(user__id=self.request.user.pk).order_by('-unread', '-log__datetime')
+
+   # disable pagination, show all rows
+   def paginate_queryset(self, queryset):
+        if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
+            return None
+        return super().paginate_queryset(queryset)

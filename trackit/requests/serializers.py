@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import RequestForm, Ticket, RequestFormStatus
+from .models import RequestForm, Ticket, RequestFormStatus, Notification
 from config.models import Department, Status
 from core.models import User
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer
@@ -83,3 +83,11 @@ class CRUDEventSerializer(serializers.ModelSerializer):
             instance.changed_fields = json.loads(instance.changed_fields) # convert changed_fields from string to JSON
         self.fields['user'] = UserSerializer(read_only=True)
         return super(CRUDEventSerializer, self).to_representation(instance)
+
+class NotificationSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    log = CRUDEventSerializer(read_only=True)
+
+    class Meta:
+        model = Notification
+        fields = ['id', 'log', 'user', 'unread']

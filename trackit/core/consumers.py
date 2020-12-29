@@ -1,6 +1,8 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+from easyaudit.models import CRUDEvent
+from requests.models import Ticket, Notification
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -39,26 +41,60 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     # receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data) # convert string to JSON
-        message = text_data_json['message']
+        ticket_id = text_data_json['ticket_id']
+        self.obj = await self.send_notification(ticket_id)
 
+        # send notification to a user
         await self.channel_layer.group_send(
-            ('notif_room_for_user_%s' % message),
+            ('notif_room_for_user_%s' % self.obj['dept_head_id']),
             {
                 'type': 'notification_message',
-                'message': message
+                'notification': self.obj
+            }
+        )
+
+        # send notification to group
+        await self.channel_layer.group_send(
+            ('notif_room_for_group_%s' % self.obj['group']),
+            {
+                'type': 'notification_message',
+                'notification': self.obj
             }
         )
 
     # Receive message from room group
     async def notification_message(self, event):
-        message = event['message']
+        notification = event['notification']
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
-            'message': message
+            'notification': notification
         }))
         # self.send(text_data=message)
     
+    @database_sync_to_async
+    def send_notification(self, ticket_id):
+        ticket = Ticket.objects.get(ticket_id=ticket_id)
+        log = CRUDEvent.objects.filter(object_id=ticket_id).order_by('-datetime').first()
+        users = ticket.request_form.group.user_set.all()
+        for user in users:
+            Notification(log=log, user=user).save()
+
+        obj = dict()
+        obj['ticket_id'] = str(ticket.pk)
+        obj['ticket_no'] = ticket.ticket_no
+        obj['group'] = ticket.request_form.group.name
+        obj['dept_head_id'] = ticket.department.department_head.pk
+        obj['actor'] = log.user.get_full_name()
+
+        choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model
+        obj['event_type'] = choices[log.event_type]
+        if log.changed_fields:
+            obj['status'] = log.changed_fields['status'][1]
+        else:
+            obj['status'] = ticket.status.name
+        return obj
+
     @database_sync_to_async
     def get_groups(self):
         return list(self.scope['user'].groups.all())

@@ -1,6 +1,18 @@
 $(document).ready(function () {
 
     var getTrackingNum = function() {
+        // get ticket number in localStorage if available
+        if (localStorage.getItem('ticketNumber')){
+            $('#txt_tracking_num').val(localStorage.getItem('ticketNumber'))
+            localStorage.removeItem('ticketNumber');
+        }
+
+        // set notification instance to unread = False
+        if (localStorage.getItem('notification-id')){
+            axios.put(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {unread: false}, {headers: axiosConfig})
+            localStorage.removeItem('notification-id');
+        }
+
         let tracking_num = $('#txt_tracking_num').val();
         if (!tracking_num) tracking_num = "None";
         return tracking_num
