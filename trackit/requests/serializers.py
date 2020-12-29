@@ -80,11 +80,9 @@ class CRUDEventSerializer(serializers.ModelSerializer):
         return super(CRUDEventSerializer, self).to_representation(instance)
 
 class NotificationSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    log = CRUDEventSerializer(read_only=True)
+
     class Meta:
         model = Notification
         fields = ['id', 'log', 'user', 'unread']
-
-    def to_representation(self, instance):
-        self.fields['user'] = UserSerializer(read_only=True)
-        self.fields['log'] = CRUDEventSerializer(read_only=True)
-        return super(NotificationSerializer, self).to_representation(instance)

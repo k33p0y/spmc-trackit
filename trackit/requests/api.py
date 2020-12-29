@@ -102,7 +102,7 @@ class CRUDEventList(generics.ListAPIView):
       else:
          return CRUDEvent.objects.filter(object_id__icontains=ticket_num)
 
-class NotificationList(generics.ListAPIView):
+class NotificationViewSet(viewsets.ModelViewSet):
    serializer_class = NotificationSerializer
 
    def get_queryset(self):

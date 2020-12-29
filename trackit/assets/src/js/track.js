@@ -7,6 +7,12 @@ $(document).ready(function () {
             localStorage.removeItem('ticketNumber');
         }
 
+        // set notification instance to unread = False
+        if (localStorage.getItem('notification-id')){
+            axios.put(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {unread: false}, {headers: axiosConfig})
+            localStorage.removeItem('notification-id');
+        }
+
         let tracking_num = $('#txt_tracking_num').val();
         if (!tracking_num) tracking_num = "None";
         return tracking_num
