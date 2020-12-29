@@ -187,7 +187,7 @@ $(document).ready(function () {
       e.preventDefault();
 
       // Variables
-      const success = 1;
+      let success = 0;
       const data = new Object()
 
       // Data
@@ -198,7 +198,58 @@ $(document).ready(function () {
       data.is_active = chk_status;
       data.is_archive = false;
 
-      console.log(data)
+      // Validation for typename
+      let nameInput = false;
+      let name_message = $('#txt_typename').siblings('small');
+      let name_input = name_message.siblings('input');
+      if ($('#txt_typename').val() == '') {
+         name_input.addClass('form-error');
+         name_message.html('*This field cannot be empty');
+      } else {
+         name_input.removeClass('form-error');
+         name_message.html('');
+         nameInput = true;
+      }
+
+      // Validation for color
+      let colorInput = false;
+      let color_message = $('#txt_color').parent().siblings('small');
+      let color_input = color_message.siblings('span').children('input');
+      if ($('#txt_color').val() == '') {
+         color_input.addClass('form-error');
+         color_message.html('*This field cannot be empty');
+      } else {
+         color_input.removeClass('form-error');
+         color_message.html('');
+         colorInput = true;
+      }
+
+      // Validation for status and order
+      let statusOrderInput = false;
+      const form_row = $(".form-wrapper div.form-row");
+   
+      console.log(form_row);
+   
+      form_row.each(function () {
+         const status = $(this).find('div.form-group select');
+         const order = $(this).find('div.form-group input');
+   
+         if (status.val() != '' && order.val() != '') {
+            $(this).find('div.form-group').removeClass('has-error');;
+            $(this).find('.txt_order').removeClass('form-error');
+            $(this).find('div.form-group').find('.status-error').html('');
+            statusOrderInput = true;
+         } else {
+            $(this).find('div.form-group').addClass('has-error');
+            $(this).find('.txt_order').addClass('form-error');
+            $(this).find('div.form-group').find('.status-error').html('*This field row cannot be empty');
+         }
+      });
+
+
+      if(nameInput && colorInput && statusOrderInput) { success = 1; }
+
+      // console.log(data);
 
       // // Form is Valid
       if (success == 1) {
@@ -279,6 +330,7 @@ $(document).ready(function () {
    $('#btn_cancel').click(function () {
       // Reset Fields to Defaults
       $('#txt_typename').removeClass('form-error');
+      $('#txt_color').removeClass('form-error');
       $('.error-info').html('');
       $('#chk_status').prop("checked", true);
       $('#select2_status').val([]).trigger('change');
@@ -308,6 +360,13 @@ function getStatusOrder() {
             'status': status.val(),
             'order': order.val()
          });
+         $(this).find('div.form-group').removeClass('has-error');;
+         $(this).find('.txt_order').removeClass('form-error');
+         $(this).find('div.form-group').find('.status-error').html('');
+      } else {
+         $(this).find('div.form-group').addClass('has-error');
+         $(this).find('.txt_order').addClass('form-error');
+         $(this).find('div.form-group').find('.status-error').html('*This field row cannot be empty');
       }
    });
 
