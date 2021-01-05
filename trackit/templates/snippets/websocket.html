@@ -29,33 +29,38 @@
             let notifications = data
             unread_count = notifications.filter(obj=>obj.unread==true).length
             //console.log(notifications)
+
+            console.log(time)
     
             if (notifications.length){ // if notification is available
-                if (notifications.length < 2){
-                    $('.dropdown-notifications-title').html(`${notifications.length} Notication`)
-                } else if (notifications.length >= 2){
-                    $('.dropdown-notifications-title').html(`${notifications.length} Notications`)
-                }
-                if (unread_count > 0) $('.new-notifications-count').html(unread_count);
+                $('.dropdown-notifications-title').html(`Notications (${unread_count}) `) // display unread notification to title
+                if (unread_count > 0) $('.new-notifications-count').html(unread_count); // display unread notification to bell
                 
                 var saveDropdown = $('.dropdown-notifications-div .dropdown-notifications-title').detach();
                 $('.dropdown-notifications-div').empty().append(saveDropdown);
                 for (i=0; i<notifications.length; i++){
                     user = `${notifications[i].user.first_name} ${notifications[i].user.last_name}`
                     action = `${notifications[i].log.event_type}`
-                    if (action === 'Create') action = 'created';
-                    else if (action === 'Update') action = 'updated';
-                    if (notifications[i].unread) bg_color = 'bg-warning';
-                    else bg_color = '';
+                    time_from_now = moment(notifications[i].log.datetime).fromNow()
+                    if (action === 'Create') action = 'created a new request, Ticket no.';
+                    else if (action === 'Update') action = 'updated request';
+                    if (notifications[i].unread) {
+                        bg_color = 'bg-notification'; 
+                        display_status = '';
+                    } else {
+                        bg_color = '';
+                        display_status = 'd-none'
+                    }
                     
                     ticket_no = `${notifications[i].log.object_id}`.substr(notifications[i].log.object_id.length - 10).toUpperCase()
                     $('.dropdown-notifications-div').append(
-                        `<div class="dropdown-divider"></div>
-                        <a href="/requests/track" class="dropdown-item ${bg_color}" data-notification-id="${notifications[i].id}">
-                           <span class="text-sm">${ticket_no}</span>
-                           <span class="text-sm">${action} by ${user}</span>
-                           <span class="float-right text-muted text-sm"></span>
-                        </a>`
+                        `<a href="/requests/track" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notifications[i].id}">
+                            <div class="notification-content flex-grow-1">
+                               <p><b>${user}</b> ${action} <b>${ticket_no}</b></p>
+                               <span class="text-muted notification-time">${time_from_now}</span>    
+                            </div>
+                            <div class="notification-status align-self-center ${display}"><i class="fas fa-circle"></i></div>
+                         </a>`
                     )
                 }
                 $('.dropdown-notifications-div a').click(function(){
@@ -63,7 +68,7 @@
                     localStorage.setItem("notification-id", $(this).attr('data-notification-id'));
                 })
             } else {
-                $('.dropdown-notifications-title').html(`0 Notication`)
+                $('.dropdown-notifications-title').html('Notifications (0)')
             }
         });
     }
