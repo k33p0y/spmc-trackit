@@ -29,8 +29,6 @@
             let notifications = data
             unread_count = notifications.filter(obj=>obj.unread==true).length
             //console.log(notifications)
-
-            console.log(time)
     
             if (notifications.length){ // if notification is available
                 $('.dropdown-notifications-title').html(`Notications (${unread_count}) `) // display unread notification to title
@@ -54,17 +52,17 @@
                     
                     ticket_no = `${notifications[i].log.object_id}`.substr(notifications[i].log.object_id.length - 10).toUpperCase()
                     $('.dropdown-notifications-div').append(
-                        `<a href="/requests/track" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notifications[i].id}">
+                        `<a href="/requests/track" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notifications[i].id}" data-ticket-no="${ticket_no}">
                             <div class="notification-content flex-grow-1">
                                <p><b>${user}</b> ${action} <b>${ticket_no}</b></p>
                                <span class="text-muted notification-time">${time_from_now}</span>    
                             </div>
-                            <div class="notification-status align-self-center ${display}"><i class="fas fa-circle"></i></div>
+                            <div class="notification-status align-self-center ${display_status}"><i class="fas fa-circle"></i></div>
                          </a>`
                     )
                 }
                 $('.dropdown-notifications-div a').click(function(){
-                    localStorage.setItem("ticketNumber", $(this).children().first().html());
+                    localStorage.setItem("ticketNumber", $(this).attr('data-ticket-no'));
                     localStorage.setItem("notification-id", $(this).attr('data-notification-id'));
                 })
             } else {
