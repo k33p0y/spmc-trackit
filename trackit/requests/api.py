@@ -72,10 +72,25 @@ class TicketViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
+      status = self.request.GET.get('status', None)
+      form = self.request.GET.get('form', None)
+
+      print ('status: ', status)
+      print ('form: ',form)
+
       if not self.request.user.has_perm('requests.view_ticket'):
          return Ticket.objects.none()
       else:
-         return Ticket.objects.all()
+         if form:
+            return Ticket.objects.filter(status=status, request_form=form)
+         else:
+            return Ticket.objects.all()
+
+   # disable pagination, show all rows
+   def paginate_queryset(self, queryset):
+      if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
+         return None
+      return super().paginate_queryset(queryset)
 
    def perform_create(self, serializer):
       serializer.save(requested_by=self.request.user)

@@ -36,7 +36,7 @@ def detail_ticket(request, ticket_id):
 
 @login_required
 def boards(request):
-   forms= RequestForm.objects.all()
+   forms= RequestForm.objects.filter(is_active=True, is_archive=False)
    
    context = {'forms':forms}
    return render(request, 'pages/requests/boards.html', context)

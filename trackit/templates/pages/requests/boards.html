@@ -41,8 +41,9 @@
                             <form>
                                 <div class="form-row align-items-center m-0">
                                     <div class="col-sm-3 p-0 mr-2">
-                                        <select class="form-control form-control-sm" id="select2_forms"
+                                        <select class="form-control form-control-sm" id="select_form"
                                             style="width: 100%">
+                                            <option></option>
                                             {% for form in forms %}
                                             <option value={{form.id}}>{{form.name}}</option>
                                             {% endfor %}
@@ -59,14 +60,18 @@
         <!-- Boards Body-->
         <div class="board-wrapper">
             <div class="row-fluid">
-                <div class="col col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <div class="card bg-secondary mb-2">
+                <!-- <div class="col col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <div class="card card-boards bg-secondary mb-2">
                         <div class="card-header">
                             <div class="card-title">Open</div>
                         </div>
                         <div class="card-body list">
                             <div class="list-item" draggable="true">
-                                <div class="list-item-body">Test</div>
+                                <div class="list-item-body">
+                                    <p> TIC#: <b>A1B2C3D4</b> -
+                                        Ipsum Lorem Ipsum Ipsum Lorem Ipsum Ipsum Lorem Ipsum Ipsum Lorem Ipsum Ipsum Lorem Ipsum
+                                    </p>  
+                                </div>
                                 <div class="list-item-footer">
                                     <div class="members">A</div>
                                     <div class="members">B</div>
@@ -74,24 +79,22 @@
                                 </div>
                             </div>
                             <div class="list-item" draggable="true">
-                                <div class="list-item-body">SAmple</div>
+                                <div class="list-item-body">
+                                    <p> TIC#: <b>A1B2C3D4</b> -
+                                        Ipsum Lorem Ipsum Ipsum Lorem Ipsum Ipsum Lorem Ipsum Ipsum Lorem Ipsum Ipsum Lorem Ipsum
+                                    </p>  
+                                </div>
                                 <div class="list-item-footer">
-                                    <div class="members">D</div>
-                                    <div class="members">E</div>
-                                    <div class="members">F</div>
+                                    <div class="members">A</div>
+                                    <div class="members">B</div>
+                                    <div class="members">C</div>
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="card-footer">
-                            <button type="button" class="btn btn-link">
-                                <i class="fas fa-xs fa-plus"></i>
-                                <span>Add a Card</span>
-                            </button>
-                        </div> -->
                     </div>
                 </div>
                 <div class="col col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <div class="card bg-secondary mb-2 card-status">
+                    <div class="card card-boards bg-secondary mb-2 card-status">
                         <div class="card-header">
                             <div class="card-title">Data Gathering</div>
                         </div>
@@ -100,7 +103,7 @@
                     </div>
                 </div>
                 <div class="col col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <div class="card bg-secondary mb-2 card-status">
+                    <div class="card card-boards bg-secondary mb-2 card-status">
                         <div class="card-header">
                             <div class="card-title">In Development</div>
                         </div>
@@ -108,13 +111,13 @@
                     </div>
                 </div>
                 <div class="col col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <div class="card bg-secondary mb-2 card-status">
+                    <div class="card card-boards bg-secondary mb-2 card-status">
                         <div class="card-header">
                             <div class="card-title">Closed</div>
                         </div>
                         <div class="card-body list"></div>
                     </div>
-                </div>
+                </div> -->
 
             </div>
         </div>
