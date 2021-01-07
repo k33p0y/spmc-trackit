@@ -37,7 +37,8 @@
                 var saveDropdown = $('.dropdown-notifications-div .dropdown-notifications-title').detach();
                 $('.dropdown-notifications-div').empty().append(saveDropdown);
                 for (i=0; i<notifications.length; i++){
-                    user = `${notifications[i].user.first_name} ${notifications[i].user.last_name}`
+                    user = `${notifications[i].log.user.first_name} ${notifications[i].log.user.last_name}`
+                    if (user === `${notifications[i].user.first_name} ${notifications[i].user.last_name}`) user = 'You'; // if the authenticated user is the requestor of the ticket
                     action = `${notifications[i].log.event_type}`
                     time_from_now = moment(notifications[i].log.datetime).fromNow()
                     if (action === 'Create') action = 'created a new request, Ticket no.';
