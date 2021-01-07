@@ -77,8 +77,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         ticket = Ticket.objects.get(ticket_id=ticket_id)
         log = CRUDEvent.objects.filter(object_id=ticket_id).order_by('-datetime').first()
         users = ticket.request_form.group.user_set.all()
-        for user in users:
+        # create notifications for users in selected group
+        for user in users: 
             Notification(log=log, user=user).save()
+        # create notification for department head
+        Notification(log=log, user=ticket.department.department_head).save()
 
         obj = dict()
         obj['ticket_id'] = str(ticket.pk)
