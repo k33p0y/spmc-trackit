@@ -75,14 +75,11 @@ class TicketViewSet(viewsets.ModelViewSet):
       status = self.request.GET.get('status', None)
       form = self.request.GET.get('form', None)
 
-      print ('status: ', status)
-      print ('form: ',form)
-
       if not self.request.user.has_perm('requests.view_ticket'):
          return Ticket.objects.none()
       else:
          if form:
-            return Ticket.objects.filter(status=status, request_form=form)
+            return Ticket.objects.filter(status=status, request_form=form, is_active=True, is_archive=False)
          else:
             return Ticket.objects.all()
 
