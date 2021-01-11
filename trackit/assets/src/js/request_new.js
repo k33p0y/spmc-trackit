@@ -1,3 +1,5 @@
+let success = 1;
+
 $(document).ready(function () {
 
    let request_form, department, category, category_type;
@@ -50,11 +52,11 @@ $(document).ready(function () {
          return data_obj = new Object(response)
       }).then(function (response) { // generate form fields
          let has_admin;
-
+         
          response.forEach(data => {
             const title = data.title;
             const form_field = data.form_field;
-            const is_admin = data.is_admin;           
+            const is_admin = data.is_admin;
 
             if (is_admin == true) {
                form_wrapper = $(".form-admin-wrapper")
@@ -66,9 +68,9 @@ $(document).ready(function () {
             if (form_field.length > 1) {
                form_wrapper.append(
                   `<div class="form-group">
-                        <label> ${title} </label>
+                        <label>${title}</label>
                         <div class="type-group"></div>
-                        <small class="error-info" id="error-info-type"></small>
+                        <small class="error-info" id="error-${form_field.id}"></small>
                      </div>`
                );
 
@@ -111,7 +113,7 @@ $(document).ready(function () {
                      `<div class=" form-group">
                            <label> ${title} </label>
                            <input type="text" class="form-control form-control-sm" id="${form_field.id}" placeholder="Enter ${title}">
-                           <small class="error-info" id="error-info-type"></small>
+                           <small class="error-info" id="error-${form_field.id}"></small>
                         </div>`
                   );
                }
@@ -120,16 +122,16 @@ $(document).ready(function () {
                      `<div class=" form-group">
                            <label> ${title} </label>
                            <textarea class="form-control form-control-sm" id="${form_field.id}" placeholder="Enter ${title}" rows="2"></textarea>
-                           <small class="error-info" id="error-info-type"></small>
+                           <small class="error-info" id="error-${form_field.id}"></small>
                         </div>`
                   );
                }
                if (form_field.type == "radio") {
                   form_wrapper.append(
-                     `<div class=" form-group">
+                     `<div class="form-group">
                            <label> ${title} </label>
                            <div class="radio-group"></div>
-                           <small class="error-info" id="error-info-type"></small>
+                           <small class="error-info" id="error-${form_field.id}"></small>
                         </div>`
                   );
                   form_field.option.forEach(opt => {
@@ -146,7 +148,7 @@ $(document).ready(function () {
                      `<div class=" form-group">
                            <label> ${title}</label>
                            <div class="check-group"></div>
-                           <small class="error-info" id="error-info-type"></small>
+                           <small class="error-info" id="error-${form_field.id}"></small>
                         </div>`
                   );
 
@@ -202,7 +204,7 @@ $(document).ready(function () {
 
       // Variables
       let data = {}
-      let success = 1;
+      // let success = 1;
 
       // Data
       data.ticket_no = '';
@@ -213,6 +215,47 @@ $(document).ready(function () {
       data.is_active = true;
       data.is_archive = false;
 
+      // Validations
+      if ($('#dd_types').val() == '') {
+         $('#dd_types').addClass('form-error');
+         $('#dd_types').siblings('span').children('span').children('span').css('border-color', '#dc3546a2');
+         $('#dd_types').siblings('.error-info').html('*This field cannot be empty');
+         success--;
+      } else {
+         $('#dd_types').siblings('span').children('span').children('span').removeAttr('style');;
+         $('#dd_types').siblings('.error-info').html('')
+      }
+      if ($('#dd_categories').val() == '') {
+         $('#dd_categories').addClass('form-error');
+         $('#dd_categories').siblings('span').children('span').children('span').css('border-color', '#dc3546a2');
+         $('#dd_categories').siblings('.error-info').html('*This field cannot be empty');
+         success--;
+      } else {
+         $('#dd_categories').siblings('span').children('span').children('span').removeAttr('style');
+         $('#dd_categories').siblings('.error-info').html('');
+      }
+      if ($('#dd_departments').val() == '') {
+         $('#dd_departments').addClass('form-error');
+         $('#dd_departments').siblings('span').children('span').children('span').css('border-color', '#dc3546a2');
+         $('#dd_departments').siblings('.error-info').html('*This field cannot be empty');
+         success--;
+      } else {
+         $('#dd_departments').siblings('span').children('span').children('span').removeAttr('style');
+         $('#dd_departments').siblings('.error-info').html('');
+      }
+      if ($('#dd_forms').val() == '') {
+         $('#dd_forms').addClass('form-error');
+         $('#dd_forms').siblings('span').children('span').children('span').css('border-color', '#dc3546a2');
+         $('#dd_forms').siblings('.error-info').html('*This field cannot be empty');
+         success--;
+      } else {
+         $('#dd_forms').siblings('span').children('span').children('span').removeAttr('style');;
+         $('#dd_forms').siblings('.error-info').html('');
+      }
+
+      // $('#error-info-type').siblings('label').css('background-color', '#dc3546a2');
+
+      console.log('data', data);
       if (success == 1) {
          axios({
             method: 'POST',
@@ -237,8 +280,6 @@ $(document).ready(function () {
             });
 
          }).catch(function (error) { // error
-            console.log(error.response)
-
             Toast.fire({
                icon: 'error',
                title: error,
@@ -252,56 +293,90 @@ $(document).ready(function () {
  function getFormValues(data_obj) {
 	let form_fields_obj = new Array();
 
-	data_obj.forEach(data => {
-		const form_field = data.form_field;
-		let answer;
+   if(data_obj == null || data_obj == '' || data_obj == undefined) {
+   
+   } else {
+      data_obj.forEach(data => {
+         const form_field = data.form_field;
+         let answer;
+         
+         
+         if (form_field.length > 1) {
+            form_field.forEach(field => {
+               let optionBool = 0;
+               let trigger = false;
+   
+               if(field.required == true) {
+                  trigger = true;
+               }
+   
+   
+               if (field.type == "text" || field.type == "textarea") { // textfield
+                  answer = $(`#${field.id}`).val();            
+                  if(field.required == true && (answer == null || answer == '' || answer == undefined)) {
+                     $(`#${field.id}`).addClass('form-error').parent().next().html('This field cannot be empty');
+                     optionBool += 1;
+                  }
+               }
+               if (field.type == "radio" || field.type == "checkbox") { // radio button
+                  answer = new Array();
+                  field.option.forEach(opt => {
+                     answer.push({
+                        "option_id": opt.id,
+                        "option_name" : opt.name,
+                        "option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
+                     })
+                     optionBool += ($(`#${opt.id}`).is(":checked")) ? 1 : 0;
+                  });
+                  if(optionBool > 0 && trigger == true) $(`#error-${form_field.id}`).html('This field cannot be empty')
+               }
+   
+               form_fields_obj.push({
+                  "id":  field.id,
+                  "type": field.type,
+                  "value" : answer,
+                  "required" : field.required
+               });
+            });
+         } else {
+            if (form_field.type == "text" || form_field.type == "textarea") { // textfield
+               answer = $(`#${form_field.id}`).val();
+               if(form_field.required == true && (answer == null || answer == '')) {
+                  $(`#${form_field.id}`).addClass('form-error').next().html('This field cannot be empty');
+               }
+            }
+            if (form_field.type == "radio" || form_field.type == "checkbox") { // radio button
+               let optionBool = 0;
+               let trigger = false;
+   
+               if(form_field.required == true) {
+                  trigger = true;
+               }
+   
+               answer = new Array();
+               form_field.option.forEach(opt => {
+                  answer.push({
+                     "option_id": opt.id,
+                     "option_name" : opt.name,
+                     "option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
+                  })
+                  optionBool += ($(`#${opt.id}`).is(":checked")) ? 1 : 0;
+               });
+               if(optionBool == 0 && trigger == true) $(`#error-${form_field.id}`).html('This field cannot be empty')
+            }
+   
+            form_fields_obj.push({
+               "id":  form_field.id,
+               "type": form_field.type,
+               "value" : answer,
+               "required": form_field.required
+            });
+         }
+      });
+   }
 
-		if (form_field.length > 1) {
-			form_field.forEach(field => {
-				if (field.type == "text" || field.type == "textarea") { // textfield
-					answer = $(`#${field.id}`).val();
-				}
-				if (field.type == "radio" || field.type == "checkbox") { // radio button
-					answer = new Array();
-					field.option.forEach(opt => {
-						answer.push({
-							"option_id": opt.id,
-							"option_name" : opt.name,
-							"option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
-						})
-					});
-				}
-
-				form_fields_obj.push({
-					"id":  field.id,
-					"type": field.type,
-					"value" : answer
-				});
-			});
-		} else {
-			if (form_field.type == "text" || form_field.type == "textarea") { // textfield
-				answer = $(`#${form_field.id}`).val();
-			}
-			if (form_field.type == "radio" || form_field.type == "checkbox") { // radio button
-				answer = new Array();
-				form_field.option.forEach(opt => {
-					answer.push({
-						"option_id": opt.id,
-						"option_name" : opt.name,
-						"option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
-					})
-				});
-			}
-
-			form_fields_obj.push({
-				"id":  form_field.id,
-				"type": form_field.type,
-				"value" : answer
-			});
-		}
-	});
 
 	return form_fields_obj;
  }
- 
+
  

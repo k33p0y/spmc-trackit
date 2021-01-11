@@ -108,6 +108,8 @@ $(document).ready(function () {
        $('#txt_typename').val(dt_data['name']);
        $('#chk_status').prop("checked", dt_data['is_active']);
     });
+
+
  
     // Submit Form
     $("#btn_save").click(function (e) {
@@ -122,6 +124,20 @@ $(document).ready(function () {
        data.is_active = chk_status;
        data.is_archive = false;
  
+
+
+
+    // Validation
+    if ($('#txt_typename').val() == '') {
+      $('#txt_typename').addClass('form-error');
+      // $('.error-info').html('*This field cannot be empty');
+      $('#txt_typename').siblings('.error-info').html('*This field cannot be empty');
+      success--;
+    } else {
+       $('#txt_typename').removeClass('form-error');
+       $('#error-password').html('');
+    }
+
        // Form is Valid
        if (success == 1) {
           axios({
@@ -138,6 +154,7 @@ $(document).ready(function () {
             $("#form").trigger("reset");
             table.ajax.reload();
           }).catch(function (error) { // error
+            console.log(error);
             if (error.response.data.name) {
                 $('#txt_typename').addClass('form-error');
                 $('.name-error').html(`*${error.response.data.name}`)
