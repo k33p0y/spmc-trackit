@@ -142,7 +142,8 @@ $(document).ready(function () {
       // Validation
       if ($('#txt_deptname').val() == '') {
          $('#txt_deptname').addClass('form-error');
-         $('.error-info').html('*This field cannot be empty');
+         // $('.error-info').html('*This field cannot be empty');
+         $('#txt_deptname').siblings('.error-info').html('*This field cannot be empty');
          success--;
       } else {
          $('#txt_deptname').removeClass('form-error');
@@ -224,6 +225,9 @@ $(document).ready(function () {
                   table.ajax.reload();
                },
                error: function (a, b, error) {
+                  console.log('a', a);
+                  console.log('b', b);
+                  console.log('error', error);
                   Toast.fire({
                      icon: 'error',
                      title: error,
