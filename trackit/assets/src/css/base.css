@@ -404,7 +404,7 @@ table.dataTable tbody tr:hover {
 }
 
 .form-error {
-   border-color:#dc3546a2;
+   border-color:#dc3546a2 !important;
 }
 
 .error-info {

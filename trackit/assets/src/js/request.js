@@ -113,10 +113,17 @@ $(document).ready(function () {
             data: "null",
             render: function (data, type, row) {
                var id = row.ticket_id;
-
-               data = `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
-                         <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
-               return data
+               data = '';
+               if($('#changeTicketHidden').val() == 'true') {
+                  data = data + `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>`;
+               }
+               if($('#deleteTicketHidden').val() == 'true') {
+                  data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
+               }
+               return data;
+               // data = `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
+               //           <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
+               // return data
             },
          } // Action
       ],

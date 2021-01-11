@@ -14,7 +14,7 @@ class RequestFormViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      if not self.request.user.has_perm('requests.view_ticket'):
+      if not self.request.user.has_perm('requests.view_requestform'):
          return RequestForm.objects.none()
       else:
          return RequestForm.objects.all().order_by('id')
