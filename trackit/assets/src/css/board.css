@@ -37,6 +37,12 @@ div.board-wrapper .row-fluid .col .card-boards .card-body {
     min-height:50px;
 }
 
+.tilt {
+    transform: rotate(3deg);
+    -moz-transform: rotate(3deg);
+    -webkit-transform: rotate(3deg);
+}
+
 .list-item {
     background-color: #fff;
     border-radius: 3px;
@@ -120,3 +126,14 @@ div.board-wrapper::-webkit-scrollbar-thumb:hover {
     background: #888a8d; 
 }
  
+
+.tilt.right {
+    transform: rotate(3deg);
+    -moz-transform: rotate(3deg);
+    -webkit-transform: rotate(3deg);
+}
+.tilt.left {
+    transform: rotate(-3deg);
+    -moz-transform: rotate(-3deg);
+    -webkit-transform: rotate(-3deg);
+}
