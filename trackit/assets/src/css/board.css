@@ -2,6 +2,12 @@ div.board-wrapper {
     overflow-x: auto;
 }
 
+div.board-wrapper .board-helper {
+    color: #59626b;
+   	font-size: 12px;
+   	font-style: italic;
+}
+
 div.board-wrapper .row-fluid {
     /* white-space: nowrap !important; */
     display: flex;

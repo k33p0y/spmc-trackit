@@ -8,6 +8,7 @@ $(document).ready(function () {
 
     $('#select_form').on('change', function() {
         let form_id = $($(this), "option:selected").val();
+        $(".board-helper").remove();
 
         axios.get(`/api/requests/forms/${form_id}/`, {headers : axiosConfig}).then(response => {
             const form_status = response.data.status;
@@ -75,7 +76,6 @@ $(document).ready(function () {
 });
 
 function updateStatus(ticket, status) {
-
     axios({
         url: `/api/requests/lists/${ticket}/`,
         method: "PATCH",
