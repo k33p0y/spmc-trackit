@@ -176,7 +176,6 @@ $(document).ready(function () {
       data.category = category;
       data.department = department;
       data.is_active = is_active;
-      data.status = 2;
       data.is_archive = false;
 
       // console.log(data)
