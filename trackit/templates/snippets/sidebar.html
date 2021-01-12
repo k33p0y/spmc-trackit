@@ -34,13 +34,37 @@
             </li>
             {% endcomment %}
 
-
-            <!-- perms.config.view_department ||
-            perms.config.view_category ||
-            perms.config.view_categorytype ||
-            perms.requests.view_requestform ||
-            perms.config.view_status -->
-
+            {% if perms.auth.view_group or perms.core.view_user %}
+            <li
+               class="nav-item {% if url == 'group_list' or url == 'user_list' %} menu-open {% endif %}">
+               <a href="#"
+                  class="nav-link {% if url == 'group_list' or url == 'user_list' %} active {% endif %}">
+                  <i class="nav-icon fas fa-cog"></i>
+                  <p>
+                     Authentication and Authorization
+                     <i class="right fas fa-angle-left"></i>
+                  </p>
+               </a>
+               <ul class="nav nav-treeview">
+                  {% if perms.auth.view_group %}
+                  <li class="nav-item">
+                     <a href="{% url 'group_list' %}" class="nav-link {% if url == 'group_list' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>Group</p>
+                     </a>
+                  </li>
+                  {% endif %}
+                  {% comment %}
+                  <li class="nav-item">
+                     <a href="" class="nav-link {% if url == 'group_list' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>User</p>
+                     </a>
+                  </li>
+                  {% endcomment %}
+               </ul>
+            </li>
+            {% endif %}
 
             {% if perms.config.view_department or perms.config.view_category or perms.config.view_categorytype or perms.requests.view_requestform or perms.config.view_status %}
             <li
