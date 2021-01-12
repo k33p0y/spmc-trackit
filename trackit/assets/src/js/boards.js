@@ -18,7 +18,7 @@ $(document).ready(function () {
                     `<div class="col col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                         <div class="card card-boards bg-secondary mb-2">
                             <div class="card-header"> <div class="card-title">${status.name}</div> </div>
-                            <div class="card-body card-body-${status.id} card-body-column"></div>
+                            <div class="card-body card-body-column" data-status-id="${status.id}" id="column_${status.id}"></div>
                         </div>
                     </div>`
                 );
@@ -28,7 +28,7 @@ $(document).ready(function () {
                     headers : axiosConfig 
                 }).then (response => {
                     const tickets = response.data
-                    const card_body = $(`.card-body-${status.id}`);
+                    const card_body = $(`#column_${status.id}`);
 
                     tickets.forEach(tic => {
                         let fname_char = tic.requested_by.first_name.charAt(0)
@@ -59,6 +59,12 @@ $(document).ready(function () {
                         stop: function (event, ui) {
                             ui.item.removeClass('tilt');
                         },
+                        receive: function( event, ui ) {
+                            let ticket = ui.item.data().ticketId;
+                            let status = ui.item.parent().data().statusId;
+
+                            updateStatus(ticket, status);
+                        }
                     });
 
                     $('.card-body-column').disableSelection();
@@ -66,4 +72,20 @@ $(document).ready(function () {
             });            
         });
     });
-});  
+});
+
+function updateStatus(ticket, status) {
+
+    axios({
+        url: `/api/requests/lists/${ticket}/`,
+        method: "PATCH",
+        data: {status: status},
+        headers: axiosConfig,
+    }).then(response => {
+        console.log(response)
+        Toast.fire({
+            icon: 'success',
+            title: 'Status Updated',
+        });
+    })
+}

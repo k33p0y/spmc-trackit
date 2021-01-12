@@ -40,20 +40,17 @@ class StatusReadOnlySerializer(serializers.ModelSerializer):
 class TicketSerializer(serializers.ModelSerializer):
    requested_by = UserSerializer(read_only=True)
 
-   def validate(self, data):
-       for x in data['form_data']:
-          print(x)
-          print(x['value'] != '')
-          print(x['required'] == True)
-          if (x['required'] == True and x['value'] != ''):
-             print(x['required'])
-             raise serializers.ValidationError("validate error")
+   # def validate(self, data):
+      
+   #    for x in data['form_data']:
+   #       print(x)
+   #       print(x['value'] != '')
+   #       print(x['required'] == True)
+   #       if (x['required'] == True and x['value'] != ''):
+   #          print(x['required'])
+   #          raise serializers.ValidationError("validate error")
 
-    #    json_obj = data['form_data']
-    #    if data['form_data']:
-    #     #   print(json_obj)
-    #       raise serializers.ValidationError("There is json")
-       return data
+   #    return data
     
    class Meta:
       model = Ticket
