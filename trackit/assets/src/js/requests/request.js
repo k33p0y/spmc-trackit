@@ -9,7 +9,7 @@ $(document).ready(function () {
       "autoWidth": false,
       "serverside": true,
       "processing": true,
-      "pageLength": 20,
+      "pageLength": 10,
       "ajax": {
          url: '/api/requests/lists/?format=datatables',
          type: "GET",

@@ -59,14 +59,16 @@
 
         <!-- Boards Body-->
         <div class="board-wrapper">
-            <div class="row-fluid"></div>
+            <div class="row-fluid">
+                <p class="board-helper">*Select a form to show board cards</p>
+            </div>
         </div>
     </div>
 </section>
 {% else %}
-   <section class="content">
-      You don't have permission to view this page
-   </section>
+<section class="content">
+    You don't have permission to view this page
+</section>
 {% endif %}
 {% endblock %}
 
@@ -74,5 +76,5 @@
 {% block extrascript %}
 <!-- JQuery UI -->
 <script type="text/javascript" src="{% static 'vendor/jquery-ui/js/jquery-ui.js' %}"></script>
-<script type="text/javascript" src="{% static 'src/js/boards.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/requests/boards.js' %}"></script>
 {% endblock %}
