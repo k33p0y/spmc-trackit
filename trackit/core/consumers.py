@@ -13,7 +13,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         # join room group
         for group in self.joined_groups:
             await self.channel_layer.group_add(
-                'notif_room_for_group_' + group.name,
+                'notif_room_for_group_' + str(group.pk),
                 self.channel_name
             )
 
@@ -29,7 +29,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         # leave room group
         for group in self.joined_groups:
             await self.channel_layer.group_discard(
-                'notif_room_for_group_' + group.name,
+                'notif_room_for_group_' + str(group.pk),
                 self.channel_name
             )
         # leave user group
@@ -55,7 +55,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
         # send notification to group
         await self.channel_layer.group_send(
-            ('notif_room_for_group_%s' % self.obj['group']),
+            ('notif_room_for_group_%s' % self.obj['group_id']),
             {
                 'type': 'notification_message',
                 'notification': self.obj
@@ -86,7 +86,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         obj = dict()
         obj['ticket_id'] = str(ticket.pk)
         obj['ticket_no'] = ticket.ticket_no
-        obj['group'] = ticket.request_form.group.name
+        obj['group_id'] = ticket.request_form.group.pk
         obj['dept_head_id'] = ticket.department.department_head.pk
         obj['actor'] = log.user.get_full_name()
 
