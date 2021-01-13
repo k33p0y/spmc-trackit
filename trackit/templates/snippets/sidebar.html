@@ -54,14 +54,12 @@
                      </a>
                   </li>
                   {% endif %}
-                  {% comment %}
                   <li class="nav-item">
-                     <a href="" class="nav-link {% if url == 'group_list' %} active {% endif %}">
+                     <a href="{% url 'user_list' %}" class="nav-link {% if url == 'user_list' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p>User</p>
                      </a>
                   </li>
-                  {% endcomment %}
                </ul>
             </li>
             {% endif %}

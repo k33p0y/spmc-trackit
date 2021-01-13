@@ -11,6 +11,7 @@ router.register('api/core/group', GroupViewSet)
 urlpatterns = [
    path('', views.home, name='home'),
    path('core/group', views.group_list, name='group_list'),
+   path('core/user', views.user_list, name='user_list'),
 ]
 
 urlpatterns += router.urls
