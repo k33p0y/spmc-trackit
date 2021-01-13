@@ -47,6 +47,8 @@ $(document).ready(function () {
       url = '/api/core/group/';
       alert_msg = 'Saved Successfully';
 
+      $("#select2-permissions").val([]).trigger('change'); // reset select2 before loading modal
+
       $("#modal-add-group").modal();
       $(".modal-title").text('New Group');
       $('#txt-group-name').val('');
@@ -73,50 +75,37 @@ $(document).ready(function () {
          $('#txt-group-name').removeClass('form-error');
          $('#group-name-error').html('');
       }
-
-      // Form is Valid
-      // if (success == 1) {
-      //    $.ajax({
-      //       url: url,
-      //       type: action_type,
-      //       data: data,
-      //       beforeSend: function (xhr, settings) {
-      //          xhr.setRequestHeader("X-CSRFToken", csrftoken);
-      //       },
-      //       success: function (result) {
-      //          Toast.fire({
-      //             icon: 'success',
-      //             title: alert_msg,
-      //          });
-      //          table.ajax.reload();
-      //       },
-      //       error: function (xhr, status, error) {
-      //          if (xhr.responseJSON.name) {
-      //             $('#txt_deptname').addClass('form-error');
-      //             $('.department-error').html(`*${xhr.responseJSON.name}`)
-      //          } else {
-      //             $('#txt_deptname').removeClass('form-error');
-      //             $('.department-error').html('')
-      //          }
-      //          if (xhr.responseJSON.department_head) {
-      //             $('.select2-selection--single').css('border-color', '#dc3546a2'); // change border color to red
-      //             $('.dept-head-error').html(`*${xhr.responseJSON.department_head}`)
-      //          } else {
-      //             $('.select2-selection--single').css('border-color', '#ced4da'); // change border color to light gray
-      //             $('.dept-head-error').html('')
-      //          }
-      //          Toast.fire({
-      //             icon: 'error',
-      //             title: error,
-      //          });
-      //       },
-      //    }).done(function () {
-      //       $('#formModal').modal('toggle');
-      //       $('#dd_depthead').val('').trigger('change');
-      //       $("#form").trigger("reset");
-      //       $('.error-info').html('');
-      //    });
-      // }
+      
+      if (success){ // if form is valid
+         axios({
+            method: action_type,
+            url: url,
+            data: data,
+            headers: axiosConfig,
+         }).then(function (response) { // success
+            Toast.fire({
+                icon: 'success',
+                title: alert_msg,
+            });
+            
+            $("#form").trigger("reset"); // reset form
+            $("#select2-permissions").val([]).trigger('change'); // reset select2
+            $('#modal-add-group').modal('toggle');
+            table.ajax.reload();
+         }).catch(function (error) { // error
+            if (error.response.data.name) {
+                $('#txt-group-name').addClass('form-error');
+                $('#group-name-error').html(`*${error.response.data.name}`)
+            } else {
+                $('#txt-group-name').removeClass('form-error');
+                $('#group-name-error').html('')
+            }
+            Toast.fire({
+                icon: 'error',
+                title: error,
+            });
+         });
+      }
    });
 
 });
