@@ -43,7 +43,7 @@
                   <div class="col-auto card-actions">
                      <button class="btn btn-xs btn-light"> <i class="fas fa-print"></i></button>
                      <button class="btn btn-xs btn-light"> <i class="fas fa-redo"></i></button>
-                     <button class="btn btn-xs btn-orange" id="btn-create-group">
+                     <button class="btn btn-xs btn-orange" id="btn-create-user">
                         <i class="fas fa-plus"></i> <span>New</span>
                      </button>
                   </div>
@@ -83,20 +83,86 @@
 {% block modal %}
 <!-- Create -->
 <div class="modal fade" id="modal-add-user" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-   <div class="modal-dialog modal-lg" role="document">
+   <div class="modal-dialog modal-md" role="document">
       <div class="modal-content text-sm">
          <div class="modal-header">
             <h6 class="modal-title"></h6>
          </div>
          <div class="modal-body">
             <form id="form">
+               <!-- USERNAME -->
                <div class="form-group">
-                  <label for="nameHelp">Username</label>
-                  <input type="text" class="form-control form-control-sm" id="txt-group-name" aria-describedby="nameHelp"
+                  <label for="nameHelp">Username</label> 
+                  <input type="text" class="form-control form-control-sm" id="txt-username" aria-describedby="nameHelp"
                      placeholder="Enter Username">
-                  <small class="error-info" id="username    -error"></small>
+                  <small class="error-info" id="username-error"></small>
                </div>
 
+               <!-- FIRST NAME -->
+               <div class="form-group">
+                  <label for="nameHelp">First Name</label>
+                  <input type="text" class="form-control form-control-sm" id="txt-firstname" aria-describedby="nameHelp"
+                     placeholder="Enter First Name">
+                  <small class="error-info" id="firstname-error"></small>
+               </div>
+
+               <!-- LAST NAME -->
+               <div class="form-group">
+                  <label for="nameHelp">Last Name</label>
+                  <input type="text" class="form-control form-control-sm" id="txt-lastname" aria-describedby="nameHelp"
+                     placeholder="Enter Last Name">
+                  <small class="error-info" id="lastname-error"></small>
+               </div>
+
+               <!-- EMAIL -->
+               <div class="form-group">
+                  <label for="nameHelp">Password</label>
+                  <input type="password" class="form-control form-control-sm" id="txt-password" aria-describedby="nameHelp"
+                     placeholder="Enter Password">
+               </div>
+               <div class="form-group">
+                  <label for="nameHelp">Confirm Password</label>
+                  <input type="password" class="form-control form-control-sm aria-describedby="nameHelp"
+                     placeholder="Confirm Password">
+                  <small class="error-info" id="password-error"></small>
+               </div>
+
+               <div class="icheck-material-green">
+                  <input type="checkbox" id="chk-active-status" checked />
+                  <label for="chk_status">Active</label>
+               </div>
+               <div class="icheck-material-green">
+                  <input type="checkbox" id="chk-staff-status" checked />
+                  <label for="chk_status">Staff Status</label>
+               </div>
+               <div class="icheck-material-green">
+                  <input type="checkbox" id="chk-superuser-status" checked />
+                  <label for="chk_status">Superuser Status</label>
+               </div>
+
+               <!-- GROUPS -->
+               <div class="form-group">
+                  <label>Groups</label>
+                  <select class="form-control form-control-sm" id="select2-groups" style="width: 100%" multiple>
+                     <option></option>
+                     {% for group in groups %}
+                     <option value={{group.id}}>{{group}}</option>
+                     {% endfor %}
+                  </select>
+                  <small class="error-info"></small>
+               </div>
+
+               <!-- PERMISSIONS -->
+               <div class="form-group">
+                  <label>Permissions</label>
+                  <select class="form-control form-control-sm" id="select2-permissions" style="width: 100%" multiple>
+                     <option></option>
+                     {% for permission in permissions %}
+                     <option value={{permission.id}}>{{permission}}</option>
+                     {% endfor %}
+                  </select>
+                  <small class="error-info"></small>
+               </div>
             </form>
          </div>
 

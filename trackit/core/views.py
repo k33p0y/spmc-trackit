@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 
 @login_required
 def home(request):
@@ -13,4 +13,11 @@ def group_list(request):
 
 @login_required
 def user_list(request):
-   return render(request, 'pages/core/user_list.html', {})
+   permissions = Permission.objects.all()
+   groups = Group.objects.all()
+
+   context = {
+      'permissions': permissions,
+      'groups': groups
+   }
+   return render(request, 'pages/core/user_list.html', context)
