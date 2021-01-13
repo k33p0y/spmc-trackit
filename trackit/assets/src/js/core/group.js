@@ -31,9 +31,6 @@ $(document).ready(function () {
                if($('#changeGroupHidden').val() == 'true') {
                   data = data + "<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>";
                }
-               if($('#archiveGroupHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
-               }
                return data
             },
          }
