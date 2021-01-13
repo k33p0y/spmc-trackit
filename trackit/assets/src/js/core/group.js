@@ -54,6 +54,26 @@ $(document).ready(function () {
       $('#txt-group-name').val('');
    });
 
+   // UPDATE / PUT
+   $('#dt_group tbody').on('click', '.btn_edit', function () {
+      let dt_data = table.row($(this).parents('tr')).data();
+      let id = dt_data['id'];
+
+      // Assign AJAX Action Type/Method and URL
+      action_type = 'PUT';
+      url = `/api/core/group/${id}/`;
+      alert_msg = 'Update Successfully';
+
+      // // Open Modal
+      // // Rename Modal Title
+      $("#modal-add-group").modal();
+      $(".modal-title").text('Update Group');
+
+      // // Populate Fields
+      $('#txt-group-name').val(dt_data['name']);
+      $('#select2-permissions').val(dt_data['permissions']).trigger('change');
+   });
+
    // Submit Form
    $("#btn_save").click(function (e) {
       e.preventDefault();
