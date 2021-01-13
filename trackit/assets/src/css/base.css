@@ -292,44 +292,20 @@ table.dataTable tbody tr:hover {
    box-shadow: none;
 }
 
-/* Cards */
-/* .card .card-header .card-actions-left,
-.card .card-header .card-actions-right {
-   margin: 14px;
-   margin-bottom: 0px;
-   display: inline-flex;
+.container-fluid .row-actions #btn_new {
+   width: auto;
+   height: auto;
+   padding:4px 10px;
+   border-radius: .2rem;
 }
 
-.card .card-header .card-actions-left .btn,
-.card .card-header .card-actions-right .btn  {
-   display: flex ;
-   align-items: center;
-   justify-content: center;
-   border-radius: 50%;
-   width: 30px;
-   height: 30px;
-} */
+.container-fluid .row-actions #btn_new span{
+   font-size: 12px;
+   margin: 0;
+}
+
 .card .card-body .form-control-sm {
    border-color: #cdd5df;
-}
-
-.card .card-body .card-actions {
-   padding-left:12px;
-   border-left: 1px solid #cdd5df;
-}
-
-.card .card-body .card-actions .btn {
-   width: auto;
-   height: 30px;
-   padding:2px 8px;
-   border-radius: .2rem;
-   /* border-color: #e3E5ED !important; */
-}
-
-.card .card-body .card-actions .btn span {
-   font-size: 12px;
-   /* text-transform: uppercase; */
-   margin:0 4px;
 }
 
 .card-table {

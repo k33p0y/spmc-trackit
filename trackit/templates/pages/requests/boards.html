@@ -32,34 +32,32 @@
 {% if request.user.is_superuser %}
 <section class="content">
     <div class="container-fluid">
-        <!-- Default box -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card bg-secondary mt-2 mb-3">
-                    <div class="card-body row p-1 d-flex align-items-center">
-                        <div class="col">
-                            <form>
-                                <div class="form-row align-items-center m-0">
-                                    <div class="col-sm-3 p-0 mr-2">
-                                        <select class="form-control form-control-sm" id="select_form"
-                                            style="width: 100%">
-                                            <option></option>
-                                            {% for form in forms %}
-                                            <option value={{form.id}}>{{form.name}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
+   
+         <!-- Default box -->
+         <div class="row">
+            <div class="col-12 m-0">
+               <div class="card bg-secondary mt-2 mb-2">
+                  <div class="card-body p-0">
+                     <div class="container-fluid">
+                        <div class="row">
+                           <div class="col-12 col-sm-4 p-1 ">
+                            <select class="form-control form-control-sm w-100" id="select_form">
+                                <option></option>
+                                {% for form in forms %}
+                                    <option value={{form.id}}>{{form.name}}</option>
+                                {% endfor %}
+                            </select>
+                           </div>
                         </div>
-                    </div>
-                </div>
+                     </div>               
+                  </div>
+               </div>
             </div>
         </div>
 
         <!-- Boards Body-->
         <div class="board-wrapper">
-            <div class="row-fluid">
+            <div class="row-fluid mt-2">
                 <p class="board-helper">*Select a form to show board cards</p>
             </div>
         </div>
