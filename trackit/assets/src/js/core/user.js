@@ -142,6 +142,7 @@ $(document).ready(function () {
              $('#modal-add-user').modal('toggle');
              table.ajax.reload();
           }).catch(function (error) { // error
+            console.log(error.response.data)
              if (error.response.data.name) {
                  $('#txt-group-name').addClass('form-error');
                  $('#group-name-error').html(`*${error.response.data.name}`)
