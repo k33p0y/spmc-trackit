@@ -6,24 +6,18 @@ from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
-        password = make_password(validated_data['password'])
-        groups = validated_data['groups'],
-        user_permissions = validated_data['user_permissions'],
-        print(groups)
-        print(user_permissions)
-
         user = User(
-            username=validated_data['username'],
-            password=password,
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            is_superuser=validated_data['is_superuser'],
-            is_staff=validated_data['is_staff'],
-            is_active=validated_data['is_active'],
-            # groups=validated_data['groups'],
-            # user_permissions=validated_data['user_permissions'],
+            username = validated_data['username'],
+            password = make_password(validated_data['password']), # hash password
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
+            is_superuser = validated_data['is_superuser'],
+            is_staff = validated_data['is_staff'],
+            is_active = validated_data['is_active'],
         )
         user.save()
+        user.groups.add(*validated_data['groups']) # add groups to user
+        user.user_permissions.add(*validated_data['user_permissions']) # add permissions to user
         return user
 
     def validate_password(self, value):
