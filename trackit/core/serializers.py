@@ -20,10 +20,24 @@ class UserSerializer(serializers.ModelSerializer):
         user.user_permissions.add(*validated_data['user_permissions']) # add permissions to user
         return user
 
-    def validate_password(self, value):
-        user = self.context['request'].user
-        validate_password(password=value, user=user)
-        return value
+    def validate_password(self, password):
+        request = self.context['request']
+        password2 = request.data.get('password2')
+        
+        if not password == password2:
+            raise serializers.ValidationError('Password does not match.')
+        validate_password(password=password, user=request.user)
+        return password
+    
+    def validate_first_name(self, firstname):
+        if not firstname:
+            raise serializers.ValidationError('This field may not be blank.')
+        return firstname
+
+    def validate_last_name(self, lastname):
+        if not lastname:
+            raise serializers.ValidationError('This field may not be blank.')
+        return lastname
 
     class Meta:
         model = User

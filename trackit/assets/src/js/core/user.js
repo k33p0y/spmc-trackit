@@ -114,7 +114,8 @@ $(document).ready(function () {
 
       // Data
       data.username = $('#txt-username').val();
-      data.password = $('#txt-password').val();
+      data.password = $('#txt-password1').val();
+      data.password2 = $('#txt-password2').val();
       data.first_name = $('#txt-firstname').val();
       data.last_name = $('#txt-lastname').val();
       data.is_superuser = $('#chk-superuser-status').is(':checked')
@@ -122,48 +123,51 @@ $(document).ready(function () {
       data.is_active = $('#chk-active-status').is(':checked')
       data.groups = $('#select2-groups').val();
       data.user_permissions = $('#select2-permissions').val();
-
-      // Validation
-      //    if ($('#txt-group-name').val() == '') {
-      //       $('#txt-group-name').addClass('form-error');
-      //       $('#group-name-error').html('*This field cannot be empty');
-      //       success--;
-      //    } else {
-      //       $('#txt-group-name').removeClass('form-error');
-      //       $('#group-name-error').html('');
-      //    }
       
-      if (success){ // if form is valid
-         axios({
-            method: action_type,
-            url: url,
-            data: data,
-            headers: axiosConfig,
-         }).then(function (response) { // success
-            Toast.fire({
-               icon: 'success',
-               title: alert_msg,
-            });
-            
-            $("#form").trigger("reset"); // reset form
-            $("#select2-permissions").val([]).trigger('change'); // reset permissions select2
-            $("#select2-groups").val([]).trigger('change'); // reset groups select2
-            $('#modal-add-user').modal('toggle');
-            table.ajax.reload();
-         }).catch(function (error) { // error
-            console.log(error.response.data)
-            if (error.response.data.name) {
-               $('#txt-group-name').addClass('form-error');
-               $('#group-name-error').html(`*${error.response.data.name}`)
-            } else {
-               $('#txt-group-name').removeClass('form-error');
-               $('#group-name-error').html('')
-            }
-            Toast.fire({
-               icon: 'error',
-               title: error,
-            });
+      axios({
+         method: action_type,
+         url: url,
+         data: data,
+         headers: axiosConfig,
+      }).then(function (response) { // success
+         Toast.fire({
+            icon: 'success',
+            title: alert_msg,
          });
-      }
+         
+         $("#form").trigger("reset"); // reset form
+         $("#select2-permissions").val([]).trigger('change'); // reset permissions select2
+         $("#select2-groups").val([]).trigger('change'); // reset groups select2
+         $('#modal-add-user').modal('toggle');
+         table.ajax.reload();
+      }).catch(function (error) { // error
+         if (error.response.data.username) showFieldErrors(error.response.data.username, 'username'); else removeFieldErrors('username');
+         if (error.response.data.first_name) showFieldErrors(error.response.data.first_name, 'firstname'); else removeFieldErrors('firstname');
+         if (error.response.data.last_name) showFieldErrors(error.response.data.last_name, 'lastname'); else removeFieldErrors('lastname');
+         if (error.response.data.password) showFieldErrors(error.response.data.password, 'password'); else removeFieldErrors('password');
+
+         Toast.fire({
+            icon: 'error',
+            title: error,
+         });
+      });
    }); // submit form end
+
+   let showFieldErrors = function(obj, field){
+      if (field === 'password') {
+         $(`#txt-${field}1`).addClass('form-error')
+         $(`#txt-${field}2`).addClass('form-error')
+      } else $(`#txt-${field}`).addClass('form-error');
+      let errors = ''
+      for (i=0; i<obj.length; i++) errors += `${obj[i]} `;
+      $(`#${field}-error`).html(`*${errors}`)
+   };
+
+   let removeFieldErrors = function(field){
+      if (field === 'password') {
+         $(`#txt-${field}1`).removeClass('form-error')
+         $(`#txt-${field}2`).removeClass('form-error')
+      } else $(`#txt-${field}`).removeClass('form-error');
+      $(`#${field}-error`).html(``)
+   };
 });
