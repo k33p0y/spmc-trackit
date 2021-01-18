@@ -163,72 +163,112 @@ $(document).ready(function () {
    $("#btn_update").click(function (e) {
       e.preventDefault();
 
-      // Variables
-      let data = {}
-      let success = 0;
-      let is_active = ($('#is_active_switch').is(":checked")) ? true : false;
-      
-      const ticket_id = $(this).attr('ticket_id')
-      const form_id = $('#form_id').attr('form_id');
-      
-      // Data
-      data.form_data = getFormDetailValues();
-      data.category = category;
-      data.department = department;
-      data.is_active = is_active;
-      data.is_archive = false;
+      // Validate forms
+      let success = validateForms();
 
-      // console.log(data)
-      
-      axios({
-         method: 'PATCH',
-         url: `/api/requests/lists/${ticket_id}/`,
-         data: data,
-         headers: axiosConfig,
-      }).then(function (response) { // success
-         // disable submit button
-         $(this).attr('disabled', true)
-         $.when(
+      // If data is validated perform axios
+      if (success == 0) {
+         const ticket_id = $(this).attr('ticket_id')
+
+         // Data
+         data = new Object();
+         data.form_data = getFormDetailValues();
+         data.category = category;
+         data.department = department;
+         data.is_active = ($('#is_active_switch').is(":checked")) ? true : false;
+
+         axios({
+            method: 'PATCH',
+            url: `/api/requests/lists/${ticket_id}/`,
+            data: data,
+            headers: axiosConfig,
+         }).then(function (response) { // success
+            // disable submit button
+            $(this).attr('disabled', true)
+            $.when(
+               Toast.fire({
+                  icon: 'success',
+                  title: 'Update Successfully',
+               }),
+               $('.overlay').removeClass('d-none')
+            ).then(function () {
+               $(location).attr('href', '/requests/lists')
+            });
+
+         }).catch(function (error) { // error
             Toast.fire({
-               icon: 'success',
-               title: 'Update Successfully',
-            }),
-            $('.overlay').removeClass('d-none')
-         ).then(function () {
-            $(location).attr('href', '/requests/lists')
+               icon: 'error',
+               title: error,
+            });
          });
-
-      }).catch(function (error) { // error
-         console.log(error.response)
-
-         Toast.fire({
-            icon: 'error',
-            title: error,
-         });
-      });
+      }
    });
 });
+
+function validateForms() {
+   let success = 1;
+
+   // Validate Request Details
+   if ($('#dd_edit_categories').val() == '') {
+      $('#dd_edit_categories').next().find('.select2-selection').addClass('form-error');
+      $('#error-info-category').html('*This field cannot be empty')
+      success--;
+   } else {
+      $('#dd_edit_categories').next().find('.select2-selection').removeClass('form-error');
+      $('#error-info-category').html('');
+   }
+
+   if ($('#dd_edit_departments').val() == '') {
+      $('#dd_edit_departments').next().find('.select2-selection').addClass('form-error');
+      $('#error-info-department').html('*This field cannot be empty')
+      success--;
+   } else {
+      $('#dd_edit_departments').next().find('.select2-selection').removeClass('form-error');
+      $('#error-info-department').html('')
+   }
+
+   // Validate Request Form Fields
+   const form_fields = $('.form_field_detail');
+   
+   form_fields.each(function(index, val) {      
+      if(val.required == true) {
+         if ($(this).val() == '') {
+            $(this).addClass('form-error').next().html('*This field cannot be empty');
+            success--;
+         } else {
+            $(this).removeClass('form-error').next().html('');
+         }
+      }
+
+      // if($(this).children().length > 0 && $(this).data().requiredId == 'False') {
+      //    let check_count = $(this).find('input:checkbox:checked').length;
+         
+      //    if (check_count == 0 ) {
+      //       $(this).next().html('*Please select at least one')
+      //    }
+      // }
+   });
+
+   return success;
+}
 
 function getFormDetailValues() {
    const form_fields = $('.form_field_detail');
    const form_data = new Array()
    
    form_fields.each(function(index, val) {
-
-      console.log(val)
-      
       if ($(this).children().length > 0) {
-         let node = $(this).children();
+         let nodes = $(this).children();
          var answer = new Array();
          var type;
 
-         node.each(function(index, element) {
+         nodes.each(function(index, element) {
             const field = $(this).find('input');
             const label = $(this).find('label');
 
             // Set type of field
             type = field.attr('type');
-
+            
             // Push to array
             answer.push({
                "option_id": field.attr('id'),
@@ -242,15 +282,13 @@ function getFormDetailValues() {
          var answer = $(`#${val.id}`).val()
          var type = val.type;
       }
-
+      
       form_data.push({
          "id" : val.id,
          "type" : type,
-         "value" : answer 
-      });  
+         "value" : answer,
+      });
    });
-
-   console.log(form_data)
-
+   
    return form_data;
 }
