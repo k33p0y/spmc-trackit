@@ -18,6 +18,12 @@ $(document).ready(function () {
       // cache: true,
    });
 
+   $('#form-active-select').select2({
+      allowClear: true,
+      placeholder: 'Is Active',
+      // cache: true,
+   });
+
    // clear form status select2 field on modal close
    $('#formModal').on('hidden.bs.modal', function (e) {
       $('#select2_status').val([]).trigger('change');

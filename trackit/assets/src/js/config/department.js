@@ -77,6 +77,12 @@ $(document).ready(function () {
       cache: true,
    });
 
+   $('#department-active-select').select2({
+      allowClear: true,
+      placeholder: 'Is Active',
+      cache: true,
+   });
+
    // Get Dropdown Value
    $('#dd_depthead').on('change', function () {
       dd_head_id = $("#dd_depthead option:selected").val();

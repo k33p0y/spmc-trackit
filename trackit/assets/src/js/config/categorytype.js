@@ -68,6 +68,13 @@ $(document).ready(function () {
       ],
    });
 
+   // Select2 Config
+   $('#category-type-active-select').select2({
+      allowClear: true,
+      placeholder: 'Is Active',
+      cache: true,
+   });
+
    // Get Checkbox State
    $('#chk_status').click(function () {
       if ($(this).prop("checked") == true) {

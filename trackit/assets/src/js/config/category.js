@@ -77,6 +77,18 @@ $(document).ready(function () {
       cache: true,
    });
 
+   $('#category-type-select').select2({
+      allowClear: true,
+      placeholder: 'Category Type',
+      cache: true,
+   });
+
+   $('#category-active-select').select2({
+      allowClear: true,
+      placeholder: 'Is Active',
+      cache: true,
+   });
+
    // Get Dropdown Value
    $('#dd_types').on('change', function () {
       dd_type_id = $("#dd_types option:selected").val();

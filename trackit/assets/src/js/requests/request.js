@@ -146,6 +146,34 @@ $(document).ready(function () {
    let department = $("#dd_edit_departments option:selected").val();
    let category = $("#dd_edit_categories option:selected").val();
 
+   $('#ticket-active-select').select2({
+      allowClear: true,
+      placeholder: 'Is Active',
+      // cache: true,
+   });
+
+   $('#category-select').select2({
+      allowClear: true,
+      placeholder: 'Select Category',
+      // cache: true,
+   });
+
+   $('#department-select').select2({
+      allowClear: true,
+      placeholder: 'Select Department',
+      // cache: true,
+   });
+
+   $('#status-select').select2({
+      allowClear: true,
+      placeholder: 'Select Status',
+      // cache: true,
+   });
+
+   
+
+
+
    // SElECT ON CHANGE EVENT
    $('#dd_edit_departments').on('change', function () { // department dropdown
       department = $($(this), "option:selected").val();
