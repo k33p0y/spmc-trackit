@@ -43,6 +43,28 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
+        instance.is_staff = validated_data.get('is_staff', instance.is_staff)
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+
+        instance.groups.clear() # clear user groups
+        instance.user_permissions.clear() # clear user permissions
+        if validated_data.get('groups', instance.groups): # if there is submitted groups from form
+            instance.groups.add(*validated_data.get('groups', instance.groups)) # add selected groups to user
+        if validated_data.get('user_permissions', instance.user_permissions): # if there is submitted user permissions from form
+            instance.user_permissions.add(*validated_data.get('user_permissions', instance.user_permissions)) # add selected permissions to user
+        instance.save() 
+        return instance
+
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group

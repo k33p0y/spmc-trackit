@@ -24,7 +24,7 @@ $(document).ready(function () {
       });
   
    // RETRIEVE / GET
-   let table = $('#dt_group').DataTable({
+   let table = $('#dt_user').DataTable({
       "searching": false,
       "responsive": true,
       "lengthChange": false,
@@ -76,6 +76,7 @@ $(document).ready(function () {
       action_type = 'POST';
       url = '/api/core/user/';
       alert_msg = 'Saved Successfully';
+      $('.password-group').show()
 
       $("#form").trigger("reset"); // reset form
       $("#select2-permissions").val([]).trigger('change'); // reset permissions select2 before loading modal
@@ -85,24 +86,31 @@ $(document).ready(function () {
    }); // create new group button end
  
    // UPDATE / PUT
-   // $('#dt_group tbody').on('click', '.btn_edit', function () {
-   //    let dt_data = table.row($(this).parents('tr')).data();
-   //    let id = dt_data['id'];
+   $('#dt_user tbody').on('click', '.btn_edit', function () {
+      let dt_data = table.row($(this).parents('tr')).data();
+      let id = dt_data['id'];
 
-   //    // Assign AJAX Action Type/Method and URL
-   //    action_type = 'PUT';
-   //    url = `/api/core/group/${id}/`;
-   //    alert_msg = 'Update Successfully';
+      // Assign AJAX Action Type/Method and URL
+      action_type = 'PUT';
+      url = `/core/user/${id}/update`;
+      alert_msg = 'Update Successfully';
+      $('.password-group').hide()
 
-   //    // // Open Modal
-   //    // // Rename Modal Title
-   //    $("#modal-add-group").modal();
-   //    $(".modal-title").text('Update Group');
+      // // // Open Modal
+      // // // Rename Modal Title
+      $("#modal-add-user").modal();
+      $(".modal-title").text('Update User');
 
-   //    // // Populate Fields
-   //    $('#txt-group-name').val(dt_data['name']);
-   //    $('#select2-permissions').val(dt_data['permissions']).trigger('change');
-   // });
+      // // // Populate Fields
+      $('#txt-username').val(dt_data['username']); // USERNAME
+      $('#txt-firstname').val(dt_data['first_name']); // FIRST NAME
+      $('#txt-lastname').val(dt_data['last_name']); // LAST NAME
+      if (dt_data['is_superuser']) $('#chk-superuser-status').prop('checked', true); else $('#chk-superuser-status').prop('checked', false); // IS SUPERUSER
+      if (dt_data['is_staff']) $('#chk-staff-status').prop('checked', true); else $('#chk-staff-status').prop('checked', false); // IS STAFF
+      if (dt_data['is_active']) $('#chk-active-status').prop('checked', true); else $('#chk-active-status').prop('checked', false); // IS ACTIVE
+      $('#select2-groups').val(dt_data['groups']).trigger('change'); // GROUPS
+      $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
+   });
 
    // Submit Form
    $("#btn_save").click(function (e) {
@@ -114,8 +122,8 @@ $(document).ready(function () {
 
       // Data
       data.username = $('#txt-username').val();
-      data.password = $('#txt-password1').val();
-      data.password2 = $('#txt-password2').val();
+      if ($('#txt-password1').val()) data.password = $('#txt-password1').val();
+      if ($('#txt-password2').val()) data.password2 = $('#txt-password2').val();
       data.first_name = $('#txt-firstname').val();
       data.last_name = $('#txt-lastname').val();
       data.is_superuser = $('#chk-superuser-status').is(':checked')
