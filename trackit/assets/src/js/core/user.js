@@ -61,10 +61,9 @@ $(document).ready(function () {
                if($('#changeUserHidden').val() == 'true') {
                   data = data + "<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>";
                }
-               if($('#archiveUserHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
+               if($('#changePasswordHidden').val() == 'true') {
+                  data = data + "<a href='#' class='text-primary action-link btn_change_password'> <i class='fas fa-key'></i> </a>";
                }
-               data = data + "<a href='#' class='text-primary action-link btn_change_password'> <i class='fas fa-key'></i> </a>";
                
                return data
             },
