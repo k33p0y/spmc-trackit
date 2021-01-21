@@ -126,3 +126,14 @@
    -webkit-transform: translateX(.75rem);
    transform: translateX(.75rem);
 }
+
+.file-icon {
+   margin-right: 14px;
+   justify-content: center;
+   align-items: center;
+   display: flex;
+}
+
+.file-icon i {
+   font-size: x-large !important;
+}

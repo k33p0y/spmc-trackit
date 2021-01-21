@@ -2,9 +2,19 @@ let success = 1;
 
 $(document).ready(function () {
 
-   let request_form, department, category, category_type;
-   let data_obj;
-    
+   var request_form, department, category, category_type;
+   var data_obj;
+   var file_data
+
+   // MIME TYPES REGISTER
+   const media_type = new Object();
+   media_type.text = ['text/plain'];
+   media_type.pdf = ['application/pdf'];
+   media_type.spreadsheet = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel','application/vnd.oasis.opendocument.spreadsheet','text/csv'];
+   media_type.document = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword','application/vnd.oasis.opendocument.text'];
+   media_type.presentation = ['application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.ms-powerpoint','application/vnd.oasis.opendocument.presentation'];
+   media_type.image = ['image/png','image/jpeg'];
+   
    // SELECT2 CONFIGURATION
    $('#dd_departments').select2({ // department select2
       allowClear: true,
@@ -198,14 +208,52 @@ $(document).ready(function () {
       category = $("#dd_categories option:selected").val();
    });
 
+   // File Upload
+   $('#file_upload').on('change', function() {
+      const files = this.files;
+      const file_lists = $('#file_lists').empty()
+      
+      // Set variable to a new Array
+      file_data = new Array();
+
+      Object.values(files).forEach(file => {
+         let type = fileType(file.type, media_type);
+         let size = fileSize(file.size);
+         
+         if (type == 'invalid') { // If file is not registered
+            this.value = "";
+            Toast.fire({
+               icon: 'error',
+               title: 'File type is not supported!',
+            })
+         } else if (size == 'invalid') { // If file is more than 25MB
+            this.value = "";
+            Toast.fire({
+               icon: 'error',
+               title: 'File is too big!',
+            })
+         } else {
+            file_lists.append(
+               `<div class="list-group-item border-0 d-flex p-1 mb-1">
+                  <div class="file-icon">${type}</div>
+                  <div class="w-100">
+                     <p class="mb-0 font-weight-bold">${file.name}</p>
+                     <small class="mb-0">${size}</small>
+                  </div>
+               </div>`
+            )            
+            
+            file_data.push(file) // Push values to array
+         }
+      });
+   })
+
    // Submit Form
    $("#btn_save").click(function (e) {
       e.preventDefault();
-
-      // Variables
+      
       let success = validateForms();
-
-      if (success == 1) {
+      if (success == 0) {
 
          // Data
          data = new Object();
@@ -249,7 +297,7 @@ $(document).ready(function () {
    });    
  });
 
- function validateForms() {
+function validateForms() {
    // Validate Request Details
    if ($('#dd_types').val() == '') {
       $('#dd_types').next().find('.select2-selection').addClass('form-error');
@@ -287,9 +335,8 @@ $(document).ready(function () {
       $('#error-info-form').html('');
    }
 }
- 
- // Get form Values
- function getFormValues(data_obj) {
+// Get form Values
+function getFormValues(data_obj) {
    let form_fields_obj = new Array();
 
    if(data_obj == null || data_obj == undefined) {
@@ -374,6 +421,42 @@ $(document).ready(function () {
 
 
 	return form_fields_obj;
- }
+}
+function fileType(file_type, media_type) {
+   let file_icon;
 
- 
+   if (media_type.text.includes(file_type)) { // Text File
+      file_icon = '<i class="far fa-file-alt"></i>'
+   } else if (media_type.pdf.includes(file_type)) { // PDF File
+      file_icon = '<i class="far fa-file-pdf text-danger"></i>'
+   } else if (media_type.spreadsheet.includes(file_type)) { // Excel or CSV File
+      file_icon = '<i class="far fa-file-excel text-success"></i>'
+   } else if (media_type.document.includes(file_type)) { // Word or Document File
+      file_icon = '<i class="far fa-file-word text-primary"></i>'
+   } else if (media_type.presentation.includes(file_type)) { // Powerpoint File
+      file_icon = '<i class="far fa-file-powerpoint text-orange"></i>'
+   } else if (media_type.image.includes(file_type)) { // Image File
+      file_icon = '<i class="far fa-file-image text-warning"></i>'
+   } else { // Invalid File
+      file_icon = 'invalid';
+   }
+
+   return file_icon;
+}
+function fileSize(bytes) {
+   let file_size;
+
+   if (bytes < 1024) {
+      file_size = `${bytes} bytes`;
+   } else if (bytes >= 1024 && bytes < 1024000) { // Convert Bytes to Kilobytes
+      bytes = (bytes / 1024).toFixed(1);
+      file_size = `${bytes} kB`;
+   } else if (bytes > 1024000 && bytes <= 25214400) { // Convert Bytes to MegaBytes & set limit 25MB 
+      bytes = (bytes / 1024000).toFixed(1);
+      file_size = `${bytes} MB`;
+   } else { // Invalid Size 
+      file_size = 'invalid';
+   }
+
+   return file_size;
+}

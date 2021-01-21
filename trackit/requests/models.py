@@ -27,14 +27,13 @@ class RequestForm(models.Model):
 class Ticket(models.Model):
     ticket_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ticket_no = models.CharField(max_length=25, blank=True)
-    reference_no = models.CharField(max_length=25, blank=True)
     form_data = JSONField()
     
     request_form = models.ForeignKey(RequestForm, related_name='formtype_tickets', on_delete=models.PROTECT)
     category = models.ForeignKey(Category, related_name='category_tickets', on_delete=models.CASCADE, null=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    requested_by = models.ForeignKey(User, related_name='user_ticketes', on_delete=models.PROTECT)
-    status = models.ForeignKey(Status, related_name='status_ticketes', on_delete=models.SET_NULL, null=True, blank=True)
+    requested_by = models.ForeignKey(User, related_name='user_tickets', on_delete=models.PROTECT)
+    status = models.ForeignKey(Status, related_name='status_tickets', on_delete=models.SET_NULL, null=True, blank=True)
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -50,6 +49,16 @@ class RequestFormStatus(models.Model):
 
     def __str__(self):
         return self.status
+
+class Attachment(models.Model):
+    name = models.CharField(max_length=255, blank=True)
+    path = models.FileField(upload_to="attachments/")
+    ticket = models.ForeignKey(Ticket, related_name='attachments_ticket', on_delete=models.CASCADE)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey('core.User', related_name='attachments_user', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 class Notification(models.Model):
     log = models.ForeignKey(CRUDEvent, on_delete=models.CASCADE)
