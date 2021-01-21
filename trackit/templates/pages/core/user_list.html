@@ -1,0 +1,183 @@
+{% extends '../../base.html' %}
+{% load static %}
+
+{% block title %} User {% endblock %}
+
+{% block content %}
+<!-- Content Header -->
+<section class="content-header">
+   <div class="container-fluid">
+      <div class="row mb-2">
+         <div class="col-sm-6">
+            <h5 class="font-weight-bolder">Users </h5>
+         </div>
+         <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-xs">
+               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-orange"><i class="fas fa-home"></i></a></li>
+               <li class="breadcrumb-item">Authentication and Authorization</li>
+               <li class="breadcrumb-item">Users</li>
+               <li class="breadcrumb-item active">List</li>
+            </ol>
+         </div>
+      </div>
+   </div>
+</section>
+
+<!-- /.content -->
+<section class="content">
+   <div class="container-fluid">
+      <!-- Default box -->
+      <div class="row">
+         <div class="col-lg-12">
+            <div class="card bg-secondary mt-2 mb-2">
+               <div class="card-body row p-1 d-flex align-items-center">
+                  <div class="col">
+                     <form>
+                        <div class="form-row align-items-center m-0">
+                           <div class="col-sm-3 p-0 mr-2">
+                              <input type="search" class="form-control form-control-sm" placeholder="Search">
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+                  <div class="col-auto card-actions">
+                     <button class="btn btn-xs btn-light"> <i class="fas fa-print"></i></button>
+                     <button class="btn btn-xs btn-light"> <i class="fas fa-redo"></i></button>
+                     <button class="btn btn-xs btn-orange" id="btn-create-user">
+                        <i class="fas fa-plus"></i> <span>New</span>
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="row">
+         <div class="col-12 col-sm-12">
+            <div class="card mt-2 mb-2">
+               <div class="card-body p-1">
+                  <table id="dt_user" class="table table-hover" width="100%">
+                     <thead>
+                        <tr>
+                           <th>Username</th>
+                           <th>First Name</th>
+                           <th>Last Name</th>
+                           <th>Staff Status</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+
+   </div>
+   <input type="hidden" id="changeUserHidden" value="{% if perms.core.change_user %}true{% else %}false{% endif %}">
+   <input type="hidden" id="changePasswordHidden" value="{% if perms.core.change_user_password %}true{% else %}false{% endif %}">
+
+</section>
+
+{% endblock %}
+
+{% block modal %}
+<!-- Create -->
+<div class="modal fade" id="modal-add-user" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
+   <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content text-sm">
+         <div class="modal-header">
+            <h6 class="modal-title"></h6>
+         </div>
+         <div class="modal-body">
+            <form id="form">
+               <!-- USERNAME -->
+               <div class="form-group name-group">
+                  <label for="usernameHelp">Username</label> 
+                  <input type="text" class="form-control form-control-sm" id="txt-username" aria-describedby="usernameHelp"
+                     placeholder="Enter Username">
+                  <small class="error-info" id="username-error"></small>
+               </div>
+
+               <!-- FIRST NAME -->
+               <div class="form-group name-group">
+                  <label for="firstnameHelp">First Name</label>
+                  <input type="text" class="form-control form-control-sm" id="txt-firstname" aria-describedby="firstnameHelp"
+                     placeholder="Enter First Name">
+                  <small class="error-info" id="firstname-error"></small>
+               </div>
+
+               <!-- LAST NAME -->
+               <div class="form-group name-group">
+                  <label for="lastnameHelp">Last Name</label>
+                  <input type="text" class="form-control form-control-sm" id="txt-lastname" aria-describedby="lastnameHelp"
+                     placeholder="Enter Last Name">
+                  <small class="error-info" id="lastname-error"></small>
+               </div>
+
+               <!-- PASSWORD -->
+               <div class="form-group password-group">
+                  <label for="password1Help">Password</label>
+                  <input type="password" class="form-control form-control-sm" id="txt-password1" aria-describedby="password1Help"
+                     placeholder="Enter Password">
+               </div>
+               <div class="form-group password-group">
+                  <label for="password2Help">Confirm Password</label>
+                  <input type="password" class="form-control form-control-sm" id="txt-password2" aria-describedby="password2Help"
+                     placeholder="Confirm Password">
+                  <small class="error-info" id="password-error"></small>
+               </div>
+
+               <div class="icheck-material-green status-group">
+                  <input type="checkbox" id="chk-active-status" checked />
+                  <label for="chk-active-status">Active</label>
+               </div>
+               <div class="icheck-material-green status-group">
+                  <input type="checkbox" id="chk-staff-status" />
+                  <label for="chk-staff-status">Staff Status</label>
+               </div>
+               <div class="icheck-material-green status-group">
+                  <input type="checkbox" id="chk-superuser-status" />
+                  <label for="chk-superuser-status">Superuser Status</label>
+               </div>
+
+               <!-- GROUPS -->
+               <div class="form-group m2m-group">
+                  <label>Groups</label>
+                  <select class="form-control form-control-sm" id="select2-groups" style="width: 100%" multiple>
+                     <option></option>
+                     {% for group in groups %}
+                     <option value={{group.id}}>{{group}}</option>
+                     {% endfor %}
+                  </select>
+                  <small class="error-info"></small>
+               </div>
+
+               <!-- PERMISSIONS -->
+               <div class="form-group m2m-group">
+                  <label>Permissions</label>
+                  <select class="form-control form-control-sm" id="select2-permissions" style="width: 100%" multiple>
+                     <option></option>
+                     {% for permission in permissions %}
+                     <option value={{permission.id}}>{{permission}}</option>
+                     {% endfor %}
+                  </select>
+                  <small class="error-info"></small>
+               </div>
+            </form>
+         </div>
+
+         <div class="modal-footer">
+            <!-- <a class="text-danger mr-auto btn_delete" id="btn_delete"> Delete </a> -->
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
+               <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-sm btn-outline-orange" id="btn_save"><span>Save</span></button>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
+
+{% block extrascript %}
+<script type="text/javascript" src="{% static 'src/js/core/user.js' %}"></script>
+{% endblock %}

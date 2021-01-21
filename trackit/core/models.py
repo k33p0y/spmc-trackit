@@ -6,6 +6,11 @@ class User(AbstractUser):
 
    def __str__(self):
       return '%s %s' % (self.first_name, self.last_name)
+   
+   class Meta:
+      permissions = (
+         ('change_user_password', 'Can change user password'),
+      )
 
 class UserDepartment(models.Model):
    user = models.ForeignKey(User, on_delete=models.CASCADE)
