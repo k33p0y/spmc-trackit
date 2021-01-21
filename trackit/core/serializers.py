@@ -20,6 +20,18 @@ class UserSerializer(serializers.ModelSerializer):
         user.user_permissions.add(*validated_data['user_permissions']) # add permissions to user
         return user
 
+    def update(self, instance, validated_data):
+        instance.username = instance.username
+        instance.first_name = instance.first_name
+        instance.last_name = instance.last_name
+        instance.is_superuser = instance.is_superuser
+        instance.is_staff = instance.is_staff
+        instance.is_active = instance.is_active
+        instance.password = validated_data.get('password', instance.password)
+
+        instance.save() 
+        return instance
+
     def validate_password(self, password):
         request = self.context['request']
         password2 = request.data.get('password2')

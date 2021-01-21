@@ -1,5 +1,5 @@
 $(document).ready(function () {
-      let action_type, url;
+      let method, url, action;
       let alert_msg = '';
 
       // Permissions Select2 Config
@@ -64,6 +64,8 @@ $(document).ready(function () {
                if($('#archiveUserHidden').val() == 'true') {
                   data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
                }
+               data = data + "<a href='#' class='text-primary action-link btn_change_password'> <i class='fas fa-key'></i> </a>";
+               
                return data
             },
          }
@@ -73,12 +75,16 @@ $(document).ready(function () {
    // Create new group button
    $('#btn-create-user').click(function(e){
       // Assign Axios Action Type and URL
-      action_type = 'POST';
+      method = 'POST';
+      action = 'CREATE';
       url = '/api/core/user/';
       alert_msg = 'Saved Successfully';
-      $('.password-group').show()
+      $('.name-group').show() // username, firstname, lastname
+      $('.password-group').show() // password1, password2
+      $('.status-group').show() // is-active, is-superuser, is-staff
+      $('.m2m-group').show() // groups, user permissions
 
-      $("#form").trigger("reset"); // reset form
+      resetForm(); // reset form
       $("#select2-permissions").val([]).trigger('change'); // reset permissions select2 before loading modal
       $("#select2-groups").val([]).trigger('change'); // reset groups select2 before loading modal
       $("#modal-add-user").modal();
@@ -91,10 +97,14 @@ $(document).ready(function () {
       let id = dt_data['id'];
 
       // Assign AJAX Action Type/Method and URL
-      action_type = 'PUT';
+      method = 'PUT';
+      action = 'UPDATE';
       url = `/core/user/${id}/update`;
       alert_msg = 'Update Successfully';
+      $('.name-group').show()
       $('.password-group').hide()
+      $('.status-group').show()
+      $('.m2m-group').show()
 
       // // // Open Modal
       // // // Rename Modal Title
@@ -102,6 +112,7 @@ $(document).ready(function () {
       $(".modal-title").text('Update User');
 
       // // // Populate Fields
+      resetForm(); // reset form
       $('#txt-username').val(dt_data['username']); // USERNAME
       $('#txt-firstname').val(dt_data['first_name']); // FIRST NAME
       $('#txt-lastname').val(dt_data['last_name']); // LAST NAME
@@ -110,6 +121,31 @@ $(document).ready(function () {
       if (dt_data['is_active']) $('#chk-active-status').prop('checked', true); else $('#chk-active-status').prop('checked', false); // IS ACTIVE
       $('#select2-groups').val(dt_data['groups']).trigger('change'); // GROUPS
       $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
+   });
+
+   // CHANGE PASSWORD / PUT
+   $('#dt_user tbody').on('click', '.btn_change_password', function () {
+      let dt_data = table.row($(this).parents('tr')).data();
+      let id = dt_data['id'];
+
+      // Assign AJAX Action Type/Method and URL
+      method = 'PUT';
+      action = 'CHANGE-PASSWORD';
+      url = `/api/core/user/${id}/`;
+      alert_msg = 'Password Changed';
+      $('.name-group').hide()
+      $('.password-group').show()
+      $('.status-group').hide()
+      $('.m2m-group').hide()
+
+      // // // Open Modal
+      // // // Rename Modal Title
+      $("#modal-add-user").modal();
+      $(".modal-title").text(`Change password for ${dt_data['first_name']} ${dt_data['last_name']}`);
+
+      // // // // Populate Fields
+      resetForm(); // reset form
+      $('#txt-username').val(dt_data['username']); // USERNAME
    });
 
    // Submit Form
@@ -121,19 +157,19 @@ $(document).ready(function () {
       let success = 1;
 
       // Data
-      data.username = $('#txt-username').val();
+      if ($('#txt-username').val()) data.username = $('#txt-username').val();
       if ($('#txt-password1').val()) data.password = $('#txt-password1').val();
       if ($('#txt-password2').val()) data.password2 = $('#txt-password2').val();
-      data.first_name = $('#txt-firstname').val();
-      data.last_name = $('#txt-lastname').val();
-      data.is_superuser = $('#chk-superuser-status').is(':checked')
-      data.is_staff = $('#chk-staff-status').is(':checked')
-      data.is_active = $('#chk-active-status').is(':checked')
-      data.groups = $('#select2-groups').val();
-      data.user_permissions = $('#select2-permissions').val();
+      if ($('#txt-firstname').val()) data.first_name = $('#txt-firstname').val();
+      if ($('#txt-lastname').val()) data.last_name = $('#txt-lastname').val();
+      if ($('#chk-superuser-status').val()) data.is_superuser = $('#chk-superuser-status').is(':checked')
+      if ($('#chk-staff-status').val()) data.is_staff = $('#chk-staff-status').is(':checked')
+      if ($('#chk-active-status').val()) data.is_active = $('#chk-active-status').is(':checked')
+      if ($('#select2-groups').val()) data.groups = $('#select2-groups').val();
+      if ($('#select2-permissions').val()) data.user_permissions = $('#select2-permissions').val();
       
       axios({
-         method: action_type,
+         method: method,
          url: url,
          data: data,
          headers: axiosConfig,
@@ -178,4 +214,12 @@ $(document).ready(function () {
       } else $(`#txt-${field}`).removeClass('form-error');
       $(`#${field}-error`).html(``)
    };
+
+   let resetForm = function(e){
+      $('#form').trigger('reset');
+      removeFieldErrors('username');
+      removeFieldErrors('firstname');
+      removeFieldErrors('lastname');
+      removeFieldErrors('password');
+   }
 });

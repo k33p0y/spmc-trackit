@@ -91,7 +91,7 @@
          <div class="modal-body">
             <form id="form">
                <!-- USERNAME -->
-               <div class="form-group">
+               <div class="form-group name-group">
                   <label for="usernameHelp">Username</label> 
                   <input type="text" class="form-control form-control-sm" id="txt-username" aria-describedby="usernameHelp"
                      placeholder="Enter Username">
@@ -99,7 +99,7 @@
                </div>
 
                <!-- FIRST NAME -->
-               <div class="form-group">
+               <div class="form-group name-group">
                   <label for="firstnameHelp">First Name</label>
                   <input type="text" class="form-control form-control-sm" id="txt-firstname" aria-describedby="firstnameHelp"
                      placeholder="Enter First Name">
@@ -107,7 +107,7 @@
                </div>
 
                <!-- LAST NAME -->
-               <div class="form-group">
+               <div class="form-group name-group">
                   <label for="lastnameHelp">Last Name</label>
                   <input type="text" class="form-control form-control-sm" id="txt-lastname" aria-describedby="lastnameHelp"
                      placeholder="Enter Last Name">
@@ -127,21 +127,21 @@
                   <small class="error-info" id="password-error"></small>
                </div>
 
-               <div class="icheck-material-green">
+               <div class="icheck-material-green status-group">
                   <input type="checkbox" id="chk-active-status" checked />
                   <label for="chk-active-status">Active</label>
                </div>
-               <div class="icheck-material-green">
+               <div class="icheck-material-green status-group">
                   <input type="checkbox" id="chk-staff-status" />
                   <label for="chk-staff-status">Staff Status</label>
                </div>
-               <div class="icheck-material-green">
+               <div class="icheck-material-green status-group">
                   <input type="checkbox" id="chk-superuser-status" />
                   <label for="chk-superuser-status">Superuser Status</label>
                </div>
 
                <!-- GROUPS -->
-               <div class="form-group">
+               <div class="form-group m2m-group">
                   <label>Groups</label>
                   <select class="form-control form-control-sm" id="select2-groups" style="width: 100%" multiple>
                      <option></option>
@@ -153,7 +153,7 @@
                </div>
 
                <!-- PERMISSIONS -->
-               <div class="form-group">
+               <div class="form-group m2m-group">
                   <label>Permissions</label>
                   <select class="form-control form-control-sm" id="select2-permissions" style="width: 100%" multiple>
                      <option></option>
