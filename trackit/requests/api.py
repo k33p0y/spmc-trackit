@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator
 
-from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer, NotificationSerializer
-from .models import RequestForm, Ticket, RequestFormStatus, Notification
+from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer
+from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment
 from easyaudit.models import CRUDEvent
 
 import json
@@ -101,6 +101,11 @@ class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):
          return RequestFormStatus.objects.none()
       else:
          return RequestFormStatus.objects.all().order_by('id')
+
+class AttachmentViewSet(viewsets.ModelViewSet):
+   serializer_class = AttachmentSerializer
+   permission_classes = [permissions.IsAuthenticated]
+   queryset = Attachment.objects.all()
 
 class CRUDEventList(generics.ListAPIView):
    serializer_class = CRUDEventSerializer
