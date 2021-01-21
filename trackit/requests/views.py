@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
-from config.models import Category, CategoryType, Department
+from config.models import Category, CategoryType, Department, Status
 from .models import Ticket, RequestForm
 
 import json
@@ -11,14 +11,16 @@ import json
 @login_required
 def ticket(request):
    tickets = Ticket.objects.all()
-   return render(request, 'pages/requests/ticket_lists.html', {tickets: tickets})
+   departments =  Department.objects.filter(is_active=True, is_archive=False)
+   categories = Category.objects.filter(is_active=True, is_archive=False)
+   statuses = Status.objects.filter(is_active=True, is_archive=False)
+   return render(request, 'pages/requests/ticket_lists.html', {'tickets': tickets, 'departments':departments, 'categories':categories, 'statuses': statuses})
 
 @login_required
 def create_ticket(request):
    forms= RequestForm.objects.filter(is_active=True, is_archive=False)
    types =  CategoryType.objects.filter(is_active=True, is_archive=False)
    departments =  Department.objects.filter(is_active=True, is_archive=False)
-   
    context = {'forms': forms, 'types': types, 'departments':departments}
    return render(request, 'pages/requests/ticket_new.html', context)
 

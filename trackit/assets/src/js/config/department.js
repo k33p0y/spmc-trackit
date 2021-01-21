@@ -1,5 +1,8 @@
 $(document).ready(function () {
 
+   var searchInput = function() { return $('#search-input').val(); }
+   var isActive = function() { return $('#department-active-select').val(); }
+
    // Local Variables
    let dd_head_id;
    let chk_status = true;
@@ -19,11 +22,15 @@ $(document).ready(function () {
       "ajax": {
          url: '/api/config/department/?format=datatables',
          type: "GET",
-         dataSrc: function (json) {
-            return json.data.filter(function (item) {
-               return item.is_archive == false;
-            });
-         }
+         data: {
+            "search_input": searchInput,
+            "is_active": isActive
+         },
+         // dataSrc: function (json) {
+         //    return json.data.filter(function (item) {
+         //       return item.is_archive == false;
+         //    });
+         // }
       },
       "columns": [
          { data: "name" },
@@ -74,6 +81,12 @@ $(document).ready(function () {
    $('#dd_depthead').select2({
       allowClear: true,
       placeholder: 'Select Head of Department',
+      cache: true,
+   });
+
+   $('#department-active-select').select2({
+      allowClear: true,
+      placeholder: 'Is Active',
       cache: true,
    });
 
@@ -246,6 +259,12 @@ $(document).ready(function () {
       $('.error-info').html('');
       $('#chk_status').prop("checked", true);
       $('#dd_depthead').val('').trigger('change');
+   });
+
+   //SEARCH
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
    });
 
    // RELOAD TABLE

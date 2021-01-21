@@ -1,5 +1,9 @@
 $(document).ready(function () {
 
+   var searchInput = function() { return $('#search-input').val(); }
+   var categoryTypeId = function() { return $('#category-type-select').val(); }
+   var isActive = function() { return $('#category-active-select').val(); }
+
    // Local Variables
    let dd_type_id;
    let chk_status = true;
@@ -31,10 +35,10 @@ $(document).ready(function () {
       "ajax": {
          url: '/api/config/category/?format=datatables',
          type: "GET",
-         dataSrc: function (json) {
-            return json.data.filter(function (item) {
-               return item.is_archive == false;
-            });
+         data: {
+            "search_input": searchInput,
+            "category_type_id": categoryTypeId,
+            "is_active": isActive
          }
       },
       "columns": [
@@ -74,6 +78,18 @@ $(document).ready(function () {
    $('#dd_types').select2({
       allowClear: true,
       placeholder: 'Select Category Type',
+      cache: true,
+   });
+
+   $('#category-type-select').select2({
+      allowClear: true,
+      placeholder: 'Category Type',
+      cache: true,
+   });
+
+   $('#category-active-select').select2({
+      allowClear: true,
+      placeholder: 'Is Active',
       cache: true,
    });
 
@@ -294,6 +310,12 @@ $(document).ready(function () {
    // RELOAD TABLE
    $("#btn_reload").click(function () {
       table.ajax.reload();
+   });
+
+   //SEARCH
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
    });
 
 });

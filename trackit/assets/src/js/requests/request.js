@@ -1,5 +1,12 @@
 $(document).ready(function () {
 
+   var searchInput = function() { return $('#search-input').val(); }
+   var categoryId = function() { return $('#category-select').val(); }
+   var departmentId = function() { return $('#department-select').val(); }
+   var statusId = function() { return $('#status-select').val(); }
+   var isActive = function() { return $('#ticket-active-select').val(); }
+
+
    // RETRIEVE / GET
    // List Table
    let table = $('#dt_requests').DataTable({
@@ -13,11 +20,13 @@ $(document).ready(function () {
       "ajax": {
          url: '/api/requests/lists/?format=datatables',
          type: "GET",
-         dataSrc: function (json) {
-            return json.data.filter(function (item) {
-               return item.is_archive == false;
-            });
-         }
+         data: {
+            "search_input": searchInput,
+            "category_id": categoryId,
+            "department_id": departmentId,
+            "status_id": statusId,
+            "is_active": isActive
+         },
       },
       "columns": [
          { data: "ticket_no" }, // Ticket No
@@ -146,6 +155,34 @@ $(document).ready(function () {
    let department = $("#dd_edit_departments option:selected").val();
    let category = $("#dd_edit_categories option:selected").val();
 
+   $('#ticket-active-select').select2({
+      allowClear: true,
+      placeholder: 'Is Active',
+      // cache: true,
+   });
+
+   $('#category-select').select2({
+      allowClear: true,
+      placeholder: 'Select Category',
+      // cache: true,
+   });
+
+   $('#department-select').select2({
+      allowClear: true,
+      placeholder: 'Select Department',
+      // cache: true,
+   });
+
+   $('#status-select').select2({
+      allowClear: true,
+      placeholder: 'Select Status',
+      // cache: true,
+   });
+
+   
+
+
+
    // SElECT ON CHANGE EVENT
    $('#dd_edit_departments').on('change', function () { // department dropdown
       department = $($(this), "option:selected").val();
@@ -153,6 +190,12 @@ $(document).ready(function () {
 
    $('#dd_edit_categories').on('change', function () { // categories dropdown
       category = $($(this), "option:selected").val();
+   });
+
+   //SEARCH
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
    });
 
    // RELOAD TABLE
@@ -289,6 +332,6 @@ function getFormDetailValues() {
          "value" : answer,
       });
    });
-   
+
    return form_data;
 }
