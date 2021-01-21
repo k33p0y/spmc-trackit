@@ -14,10 +14,26 @@ class RequestFormViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
+      search_input = self.request.GET.get('search_input', None)
+      is_active = self.request.GET.get('is_active', None)
+
       if not self.request.user.has_perm('requests.view_requestform'):
          return RequestForm.objects.none()
       else:
-         return RequestForm.objects.all().order_by('id')
+         # return RequestForm.objects.all().order_by('id')
+         qs = RequestForm.objects.all()
+         qs = qs.filter(is_archive=False)
+
+         if search_input:
+               qs = qs.filter(name__icontains=search_input)
+         if is_active:
+            if is_active == "1":
+               qs = qs.filter(is_active=True)
+            else:
+               qs = qs.filter(is_active=False)
+
+         return qs
+
 
    def create(self, request):
       name = request.data['name']
@@ -75,13 +91,37 @@ class TicketViewSet(viewsets.ModelViewSet):
       status = self.request.GET.get('status', None)
       form = self.request.GET.get('form', None)
 
+      search_input = self.request.GET.get('search_input', None)
+      category_id = self.request.GET.get('category_id', None)
+      department_id = self.request.GET.get('department_id', None)
+      status_id = self.request.GET.get('status_id', None)
+      is_active = self.request.GET.get('is_active', None)
+
       if not self.request.user.has_perm('requests.view_ticket'):
          return Ticket.objects.none()
       else:
+         qs = Ticket.objects.all()
          if form:
             return Ticket.objects.filter(status=status, request_form=form, is_active=True, is_archive=False)
          else:
-            return Ticket.objects.all()
+            qs = qs.filter(is_archive=False)
+            if search_input:
+               qs = qs.filter(ticket_no__icontains=search_input)
+            if category_id:
+               qs = qs.filter(category_id__exact=category_id)
+            if department_id:
+               qs = qs.filter(department_id__exact=department_id)
+            if status_id:
+               qs = qs.filter(status_id__exact=status_id)
+            if is_active:
+               if is_active == "1":
+                  qs = qs.filter(is_active=True)
+               else:
+                  qs = qs.filter(is_active=False)
+
+            return qs
+
+      
 
    # disable pagination, show all rows
    def paginate_queryset(self, queryset):

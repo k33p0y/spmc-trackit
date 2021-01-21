@@ -1,5 +1,8 @@
 $(document).ready(function () {
 
+   var searchInput = function() { return $('#search-input').val(); }
+   var isActive = function() { return $('#status-active-select').val(); }
+
     // Local Variables
     let chk_status = true;
     let action_type, url;
@@ -30,11 +33,15 @@ $(document).ready(function () {
        "ajax": {
           url: '/api/config/status/?format=datatables',
           type: "GET",
-          dataSrc: function (json) {
-             return json.data.filter(function (item) {
-                return item.is_archive == false;
-             });
-          }
+          data: {
+            "search_input": searchInput,
+            "is_active": isActive
+         },
+         //  dataSrc: function (json) {
+         //     return json.data.filter(function (item) {
+         //        return item.is_archive == false;
+         //     });
+         //  }
        },
        "columns": [
           { data: "name" },
@@ -226,5 +233,10 @@ $(document).ready(function () {
    $("#btn_reload").click(function () {
       table.ajax.reload();
    });
- 
+   
+    //SEARCH
+    $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
  });

@@ -1,5 +1,12 @@
 $(document).ready(function () {
 
+   var searchInput = function() { return $('#search-input').val(); }
+   var categoryId = function() { return $('#category-select').val(); }
+   var departmentId = function() { return $('#department-select').val(); }
+   var statusId = function() { return $('#status-select').val(); }
+   var isActive = function() { return $('#ticket-active-select').val(); }
+
+
    // RETRIEVE / GET
    // List Table
    let table = $('#dt_requests').DataTable({
@@ -13,11 +20,13 @@ $(document).ready(function () {
       "ajax": {
          url: '/api/requests/lists/?format=datatables',
          type: "GET",
-         dataSrc: function (json) {
-            return json.data.filter(function (item) {
-               return item.is_archive == false;
-            });
-         }
+         data: {
+            "search_input": searchInput,
+            "category_id": categoryId,
+            "department_id": departmentId,
+            "status_id": statusId,
+            "is_active": isActive
+         },
       },
       "columns": [
          { data: "ticket_no" }, // Ticket No
@@ -183,6 +192,12 @@ $(document).ready(function () {
       category = $($(this), "option:selected").val();
    });
 
+   //SEARCH
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
    // RELOAD TABLE
    $("#btn_reload").click(function () {
       table.ajax.reload();
@@ -277,6 +292,8 @@ function getFormDetailValues() {
          "value" : answer 
       });  
    });
+
+
 
    console.log(form_data)
 

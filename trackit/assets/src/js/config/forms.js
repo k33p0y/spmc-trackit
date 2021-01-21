@@ -1,5 +1,8 @@
 $(document).ready(function () {
 
+   var searchInput = function() { return $('#search-input').val(); }
+   var isActive = function() { return $('#form-active-select').val(); }
+
    // Local Variables
    let chk_status = true;
    let action_type, url;
@@ -61,11 +64,10 @@ $(document).ready(function () {
       "ajax": {
          url: '/api/requests/forms/?format=datatables',
          type: "GET",
-         dataSrc: function (json) {
-            return json.data.filter(function (item) {
-               return item.is_archive == false;
-            });
-         }
+         data: {
+            "search_input": searchInput,
+            "is_active": isActive
+         },
       },
       "columns": [
          { data: "name" }, // Name
@@ -366,6 +368,12 @@ $(document).ready(function () {
    // RELOAD TABLE
    $("#btn_reload").click(function () {
       table.ajax.reload();
+   });
+
+   //SEARCH
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
    });
 
 });
