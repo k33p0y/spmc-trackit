@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.is_superuser = instance.is_superuser
         instance.is_staff = instance.is_staff
         instance.is_active = instance.is_active
-        instance.password = validated_data.get('password', instance.password)
+        instance.password = make_password(validated_data.get('password', instance.password)) # hash password
 
         instance.save() 
         return instance
