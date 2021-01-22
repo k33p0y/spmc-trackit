@@ -253,7 +253,7 @@ $(document).ready(function () {
       e.preventDefault();
       
       let success = validateForms();
-      if (success == 0) {
+      if (success == 1) {
 
          // Data
          data = new Object();
@@ -298,6 +298,8 @@ $(document).ready(function () {
  });
 
 function validateForms() {
+   var success = 1;
+
    // Validate Request Details
    if ($('#dd_types').val() == '') {
       $('#dd_types').next().find('.select2-selection').addClass('form-error');
@@ -334,6 +336,8 @@ function validateForms() {
       $('#dd_forms').next().find('.select2-selection').removeClass('form-error');
       $('#error-info-form').html('');
    }
+
+   return success;
 }
 // Get form Values
 function getFormValues(data_obj) {
