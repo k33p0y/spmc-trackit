@@ -4,7 +4,7 @@ $(document).ready(function () {
 
    var request_form, department, category, category_type;
    var data_obj;
-   var file_data
+   var file_arr = new Array();
 
    // MIME TYPES REGISTER
    const media_type = new Object();
@@ -212,9 +212,6 @@ $(document).ready(function () {
    $('#file_upload').on('change', function() {
       const files = this.files;
       const file_lists = $('#file_lists').empty()
-      
-      // Set variable to a new Array
-      file_data = new Array();
 
       Object.values(files).forEach(file => {
          let type = fileType(file.type, media_type);
@@ -241,9 +238,8 @@ $(document).ready(function () {
                      <small class="mb-0">${size}</small>
                   </div>
                </div>`
-            )            
-            
-            file_data.push(file) // Push values to array
+            )
+            file_arr.push(file)
          }
       });
    })
@@ -251,26 +247,35 @@ $(document).ready(function () {
    // Submit Form
    $("#btn_save").click(function (e) {
       e.preventDefault();
-      
+
       let success = validateForms();
       if (success == 1) {
 
-         // Data
+         // Object Data
          data = new Object();
          data.ticket_no = '';
          data.request_form = request_form;
          data.form_data = getFormValues(data_obj);
          data.category = category;
          data.department = department;
-         data.is_active = true;
-         data.is_archive = false;
-         
+
+         const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+         const file_data = new FormData()
+      
+         if (file_arr.length > 0) {
+            Object.values(file_arr).forEach(file => {
+               file_data.append('file', file)
+            });
+         }
+         file_data.append("data", blob);
+
          axios({
             method: 'POST',
             url: '/api/requests/lists/',
-            data: data,
-            headers: axiosConfig,
+            data: file_data,
+            headers: axiosConfig
          }).then(function (response) { // success
+
             socket.send(
                JSON.stringify({ticket_id: response.data.ticket_id}) // send ticket_id to websocket
             )
@@ -285,6 +290,7 @@ $(document).ready(function () {
                $('.overlay').removeClass('d-none')
             ).then(function () {
                $(location).attr('href', '/requests/lists')
+               
             });
 
          }).catch(function (error) { // error

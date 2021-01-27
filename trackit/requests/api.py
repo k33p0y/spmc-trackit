@@ -34,7 +34,6 @@ class RequestFormViewSet(viewsets.ModelViewSet):
 
          return qs
 
-
    def create(self, request):
       name = request.data['name']
       color = request.data['color']
@@ -121,17 +120,31 @@ class TicketViewSet(viewsets.ModelViewSet):
 
             return qs
 
-      
-
    # disable pagination, show all rows
    def paginate_queryset(self, queryset):
       if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
          return None
       return super().paginate_queryset(queryset)
 
-   def perform_create(self, serializer):
-      serializer.save(requested_by=self.request.user)
+   def create(self, request):
+      files = request.FILES.getlist('file', None)
+      data = json.loads(request.FILES['data'].read())
 
+      request_form = data['request_form']
+      form_data = data['form_data']
+      category = data['category']
+      department = data['department']
+
+      ticket = Ticket.objects.create(request_form_id=request_form, form_data=form_data, category_id=category, department_id=department, requested_by=self.request.user)
+      ticket.save()
+      
+      if files: 
+         for file in files:
+            Attachment(ticket=ticket, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user).save()
+      
+      serializer = TicketSerializer(ticket)
+      return Response(serializer.data)
+      
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
    serializer_class = RequestFormStatusSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
