@@ -8,6 +8,11 @@ from easyaudit.models import CRUDEvent
 from config.models import Department, Category, Status
 from core.models import User
 
+
+def upload_file_url(instance, filename):
+    ticket_no = str(instance.ticket.ticket_id)[-10:].upper()
+    return "attachments/{0}/{1}/".format(ticket_no, filename) 
+
 # Create your models here.
 class RequestForm(models.Model):
     name =  models.CharField(max_length=255)
@@ -40,6 +45,9 @@ class Ticket(models.Model):
     is_active = models.BooleanField(default=True)
     is_archive = models.BooleanField(default=False)
 
+    def __str__(self):
+        return str(self.ticket_id)
+
 class RequestFormStatus(models.Model):
     form = models.ForeignKey(RequestForm, on_delete=models.CASCADE)
     status = models.ForeignKey(Status, on_delete=models.CASCADE)
@@ -51,12 +59,13 @@ class RequestFormStatus(models.Model):
         return self.status
 
 class Attachment(models.Model):
-    name = models.CharField(max_length=255, blank=True)
-    path = models.FileField(upload_to="attachments/")
+    file = models.FileField(upload_to=upload_file_url)
+    file_name = models.CharField(max_length=255, blank=True)
+    file_type = models.CharField(max_length=255)
     ticket = models.ForeignKey(Ticket, related_name='attachments_ticket', on_delete=models.CASCADE)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey('core.User', related_name='attachments_user', on_delete=models.CASCADE)
-
+    
     def __str__(self):
         return self.name
 

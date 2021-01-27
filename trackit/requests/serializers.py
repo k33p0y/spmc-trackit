@@ -65,10 +65,11 @@ class TicketSerializer(serializers.ModelSerializer):
       return super(TicketSerializer, self).to_representation(instance)
 
 class AttachmentSerializer(serializers.ModelSerializer):
+   uploaded_by = UserSerializer(read_only=True)
+   
    class Meta:
       model = Attachment
-      fields =  ['id', 'name', 'path', 'ticket', 'uploaded_at', 'uploaded_by']
-
+      fields =  ['id', 'file_name', 'file_type', 'file', 'ticket', 'uploaded_at', 'uploaded_by']
 
 # serializer choice field
 class ChoiceField(serializers.ChoiceField):

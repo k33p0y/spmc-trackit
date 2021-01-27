@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include
 
 urlpatterns = [
@@ -9,5 +11,6 @@ urlpatterns = [
    path('', include('core.urls')),
    path('', include('config.urls')),
    path('', include('requests.urls')),
-]
+   
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
    
