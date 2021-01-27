@@ -217,23 +217,52 @@
             <div class="row" id="row-attachment">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseAttachment" data-toggle="collapse" aria-expanded="false" aria-controls="collapseAttachment">
+                     <a href="#collapseAttachment" data-toggle="collapse show" aria-expanded="false" aria-controls="collapseAttachment">
                         <div class="card-header p-2">
                            <div class="card-title">Attachments</div>
                         </div>
                      </a>
-                     <div class="collapse" id="collapseAttachment">
+                     <div id="collapseAttachment" class="collapse show">
                         <div class="card-body p-3">
-                           <div class="upload-wrapper d-flex justify-content-center">
+                           
+                           <input type="file" name="file" id="file_upload" multiple> 
+                           <div class="list-group mt-3" id="file_lists"></div>
+                           <!-- <div class="upload-wrapper d-flex justify-content-center">
                               <div class="d-flex align-items-center">
                                  <div class="upload-content text-center">
                                     <i class="fas fa-upload mb-2"></i>
-                                    <p class="m-0">Drop your files here or <a href="#" class="btn-link-orange">browse</a>
-                                    </p>
+                                    <p class="m-0">Drop your files here or <a href="#" class="btn-link-orange js-upload">browse</a></p>
                                     <span class="upload-info">.docs, .docx, .xls, .csv, .jpeg</span>
                                  </div>
                               </div>
-                           </div>
+                           </div> -->
+                           <table id="dt_attachments" class="table table-hover" width="100%">
+                              <thead>
+                                 <tr>
+                                    <th width="40%">Name</th>
+                                    <th>Date Uploaded</th>
+                                    <th>Uploaded By</th>
+                                    <th>File Size</th>
+                                    <th>Action</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 {% for attachment in attachments %}
+                                    <tr>
+                                       <td>
+                                          <b>{{attachment.file_name}}</b>
+                                       </td>
+                                       <td>{{attachment.uploaded_at}}</td>
+                                       <td>{{attachment.uploaded_by}}</td>
+                                       <td>{{attachment.file.size|filesizeformat}}</td>
+                                       <td>
+                                          <a href='/requests/${id}/detail' class='text-secondary action-link'> <i class='fas fa-download'></i> </a>
+                                          <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>
+                                       </td>
+                                    </tr>
+                                 {% endfor %}
+                              </tbody>
+                           </table>
                         </div>
                      </div>
                   </div>

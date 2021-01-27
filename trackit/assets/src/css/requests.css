@@ -137,3 +137,11 @@
 .file-icon i {
    font-size: x-large !important;
 }
+
+#dt_attachments.dataTable td  {
+   font-size: 12px;
+   font-weight: unset !important;
+   padding:8px 14px !important;
+   color: #59626b !important;
+   vertical-align: middle;
+}

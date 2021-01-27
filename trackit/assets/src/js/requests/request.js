@@ -139,6 +139,13 @@ $(document).ready(function () {
       "order": [[ 5, "desc" ]],
    });
 
+   $('#dt_attachments').DataTable({
+      "searching": false,
+      "responsive": true,
+      "lengthChange": false,
+      "pageLength": 5,
+   })
+
    // SELECT2 CONFIGURATION
    $('#dd_edit_departments').select2({ // department select2
       allowClear: true,
