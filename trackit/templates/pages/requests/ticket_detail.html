@@ -239,7 +239,7 @@
                            <table id="dt_attachments" class="table table-hover" width="100%">
                               <thead>
                                  <tr>
-                                    <th width="40%">Name</th>
+                                    <th>Name</th>
                                     <th>Date Uploaded</th>
                                     <th>Uploaded By</th>
                                     <th>File Size</th>
@@ -250,10 +250,11 @@
                                  {% for attachment in attachments %}
                                     <tr>
                                        <td>
+                                          <span class="file-type fas fa-lg mr-2" data-mimetype="{{attachment.file_type}}"></span>
                                           <b>{{attachment.file_name}}</b>
                                        </td>
                                        <td>{{attachment.uploaded_at}}</td>
-                                       <td>{{attachment.uploaded_by}}</td>
+                                       <td>{% if attachment.uploaded_by == request.user %} Me {% else %} {{attachment.uploaded_by}} {% endif %}</td>
                                        <td>{{attachment.file.size|filesizeformat}}</td>
                                        <td>
                                           <a href='/requests/${id}/detail' class='text-secondary action-link'> <i class='fas fa-download'></i> </a>
@@ -261,7 +262,7 @@
                                        </td>
                                     </tr>
                                  {% endfor %}
-                              </tbody>
+                              </tbody>                              
                            </table>
                         </div>
                      </div>

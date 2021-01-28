@@ -1,11 +1,15 @@
 $(document).ready(function () {
 
+   $('.file-type').each((index, element) => {
+      let file_type = fileType($(element).data().mimetype, media_type);
+      $(element).addClass(file_type);
+   });
+
    var searchInput = function() { return $('#search-input').val(); }
    var categoryId = function() { return $('#category-select').val(); }
    var departmentId = function() { return $('#department-select').val(); }
    var statusId = function() { return $('#status-select').val(); }
    var isActive = function() { return $('#ticket-active-select').val(); }
-
 
    // RETRIEVE / GET
    // List Table
@@ -143,7 +147,7 @@ $(document).ready(function () {
       "searching": false,
       "responsive": true,
       "lengthChange": false,
-      "pageLength": 5,
+      "pageLength": 10,
    })
 
    // SELECT2 CONFIGURATION
@@ -158,9 +162,6 @@ $(document).ready(function () {
       placeholder: 'Select Category',
       cache: true,
    });
-
-   let department = $("#dd_edit_departments option:selected").val();
-   let category = $("#dd_edit_categories option:selected").val();
 
    $('#ticket-active-select').select2({
       allowClear: true,
@@ -186,10 +187,6 @@ $(document).ready(function () {
       // cache: true,
    });
 
-   
-
-
-
    // SElECT ON CHANGE EVENT
    $('#dd_edit_departments').on('change', function () { // department dropdown
       department = $($(this), "option:selected").val();
@@ -199,15 +196,45 @@ $(document).ready(function () {
       category = $($(this), "option:selected").val();
    });
 
+   // File Upload
+   // $('#file_upload').on('change', function() {
+   //    const files = this.files;
+
+   //    Object.values(files).forEach(file => {
+   //       let type = fileType(file.type, media_type);
+   //       let size = fileSize(file.size);
+         
+   //       if (type == 'invalid') { // If file is not registered
+   //          this.value = "";
+   //          Toast.fire({
+   //             icon: 'error',
+   //             title: 'File type is not supported!',
+   //          })
+   //       } else if (size == 'invalid') { // If file is more than 25MB
+   //          this.value = "";
+   //          Toast.fire({
+   //             icon: 'error',
+   //             title: 'File is too big!',
+   //          })
+   //       } else {
+   //          file_lists.append(
+   //             `<div class="list-group-item border-0 d-flex p-1 mb-1">
+   //                <div class="file-icon"><i class="far ${type}"></i></div>
+   //                <div class="w-100">
+   //                   <p class="mb-0 font-weight-bold">${file.name}</p>
+   //                   <small class="mb-0">${size}</small>
+   //                </div>
+   //             </div>`
+   //          )
+   //          file_arr.push(file)
+   //       }
+   //    });
+   // })
+
    //SEARCH
    $("#execute-search").click(function () {
       table.ajax.reload();
       return false; // prevent refresh
-   });
-
-   // RELOAD TABLE
-   $("#btn_reload").click(function () {
-      table.ajax.reload();
    });
 
    $("#btn_update").click(function (e) {
@@ -253,6 +280,7 @@ $(document).ready(function () {
          });
       }
    });
+
 });
 
 function validateForms() {
@@ -341,4 +369,9 @@ function getFormDetailValues() {
    });
 
    return form_data;
+}
+
+function displayFileIcon(file_types) {
+   
+  
 }
