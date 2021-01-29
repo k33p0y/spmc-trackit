@@ -1,16 +1,61 @@
 $(document).ready(function () {
-   $('.file-type').each((index, element) => {
-      let file_type = fileType($(element).data().mimetype, media_type);
-      $(element).addClass(file_type);
-   });
+   const ticket_id = $(".ticket-no").data().ticketId;
  
-   $('#dt_attachments').DataTable({
+   var table = $('#dt_attachments').DataTable({
       "searching": false,
       "responsive": true,
       "lengthChange": false,
       "pageLength": 10,
-      "order" : [[1, 'desc']]
-   })
+      "ajax": {
+         url: '/api/requests/attachments/?format=datatables',
+         type: "GET",
+         data: {"ticket_id": ticket_id},
+      },
+      "columns": [
+         { 
+            data: "file_name",
+            render: function (data, type, row) {
+               let file_type = fileType(row.file_type, media_type);
+               return data = `<span class="fas fa-lg mr-2 ${file_type}"></span> <a href="${row.file}" class="text-secondary"><b>${row.file_name}</b></a>`
+            }
+         }, 
+         { 
+            data: 'uploaded_at',
+            render: function (data, type, row) {
+               return data = `${moment(row.uploaded_at).format('DD MMM YYYY')} ${moment(row.uploaded_at).format('h:mm:ss a')}`
+            },
+         }, 
+         { 
+            data: 'uploaded_by',
+            render: function (data, type, row) {
+               let name = (row.uploaded_by.id == actor) ? 'Me' : `${row.uploaded_by.first_name} ${row.uploaded_by.last_name}`
+               return data = name
+            },
+         }, 
+         { 
+            data: "file_size",
+            render: function (data, type, row) {
+               let file_size = fileSize(row.file_size);
+               return data = file_size
+            },
+         }, 
+         { 
+            data: "null",
+            render: function (data, type, row) {
+               data = `<a href="${row.file}" class='text-secondary action-link'> <i class='fas fa-download'></i> </a>
+                  <a class='text-danger action-link btn-delete' data-attachment-id="${row.id}"> <i class='fas fa-trash'></i> </a>`;
+               return data
+            },
+         }, 
+      ]
+   });
+
+
+   // Load File Icons In Attachment Table
+   $('.file-type').each((index, element) => {
+      let file_type = fileType($(element).data().mimetype, media_type);
+      $(element).addClass(file_type);
+   });
 
    $('#dd_edit_departments').select2({ // department select2
       allowClear: true,
@@ -77,7 +122,6 @@ $(document).ready(function () {
 
       let success = validateForms();
       if (success == 1) {
-         const ticket_id = $(this).attr('ticket_id')
 
          // Data
          data = new Object();
@@ -121,6 +165,38 @@ $(document).ready(function () {
             });
          });
       }
+   });
+
+
+   $('#dt_attachments tbody').on('click', '.btn-delete', function () {
+      const id = $(this).data().attachmentId;
+
+      Swal.fire({
+         title: 'Are you sure?',
+         icon: 'error',
+         showCancelButton: true,
+         confirmButtonText: 'Delete',
+         confirmButtonColor: '#d9534f',
+      }).then((result) => {
+         if (result.value) {
+            axios({
+               method: 'DELETE',
+               url: `/api/requests/attachments/${id}/`,
+               headers: axiosConfig,
+            }).then(response => {
+               Toast.fire({
+                  icon: 'success',
+                  title: 'Update Successfully',
+               });
+               table.ajax.reload();
+            }).catch(function (error) {
+               Toast.fire({
+                  icon: 'error',
+                  title: error,
+               });
+            });
+         };
+      });
    });
 });
 

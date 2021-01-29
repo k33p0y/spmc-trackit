@@ -177,7 +177,17 @@ class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):
 class AttachmentViewSet(viewsets.ModelViewSet):
    serializer_class = AttachmentSerializer
    permission_classes = [permissions.IsAuthenticated]
-   queryset = Attachment.objects.all()
+
+   def get_queryset(self):
+      ticket_id = self.request.GET.get('ticket_id', None)
+
+      if not self.request.user.has_perm('requests.view_attachment'):
+         return Attachment.objects.none()
+      else:
+         if ticket_id:
+            return Attachment.objects.select_related('ticket').filter(ticket_id=ticket_id).order_by('-uploaded_at')
+         else: 
+            return Attachment.objects.select_related('ticket').order_by('-uploaded_at')
 
 class CRUDEventList(generics.ListAPIView):
    serializer_class = CRUDEventSerializer

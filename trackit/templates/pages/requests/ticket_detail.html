@@ -21,7 +21,7 @@
                         class="fas fa-home"></i></a></li>
                <li class="breadcrumb-item">Request</li>
                <li class="breadcrumb-item"> <a href="{% url 'ticket' %}" class="btn-link-neutral">List</a> </li>
-               <li class="breadcrumb-item active">Ticket No: {{tickets.ticket_no}}</li>
+               <li class="breadcrumb-item active ticket-no" data-ticket-id="{{tickets.ticket_id}}">Ticket No: {{tickets.ticket_no}}</li>
             </ol>
          </div>
       </div>
@@ -237,23 +237,7 @@
                                     <th>Action</th>
                                  </tr>
                               </thead>
-                              <tbody id="file_table">
-                                 {% for attachment in attachments %}
-                                    <tr>
-                                       <td>
-                                          <span class="file-type fas fa-lg mr-2" data-mimetype="{{attachment.file_type}}"></span>
-                                          <a href='{{attachment.file.url}}' class="text-secondary"><b>{{attachment.file_name}}</b></a>
-                                       </td>
-                                       <td>{{attachment.uploaded_at}}</td>
-                                       <td>{% if attachment.uploaded_by == request.user %} Me {% else %} {{attachment.uploaded_by}} {% endif %}</td>
-                                       <td>{{attachment.file.size|filesizeformat}}</td>
-                                       <td>
-                                          <a href='{{attachment.file.url}}' class='text-secondary action-link'> <i class='fas fa-download'></i> </a>
-                                          <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>
-                                       </td>
-                                    </tr>
-                                 {% endfor %}
-                              </tbody>                              
+                              <tbody id="file_table"></tbody>                              
                            </table>
                         </div>
                      </div>
@@ -263,7 +247,7 @@
             <div class="row pt-2 pb-5" id="row-buttons">
                <div class="col-12">
                   <div class="form-actions mt-2 d-flex flex-row-reverse">
-                     <button type="submit" class="btn btn-sm btn-orange" id="btn_update" ticket_id="{{tickets.ticket_id}}"><span>Save</span></button>
+                     <button type="submit" class="btn btn-sm btn-orange" id="btn_update" data-ticket-id="{{tickets.ticket_id}}"><span>Save</span></button>
                      <button type="submit" class="btn btn-sm btn-light"><span>Save and continue editing</span></button>
                      <a href="{% url 'ticket' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
                   </div>
