@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator
 
-from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer
-from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment
+from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
+from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from easyaudit.models import CRUDEvent
 
 import json
@@ -173,3 +173,21 @@ class NotificationViewSet(viewsets.ModelViewSet):
         if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
             return None
         return super().paginate_queryset(queryset)
+
+class CommentListCreateAPIView(generics.ListCreateAPIView):
+   serializer_class = CommentSerializer
+
+   def get_queryset(self):
+      ticket_no = self.request.GET.get('ticket_no', None)
+      if ticket_no:
+         return Comment.objects.select_related('ticket', 'user').filter(ticket__ticket_no__iendswith=ticket_no).order_by('-date_created')
+      return Comment.objects.none()
+
+   def create(self, request):
+      ticket_no = request.data['ticket']
+      ticket = Ticket.objects.get(ticket_no__iendswith=ticket_no)
+      content = request.data['content']
+      comment = Comment.objects.create(ticket=ticket, content=content, user=self.request.user)
+      comment.save()
+      serializer = CommentSerializer(comment)
+      return Response(serializer.data)

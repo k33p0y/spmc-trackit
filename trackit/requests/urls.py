@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from .api import RequestFormViewSet, TicketViewSet, RequestFormStatusViewSet, CRUDEventList, NotificationViewSet, AttachmentViewSet
+from .api import RequestFormViewSet, TicketViewSet, RequestFormStatusViewSet, CRUDEventList, NotificationViewSet, AttachmentViewSet, CommentListCreateAPIView
 from . import views
 
 router = routers.DefaultRouter()
@@ -18,6 +18,7 @@ urlpatterns = [
    path('requests/categories/json', views.get_category, name='get_category'),
    path('requests/track', views.ticket_log_list, name='ticket_log_list'),
    path('api/ticket/logs/', CRUDEventList.as_view()), # easyaudit_crudevent api
+   path('api/requests/comments/', CommentListCreateAPIView.as_view(), name='list-create-comment'), # list/create comment api
 ]
 
 urlpatterns += router.urls
