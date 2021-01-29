@@ -246,18 +246,18 @@
                                     <th>Action</th>
                                  </tr>
                               </thead>
-                              <tbody>
+                              <tbody id="file_table">
                                  {% for attachment in attachments %}
                                     <tr>
                                        <td>
                                           <span class="file-type fas fa-lg mr-2" data-mimetype="{{attachment.file_type}}"></span>
-                                          <b>{{attachment.file_name}}</b>
+                                          <a href='{{attachment.file.url}}' class="text-secondary"><b>{{attachment.file_name}}</b></a>
                                        </td>
                                        <td>{{attachment.uploaded_at}}</td>
                                        <td>{% if attachment.uploaded_by == request.user %} Me {% else %} {{attachment.uploaded_by}} {% endif %}</td>
                                        <td>{{attachment.file.size|filesizeformat}}</td>
                                        <td>
-                                          <a href='/requests/${id}/detail' class='text-secondary action-link'> <i class='fas fa-download'></i> </a>
+                                          <a href='{{attachment.file.url}}' class='text-secondary action-link'> <i class='fas fa-download'></i> </a>
                                           <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>
                                        </td>
                                     </tr>
@@ -290,5 +290,5 @@
 {% endblock %}
 
 {% block extrascript %}
-<script type="text/javascript" src="{% static 'src/js/requests/request.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/requests/request_detail.js' %}"></script>
 {% endblock %}
