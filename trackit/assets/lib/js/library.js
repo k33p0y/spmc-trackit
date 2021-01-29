@@ -70,3 +70,21 @@ function fileType(file_type, media_type) {
 
    return file_icon;
 }
+
+function fileSize(bytes) {
+   let file_size;
+
+   if (bytes < 1024) {
+      file_size = `${bytes} bytes`;
+   } else if (bytes >= 1024 && bytes < 1024000) { // Convert Bytes to Kilobytes
+      bytes = (bytes / 1024).toFixed(1);
+      file_size = `${bytes} KB`;
+   } else if (bytes > 1024000 && bytes <= 25214400) { // Convert Bytes to MegaBytes & set limit 25MB 
+      bytes = (bytes / 1024000).toFixed(1);
+      file_size = `${bytes} MB`;
+   } else { // Invalid Size 
+      file_size = 'invalid';
+   }
+
+   return file_size;
+}
