@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment
+from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from config.models import Department, Status
 from core.models import User
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer
@@ -110,3 +110,10 @@ class NotificationSerializer(serializers.ModelSerializer):
    class Meta:
       model = Notification
       fields = ['id', 'log', 'user', 'unread']
+
+class CommentSerializer(serializers.ModelSerializer):
+   user = UserSerializer(read_only=True)
+
+   class Meta:
+      model = Comment
+      fields = '__all__'
