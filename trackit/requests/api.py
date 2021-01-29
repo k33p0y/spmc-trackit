@@ -144,6 +144,25 @@ class TicketViewSet(viewsets.ModelViewSet):
       
       serializer = TicketSerializer(ticket)
       return Response(serializer.data)
+
+   def update(self, request, pk):
+      files = request.FILES.getlist('file', None)
+      data = json.loads(request.FILES['data'].read())
+
+      # Instance
+      ticket = Ticket.objects.get(ticket_id=pk)
+      ticket.form_data = data['form_data']
+      ticket.category_id = data['category']
+      ticket.department_id = data['department']
+      ticket.is_active = data['is_active']
+      ticket.save()
+
+      if files: 
+         for file in files:
+            Attachment(ticket_id=pk, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user).save()
+      
+      serializer = TicketSerializer(ticket)
+      return Response(serializer.data)
       
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
    serializer_class = RequestFormStatusSerializer
