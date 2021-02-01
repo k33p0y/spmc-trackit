@@ -1,0 +1,31 @@
+{% for data in tickets.form_data %}
+    {% if form.form_field.type == 'text' and form.form_field.id == data.id %}
+    <div class="form-group">
+        <label> {{form.title}}: </label>
+        <p>{{data.value}}</p>
+    </div>
+    {% elif form.form_field.type == 'textarea' and form.form_field.id == data.id  %}
+    <div class="form-group">
+        <label> {{form.title}}: </label>
+        <p>{{data.value}}</p>
+    </div>
+    {% elif form.form_field.type == 'radio' and form.form_field.id == data.id  %}
+    <div class="form-group">
+        <label> {{form.title}}: </label>
+        {% for opt in data.value %}
+        {% if opt.option_value == True %} {{opt.option_name}} {% endif %}
+        {% endfor %}
+
+        {% for category in categories %}
+        {% if category.id == tickets.category.id %} <p>{{category.name}}</p>{% endif %}
+        {% endfor %}
+    </div>
+    {% elif form.form_field.type == 'checkbox' and form.form_field.id == data.id  %}
+    <div class="form-group">
+        <label> {{form.title}}: </label>
+        {% for opt in data.value %}
+        {% if opt.option_value == True %} {{opt.option_name}} {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endfor %}

@@ -1,0 +1,33 @@
+{% for field in form.form_field %}
+    {% for data in tickets.form_data %}
+        {% if field.type == 'text' and field.id == data.id  %}
+        <div class="form-group">
+            <p>{{data.value}}</p>
+        </div>
+        {% elif field.type == 'textarea' and field.id == data.id  %}
+        <div class="form-group">
+            <p>{{data.value}}</p>
+        </div>
+        {% elif field.type == 'radio' and field.id == data.id  %}
+        <div class="form-group">
+            {% for opt in data.value %}
+            {% if opt.option_value == True %} <p>{opt.name}}</p> {% endif %}
+            {% endfor %}
+        </div>
+        <div class="radio-group form_field_detail" id="{{field.id}}" data-required-id="{{field.required}}">
+            {% for opt in data.value %}
+            <div class="icheck-material-orange icheck-inline m-0 mr-3 form_field_detail">
+                <input type="radio" id="{{opt.id}}" name="{{field.id}}" {% if opt.option_value == True %} checked {% endif %} />
+                <label for="{{opt.id}}">{{opt.name}}</label>
+                </div>
+            {% endfor %}
+        </div>
+        {% elif field.type == 'checkbox' and field.id == data.id  %}
+        <div class="check-group form_field_detail" id="{{field.id}}" data-required-id="{{field.required}}">
+            {% for opt in data.value %}
+            {% if opt.option_value == True %} {{opt.option_name}}, {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endfor %}
