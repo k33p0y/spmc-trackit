@@ -92,7 +92,7 @@ $(document).ready(function () {
     });
  
     // CREATE / POST
-    $('#btn_new').on('click', function () {
+    $('#btn-create-status').on('click', function () {
        // Assign AJAX Action Type and URL
        action_type = 'POST';
        url = '/api/config/status/';
