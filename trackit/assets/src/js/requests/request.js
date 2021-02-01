@@ -121,9 +121,7 @@ $(document).ready(function () {
             render: function (data, type, row) {
                var id = row.ticket_id;
                data = '';
-
-               data = data + `<a href='/requests/${id}/view' class='text-info action-link btn_edit'> <i class='fas fa-eye'></i> </a>`;
-
+               data = data + `<a href='/requests/${id}/view' class='text-info action-link btn_view'> <i class='fas fa-eye'></i> </a>`;
                if($('#changeTicketHidden').val() == 'true') {
                   data = data + `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>`;
                }

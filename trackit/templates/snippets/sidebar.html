@@ -39,13 +39,19 @@
                class="nav-item {% if url == 'group_list' or url == 'user_list' %} menu-open {% endif %}">
                <a href="#"
                   class="nav-link {% if url == 'group_list' or url == 'user_list' %} active {% endif %}">
-                  <i class="nav-icon fas fa-cog"></i>
+                  <i class="nav-icon fas fa-users"></i>
                   <p>
-                     Authentication and Authorization
+                     Users & Groups
                      <i class="right fas fa-angle-left"></i>
                   </p>
                </a>
                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                     <a href="{% url 'user_list' %}" class="nav-link {% if url == 'user_list' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>User</p>
+                     </a>
+                  </li>
                   {% if perms.auth.view_group %}
                   <li class="nav-item">
                      <a href="{% url 'group_list' %}" class="nav-link {% if url == 'group_list' %} active {% endif %}">
@@ -54,12 +60,6 @@
                      </a>
                   </li>
                   {% endif %}
-                  <li class="nav-item">
-                     <a href="{% url 'user_list' %}" class="nav-link {% if url == 'user_list' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>User</p>
-                     </a>
-                  </li>
                </ul>
             </li>
             {% endif %}
@@ -123,9 +123,9 @@
 
             {% if request.user.is_superuser or perms.requests.add_ticket or perms.requests.view_ticket %}
             <li
-               class="nav-item {% if url == 'ticket' or url == 'boards' or  url == 'create_ticket' or url == 'detail_ticket' %} menu-open {% endif %}">
+               class="nav-item {% if url == 'ticket' or url == 'boards' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} menu-open {% endif %}">
                <a href="#"
-                  class="nav-link {% if url == 'ticket' or url == 'boards' or url == 'create_ticket' or url == 'detail_ticket' %} active {% endif %}">
+                  class="nav-link {% if url == 'ticket' or url == 'boards' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
                   <i class="nav-icon fas fa-pen"></i>
                   <p>
                      Request
@@ -153,7 +153,7 @@
                   {% if perms.requests.view_ticket %}
                   <li class="nav-item">
                      <a href="{% url 'ticket' %}"
-                        class="nav-link {% if url == 'ticket' or url == 'detail_ticket' %} active {% endif %}">
+                        class="nav-link {% if url == 'ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p>My Requests</p>
                      </a>

@@ -48,7 +48,9 @@ def view_ticket(request, ticket_id):
    departments =  Department.objects.filter(is_active=True, is_archive=False)
    categories = Category.objects.filter(category_type=tickets.category.category_type, is_active=True, is_archive=False)
    
-   context = {'tickets': tickets, 'forms': forms, 'types': types, 'departments':departments, 'categories':categories}
+   attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
+   
+   context = {'tickets': tickets, 'forms': forms, 'types': types, 'departments':departments, 'categories':categories, 'attachments':attachments}
    return render(request, 'pages/requests/ticket_view.html', context)
 # View Ticker End
 

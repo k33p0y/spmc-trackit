@@ -13,7 +13,7 @@
    <div class="container-fluid">
       <div class="row mb-2">
          <div class="col-sm-6">
-            <h5 class="font-weight-bolder">Update Request</h5>
+            <h5 class="font-weight-bolder">View Request</h5>
          </div>
          <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right text-xs">
@@ -30,128 +30,11 @@
 
 <!-- /.content -->
 {% if perms.requests.change_ticket %}
-<section class="content">
+<section class="content pb-4">
    <div class="container-fluid">
       <div class="overlay d-none"></div>
       <div class="row">
          <div class="col-12 col-sm-12 col-md-12 col-lg-8">
-            <div class="row" id="row-details">
-               <div class="col-12 col-sm-12">
-                  <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
-                        <div class="card-header p-2">
-                           <div class="card-title">Request Details</div>
-                        </div>
-                     </a>
-                     <div id="collapseDetails" class="collapse show">
-                        <div class="card-body p-3">
-                           <div class="form-row">
-                              <div class="form-group col-md-6">
-                                 <label>Category ({{tickets.category.category_type.name}}):</label>
-                                 {% for category in categories %}
-                                 {% if category.id == tickets.category.id %} <p>{{category.name}}</p>{% endif %}
-                                 {% endfor %}
-                              </div>
-                              <div class="form-group col-md-6">
-                                 <label>Department:</label>
-                                 {% for department in departments %}
-                                 {% if department.id == tickets.department.id %} <p>{{department.name}}</p> {% endif %}
-                                 {% endfor %}
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <div class="row" id="row-field">
-               <div class="col-12 col-sm-12">
-                  <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseFields" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFields">
-                        <div class="card-header p-2">
-                           <div class="card-title">Form Fields</div>
-                        </div>
-                     </a>
-                     <div id="collapseFields" class="collapse show">
-                        <div class="card-body p-3">
-                           <div class="form-wrapper">
-                           {% for form in tickets.request_form.fields %}
-                              {% if form.is_admin != True %}
-                                 {% if form.form_field|length < 4 %}
-                                    <div class="form-group">
-                                       <label> {{form.title}}  </label>
-                                       <div class="type-group">{% include '../../snippets/view2.html' %}</div>
-                                       <small class="error-info" id="error-info-type"></small>
-                                    </div>
-                                 {% else %}
-                                    {% include '../../snippets/view.html' %}
-                                 {% endif %}
-                              {% endif %}
-                           {% endfor %}
-                           </div>
-                        </div>
-                        
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <div class="row" id="row-field-admin">
-               <div class="col-12 col-sm-12">
-                  <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseFieldsAdmin" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFieldsAdmin">
-                        <div class="card-header p-2">
-                           <div class="card-title">Form Fields (To be filled by Admin)</div>
-                        </div>
-                     </a>
-                     <div id="collapseFieldsAdmin" class="collapse show">
-                        <div class="card-body p-3">
-                           <div class="form-admin-wrapper">
-                              {% for form in tickets.request_form.fields %}
-                                 {% if form.is_admin == True %}
-                                    {% if form.form_field|length < 4 %}
-                                       <div class="form-group">
-                                          <label> {{form.title}}  </label>
-                                          <div class="type-group">{% include '../../snippets/view2.html' %}</div>
-                                          <small class="error-info" id="error-info-type"></small>
-                                       </div>
-                                    {% else %}
-                                       {% include '../../snippets/view.html' %}
-                                    {% endif %}
-                                 {% endif %}
-                              {% endfor %}
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <div class="row" id="row-attachment">
-               <div class="col-12 col-sm-12">
-                  <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseAttachment" data-toggle="collapse" aria-expanded="false" aria-controls="collapseAttachment">
-                        <div class="card-header p-2">
-                           <div class="card-title">Attachments</div>
-                        </div>
-                     </a>
-                     <div class="collapse" id="collapseAttachment">
-                        <div class="card-body p-3">
-                           <div class="upload-wrapper d-flex justify-content-center">
-                              <div class="d-flex align-items-center">
-                                 <div class="upload-content text-center">
-                                    <i class="fas fa-upload mb-2"></i>
-                                    <p class="m-0">Drop your files here or <a href="#" class="btn-link-orange">browse</a>
-                                    </p>
-                                    <span class="upload-info">.docs, .docx, .xls, .csv, .jpeg</span>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="col-12 col-sm-12 col-md-12 col-lg-4">
             <div class="row" id="row-information">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
@@ -163,7 +46,7 @@
                      <div id="collapseInformation" class="collapse show">
                         <div class="card-body p-3">
                            <div class="row">
-                              <div class="col-12 col-sm-12 col-md-12 col-lg-12"> 
+                              <div class="col-12 col-sm-6 col-md-12 col-lg-12"> 
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context">{{tickets.ticket_no}}</p>
@@ -171,7 +54,7 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate" id="form_id" form_id="{{tickets.request_form.id}}">{{tickets.request_form}}</p>
@@ -179,15 +62,31 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{tickets.requested_by}}</p>
-                                       <span class="label">Requested By</span>
+                                       <p class="context">{{tickets.category}} </p>
+                                       <span class="label">Category</span>
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                       <p class="context">{{tickets.requested_by}} </p>
+                                       <span class="label">Requestor</span>
+                                    </div>
+                                 </div>
+                              </div>       
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                       <p class="context">{{tickets.department}} </p>
+                                       <span class="label">Department</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate">{{tickets.date_created|date:"d F Y h:i A"}}</p>
@@ -195,15 +94,17 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              {% if request.user.is_superuser %}
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate">{{tickets.date_modified|date:"d F Y h:i A"}}</p>
                                        <span class="label">Date Modified</span>
                                     </div>
                                  </div>
-                              </div>                   
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              </div>  
+                              {% endif %}                 
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context">{{tickets.status}}</p>
@@ -211,21 +112,135 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              {% if request.user.is_superuser %}
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0 d-flex align-items-center">
                                        <div class="mr-auto">
                                           <p class="context">{% if tickets.is_active == True %} Active {% else %} In Active {% endif %}</p>
                                           <span class="label">Is Active</span>
                                        </div>
-                                       <div class="custom-control custom-switch">
-                                          <input type="checkbox" class="custom-control-input" id="is_active_switch" {% if tickets.is_active %} checked {% endif %} disabled >
-                                          <label class="custom-control-label" for="is_active_switch"></label>
-                                       </div>
                                     </div>
                                  </div>
                               </div>
+                              {% endif %}
                            </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="row" id="row-details">
+               <div class="col-12 col-sm-12">
+                  <div class="card card-form mt-2 mb-1 "  style="border-bottom-left-radius: 5px !important;">
+                     <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
+                        <div class="card-header p-2">
+                           <div class="card-title">Request Details</div>
+                        </div>
+                     </a>
+                     <div id="collapseDetails" class="collapse show">
+                        <div class="card-body p-1">
+                           <ul class="list-group list-group-flush">
+                           {% for form in tickets.request_form.fields %}
+                              {% for data in tickets.form_data %}
+                                 {% if form.form_field.id == data.id %}
+                                    {% if form.form_field.type == 'text' or form.form_field.type == 'textarea'%}
+                                    
+                                       <li class="list-group-item d-flex p-3">
+                                          <div class="mr-auto">{{form.title}} </div>
+                                          <div class="font-weight-bold" style="width: 60% !important;">
+                                             <p class="p-0 m-0 text-right">{{data.value}}</p>
+                                          </div>
+                                       </li>
+                                    
+                                    {% elif form.form_field.type == 'radio' %}
+                                    <li class="list-group-item d-flex p-3">
+                                       <div class="mr-auto">{{form.title}} </div>
+                                       {% for opt in data.value %}
+                                          {% if opt.option_value == True %} 
+                                             <div class="font-weight-bold" style="width: 60% !important;">
+                                                <p class="p-0 m-0 text-right">{{opt.option_name}}</p>
+                                             </div>
+                                          {% endif %}
+                                       {% endfor %}
+                                    </li>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="row" id="row-attachment">
+               <div class="col-12 col-sm-12">
+                  <div class="card card-form mt-2 mb-1">
+                     <a href="#collapseAttachment" data-toggle="collapse show" aria-expanded="false" aria-controls="collapseAttachment">
+                        <div class="card-header p-2">
+                           <div class="card-title">Attachments</div>
+                        </div>
+                     </a>
+                     <div id="collapseAttachment" class="collapse show">
+                        <div class="card-body p-0">
+                           <table id="dt_attachments" class="table table-hover" width="100%">
+                              <thead>
+                                 <tr>
+                                    <th>Name</th>
+                                    <th>Date Uploaded</th>
+                                    <th>Uploaded By</th>
+                                    <th>File Size</th>
+                                 </tr>
+                              </thead>
+                              <tbody id="file_table">
+                                 {% for attachment in attachments %}
+                                    <tr>
+                                       <td>
+                                          <span class="file-type fas fa-lg mr-2" data-mimetype="{{attachment.file_type}}"></span>
+                                          <a href='{{attachment.file.url}}' class="text-secondary"><b>{{attachment.file_name}}</b></a>
+                                       </td>
+                                       <td>{{attachment.uploaded_at}}</td>
+                                       <td>{% if attachment.uploaded_by == request.user %} Me {% else %} {{attachment.uploaded_by}} {% endif %}</td>
+                                       <td>{{attachment.file.size|filesizeformat}}</td>
+                                    </tr>
+                                 {% endfor %}
+                              </tbody>                              
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-12 col-sm-12 col-md-12 col-lg-4">
+            <div class="row" id="row-comments">
+               <div class="col-12 col-sm-12">
+                  <div class="card card-form mt-2 mb-1">
+                     <a href="#collapseAttachment" data-toggle="collapse show" aria-expanded="false" aria-controls="collapseAttachment">
+                        <div class="card-header p-2">
+                           <div class="card-title">Actions</div>
+                        </div>
+                     </a>
+                     <div id="collapseAttachment" class="collapse show">
+                        <div class="card-body p-0">
+                           
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="row" id="row-comments">
+               <div class="col-12 col-sm-12">
+                  <div class="card card-form mt-2 mb-1">
+                     <a href="#collapseAttachment" data-toggle="collapse show" aria-expanded="false" aria-controls="collapseAttachment">
+                        <div class="card-header p-2">
+                           <div class="card-title">Comments</div>
+                        </div>
+                     </a>
+                     <div id="collapseAttachment" class="collapse show">
+                        <div class="card-body p-0">
+                           
                         </div>
                      </div>
                   </div>
@@ -243,5 +258,5 @@
 {% endblock %}
 
 {% block extrascript %}
-<script type="text/javascript" src="{% static 'src/js/requests/request.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/requests/request_view.js' %}"></script>
 {% endblock %}
