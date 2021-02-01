@@ -34,7 +34,7 @@
    <div class="container-fluid">
       <div class="overlay d-none"></div>
       <div class="row">
-         <div class="col-12 col-sm-12 col-md-12 col-lg-4">
+         <div class="col-12 col-sm-12 col-md-12 col-lg-12">
             <div class="row" id="row-information">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
@@ -54,7 +54,7 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate" id="form_id" form_id="{{tickets.request_form.id}}">{{tickets.request_form}}</p>
@@ -62,15 +62,15 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context">{{tickets.requested_by}}</p>
-                                       <span class="label">Requested By</span>
+                                       <span class="label">Requestor</span>
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate">{{tickets.date_created|date:"d F Y h:i A"}}</p>
@@ -78,15 +78,15 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate">{{tickets.date_modified|date:"d F Y h:i A"}}</p>
-                                       <span class="label">Date Modified</span>
+                                       <span class="label">Last Modified</span>
                                     </div>
                                  </div>
                               </div>                   
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context">{{tickets.status}}</p>
@@ -94,7 +94,8 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                              {% if request.user.is_superuser %}
+                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0 d-flex align-items-center">
                                        <div class="mr-auto">
@@ -108,20 +109,19 @@
                                     </div>
                                  </div>
                               </div>
+                              {% endif %}
                            </div>
                         </div>
                      </div>
                   </div>
                </div>
             </div>
-         </div>
-         <div class="col-12 col-sm-12 col-md-12 col-lg-8">
             <div class="row" id="row-details">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
                      <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
                         <div class="card-header p-2">
-                           <div class="card-title">Request Details</div>
+                           <div class="card-title">Request Details I</div>
                         </div>
                      </a>
                      <div id="collapseDetails" class="collapse show">
@@ -158,7 +158,7 @@
                   <div class="card card-form mt-2 mb-1">
                      <a href="#collapseFields" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFields">
                         <div class="card-header p-2">
-                           <div class="card-title">Form Fields</div>
+                           <div class="card-title">Request Details II</div>
                         </div>
                      </a>
                      <div id="collapseFields" class="collapse show">
@@ -189,7 +189,7 @@
                   <div class="card card-form mt-2 mb-1">
                      <a href="#collapseFieldsAdmin" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFieldsAdmin">
                         <div class="card-header p-2">
-                           <div class="card-title">Form Fields (To be filled by Admin)</div>
+                           <div class="card-title">Request Details III (To be filled by IHOMP)</div>
                         </div>
                      </a>
                      <div id="collapseFieldsAdmin" class="collapse show">

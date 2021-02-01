@@ -94,16 +94,14 @@
                                     </div>
                                  </div>
                               </div>
-                              {% if request.user.is_superuser %}
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate">{{tickets.date_modified|date:"d F Y h:i A"}}</p>
-                                       <span class="label">Date Modified</span>
+                                       <span class="label">Last Modified</span>
                                     </div>
                                  </div>
-                              </div>  
-                              {% endif %}                 
+                              </div>                 
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
