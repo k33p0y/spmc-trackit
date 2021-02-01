@@ -292,14 +292,14 @@ table.dataTable tbody tr:hover {
    box-shadow: none;
 }
 
-.container-fluid .row-actions #btn_new {
+.container-fluid .row-actions .btn-new {
    width: auto;
    height: auto;
    padding:4px 10px;
    border-radius: .2rem;
 }
 
-.container-fluid .row-actions #btn_new span{
+.container-fluid .row-actions .btn-new span{
    font-size: 12px;
    margin: 0;
 }
