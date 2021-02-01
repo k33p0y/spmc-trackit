@@ -60,7 +60,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
             # send notification to a user
             await self.channel_layer.group_send(
-                ('notif_room_for_user_%s' % self.obj['dept_head_id']),
+                'notif_room_for_user_' + str(self.obj['dept_head_id']),
+                # ('notif_room_for_user_%s' % self.obj['dept_head_id']),
                 {
                     'type': 'notification_message',
                     'notification': self.obj
@@ -69,7 +70,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
             # send notification to group
             await self.channel_layer.group_send(
-                ('notif_room_for_group_%s' % self.obj['group_id']),
+                'notif_room_for_group_' + str(self.obj['group_id']),
+                # ('notif_room_for_group_%s' % self.obj['group_id']),
                 {
                     'type': 'notification_message',
                     'notification': self.obj
@@ -107,7 +109,9 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def send_notification(self, ticket_id):
         ticket = Ticket.objects.get(ticket_id=ticket_id)
-        log = CRUDEvent.objects.filter(object_id=ticket_id).order_by('-datetime').first()
+        log = CRUDEvent.objects.filter(object_id=ticket_id).order_by('-datetime').exclude(changed_fields__isnull=True).first()
+        changed_fields = json.loads(log.changed_fields)
+    
         users = ticket.request_form.group.user_set.all()
         # create notifications for users in selected group
         for user in users: 
@@ -125,7 +129,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model
         obj['event_type'] = choices[log.event_type]
         if log.changed_fields:
-            obj['status'] = log.changed_fields['status'][1]
+            obj['status'] = changed_fields['status'][0]
         else:
             obj['status'] = ticket.status.name
         return obj
@@ -149,7 +153,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             'user': comment.user.get_full_name(),
             'content': comment.content,
             'ticket_no': comment.ticket.ticket_no,
-            'ticket_id': comment.ticket.ticket_id,
+            'ticket_id': str(comment.ticket.ticket_id),
             'id': comment.pk,
         }
         return comment_obj
