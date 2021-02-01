@@ -36,6 +36,20 @@ def detail_ticket(request, ticket_id):
    context = {'tickets': tickets, 'forms': forms, 'types': types, 'departments':departments, 'categories':categories}
    return render(request, 'pages/requests/ticket_detail.html', context)
 
+# View Ticket Start
+@login_required
+def view_ticket(request, ticket_id):
+   tickets = get_object_or_404(Ticket, ticket_id=ticket_id)
+   
+   forms= RequestForm.objects.filter(is_active=True, is_archive=False)
+   types =  CategoryType.objects.filter(is_active=True, is_archive=False)
+   departments =  Department.objects.filter(is_active=True, is_archive=False)
+   categories = Category.objects.filter(category_type=tickets.category.category_type, is_active=True, is_archive=False)
+   
+   context = {'tickets': tickets, 'forms': forms, 'types': types, 'departments':departments, 'categories':categories}
+   return render(request, 'pages/requests/ticket_view.html', context)
+# View Ticker End
+
 @login_required
 def boards(request):
    forms= RequestForm.objects.filter(is_active=True, is_archive=False)

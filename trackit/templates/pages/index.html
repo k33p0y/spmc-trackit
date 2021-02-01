@@ -31,49 +31,61 @@
 		<div class="dashcards">
 			<!-- Default box -->
 			<div class="row">
-				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-4">
+				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
 					<a href="#" class>
 						<div class="card text-center p-3">
 							<p class="card-title">Users</p>
 							<div class="card-body m-0 p-0 row">
 								<div class="col-4">
-									<span class="card-no">30</span>
-									<p class="card-label m-0">Total Users</p>
+									<span class="card-no">{{ userActiveCount }}</span>
+									<p class="card-label m-0">Active Userss</p>
 								</div>
 								<div class="col-4">
-									<span class="card-no">2</span>
-									<p class="card-label m-0">Total Users</p>
+									<span class="card-no">{{ userInactiveCount }}</span>
+									<p class="card-label m-0">Inactive Users</p>
 								</div>
 								<div class="col-4">
-									<span class="card-no">12</span>
+									<span class="card-no">{{ userCount }}</span>
 									<p class="card-label m-0">Total Users</p>
 								</div>
 							</div>
 						</div>
 					</a>
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-4">
+				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
 					<a href="#" class>
 						<div class="card text-center p-3">
 							<p class="card-title">Requests</p>
 							<div class="card-body m-0 p-0 row">
-								<div class="col-4">
+								<div class="col-2">
 									<span class="card-no">500</span>
-									<p class="card-label m-0">Total Users</p>
+									<p class="card-label m-0">Served</p>
 								</div>
-								<div class="col-4">
+								<div class="col-2">
 									<span class="card-no">354</span>
-									<p class="card-label m-0">Total Users</p>
+									<p class="card-label m-0">Pending</p>
 								</div>
-								<div class="col-4">
+								<div class="col-2">
 									<span class="card-no">125</span>
-									<p class="card-label m-0">Total Users</p>
+									<p class="card-label m-0">Department</p>
+								</div>
+								<div class="col-2">
+									<span class="card-no">500</span>
+									<p class="card-label m-0">Category</p>
+								</div>
+								<div class="col-2">
+									<span class="card-no">{{ requestFormCount }}</span>
+									<p class="card-label m-0">Total Forms</p>
+								</div>
+								<div class="col-2">
+									<span class="card-no">{{ ticketCount }}</span>
+									<p class="card-label m-0">Total Tickets</p>
 								</div>
 							</div>
 						</div>
 					</a>
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-4">
+				<!-- <div class="col-xs-12 col-sm-6 col-md-3 col-lg-4">
 					<a href="#" class>
 						<div class="card text-center p-3">
 							<p class="card-title">Forms</p>
@@ -93,7 +105,55 @@
 							</div>
 						</div>
 					</a>
+				</div> -->
+			</div>
+			<div class="row">
+				<div class="col-md-8">
+					<div class="card mt-2 mb-2">
+						<div class="card-body p-0">
+							<p class="text-center" style="margin-top: 10px;">REQUESTS</p>
+							<table id="dt_requests" class="table table-hover" width="100%">
+							<thead>
+								<tr>
+									<th>Ticket No</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							</table>
+						</div>
+					</div>
 				</div>
+				<!-- <div class="col-md-4 col-sm-12">
+					<div class="card mt-2 mb-2">
+						<div class="card-body p-0">
+							<p class="text-center" style="margin-top: 10px;">FORMS</p>
+							<table id="dt_forms" class="table table-hover" width="100%">
+								<thead>
+								   <tr>
+									  <th>Name</th>
+									  <th>Is Active</th>
+								   </tr>
+								</thead>
+							 </table>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="card mt-2 mb-2">
+						<div class="card-body p-0">
+							<p class="text-center" style="margin-top: 10px;">DEPARTMENTS</p>
+							<table id="dt_department" class="table table-hover" width="100%">
+								<thead>
+								   <tr>
+									  <th>Name</th>
+									  <!-- <th>Department Head</th>
+									  <th>Is Active</th>
+									  <th>Action</th> -->
+								   </tr>
+								</thead>
+						</div>
+					</div>
+				</div> -->
 			</div>
 		</div>
 	</div>
@@ -103,4 +163,5 @@
 {% endblock %}
 
 {% block extrascript %}
+<script type="text/javascript" src="{% static 'src/js/dashboard.js' %}"></script>
 {% endblock %}
