@@ -62,10 +62,14 @@ class TicketSerializer(serializers.ModelSerializer):
 
 class AttachmentSerializer(serializers.ModelSerializer):
    uploaded_by = UserSerializer(read_only=True)
+   file_size = serializers.SerializerMethodField('get_file_size')
+
+   def get_file_size(self, filename):
+      return filename.file.size
    
    class Meta:
       model = Attachment
-      fields =  ['id', 'file_name', 'file_type', 'file', 'ticket', 'uploaded_at', 'uploaded_by']
+      fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'ticket', 'uploaded_at', 'uploaded_by']
 
 # serializer choice field
 class ChoiceField(serializers.ChoiceField):

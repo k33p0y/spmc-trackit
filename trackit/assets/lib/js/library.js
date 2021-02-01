@@ -23,6 +23,8 @@ const axiosConfig = {
    "X-CSRFToken": csrftoken,
 };
 
+const actor = $('.user-link').data().userId;
+
 // Sweet Alert Toast
 const Toast = Swal.mixin({
    toast: true,
