@@ -163,6 +163,14 @@ class TicketViewSet(viewsets.ModelViewSet):
       
       serializer = TicketSerializer(ticket)
       return Response(serializer.data)
+
+   def partial_update(self, request, pk):
+      ticket = Ticket.objects.get(ticket_id=pk)
+      ticket.is_archive = request.data['is_archive']
+      ticket.save()
+
+      serializer = TicketSerializer(ticket, partial=True)
+      return Response(serializer.data)
       
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
    serializer_class = RequestFormStatusSerializer
