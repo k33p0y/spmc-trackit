@@ -1,0 +1,20 @@
+{% for field in form.form_field %}
+    {% for data in tickets.form_data %}
+        {% if field.id == data.id %}
+            {% if field.type == 'text' or field.type == 'textarea'%}
+            <p class="p-0 m-0 text-right">{{data.value}}</p>
+            {% elif field.type == 'radio' or field.type == 'checkbox' %}
+            <p class="p-0 m-0 text-right">
+                {% for opt in data.value %}
+                    {% if opt.option_value == True %} 
+                        {% if not forloop.first %}
+                            {% if forloop.last %} & {% else %}, {% endif %}
+                        {% endif %}
+                        {{opt.option_name}}
+                    {% endif %}
+                {% endfor %}
+            </p>    
+            {% endif %}                
+        {% endif %}
+    {% endfor %}
+{% endfor %}

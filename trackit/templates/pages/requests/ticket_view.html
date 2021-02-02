@@ -137,34 +137,19 @@
                         </div>
                      </a>
                      <div id="collapseDetails" class="collapse show">
-                        <div class="card-body p-1">
+                        <div class="card-body p-0 pt-1 pb-1">
                            <ul class="list-group list-group-flush">
                            {% for form in tickets.request_form.fields %}
-                              {% for data in tickets.form_data %}
-                                 {% if form.form_field.id == data.id %}
-                                    {% if form.form_field.type == 'text' or form.form_field.type == 'textarea'%}
-                                    
-                                       <li class="list-group-item d-flex p-3">
-                                          <div class="mr-auto">{{form.title}} </div>
-                                          <div class="font-weight-bold" style="width: 60% !important;">
-                                             <p class="p-0 m-0 text-right">{{data.value}}</p>
-                                          </div>
-                                       </li>
-                                    
-                                    {% elif form.form_field.type == 'radio' %}
-                                    <li class="list-group-item d-flex p-3">
-                                       <div class="mr-auto">{{form.title}} </div>
-                                       {% for opt in data.value %}
-                                          {% if opt.option_value == True %} 
-                                             <div class="font-weight-bold" style="width: 60% !important;">
-                                                <p class="p-0 m-0 text-right">{{opt.option_name}}</p>
-                                             </div>
-                                          {% endif %}
-                                       {% endfor %}
-                                    </li>
-                                    {% endif %}
-                                 {% endif %}
-                              {% endfor %}
+                              {% if form.form_field|length < 5 %}
+                              <li class="list-group-item d-flex p-3">
+                                 <div class="mr-auto">{{form.title}} </div>
+                                 <div class="font-weight-bold" style="width: 60% !important;">
+                                    {% include '../../snippets/list2.html' %}
+                                 </div>
+                             </li>
+                              {% else %}
+                                 {% include '../../snippets/list.html' %}
+                              {% endif %}
                            {% endfor %}
                            </ul>
                         </div>
