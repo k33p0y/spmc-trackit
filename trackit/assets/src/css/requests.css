@@ -95,7 +95,7 @@
 }
 
 .card-detail:hover {
-   background-color: #ffecd877;
+   background-color: #fff5ee;
 }
 
 .card-detail .card-body .label {
@@ -145,4 +145,45 @@
    padding:8px 14px !important;
    color: #59626b !important;
    vertical-align: middle;
+}
+
+/* Comments */
+.card-body .comment-section {
+   margin:4px;
+   max-height: 250px;
+   overflow-y: auto;
+}
+
+.card-body .comment-section .bg-comment-orange {
+   background-color: #fffbf9 !important;
+   border: 1px solid #fff2ef !important;
+}
+
+.card-body .comment-section .user-comment {
+   padding: 10px 12px;
+   border-radius:.25rem;
+   margin: 2px 0px;
+   border: 1px solid #f8f8f8;
+   background-color: #fff;
+}
+
+.card-body .comment-section::-webkit-scrollbar {
+   width: 8px;
+}
+
+.card-body .comment-section::-webkit-scrollbar-track  {
+   background-color: #ffffff00;
+   border: solid 3px transparent;
+}
+
+.card-body .comment-section::-webkit-scrollbar-thumb {
+   background: #d2d2d5 !important;
+   border-radius: 10px !important;
+   margin:0 2px !important;
+}
+  
+.card-body .comment-section::-webkit-scrollbar-thumb:hover {
+   background: #83878dc0 !important;
+   border-radius: 10px !important;
+   margin:0 2px !important;
 }

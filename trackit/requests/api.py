@@ -226,10 +226,10 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
       return Comment.objects.none()
 
    def create(self, request):
-      ticket_no = request.data['ticket']
-      ticket = Ticket.objects.get(ticket_no__iendswith=ticket_no)
+      ticket_id = request.data['ticket']
+      # ticket = Ticket.objects.get(ticket_id=ticket_id)
       content = request.data['content']
-      comment = Comment.objects.create(ticket=ticket, content=content, user=self.request.user)
+      comment = Comment.objects.create(ticket_id=ticket_id, content=content, user=self.request.user)
       comment.save()
       serializer = CommentSerializer(comment)
       return Response(serializer.data)
