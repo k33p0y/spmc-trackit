@@ -155,5 +155,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             'ticket_no': comment.ticket.ticket_no,
             'ticket_id': str(comment.ticket.ticket_id),
             'id': comment.pk,
+            'date_created': str(comment.date_created),
         }
         return comment_obj
