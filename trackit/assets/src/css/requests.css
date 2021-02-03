@@ -139,6 +139,10 @@
    font-size: x-large !important;
 }
 
+.list-group-flush .list-group-item{
+   border-style: dashed;
+}
+
 #dt_attachments.dataTable td  {
    font-size: 12px;
    font-weight: unset !important;
@@ -155,8 +159,8 @@
 }
 
 .card-body .comment-section .bg-comment-orange {
-   background-color: #fffbf9 !important;
-   border: 1px solid #fff2ef !important;
+   background-color: #fff5ee !important;
+   border: 1px solid #fde8e3 !important;
 }
 
 .card-body .comment-section .user-comment {
@@ -186,4 +190,4 @@
    background: #83878dc0 !important;
    border-radius: 10px !important;
    margin:0 2px !important;
-}
+}  
