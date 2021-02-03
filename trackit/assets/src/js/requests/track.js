@@ -68,7 +68,7 @@ $(document).ready(function () {
                         if (row.event_type === "Create") {
                             data = `${row.event_type}`
                         } else if (row.event_type === "Update") {
-                            data = `${row.changed_fields.status[1]}` // index 1 for the current status, 0 for the previous status
+                            data = `${row.changed_fields.status[0]}` // index 0 for the current status, 1 for the previous status
                         }
                     }
                     return data
