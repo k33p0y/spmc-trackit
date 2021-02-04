@@ -1,5 +1,6 @@
 from django.db import models
 from core.models import User
+from easyaudit.models import CRUDEvent
 
 # Create your models here.
 class Department(models.Model):
@@ -37,3 +38,13 @@ class Status(models.Model):
 
     def __str__(self):
         return self.name
+
+class Remark(models.Model):
+    remark = models.CharField(max_length=50)
+    date_created = models.DateTimeField(auto_now_add=True)
+    ticket = models.ForeignKey('requests.Ticket', related_name='remarks', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='all_remarks', on_delete=models.CASCADE)
+    log = models.ForeignKey(CRUDEvent, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.remark

@@ -52,6 +52,9 @@ class RequestFormStatus(models.Model):
     form = models.ForeignKey(RequestForm, on_delete=models.CASCADE)
     status = models.ForeignKey(Status, on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField(null=True, blank=True)
+    is_clent_step =  models.BooleanField(default=False)
+    has_pass_fail = models.BooleanField(default=False)
+    has_apporving = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
