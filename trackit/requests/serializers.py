@@ -16,7 +16,7 @@ class RequestFormStatusSerializer(serializers.ModelSerializer):
 
    class Meta: 
       model = RequestFormStatus
-      fields = ('id', 'name', 'order')
+      fields = ('id', 'name', 'order', 'is_client_step', 'has_approving', 'has_pass_fail')
 
 class RequestFormSerializer(serializers.ModelSerializer):
    color = serializers.CharField(required=True, max_length=10)
