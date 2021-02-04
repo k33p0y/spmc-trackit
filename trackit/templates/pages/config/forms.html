@@ -179,19 +179,19 @@
                               <small class="error-info name-error"></small>
                            </div>
                            <div class="form-group col">
-                              <div class="icheck-material-orange mt-1 mb-0">
+                              <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
                                  <input type="checkbox" class="client-box" id="chk_is_client" />
                                  <label for="chk_is_client"></label>
                               </div>
                            </div>
                            <div class="form-group col">
-                              <div class="icheck-material-orange mt-1 mb-0">
+                              <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
                                  <input type="checkbox" class="approving-box" id="chk_has_approving"/>
                                  <label for="chk_has_approving"></label>
                               </div>
                            </div>
                            <div class="form-group col">
-                              <div class="icheck-material-orange mt-1 mb-0">
+                              <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
                                  <input type="checkbox" class="pass-fail-box" id="chk_has_pass_fail"/>
                                  <label for="chk_has_pass_fail"></label>
                               </div>
@@ -251,19 +251,19 @@
             <small class="error-info name-error"></small>
          </div>
          <div class="form-group col">
-            <div class="icheck-material-orange mt-1 mb-0">
-               <input type="checkbox" class="client-box" id="chk_is_status_${count}" />
-               <label for="chk_is_status_${count}"></label>
+            <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
+               <input type="checkbox" class="client-box" id="chk_is_client_${count}" />
+               <label for="chk_is_client_${count}"></label>
             </div>
          </div>
          <div class="form-group col">
-            <div class="icheck-material-orange mt-1 mb-0">
+            <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
                <input type="checkbox" class="approving-box" id="chk_has_approving_${count}"/>
                <label for="chk_has_approving_${count}"></label>
             </div>
          </div>
          <div class="form-group col">
-            <div class="icheck-material-orange mt-1 mb-0">
+            <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
                <input type="checkbox" class="pass-fail-box" id="chk_has_pass_fail_${count}"/>
                <label for="chk_has_pass_fail_${count}"></label>
             </div>
@@ -296,27 +296,27 @@
                   <small class="error-info status-error"></small>
                </div>
                <div class="form-group col">
-                  <div class="icheck-material-orange mt-1 mb-0">
-                     <input type="checkbox" id="chk_is_status_${counter}" />
-                     <label for="chk_is_status"></label>
-                  </div>
-               </div>
-               <div class="form-group col">
-                  <div class="icheck-material-orange mt-1 mb-0">
-                     <input type="radio" id="chk_has_approving_${counter}" />
-                     <label for="chk_has_approving"></label>
-                  </div>
-               </div>
-               <div class="form-group col">
-                  <div class="icheck-material-orange mt-1 mb-0">
-                     <input type="radio" id="chk_has_pass_fail_${counter}" />
-                     <label for="chk_has_pass_fail"></label>
-                  </div>
-               </div>
-               <div class="form-group col">
                   <input type="number" class="form-control form-control-sm txt_order" id="order_${counter}" placeholder="Enter No">
                   <small class="error-info name-error"></small>
                </div>
+               <div class="form-group col">
+                  <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
+                     <input type="checkbox" class="client-box" id="chk_is_client_${counter}" />
+                     <label for="chk_is_client_${counter}"></label>
+                  </div>
+               </div>
+               <div class="form-group col">
+                  <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
+                     <input type="checkbox" class="approving-box" id="chk_has_approving_${counter}"/>
+                     <label for="chk_has_approving_${counter}"></label>
+                  </div>
+               </div>
+               <div class="form-group col">
+                  <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
+                     <input type="checkbox" class="pass-fail-box" id="chk_has_pass_fail_${counter}"/>
+                     <label for="chk_has_pass_fail_${counter}"></label>
+                  </div>
+               </div>       
                <div class="form-group col-1">
                   <button type="button" class="btn btn-sm btn-block btn-remove">
                      <i class="fas fa-times"></i>

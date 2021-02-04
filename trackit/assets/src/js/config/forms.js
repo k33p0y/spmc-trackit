@@ -278,7 +278,7 @@ $(document).ready(function () {
       if(nameInput && colorInput && statusOrderInput) { success = 1; }
 
       // // Form is Valid
-      if (success == 10) {
+      if (success == 1) {
          axios({
             method: action_type,
             url: url,
@@ -362,11 +362,6 @@ $(document).ready(function () {
       $('#select2_status').val([]).trigger('change');
    });
 
-   // RELOAD TABLE
-   $("#btn_reload").click(function () {
-      table.ajax.reload();
-   });
-
    //SEARCH
    $("#execute-search").click(function () {
       table.ajax.reload();
@@ -418,9 +413,15 @@ function getStatusRowValues() {
 function setStatusOrder(status) {
    let counter = 1;
 
+   console.log(status)
+
    status.forEach(stat => {
       $(`#status_${counter}`).val(stat.id).trigger('change');
       $(`#order_${counter}`).val(stat.order);
+      $(`#chk_is_client_${counter}`).prop("checked", stat.is_client_step);
+      $(`#chk_has_approving_${counter}`).prop("checked", stat.has_approving);
+      $(`#chk_has_pass_fail_${counter}`).prop("checked", stat.has_pass_fail);
+
       counter++;
    });
 }

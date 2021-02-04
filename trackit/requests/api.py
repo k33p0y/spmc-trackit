@@ -48,7 +48,10 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       for stat in status_dict:
          status_id = stat['status']
          order = stat['order']
-         RequestFormStatus(form=request_form, status_id=status_id, order=order).save()
+         is_client_step = stat['is_client']
+         has_pass_fail = stat['has_pass_fail']
+         has_approving = stat['has_approving']
+         RequestFormStatus(form=request_form, status_id=status_id, order=order, has_approving=has_approving, is_client_step=is_client_step, has_pass_fail=has_pass_fail).save()
 
       serializer = RequestFormSerializer(request_form)
       return Response(serializer.data)
@@ -69,7 +72,10 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       for stat in status_dict:
          status_id = stat['status']
          order = stat['order']
-         RequestFormStatus(form=request_form, status_id=status_id, order=order).save()
+         is_client_step = stat['is_client']
+         has_pass_fail = stat['has_pass_fail']
+         has_approving = stat['has_approving']
+         RequestFormStatus(form=request_form, status_id=status_id, order=order, has_approving=has_approving, is_client_step=is_client_step, has_pass_fail=has_pass_fail).save()
 
       serializer = RequestFormSerializer(request_form)
       return Response(serializer.data)
