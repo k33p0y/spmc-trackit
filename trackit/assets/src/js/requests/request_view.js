@@ -47,19 +47,18 @@ $(document).ready(function () {
                 },
                 headers: axiosConfig,
             }).then(function (response) { // success
-                console.log(response)
                 $('.comment-section').empty();
                 let comments_array = response.data.results
                 for (i=0; i<comments_array.length; i++){
                     let fullname = `${comments_array[i].user.first_name} ${comments_array[i].user.last_name}`
                     let comment = `${comments_array[i].content}`
                     let date_created = `${moment(comments_array[i].date_created).format('MMM DD, YYYY hh:mm a')}`
-                    let currentUser = $('.user-link').data().userFullname;
+                    let logged_user_id = $('.user-link').data().userId;
 
                     $('.comment-section').append(
-                        `<div class="user-comment justify-content-start ${fullname == currentUser ? 'bg-comment-orange' : ''}">
+                        `<div class="user-comment justify-content-start ${comments_array[i].user.id == logged_user_id ? 'bg-comment-orange' : ''}">
                             <div class="d-inline justify-content-start ">
-                            <span class="font-weight-bold text-orange name ">${fullname == currentUser ? 'You' : fullname}</span>
+                            <span class="font-weight-bold text-orange name ">${fullname}</span>
                             <span class="text-muted text-xs"> - ${date_created}</span>
                             </div>
                             <div class="mt-2">
