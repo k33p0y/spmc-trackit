@@ -153,12 +153,17 @@
                   </div>
                   <div class="tab-pane fade" id="status" role="tabpanel" aria-labelledby="nav-profile-tab">
                      <div class="form-row">
-                        <div class="col-8"><label>Status</label></div>
-                        <div class="col-4"> <label>Order</label></div>
+                        <div class="col-4"><label>Status/Step Name</label></div>
+                        <div class="col"> <label>Order</label></div>
+                        <div class="col"> <label>Is Client Step</label></div>
+                        <div class="col"> <label>Has Approving</label></div>
+                        <div class="col"> <label>Has Pass & Fail</label></div>
+
+                        <div class="col-1"></div>
                      </div>
                      <div class="form-wrapper">
                         <div class="form-row">
-                           <div class="form-group col-8">
+                           <div class="form-group col-4">
                               <select class="form-control form-control-sm select2_status" style="width: 100%">
                                  <option></option>
                                  {% for status in status_qs %}
@@ -168,19 +173,38 @@
                               </select>
                               <small class="error-info status-error"></small>
                            </div>
-                           <div class="form-group col-3">
+                           <div class="form-group col">
                               <input type="number" class="form-control form-control-sm txt_order"
                                  placeholder="Enter No">
                               <small class="error-info name-error"></small>
                            </div>
+                           <div class="form-group col">
+                              <div class="icheck-material-orange mt-1 mb-0">
+                                 <input type="checkbox" class="client-box" id="chk_is_client" />
+                                 <label for="chk_is_client"></label>
+                              </div>
+                           </div>
+                           <div class="form-group col">
+                              <div class="icheck-material-orange mt-1 mb-0">
+                                 <input type="checkbox" class="approving-box" id="chk_has_approving"/>
+                                 <label for="chk_has_approving"></label>
+                              </div>
+                           </div>
+                           <div class="form-group col">
+                              <div class="icheck-material-orange mt-1 mb-0">
+                                 <input type="checkbox" class="pass-fail-box" id="chk_has_pass_fail"/>
+                                 <label for="chk_has_pass_fail"></label>
+                              </div>
+                           </div>
+                           
+                           <div class="form-group col-1"></div>
                         </div>
                         <div class="form-row-extras"></div>
                      </div>
                      <button type="button" class="btn btn-link" id="btn_add">
                         <i class="fas fa-xs fa-plus"></i>
-                        <span>Add a another status</span>
+                        <span>Add a another status/step</span>
                      </button>
-
                   </div>
                   <div class="tab-pane fade" id="fields" role="tabpanel" aria-labelledby="nav-contact-tab">
                      <div class="form-group">
@@ -209,28 +233,52 @@
 
 {% block extrascript %}
 <script>
-   const form_row = `<div class="form-row">
-      <div class="form-group col-8">
-         <select class="form-control form-control-sm select2_status" style="width: 100%">
-            <option></option>
-            {% for status in status_qs %}
-            <option value={{status.id}}>{{status}}</option>
-            {% endfor %}
-         </select>
-         <small class="error-info status-error"></small>
-      </div>
-      <div class="form-group col-3">
-         <input type="number" class="form-control form-control-sm txt_order"
-            placeholder="Enter No">
-         <small class="error-info name-error"></small>
-      </div>
-      <div class="form-group col-1">
-         <button type="button" class="btn btn-sm btn-block btn-remove">
-            <i class="fas fa-times"></i>
-         </button>
-      </div>
-   </div>`;
 
+   function addStatusRow(count) {
+      const form_row = `<div class="form-row">
+         <div class="form-group col-4">
+            <select class="form-control form-control-sm select2_status" style="width: 100%">
+               <option></option>
+               {% for status in status_qs %}
+               <option value={{status.id}}>{{status}}</option>
+               {% endfor %}
+            </select>
+            <small class="error-info status-error"></small>
+         </div>
+         <div class="form-group col">
+            <input type="number" class="form-control form-control-sm txt_order"
+               placeholder="Enter No">
+            <small class="error-info name-error"></small>
+         </div>
+         <div class="form-group col">
+            <div class="icheck-material-orange mt-1 mb-0">
+               <input type="checkbox" class="client-box" id="chk_is_status_${count}" />
+               <label for="chk_is_status_${count}"></label>
+            </div>
+         </div>
+         <div class="form-group col">
+            <div class="icheck-material-orange mt-1 mb-0">
+               <input type="checkbox" class="approving-box" id="chk_has_approving_${count}"/>
+               <label for="chk_has_approving_${count}"></label>
+            </div>
+         </div>
+         <div class="form-group col">
+            <div class="icheck-material-orange mt-1 mb-0">
+               <input type="checkbox" class="pass-fail-box" id="chk_has_pass_fail_${count}"/>
+               <label for="chk_has_pass_fail_${count}"></label>
+            </div>
+         </div>
+
+         <div class="form-group col-1">
+            <button type="button" class="btn btn-sm btn-block btn-remove">
+               <i class="fas fa-times"></i>
+            </button>
+         </div>
+      </div>`;
+
+      return form_row;
+   }
+   
    function updateStatusOrder(status) {
       const form_wrapper = $('.form-wrapper');
       let counter = 1;
@@ -238,7 +286,7 @@
       status.forEach(stat => {
          form_wrapper.append(
             `<div class="form-row">
-               <div class="form-group col-8">
+               <div class="form-group col-4">
                   <select class="form-control form-control-sm select2_status" id="status_${counter}" style="width: 100%">
                      <option></option>
                      {% for status in status_qs %}
@@ -247,7 +295,25 @@
                   </select>
                   <small class="error-info status-error"></small>
                </div>
-               <div class="form-group col-3">
+               <div class="form-group col">
+                  <div class="icheck-material-orange mt-1 mb-0">
+                     <input type="checkbox" id="chk_is_status_${counter}" />
+                     <label for="chk_is_status"></label>
+                  </div>
+               </div>
+               <div class="form-group col">
+                  <div class="icheck-material-orange mt-1 mb-0">
+                     <input type="radio" id="chk_has_approving_${counter}" />
+                     <label for="chk_has_approving"></label>
+                  </div>
+               </div>
+               <div class="form-group col">
+                  <div class="icheck-material-orange mt-1 mb-0">
+                     <input type="radio" id="chk_has_pass_fail_${counter}" />
+                     <label for="chk_has_pass_fail"></label>
+                  </div>
+               </div>
+               <div class="form-group col">
                   <input type="number" class="form-control form-control-sm txt_order" id="order_${counter}" placeholder="Enter No">
                   <small class="error-info name-error"></small>
                </div>

@@ -32,24 +32,10 @@ $(document).ready(function () {
       $('#select2_status').val([]).trigger('change');
    })
 
-   // Add Status Fields
-   $('#btn_add').click(function () {
-      const form_wrapper = $('.form-wrapper');
-      form_wrapper.append(form_row)
-
-      // Select2 Config
-      $('.select2_status').select2({
-         allowClear: true,
-         placeholder: 'Select Status',
-         // cache: true,
-      });
-   });
-
    // Remove Status Fields
    $('.form-wrapper').on('click', '.btn-remove', function () {
       $(this).parents("div.form-row").remove()
    });
-
 
    // RETRIEVE / GET
    // List Table
@@ -138,6 +124,20 @@ $(document).ready(function () {
       }
    });
 
+   var counter = 4;
+   $('#btn_add').click(function () {
+      let row = addStatusRow(counter);
+      $(".form-wrapper").append(row)
+      counter++;
+
+      // Select2 Config
+      $('.select2_status').select2({
+         allowClear: true,
+         placeholder: 'Select Status',
+         // cache: true,
+      });
+   });
+
    // CREATE / POST
    $('#btn-create-form').on('click', function () {
       // Assign AJAX Action Type and URL
@@ -168,8 +168,9 @@ $(document).ready(function () {
       $('#txt_json').val(JSON.stringify(samp_json));
 
       const form_wrapper = $('.form-row-extras').empty();
-      for (let i = 0; i <= 2; i++) {
-         form_wrapper.append(form_row)
+      for (let i = 1; i <= 3; i++) {
+         let row = addStatusRow(i);
+         form_wrapper.append(row)
 
          // Select2 Config
          $('.select2_status').select2({
@@ -222,7 +223,7 @@ $(document).ready(function () {
       // Data
       data.name = $('#txt_typename').val();
       data.color = $('#txt_color').val();
-      data.status = getStatusOrder();
+      data.status = getStatusRowValues();
       data.fields = JSON.parse($('#txt_json').val());
       data.is_active = chk_status;
       data.is_archive = false;
@@ -257,8 +258,6 @@ $(document).ready(function () {
       let statusOrderInput = false;
       const form_row = $(".form-wrapper div.form-row");
    
-      console.log(form_row);
-   
       form_row.each(function () {
          const status = $(this).find('div.form-group select');
          const order = $(this).find('div.form-group input');
@@ -278,10 +277,8 @@ $(document).ready(function () {
 
       if(nameInput && colorInput && statusOrderInput) { success = 1; }
 
-      // console.log(data);
-
       // // Form is Valid
-      if (success == 1) {
+      if (success == 10) {
          axios({
             method: action_type,
             url: url,
@@ -385,21 +382,26 @@ function prettyPrint() {
    $('#txt_json').val(pretty);
 }
 
-function getStatusOrder() {
+function getStatusRowValues() {
    const arr = new Array();
    const form_row = $(".form-wrapper div.form-row");
 
-   console.log(form_row);
-
    form_row.each(function () {
       const status = $(this).find('div.form-group select');
-      const order = $(this).find('div.form-group input');
+      const order = $(this).find('div.form-group input.txt_order');
+      const is_client = $(this).find('div.form-group input.client-box');
+      const has_approving = $(this).find('div.form-group input.approving-box');
+      const has_pass_fail = $(this).find('div.form-group input.pass-fail-box');
 
       if (status.val() != '' && order.val() != '') {
          arr.push({
             'status': status.val(),
-            'order': order.val()
+            'order': order.val(),
+            'is_client' : (is_client.is(":checked")) ? true : false,
+            'has_approving' : (has_approving.is(":checked")) ? true : false,
+            'has_pass_fail' : (has_pass_fail.is(":checked")) ? true : false,
          });
+
          $(this).find('div.form-group').removeClass('has-error');;
          $(this).find('.txt_order').removeClass('form-error');
          $(this).find('div.form-group').find('.status-error').html('');
@@ -409,8 +411,7 @@ function getStatusOrder() {
          $(this).find('div.form-group').find('.status-error').html('*This field row cannot be empty');
       }
    });
-
-   console.log(arr);
+   
    return arr
 }
 
