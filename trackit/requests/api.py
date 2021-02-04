@@ -220,9 +220,9 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
    serializer_class = CommentSerializer
 
    def get_queryset(self):
-      ticket_no = self.request.GET.get('ticket_no', None)
-      if ticket_no:
-         return Comment.objects.select_related('ticket', 'user').filter(ticket__ticket_no__iendswith=ticket_no).order_by('-date_created')
+      ticket_id = self.request.GET.get('ticket_id', None)
+      if ticket_id:
+         return Comment.objects.select_related('ticket', 'user').filter(ticket__ticket_id=ticket_id).order_by('-date_created')
       return Comment.objects.none()
 
    def create(self, request):

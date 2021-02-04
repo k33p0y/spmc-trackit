@@ -77,18 +77,19 @@
     };
 
     let displayComment = function(obj){
-        let tracking_num = $('#txt_tracking_num').val();
-
-        if (tracking_num === obj.comment['ticket_no']) {
-            $('.comment-section').children().first().before(`<div class="bg-white p-1 user-comment">
-                <div class="d-flex flex-column justify-content-start">
-                    <span class="d-block font-weight-bold name">${obj.comment['user']}</span>
-                    <span class="text-muted text-xs">${moment(obj.comment['date_created']).format('DD MM YYYY hh:mm a')}</span>
-                </div>
-                <div class="mt-2">
-                    <p class="comment-text">${obj.comment['content']}</p>
-                </div>
-            </div>`
-        )}
+        if ($('#btn-post-comment').data().ticketId === obj.comment['ticket_id']) {
+            let currentUser = $('.user-link').data().userFullname;
+            $('.comment-section').prepend(
+                `<div class="user-comment justify-content-start ${currentUser == obj.comment['user'] ? 'bg-comment-orange' : ''}">
+                    <div class="d-inline justify-content-start ">
+                    <span class="font-weight-bold text-orange name ">${currentUser == obj.comment['user'] ? 'You' : obj.comment['user']}</span>
+                    <span class="text-muted text-xs"> - ${moment(obj.comment['date_created']).format('MMM DD, YYYY hh:mm a')}</span>
+                    </div>
+                    <div class="mt-2">
+                    <p class="comment-text m-0">${obj.comment['content']}</p>
+                    </div>
+                </div>`
+            )
+        }
     };
 </script>

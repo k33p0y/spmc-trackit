@@ -39,7 +39,7 @@
       </li>
 
       <li class="nav-item dropdown">
-         <a class="nav-link nav-user dropdown-toggle user-link" data-toggle="dropdown" data-user-id="{{request.user.id}}" href="#">
+         <a class="nav-link nav-user dropdown-toggle user-link" data-toggle="dropdown" data-user-id="{{request.user.id}}" data-user-fullname="{{request.user.get_full_name}}" href="#">
             <span class="online-status"><i class="fas fa-circle"></i></span> {{request.user.get_full_name}}
          </a>
          <div class="dropdown-menu p-0 dropdown-menu-right">

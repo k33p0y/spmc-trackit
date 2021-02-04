@@ -100,46 +100,4 @@ $(document).ready(function () {
             table.ajax.reload();
         }
     });
-
-    // get ticket number comments
-    let getComments = function(e){
-        if ($('#txt_tracking_num').val()){
-            axios({
-                method: 'GET',
-                url: '/api/requests/comments/',
-                params: {
-                    ticket_no : getTrackingNum(),
-                },
-                headers: axiosConfig,
-            }).then(function (response) { // success
-                $('.comment-section').empty();
-                let comments_array = response.data.results
-                for (i=0; i<comments_array.length; i++){
-                    let fullname = `${comments_array[i].user.first_name} ${comments_array[i].user.last_name}`
-                    let comment = `${comments_array[i].content}`
-                    let date_created = `${moment(comments_array[i].date_created).format('DD MM YYYY hh:mm a')}`
-                    
-                    $('.comment-section').append(
-                        `<div class="bg-white p-1 user-comment">
-                            <div class="d-flex flex-column justify-content-start">
-                                <span class="d-block font-weight-bold name">${fullname}</span>
-                                <span class="text-muted text-xs">${date_created}</span>
-                            </div>
-                            <div class="mt-2">
-                                <p class="comment-text">${comment}</p>
-                            </div>
-                        </div>`
-                    )
-                }
-            }).catch(function (error) { // error
-                console.log(error)
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Error in loading comments.',
-                });
-            });
-        }
-    };
-
-    getComments();
 });
