@@ -4,6 +4,8 @@ $(document).ready(function () {
         $(element).addClass(file_type);
     });
 
+   $('#dd_steps').select2();
+
     $('#dt_attachments').DataTable({
         "searching": false,
         "responsive": true,

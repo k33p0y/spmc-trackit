@@ -21,7 +21,7 @@
                         class="fas fa-home"></i></a></li>
                <li class="breadcrumb-item">Request</li>
                <li class="breadcrumb-item"> <a href="{% url 'ticket' %}" class="btn-link-neutral">List</a> </li>
-               <li class="breadcrumb-item active">Ticket No: {{tickets.ticket_no}}</li>
+               <li class="breadcrumb-item active">Ticket No: {{ticket.ticket_no}}</li>
             </ol>
          </div>
       </div>
@@ -34,7 +34,7 @@
    <div class="container-fluid">
       <div class="overlay d-none"></div>
       <div class="row">
-         <div class="col-12 col-sm-12 col-md-12 col-lg-8">
+         <div class="col-12 col-sm-12 col-md-12 col-lg-9">
             <div class="row" id="row-information">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
@@ -49,7 +49,7 @@
                               <div class="col-12 col-sm-6 col-md-12 col-lg-12"> 
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{tickets.ticket_no}}</p>
+                                       <p class="context">{{ticket.ticket_no}}</p>
                                        <span class="label">Ticket No</span>
                                     </div>
                                  </div>
@@ -57,7 +57,7 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate" id="form_id" form_id="{{tickets.request_form.id}}">{{tickets.request_form}}</p>
+                                       <p class="context text-truncate" id="form_id" form_id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
                                        <span class="label">Request Form</span>
                                     </div>
                                  </div>
@@ -65,7 +65,7 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{tickets.category}} </p>
+                                       <p class="context">{{ticket.category}} </p>
                                        <span class="label">Category</span>
                                     </div>
                                  </div>
@@ -73,7 +73,7 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{tickets.requested_by}} </p>
+                                       <p class="context">{{ticket.requested_by}} </p>
                                        <span class="label">Requestor</span>
                                     </div>
                                  </div>
@@ -81,7 +81,7 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{tickets.department}} </p>
+                                       <p class="context">{{ticket.department}} </p>
                                        <span class="label">Department</span>
                                     </div>
                                  </div>
@@ -89,7 +89,7 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">{{tickets.date_created|date:"d F Y h:i A"}}</p>
+                                       <p class="context text-truncate">{{ticket.date_created|date:"d F Y h:i A"}}</p>
                                        <span class="label">Date Created</span>
                                     </div>
                                  </div>
@@ -97,7 +97,7 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">{{tickets.date_modified|date:"d F Y h:i A"}}</p>
+                                       <p class="context text-truncate">{{ticket.date_modified|date:"d F Y h:i A"}}</p>
                                        <span class="label">Last Modified</span>
                                     </div>
                                  </div>
@@ -105,7 +105,7 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{tickets.status}}</p>
+                                       <p class="context">{{ticket.status}}</p>
                                        <span class="label">Status</span>
                                     </div>
                                  </div>
@@ -115,7 +115,7 @@
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0 d-flex align-items-center">
                                        <div class="mr-auto">
-                                          <p class="context">{% if tickets.is_active == True %} Active {% else %} In Active {% endif %}</p>
+                                          <p class="context">{% if ticket.is_active == True %} Active {% else %} In Active {% endif %}</p>
                                           <span class="label">Is Active</span>
                                        </div>
                                     </div>
@@ -139,7 +139,7 @@
                      <div id="collapseDetails" class="collapse show">
                         <div class="card-body pr-3 pl-3 pt-2 pb-2">
                            <ul class="list-group list-group-flush">
-                           {% for form in tickets.request_form.fields %}
+                           {% for form in ticket.request_form.fields %}
                               {% if form.form_field|length < 5 %}
                               <li class="list-group-item d-flex p-3">
                                  <div class="mr-auto">{{form.title}} </div>
@@ -196,23 +196,7 @@
                </div>
             </div>
          </div>
-         <div class="col-12 col-sm-12 col-md-12 col-lg-4">
-            <div class="row" id="row-actions">
-               <div class="col-12 col-sm-12">
-                  <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseAction" data-toggle="collapse" aria-expanded="true" aria-controls="collapseAction">
-                        <div class="card-header p-2">
-                           <div class="card-title">Actions</div>
-                        </div>
-                     </a>
-                     <div id="collapseAction" class="collapse show">
-                        <div class="card-body p-0">
-                           
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
+         <div class="col-12 col-sm-12 col-md-12 col-lg-3">
             <div class="row" id="row-comments">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
@@ -223,19 +207,63 @@
                      </a>
                      <div id="collapseComment" class="collapse show">
                         <div class="card-body p-3">
-
                            <form id="form-comment"> <!-- FORM -->
                               <div class="d-flex flex-row align-items-start"> <!-- COMMENT TEXTAREA -->
                                  <textarea class="form-control shadow-none textarea" id="txtarea-comment" rows="3" placeholder="Write a comment..."></textarea>
                               </div> <!-- COMMENT TEXTAREA END -->
                            
                               <div class="mt-2 mb-4 text-right">
-                                 <button class="btn btn-orange btn-sm shadow-none" type="button" id="btn-post-comment" data-ticket-id="{{tickets.ticket_id}}"> <span>Post Comment</span></button>
+                                 <button class="btn btn-orange btn-sm shadow-none" type="button" id="btn-post-comment" data-ticket-id="{{ticket.ticket_id}}"> <span>Post Comment</span></button>
                               </div>
                            </form> <!-- FORM END -->
 
                            <div class="d-flex flex-column comment-section">  <!-- COMMENT SECTION -->
                            </div>  <!-- COMMENT SECTION END -->
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="row" id="row-actions">
+               <div class="col-12 col-sm-12">
+                  <div class="card card-form mt-2 mb-1">
+                     <a href="#collapseAction" data-toggle="collapse" aria-expanded="true" aria-controls="collapseAction">
+                        <div class="card-header p-2">
+                           <div class="card-title">Actions</div>
+                        </div>
+                     </a>
+                     <div id="collapseAction" class="collapse show">
+                        <div class="card-body p-3">
+                           <form class="form-actions">
+                              <div class="form-group">
+                                 <label>Next Step</label>
+                                 <select class="form-control form-control-sm" id="dd_steps" style="width: 100%">
+                                    {% for step in steps %}
+                                       <option value="{{step.order}}" {% if step.status == ticket.status %} selected {% endif %} >{{step.status}}</option>
+                                    {% endfor %}
+                                 </select>
+                              </div>
+                              <div class="form-group">
+                                 <label>Remarks</label>
+                                 <textarea class="form-control" id="txtarea-remark" rows="2" placeholder="Write your remarks here"></textarea>
+                                 <small class="error-info" id="error-info-form"></small>
+                              </div>
+                              <div class="form-group d-flex flex-row-reverse">
+                                 {% for step in steps %}
+                                    {% if step.status == ticket.status %} 
+                                       {% if step.has_approving %}
+                                          <button class="btn btn-orange btn-sm shadow-none" type="button" id="btn-accept" data-ticket-id="{{ticket.ticket_id}}"> <span> Approve </span></button>
+                                          <button class="btn btn-danger btn-sm shadow-none" type="button" id="btn-cancel" data-ticket-id="{{ticket.ticket_id}}"> <span>Reject</span></button>
+                                       {% elif step.has_pass_fail %}
+                                          <button class="btn btn-orange btn-sm shadow-none" type="button" id="btn-accept" data-ticket-id="{{ticket.ticket_id}}"> <span> Pass </span></button>
+                                          <button class="btn btn-danger btn-sm shadow-none" type="button" id="btn-cancel" data-ticket-id="{{ticket.ticket_id}}"> <span> Fail</span></button>
+                                       {% else %}
+                                          <button class="btn btn-orange btn-sm shadow-none" type="button" id="btn-accept" data-ticket-id="{{ticket.ticket_id}}"> <span> Proceed to next step </span></button>
+                                       {% endif %}
+                                    {% endif %}
+                                 {% endfor %}
+                              </div>
+                           </form>
                         </div>
                      </div>
                   </div>

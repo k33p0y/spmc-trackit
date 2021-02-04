@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
 from config.models import Category, CategoryType, Department, Status
-from .models import Ticket, RequestForm, Attachment
+from .models import Ticket, RequestForm, Attachment, RequestFormStatus
 
 import json
 
@@ -41,16 +41,12 @@ def detail_ticket(request, ticket_id):
 # View Ticket Start
 @login_required
 def view_ticket(request, ticket_id):
-   tickets = get_object_or_404(Ticket, ticket_id=ticket_id)
-   
-   forms= RequestForm.objects.filter(is_active=True, is_archive=False)
-   types =  CategoryType.objects.filter(is_active=True, is_archive=False)
-   departments =  Department.objects.filter(is_active=True, is_archive=False)
-   categories = Category.objects.filter(category_type=tickets.category.category_type, is_active=True, is_archive=False)
-   
+   ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
+
+   steps = RequestFormStatus.objects.filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
    
-   context = {'tickets': tickets, 'forms': forms, 'types': types, 'departments':departments, 'categories':categories, 'attachments':attachments}
+   context = {'ticket': ticket, 'attachments':attachments, 'steps':steps}
    return render(request, 'pages/requests/ticket_view.html', context)
 # View Ticker End
 
