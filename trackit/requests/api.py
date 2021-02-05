@@ -1,7 +1,8 @@
-from rest_framework import generics, viewsets, permissions
+from rest_framework import generics, viewsets, permissions, serializers
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
@@ -233,7 +234,14 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
 
    def create(self, request):
       ticket_id = request.data['ticket']
-      # ticket = Ticket.objects.get(ticket_id=ticket_id)
+
+      groups = list(self.request.user.groups.all()) # get groups by user
+      ticket = Ticket.objects.filter(
+         Q(ticket_id=ticket_id) & (Q(requested_by=self.request.user) | Q(department__department_head=self.request.user) | Q(request_form__group__in=groups))
+      )
+      # check if ticket is associated to the user
+      if not ticket:
+         raise serializers.ValidationError('You do not have permission to post a comment.')
       content = request.data['content']
       comment = Comment.objects.create(ticket_id=ticket_id, content=content, user=self.request.user)
       comment.save()

@@ -151,6 +151,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         comment = Comment.objects.get(id=comment_id)
         comment_obj = {
             'user': comment.user.get_full_name(),
+            'user_id': comment.user.id,
             'content': comment.content,
             'ticket_no': comment.ticket.ticket_no,
             'ticket_id': str(comment.ticket.ticket_id),
