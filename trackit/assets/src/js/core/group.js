@@ -2,6 +2,8 @@ $(document).ready(function () {
    let action_type, url;
    let alert_msg = '';
 
+   var searchInput = function() { return $('#search-input').val(); }
+
    // Select2 Config
    $('#select2-permissions').select2({
       allowClear: true,
@@ -21,6 +23,9 @@ $(document).ready(function () {
       "ajax": {
          url: '/api/core/group/?format=datatables',
          type: "GET",
+         data: {
+            search_input: searchInput
+         }
       },
       "columns": [
          { data: "name" },
@@ -35,6 +40,13 @@ $(document).ready(function () {
             },
          }
       ],
+   });
+
+   //SEARCH
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      console.log($('#search-input').val())
+      return false; // prevent refresh
    });
    
    // Create new group button

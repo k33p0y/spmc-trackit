@@ -126,7 +126,7 @@ $(document).ready(function () {
                   data = data + `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>`;
                }
                if($('#deleteTicketHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
+                  data = data + `<a href='#' class='text-danger action-link btn_delete' data-id="${id}"> <i class='fas fa-trash'></i> </a>`;
                }
                return data;
                // data = `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
@@ -166,5 +166,72 @@ $(document).ready(function () {
    $("#execute-search").click(function () {
       table.ajax.reload();
       return false; // prevent refresh
+   });
+
+   // DELETE / PATCH
+   $('#dt_requests tbody').on('click', '.btn_delete', function () {
+      // let dt_data = table.row($(this).parents('tr')).data();
+      // let id = dt_data['id'];
+      // console.log('id', id)
+      var id = $(this).data('id');
+      console.log(id);
+
+      Swal.fire({
+         title: 'Are you sure?',
+         icon: 'error',
+         showCancelButton: true,
+         confirmButtonText: 'Delete',
+         confirmButtonColor: '#d9534f',
+      }).then((result) => {
+         if (result.value) {
+            axios({
+               headers: axiosConfig,
+               url: `/api/requests/lists/${id}/`,
+               method: "PATCH",
+               data: {
+                  is_archive: true,
+               },
+            }).then(function (response) {
+               Toast.fire({
+                  icon: 'success',
+                  title: 'Deleted Successfully',
+               });
+               table.ajax.reload();
+            }).catch(function (error) {
+               Toast.fire({
+                  icon: 'error',
+                  title: error,
+               });
+            });
+
+
+            // $.ajax({
+            //    url: `/api/requests/lists/${id}/`,
+            //    type: 'PATCH',
+            //    data: {
+            //       is_archive: true,
+            //    },
+            //    beforeSend: function (xhr, settings) {
+            //       xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            //    },
+            //    success: function (result) {
+            //       Toast.fire({
+            //          icon: 'success',
+            //          title: 'Delete Successfully',
+            //       });
+            //       table.ajax.reload();
+            //    },
+            //    error: function (a, b, error) {
+            //       console.log('a', a);
+            //       console.log('b', b);
+            //       console.log('error', error);
+            //       Toast.fire({
+            //          icon: 'error',
+            //          title: error,
+            //       });
+            //    },
+            // })
+         }
+      })
    });
 });
