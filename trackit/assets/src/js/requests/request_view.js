@@ -22,7 +22,7 @@ $(document).ready(function () {
     });
 
     // post action
-    $('#btn-accept').click(function (e) {
+    $('.btn-accept').click(function (e) {
         e.preventDefault();
         let ticket_id = $(this).data().ticketId;
 

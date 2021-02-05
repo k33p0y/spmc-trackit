@@ -17,8 +17,7 @@
          </div>
          <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right text-xs">
-               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="btn-link-orange"><i
-                        class="fas fa-home"></i></a></li>
+               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="btn-link-orange"><i class="fas fa-home"></i></a></li>
                <li class="breadcrumb-item">Request</li>
                <li class="breadcrumb-item"> <a href="{% url 'ticket' %}" class="btn-link-neutral">List</a> </li>
                <li class="breadcrumb-item active">Ticket No: {{ticket.ticket_no}}</li>
@@ -33,6 +32,13 @@
 <section class="content pb-4">
    <div class="container-fluid">
       <div class="overlay d-none"></div>
+      
+      <div class="d-flex flex-row-reverse">
+         <a href="#" class="btn btn-xs btn-outline-orange ml-2">
+            <i class="fas fa-pencil-alt fa-lg"></i> Update Ticket
+         </a>
+         <button class="btn btn-outline-secondary btn-xs ml-2" type="button"> <span> <i class="fas fa-history fa-lg mr-1"></i> View Logs</span> </button>
+      </div>
       <div class="row">
          <div class="col-12 col-sm-12 col-md-12 col-lg-8">
             <div class="row" id="row-information">
@@ -211,8 +217,8 @@
                               <div class="d-flex flex-row align-items-start"> <!-- COMMENT TEXTAREA -->
                                  <textarea class="form-control shadow-none textarea" id="txtarea-comment" rows="3" placeholder="Write a comment..."></textarea>
                               </div> <!-- COMMENT TEXTAREA END -->
-                              <div class="mt-2 mb-4 text-right">
-                                 <button class="btn btn-orange btn-sm shadow-none" type="button" id="btn-post-comment" data-ticket-id="{{ticket.ticket_id}}"> <span>Post Comment</span></button>
+                              <div class="mt-2 text-right">
+                                 <button class="btn btn-orange btn-xs" type="button" id="btn-post-comment" data-ticket-id="{{ticket.ticket_id}}"> <span>Post Comment</span></button>
                               </div>
                            </form> <!-- FORM END -->
                            <div class="d-flex flex-column comment-section">  <!-- COMMENT SECTION -->
@@ -250,13 +256,13 @@
                               </div>
                               <div class="form-group d-flex flex-row-reverse">
                                  {% if step.has_approving %}
-                                    <button class="btn btn-orange btn-sm" type="button" id="btn-accept" data-ticket-id="{{ticket.ticket_id}}"> <span>Approve</span></button>
-                                    <button class="btn btn-danger btn-sm" type="button" id="btn-cancel" data-ticket-id="{{ticket.ticket_id}}"> <span>Reject</span></button>
+                                    <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}"> <span>Approve</span></button>
+                                    <button class="btn btn-outline-danger btn-xs btn-refuse" type="button" data-ticket-id="{{ticket.ticket_id}}"> <span>Reject</span></button>
                                  {% elif step.has_pass_fail %}
-                                    <button class="btn btn-orange btn-sm" type="button" id="btn-accept" data-ticket-id="{{ticket.ticket_id}}"> <span>Pass</span></button>
-                                    <button class="btn btn-danger btn-sm" type="button" id="btn-cancel" data-ticket-id="{{ticket.ticket_id}}"> <span>Fail</span></button>
-                                 {% else %}
-                                    <button class="btn btn-orange btn-sm" type="button" id="btn-accept" data-ticket-id="{{ticket.ticket_id}}"> <span>Proceed next step</span></button>
+                                    <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}"> <span>Pass</span></button>
+                                    <button class="btn btn-outline-danger btn-xs btn-refuse" type="button" data-ticket-id="{{ticket.ticket_id}}"> <span>Fail</span></button>
+                                 {% else %}  
+                                    <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}"> <span>Proceed next step</span></button>
                                  {% endif %}
                               </div>
                            </form>

@@ -86,7 +86,6 @@ class CategoryTypeViewSet(viewsets.ModelViewSet):
 
          return qs.order_by('id')
 
-
 class StatusViewSet(viewsets.ModelViewSet):
    serializer_class = StatusSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
@@ -110,7 +109,6 @@ class StatusViewSet(viewsets.ModelViewSet):
                qs = qs.filter(is_active=False)
 
          return qs.order_by('id')
-
 
 class RemarkViewSet(viewsets.ModelViewSet):
    serializer_class = RemarkSerializer
