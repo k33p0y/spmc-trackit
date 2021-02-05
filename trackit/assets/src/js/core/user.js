@@ -1,28 +1,46 @@
 $(document).ready(function () {
-      let method, url, action;
-      let alert_msg = '';
+   let method, url, action;
+   let alert_msg = '';
 
-      // Permissions Select2 Config
-      $('#select2-permissions').select2({
-         allowClear: true,
-         placeholder: 'Select Permissions',
-         cache: true,
-      });
+   var lastNameInput = function() { return $('#last_name-input').val(); }
+   var firstNameInput = function() { return $('#first_name-input').val(); }
+   var usernameInput = function() { return $('#username-input').val(); }
+   var isStaffSelect = function() { return $('#user-staff-select').val(); }
 
-      // Groups Select2 Config
-      $('#select2-groups').select2({
-         allowClear: true,
-         placeholder: 'Select Groups',
-         cache: true,
-      });
+   // Permissions Select2 Config
+   $('#select2-permissions').select2({
+      allowClear: true,
+      placeholder: 'Select Permissions',
+      cache: true,
+   });
 
-      // Deparments Select2 Config
-      $('#select2-departments').select2({
-         allowClear: true,
-         placeholder: 'Select Departments',
-         cache: true,
-      });
-  
+   // Groups Select2 Config
+   $('#select2-groups').select2({
+      allowClear: true,
+      placeholder: 'Select Groups',
+      cache: true,
+   });
+
+   // Deparments Select2 Config
+   $('#select2-departments').select2({
+      allowClear: true,
+      placeholder: 'Select Departments',
+      cache: true,
+   });
+
+   // User: Is Staff Select2 Config
+   $('#user-staff-select').select2({
+      allowClear: true,
+      placeholder: 'Is Staff',
+      cache: true,
+   });
+
+   //SEARCH
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
    // RETRIEVE / GET
    let table = $('#dt_user').DataTable({
       "searching": false,
@@ -35,6 +53,12 @@ $(document).ready(function () {
       "ajax": {
          url: '/api/core/user/?format=datatables',
          type: "GET",
+         data: {
+            "last_name_input": lastNameInput,
+            "first_name_input": firstNameInput,
+            "username_input": usernameInput,
+            "is_staff_select": isStaffSelect
+         }
       },
       "columns": [
          { data: "username" },
