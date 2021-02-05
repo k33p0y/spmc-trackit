@@ -14,6 +14,12 @@ textarea:focus  {
    border-color: #ff8f34b6 !important;
 }
 
+input:disabled,
+select:disabled,
+.select2-container--default.select2-container--disabled .select2-selection--single {
+   background-color: #e3e5ed58 !important;
+}
+
 label {
    font-weight: normal !important;
    color: #3e454d !important;
