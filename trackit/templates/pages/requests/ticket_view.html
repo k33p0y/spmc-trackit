@@ -233,12 +233,12 @@
                      <div id="collapseAction" class="collapse show">
                         <div class="card-body p-3">
                            <form class="form-actions">
-                              {% if not step.is_client_step %} 
+                              {% if not step.is_client_step or request.user.is_superuser %} 
                               <div class="form-group">
                                  <label>Next Step</label>
                                  <select class="form-control form-control-sm" id="dd_steps" style="width: 100%">
                                     {% for step in steps %}
-                                       <option value="{{step.order}}" {% if step.status == ticket.status %} selected {% endif %} >{{step.status}}</option>
+                                       <option value="{{step.status_id}}" {% if step.status == ticket.status %} selected {% endif %}>{{step.status}}</option>
                                     {% endfor %}
                                  </select>
                               </div>

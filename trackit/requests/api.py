@@ -170,7 +170,15 @@ class TicketViewSet(viewsets.ModelViewSet):
       
       serializer = TicketSerializer(ticket)
       return Response(serializer.data)
-      
+
+   def partial_update(self, request, pk):
+      ticket = Ticket.objects.get(pk=pk)
+      serializer = TicketSerializer(ticket, data=request.data, partial=True)
+      serializer.is_valid(raise_exception=True)
+      serializer.save()
+      return Response(serializer.data)
+
+
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
    serializer_class = RequestFormStatusSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
