@@ -54,29 +54,29 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data) # convert string to JSON
 
         # NOTIFICATION
-        if text_data_json['type'] == 'notification':
-            ticket_id = text_data_json['data']['ticket_id']
-            self.obj = await self.send_notification(ticket_id)
+        # if text_data_json['type'] == 'notification':
+        #     ticket_id = text_data_json['data']['ticket_id']
+        #     self.obj = await self.send_notification(ticket_id)
 
-            # send notification to a user
-            await self.channel_layer.group_send(
-                'notif_room_for_user_' + str(self.obj['dept_head_id']),
-                # ('notif_room_for_user_%s' % self.obj['dept_head_id']),
-                {
-                    'type': 'notification_message',
-                    'notification': self.obj
-                }
-            )
+        #     # send notification to a user
+        #     await self.channel_layer.group_send(
+        #         'notif_room_for_user_' + str(self.obj['dept_head_id']),
+        #         # ('notif_room_for_user_%s' % self.obj['dept_head_id']),
+        #         {
+        #             'type': 'notification_message',
+        #             'notification': self.obj
+        #         }
+        #     )
 
-            # send notification to group
-            await self.channel_layer.group_send(
-                'notif_room_for_group_' + str(self.obj['group_id']),
-                # ('notif_room_for_group_%s' % self.obj['group_id']),
-                {
-                    'type': 'notification_message',
-                    'notification': self.obj
-                }
-            )
+        #     # send notification to group
+        #     await self.channel_layer.group_send(
+        #         'notif_room_for_group_' + str(self.obj['group_id']),
+        #         # ('notif_room_for_group_%s' % self.obj['group_id']),
+        #         {
+        #             'type': 'notification_message',
+        #             'notification': self.obj
+        #         }
+        #     )
         
         # COMMENT
         if text_data_json['type'] == 'comment':
