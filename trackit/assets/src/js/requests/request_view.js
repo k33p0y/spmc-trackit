@@ -81,7 +81,7 @@ $(document).ready(function () {
             let comment_id = response.data.id
             socket.send(JSON.stringify({type: 'comment', data: {comment_id: comment_id}}))
         }).catch(function (error) { // error
-            console.log(error);
+            console.log(error.response);
             Toast.fire({
                 icon: 'error',
                 title: 'Error in creating comment.',

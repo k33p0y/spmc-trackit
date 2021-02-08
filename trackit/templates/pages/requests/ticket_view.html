@@ -33,14 +33,16 @@
    <div class="container-fluid">
       <div class="overlay d-none"></div>
       
-      <div class="d-flex flex-row-reverse">
-         <a href="#" class="btn btn-xs btn-outline-orange ml-2">
-            <i class="fas fa-pencil-alt fa-lg"></i> Update Ticket
+      <div class="d-flex flex-row-reverse ">
+         <a href="{% url 'detail_ticket' ticket.ticket_id %}" class="btn btn-xs btn-link text-secondary">
+            <i class="fas fa-pencil-alt fa-lg"></i> <span>Update Request</span> 
          </a>
-         <button class="btn btn-outline-secondary btn-xs ml-2" type="button"> <span> <i class="fas fa-history fa-lg mr-1"></i> View Logs</span> </button>
+         <a href="{% url 'detail_ticket' ticket.ticket_id %}" class="btn btn-xs btn-link text-secondary">
+            <i class="fas fa-history fa-lg"></i> <span>View Logs</span> 
+         </a>
       </div>
       <div class="row">
-         <div class="col-12 col-sm-12 col-md-12 col-lg-8">
+         <div class="col-12 col-sm-12 col-md-12 col-lg-9">
             <div class="row" id="row-information">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
@@ -68,30 +70,22 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                              <!-- <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context">{{ticket.category}} </p>
                                        <span class="label">Category</span>
                                     </div>
                                  </div>
-                              </div>
-                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                                 <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context">{{ticket.requested_by}} </p>
-                                       <span class="label">Requestor</span>
-                                    </div>
-                                 </div>
-                              </div>       
-                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                              </div> -->  
+                              <!-- <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context">{{ticket.department}} </p>
                                        <span class="label">Department</span>
                                     </div>
                                  </div>
-                              </div>
+                              </div> -->
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
@@ -107,7 +101,15 @@
                                        <span class="label">Last Modified</span>
                                     </div>
                                  </div>
-                              </div>                 
+                              </div> 
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                       <p class="context">{{ticket.requested_by}} </p>
+                                       <span class="label">Requestor</span>
+                                    </div>
+                                 </div>
+                              </div>                     
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
@@ -145,6 +147,19 @@
                      <div id="collapseDetails" class="collapse show">
                         <div class="card-body pr-3 pl-3 pt-2 pb-2">
                            <ul class="list-group list-group-flush">
+                              <li class="list-group-item d-flex p-3">
+                                 <div class="mr-auto">Department </div>
+                                 <div class="font-weight-bold" style="width: 60% !important;">
+                                    <p class="p-0 m-0 text-right">{{ticket.department}}</p>
+                                 </div>
+                             </li>
+                             <li class="list-group-item d-flex p-3">
+                              <div class="mr-auto">Category (<i>{{ticket.category.category_type}}</i>)</div>
+                              <div class="font-weight-bold" style="width: 60% !important;">
+                                 <p class="p-0 m-0 text-right">{{ticket.category}}</p>
+                              </div>
+                          </li>
+                          </li>
                            {% for form in ticket.request_form.fields %}
                               {% if form.form_field|length < 5 %}
                               <li class="list-group-item d-flex p-3">
@@ -202,8 +217,28 @@
                </div>
             </div>
          </div>
-         <div class="col-12 col-sm-12 col-md-12 col-lg-4">
-            <div class="row" id="row-comments">
+         
+         <div class="col-12 col-sm-12 col-md-12 col-lg-3">
+         {% if step.has_approving %}
+            {% if ticket.department.department_head == request.user or request.user.is_staff or request.user.is_superuser %}
+               {% with accept="Approve" refuse="Dissaprove" %}     
+                  {% include '../../snippets/actions.html' %}
+               {% endwith %}
+            {% endif %}
+         {% elif step.has_pass_fail %}
+            {% if ticket.requested_by == request.user or request.user.is_staff or request.user.is_superuser %}
+               {% with accept="Pass" refuse="Fail" %}     
+                  {% include '../../snippets/actions.html' %}
+               {% endwith %}
+            {% endif %}
+         {% else %}
+            {% if request.user.is_staff or request.user.is_superuser %} 
+               {% with accept="Proceed to next step" %}
+                  {% include '../../snippets/actions.html' %}
+               {% endwith %}
+            {% endif %}
+         {% endif %}
+         <div class="row" id="row-comments">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
                      <a href="#collapseComment" data-toggle="collapse" aria-expanded="true" aria-controls="collapseComment">
@@ -221,56 +256,14 @@
                                  <button class="btn btn-orange btn-xs" type="button" id="btn-post-comment" data-ticket-id="{{ticket.ticket_id}}"> <span>Post Comment</span></button>
                               </div>
                            </form> <!-- FORM END -->
-                           <div class="d-flex flex-column comment-section">  <!-- COMMENT SECTION -->
+                           <div class="d-flex flex-column comment-section mt-2">  <!-- COMMENT SECTION -->
                            </div>  <!-- COMMENT SECTION END -->
                         </div>
                      </div>
                   </div>
                </div>
             </div>
-            <div class="row" id="row-actions">
-               <div class="col-12 col-sm-12">
-                  <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseAction" data-toggle="collapse" aria-expanded="true" aria-controls="collapseAction">
-                        <div class="card-header p-2">
-                           <div class="card-title">Actions</div>
-                        </div>
-                     </a>
-                     <div id="collapseAction" class="collapse show">
-                        <div class="card-body p-3">
-                           <form class="form-actions">
-                              {% if not step.is_client_step or request.user.is_superuser %} 
-                              <div class="form-group">
-                                 <label>Next Step</label>
-                                 <select class="form-control form-control-sm" id="dd_steps" style="width: 100%">
-                                    {% for step in steps %}
-                                       <option value="{{step.status_id}}" {% if step.status == ticket.status %} selected {% endif %}>{{step.status}}</option>
-                                    {% endfor %}
-                                 </select>
-                              </div>
-                              {% endif %}
-                              <div class="form-group">
-                                 <label>Remarks</label>
-                                 <textarea class="form-control" id="txtarea-remark" rows="2" placeholder="Write your remarks here"></textarea>
-                                 <small class="error-info" id="error-info-form"></small>
-                              </div>
-                              <div class="form-group d-flex flex-row-reverse">
-                                 {% if step.has_approving %}
-                                    <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}"> <span>Approve</span></button>
-                                    <button class="btn btn-outline-danger btn-xs btn-refuse" type="button" data-ticket-id="{{ticket.ticket_id}}"> <span>Reject</span></button>
-                                 {% elif step.has_pass_fail %}
-                                    <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}"> <span>Pass</span></button>
-                                    <button class="btn btn-outline-danger btn-xs btn-refuse" type="button" data-ticket-id="{{ticket.ticket_id}}"> <span>Fail</span></button>
-                                 {% else %}  
-                                    <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}"> <span>Proceed next step</span></button>
-                                 {% endif %}
-                              </div>
-                           </form>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
+           
          </div>
       </div>
    </div>
