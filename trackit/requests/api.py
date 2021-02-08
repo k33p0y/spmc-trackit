@@ -110,12 +110,6 @@ class TicketViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      #    tickets = Ticket.objects.select_related('requested_by', 'department', 'request_form__group').filter(
-      #       Q(requested_by=self.scope['user']) | Q(department__department_head=self.scope['user']) | Q(request_form__group__in=groups)
-      #   ).values('ticket_no')
-
-
-
       status = self.request.GET.get('status', None)
       form = self.request.GET.get('form', None)
 
@@ -129,12 +123,13 @@ class TicketViewSet(viewsets.ModelViewSet):
          return Ticket.objects.none()
       else:
          if(self.request.user.is_superuser or self.request.user.is_staff):
-            qs = Ticket.objects.all()
+            qs = Ticket.objects.filter(is_archive=False)
          else:
-            qs = Ticket.objects.select_related('requested_by').filter(requested_by=self.request.user)
+            # qs = Ticket.objects.select_related('requested_by').filter(requested_by=self.request.user)
+            qs = Ticket.objects.filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user))
 
          if form:
-            return Ticket.objects.filter(status=status, request_form=form, is_active=True, is_archive=False)
+            return qs.filter(status=status, request_form=form, is_active=True, is_archive=False)
          else:
             qs = qs.filter(is_archive=False)
             if search_input:
