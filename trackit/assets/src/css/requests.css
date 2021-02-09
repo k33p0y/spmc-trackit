@@ -160,14 +160,14 @@
 
 .card-body .comment-section .bg-comment-orange {
    background-color: #fff5ee !important;
-   border: 1px solid #fde8e3 !important;
+   border: 1px solid #fdd3c8 !important;
 }
 
 .card-body .comment-section .user-comment {
    padding: 10px 12px;
    border-radius:.25rem;
    margin: 2px 0px;
-   border: 1px solid #f8f8f8;
+   border: 1px solid #e4e9ee;
    background-color: #fff;
 }
 

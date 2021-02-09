@@ -16,11 +16,11 @@ $(document).ready(function () {
     $('#dd_steps').select2();
 
     // On Change Event Select 2
-    var step = $("#dd_steps option:selected").next().prop('selected', true).change().val();   
+    var step = $("#dd_steps option:selected").next().val();  
     $('#dd_steps').on('change', function () { 
         step = $("#dd_steps option:selected").val();
-    });
-
+    });    
+    
     // post action
     $('.btn-accept').click(function (e) {
         e.preventDefault();

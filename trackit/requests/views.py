@@ -49,8 +49,10 @@ def view_ticket(request, ticket_id):
    for formstatus in formstatuses:
       if(formstatus.status == ticket.status):
          step = formstatuses.get(status_id=ticket.status)
+   
+   last_step = formstatuses.latest('order')
 
-   context = {'ticket': ticket, 'attachments':attachments, 'steps':formstatuses, 'step':step}
+   context = {'ticket': ticket, 'attachments':attachments, 'steps':formstatuses, 'step':step, 'last_step':last_step}
    return render(request, 'pages/requests/ticket_view.html', context)
 # View Ticker End
 

@@ -35,10 +35,10 @@
       
       <div class="d-flex flex-row-reverse ">
          <a href="{% url 'detail_ticket' ticket.ticket_id %}" class="btn btn-xs btn-link text-secondary">
-            <i class="fas fa-pencil-alt fa-lg"></i> <span>Update Request</span> 
+            <i class="fas fa-pencil-alt"></i> <span>Update Request</span> 
          </a>
          <a href="{% url 'detail_ticket' ticket.ticket_id %}" class="btn btn-xs btn-link text-secondary">
-            <i class="fas fa-history fa-lg"></i> <span>View Logs</span> 
+            <i class="fas fa-history"></i> <span>View Logs</span> 
          </a>
       </div>
       <div class="row">
@@ -217,27 +217,31 @@
                </div>
             </div>
          </div>
-         
+
          <div class="col-12 col-sm-12 col-md-12 col-lg-3">
-         {% if step.has_approving %}
-            {% if ticket.department.department_head == request.user or request.user.is_staff or request.user.is_superuser %}
-               {% with accept="Approve" refuse="Dissaprove" %}     
-                  {% include '../../snippets/actions.html' %}
-               {% endwith %}
-            {% endif %}
-         {% elif step.has_pass_fail %}
-            {% if ticket.requested_by == request.user or request.user.is_staff or request.user.is_superuser %}
+         {% if step.status != last_step.status or user.is_superuser %}
+            {% if step.has_approving %}
+               {% if ticket.department.department_head == user or user.is_staff or user.is_superuser %}
+                  {% with accept="Approve" refuse="Dissaprove" %}     
+                     {% include '../../snippets/actions.html' %}
+                  {% endwith %}
+               {% endif %}
+            {% elif step.has_pass_fail %}
                {% with accept="Pass" refuse="Fail" %}     
-                  {% include '../../snippets/actions.html' %}
+                  {% if ticket.requested_by == user or user.is_staff or user.is_superuser %}
+                     {% include '../../snippets/actions.html' %}
+                  {% endif %}
                {% endwith %}
-            {% endif %}
-         {% else %}
-            {% if request.user.is_staff or request.user.is_superuser %} 
-               {% with accept="Proceed to next step" %}
-                  {% include '../../snippets/actions.html' %}
-               {% endwith %}
+            {% else %}
+               {% if user.is_staff or user.is_superuser %} 
+                  {% with accept="Proceed" %}
+                     {% include '../../snippets/actions.html' %}
+                  {% endwith %}
+               {% endif %}
             {% endif %}
          {% endif %}
+         
+         {% if user == ticket.requested_by or user == ticket.department.department_head or user.is_staff or user.is_superuser  %}
          <div class="row" id="row-comments">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
@@ -253,7 +257,7 @@
                                  <textarea class="form-control shadow-none textarea" id="txtarea-comment" rows="3" placeholder="Write a comment..."></textarea>
                               </div> <!-- COMMENT TEXTAREA END -->
                               <div class="mt-2 text-right">
-                                 <button class="btn btn-orange btn-xs" type="button" id="btn-post-comment" data-ticket-id="{{ticket.ticket_id}}"> <span>Post Comment</span></button>
+                                 <button class="btn btn-light btn-xs" type="button" id="btn-post-comment" data-ticket-id="{{ticket.ticket_id}}"> <span>Post Comment</span></button>
                               </div>
                            </form> <!-- FORM END -->
                            <div class="d-flex flex-column comment-section mt-2">  <!-- COMMENT SECTION -->
@@ -263,8 +267,8 @@
                   </div>
                </div>
             </div>
-           
          </div>
+         {% endif %}
       </div>
    </div>
 </section>
