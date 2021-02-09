@@ -133,11 +133,15 @@ class TicketViewSet(viewsets.ModelViewSet):
       if not self.request.user.has_perm('requests.view_ticket'):
          return Ticket.objects.none()
       else:
-         if(self.request.user.is_superuser or self.request.user.is_staff):
+         if(self.request.user.is_superuser):
             qs = Ticket.objects.filter(is_archive=False)
+
+         elif(self.request.user.is_staff):
+            groups = list(self.request.user.groups.all())
+            qs = Ticket.objects.filter(request_form__group__in=groups, is_archive=False)
          else:
             # qs = Ticket.objects.select_related('requested_by').filter(requested_by=self.request.user)
-            qs = Ticket.objects.filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user))
+            qs = Ticket.objects.filter((Q(requested_by = self.request.user) | Q(department__department_head = self.request.user)), is_archive=False)
 
          if form:
             return qs.filter(status=status, request_form=form, is_active=True, is_archive=False)

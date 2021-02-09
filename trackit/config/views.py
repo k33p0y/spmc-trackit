@@ -31,3 +31,7 @@ def forms(request):
 @login_required
 def status_list(request):
    return render(request, 'pages/config/status.html')
+
+@login_required
+def archive(request):
+   return render(request, 'pages/config/archives.html')
