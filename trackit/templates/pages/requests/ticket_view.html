@@ -221,14 +221,18 @@
          <div class="col-12 col-sm-12 col-md-12 col-lg-3">
          {% if step.status != last_step.status or user.is_superuser %}
             {% if step.has_approving %}
-               {% if ticket.department.department_head == user or user.is_staff or user.is_superuser %}
-                  {% with accept="Approve" refuse="Dissaprove" %}     
+               {% with accept="Approve" refuse="Disapprove" %}   
+                  {% if ticket.department.department_head == user and step.is_client_step or user.is_superuser %}
                      {% include '../../snippets/actions.html' %}
-                  {% endwith %}
-               {% endif %}
+                  {% elif user.is_staff %}
+                     {% include '../../snippets/actions.html' %}
+                  {% endif %}
+               {% endwith %}
             {% elif step.has_pass_fail %}
                {% with accept="Pass" refuse="Fail" %}     
-                  {% if ticket.requested_by == user or user.is_staff or user.is_superuser %}
+                  {% if ticket.requested_by == user and step.is_client_step or user.is_superuser %}
+                     {% include '../../snippets/actions.html' %}
+                  {% elif user.is_staff %}
                      {% include '../../snippets/actions.html' %}
                   {% endif %}
                {% endwith %}
