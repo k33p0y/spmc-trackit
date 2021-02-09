@@ -92,10 +92,18 @@ class ChoiceField(serializers.ChoiceField):
 class CRUDEventSerializer(serializers.ModelSerializer):
    event_type = ChoiceField(choices=CRUDEvent.TYPES)
    changed_fields = serializers.JSONField()
+   ticket_no = serializers.SerializerMethodField()
+
+   def get_ticket_no(self, instance):
+      object_json_repr = json.loads(instance.object_json_repr)
+      if (object_json_repr[0]['model'] == 'requests.comment'):
+         ticket = Ticket.objects.get(pk=object_json_repr[0]['fields']['ticket'])
+         return ticket.ticket_no
+      return ''
 
    class Meta:
       model = CRUDEvent
-      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr']
+      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr', 'ticket_no']
 
    def to_representation(self, instance):
       if instance.changed_fields:

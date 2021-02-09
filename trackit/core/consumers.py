@@ -109,8 +109,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def send_notification(self, ticket_id):
         ticket = Ticket.objects.get(ticket_id=ticket_id)
-        log = CRUDEvent.objects.filter(object_id=ticket_id).exclude(changed_fields__isnull=True).latest('datetime')
-        changed_fields = json.loads(log.changed_fields)
+        log = CRUDEvent.objects.filter(object_id=ticket_id).latest('datetime')        
         notification_type = json.loads(log.object_json_repr)
 
         obj = dict()
@@ -124,6 +123,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model
         obj['event_type'] = choices[log.event_type]
         if log.changed_fields:
+            changed_fields = json.loads(log.changed_fields)
             obj['status'] = changed_fields['status'][0]
         else:
             obj['status'] = ticket.status.name

@@ -69,10 +69,11 @@
             bg_color = '';
             display_status = 'd-none'
         }
-        
-        ticket_no = `${notification.log.object_id}`.substr(notification.log.object_id.length - 10).toUpperCase()
+
+        let object_json_repr = JSON.parse(notification.log.object_json_repr)
+        let ticket_no = object_json_repr[0].fields.ticket_no
         $('.dropdown-notifications-div').append(
-            `<a href="/requests/track" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
+            `<a href="/requests/${notification.log.object_id}/view" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
                 <div class="notification-content flex-grow-1">
                    <p><b>${created_by}</b> ${action} <b>${ticket_no}</b></p>
                    <span class="text-muted notification-time">${time_from_now}</span>    
@@ -83,7 +84,6 @@
     };
 
     let displayCommentNotification = function(notification){
-        //console.log(notification)
         created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`
         user = `${notification.user.first_name} ${notification.user.last_name}`
         if (created_by === user) created_by = 'You'; // if the authenticated user is the requestor of the ticket
@@ -99,7 +99,7 @@
         }
         
         let ticket_id = `${object_json_repr[0].fields.ticket}`
-        let ticket_no = `${object_json_repr[0].fields.ticket}`.substr(object_json_repr[0].fields.ticket.length - 10).toUpperCase()
+        let ticket_no = notification.log.ticket_no
         $('.dropdown-notifications-div').append(
             `<a href="/requests/${ticket_id}/view" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
                 <div class="notification-content flex-grow-1">
