@@ -169,6 +169,16 @@
                   <p> Track Requests</p>
                </a>
             </li>
+
+            {% if request.user.is_superuser %}
+            <li class="nav-item">
+               <a href="{% url 'archive' %}"
+                  class="nav-link {% if url == 'archive' %} active {% endif %}">
+                  <i class="nav-icon fas fa-trash"></i>
+                  <p> Archives</p>
+               </a>
+            </li>
+            {% endif %}
          </ul>
          {% endwith %}
 
