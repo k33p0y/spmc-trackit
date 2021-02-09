@@ -6,13 +6,13 @@
 
     socket.onopen = function(event) {
         $('.online-status').addClass('text-success')
-        DisplayNotifications();
+        getAllNotifications();
     }
 
     socket.onmessage = function(event) {
         //console.log(event)
         
-        if ('notification' in JSON.parse(event.data)) DisplayNotifications(); // Notifications
+        if ('notification' in JSON.parse(event.data)) getAllNotifications(); // Notifications
 
         if ('comment' in JSON.parse(event.data)){ // Comments
             displayComment(JSON.parse(event.data));
@@ -28,11 +28,10 @@
         console.log('something went wrong')
     }
 
-    let DisplayNotifications = function(){
+    let getAllNotifications = function(){
         getUserNotifications().then(data=>{
             let notifications = data
             unread_count = notifications.filter(obj=>obj.unread==true).length
-            //console.log(notifications)
     
             if (notifications.length){ // if notification is available
                 $('.dropdown-notifications-title').html(`Notications (${unread_count}) `) // display unread notification to title
@@ -41,30 +40,9 @@
                 var saveDropdown = $('.dropdown-notifications-div .dropdown-notifications-title').detach();
                 $('.dropdown-notifications-div').empty().append(saveDropdown);
                 for (i=0; i<notifications.length; i++){
-                    user = `${notifications[i].log.user.first_name} ${notifications[i].log.user.last_name}`
-                    if (user === `${notifications[i].user.first_name} ${notifications[i].user.last_name}`) user = 'You'; // if the authenticated user is the requestor of the ticket
-                    action = `${notifications[i].log.event_type}`
-                    time_from_now = moment(notifications[i].log.datetime).fromNow()
-                    if (action === 'Create') action = 'created a new request, Ticket no.';
-                    else if (action === 'Update') action = 'updated request';
-                    if (notifications[i].unread) {
-                        bg_color = 'bg-notification'; 
-                        display_status = '';
-                    } else {
-                        bg_color = '';
-                        display_status = 'd-none'
-                    }
-                    
-                    ticket_no = `${notifications[i].log.object_id}`.substr(notifications[i].log.object_id.length - 10).toUpperCase()
-                    $('.dropdown-notifications-div').append(
-                        `<a href="/requests/track" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notifications[i].id}" data-ticket-no="${ticket_no}">
-                            <div class="notification-content flex-grow-1">
-                               <p><b>${user}</b> ${action} <b>${ticket_no}</b></p>
-                               <span class="text-muted notification-time">${time_from_now}</span>    
-                            </div>
-                            <div class="notification-status align-self-center ${display_status}"><i class="fas fa-circle"></i></div>
-                         </a>`
-                    )
+                    let model = JSON.parse(notifications[i].log.object_json_repr)
+                    if (JSON.parse(model[0].model == 'requests.ticket')) displayTicketNotification(notifications[i]);
+                    if (JSON.parse(model[0].model == 'requests.comment')) displayCommentNotification(notifications[i]);
                 }
                 $('.dropdown-notifications-div a').click(function(){
                     localStorage.setItem("ticketNumber", $(this).attr('data-ticket-no'));
@@ -75,6 +53,64 @@
             }
         });
     };
+
+    let displayTicketNotification = function(notification){
+        created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`
+        user = `${notification.user.first_name} ${notification.user.last_name}`
+        if (created_by === user) created_by = 'You'; // if the authenticated user is the requestor of the ticket
+        action = `${notification.log.event_type}`
+        time_from_now = moment(notification.log.datetime).fromNow()
+        if (action === 'Create') action = 'created a new request, Ticket no.';
+        else if (action === 'Update') action = 'updated request';
+        if (notification.unread) {
+            bg_color = 'bg-notification'; 
+            display_status = '';
+        } else {
+            bg_color = '';
+            display_status = 'd-none'
+        }
+        
+        ticket_no = `${notification.log.object_id}`.substr(notification.log.object_id.length - 10).toUpperCase()
+        $('.dropdown-notifications-div').append(
+            `<a href="/requests/track" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
+                <div class="notification-content flex-grow-1">
+                   <p><b>${created_by}</b> ${action} <b>${ticket_no}</b></p>
+                   <span class="text-muted notification-time">${time_from_now}</span>    
+                </div>
+                <div class="notification-status align-self-center ${display_status}"><i class="fas fa-circle"></i></div>
+             </a>`
+        )
+    };
+
+    let displayCommentNotification = function(notification){
+        //console.log(notification)
+        created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`
+        user = `${notification.user.first_name} ${notification.user.last_name}`
+        if (created_by === user) created_by = 'You'; // if the authenticated user is the requestor of the ticket
+        let object_json_repr = JSON.parse(notification.log.object_json_repr)
+        
+        time_from_now = moment(notification.log.datetime).fromNow()
+        if (notification.unread) {
+            bg_color = 'bg-notification'; 
+            display_status = '';
+        } else {
+            bg_color = '';
+            display_status = 'd-none'
+        }
+        
+        let ticket_id = `${object_json_repr[0].fields.ticket}`
+        let ticket_no = `${object_json_repr[0].fields.ticket}`.substr(object_json_repr[0].fields.ticket.length - 10).toUpperCase()
+        $('.dropdown-notifications-div').append(
+            `<a href="/requests/${ticket_id}/view" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
+                <div class="notification-content flex-grow-1">
+                   <p><b>${created_by}</b> commented on ticket <b>${ticket_no}</b></p>
+                   <span class="text-muted notification-time">${time_from_now}</span>    
+                </div>
+                <div class="notification-status align-self-center ${display_status}"><i class="fas fa-circle"></i></div>
+             </a>`
+        )
+    };
+
 
     let displayComment = function(obj){
         if ($('#btn-post-comment').data().ticketId === obj.comment['ticket_id']) {

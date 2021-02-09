@@ -10,6 +10,17 @@ from easyaudit.models import CRUDEvent
 
 import json
 
+# create notification method
+def create_notification(object_id, ticket):
+   log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
+   users = ticket.request_form.group.user_set.all()
+   # create notifications for users in selected group
+   for user in users:
+      Notification(log=log, user=user).save()
+   # create notification for department head
+   if ticket.department.department_head:
+      Notification(log=log, user=ticket.department.department_head).save()
+
 class RequestFormViewSet(viewsets.ModelViewSet):    
    serializer_class = RequestFormSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
@@ -165,7 +176,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
       ticket = Ticket.objects.create(request_form_id=request_form, form_data=form_data, category_id=category, department_id=department, requested_by=self.request.user)
       ticket.save()
-      
+      create_notification(str(ticket.ticket_id), ticket) # create notification instance
       if files: 
          for file in files:
             Attachment(ticket=ticket, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user).save()
@@ -272,6 +283,6 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
          raise serializers.ValidationError('You do not have permission to post a comment.')
       content = request.data['content']
       comment = Comment.objects.create(ticket_id=ticket_id, content=content, user=self.request.user)
-      comment.save()
+      create_notification(comment.id, comment.ticket) # create notification instance
       serializer = CommentSerializer(comment)
       return Response(serializer.data)

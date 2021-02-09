@@ -1,4 +1,15 @@
 $(document).ready(function () {
+    // get ticket number in localStorage if available
+    if (localStorage.getItem('ticketNumber')){
+        localStorage.removeItem('ticketNumber');
+    }
+
+    // set notification instance to unread = False
+    if (localStorage.getItem('notification-id')){
+        axios.put(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {unread: false}, {headers: axiosConfig})
+        localStorage.removeItem('notification-id');
+    }
+
     $('.file-type').each((index, element) => {
         let file_type = fileType($(element).data().mimetype, media_type);
         $(element).addClass(file_type);
@@ -80,6 +91,7 @@ $(document).ready(function () {
         }).then(function (response) { // success
             let comment_id = response.data.id
             socket.send(JSON.stringify({type: 'comment', data: {comment_id: comment_id}}))
+            socket.send(JSON.stringify({type: 'notification', data: {ticket_id: response.data.ticket, notification_type: 'comment'}}))
         }).catch(function (error) { // error
             console.log(error.response);
             Toast.fire({

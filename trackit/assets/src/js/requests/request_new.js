@@ -267,14 +267,7 @@ $(document).ready(function () {
             headers: axiosConfig
          }).then(function (response) { // success
 
-            socket.send(
-               JSON.stringify(
-                  {
-                     type: 'notification',
-                     data: {ticket_id: response.data.ticket_id}
-                  }
-               ) // send ticket_id to websocket
-            )
+            socket.send(JSON.stringify({type: 'notification', data: {ticket_id: response.data.ticket_id, notification_type: 'ticket'}}))
 
             // disable submit button
             $(this).attr('disabled', true)
