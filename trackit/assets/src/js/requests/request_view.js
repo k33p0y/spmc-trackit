@@ -6,7 +6,7 @@ $(document).ready(function () {
 
     // set notification instance to unread = False
     if (localStorage.getItem('notification-id')){
-        axios.put(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {unread: false}, {headers: axiosConfig})
+        axios.delete(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {headers: axiosConfig})
         localStorage.removeItem('notification-id');
     }
 
