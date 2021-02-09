@@ -8,7 +8,7 @@ from .serializers import RequestFormSerializer, RequestFormStatusSerializer, Tic
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from easyaudit.models import CRUDEvent
 
-import json
+import json, uuid
 
 # create notification method
 def create_notification(object_id, ticket):
@@ -153,9 +153,15 @@ class TicketViewSet(viewsets.ModelViewSet):
       category = data['category']
       department = data['department']
 
-      ticket = Ticket.objects.create(request_form_id=request_form, form_data=form_data, category_id=category, department_id=department, requested_by=self.request.user)
-      ticket.save()
-      create_notification(str(ticket.ticket_id), ticket) # create notification instance
+      rf = RequestForm.objects.get(pk=request_form)
+      status = rf.status.get(requestformstatus__order=1)
+      ticket_no = uuid.uuid4().hex[-10:].upper()
+
+      ticket = Ticket.objects.create(
+         request_form_id=request_form, form_data=form_data, category_id=category, department_id=department, requested_by=self.request.user,
+         status=status, ticket_no=ticket_no
+      )
+      
       if files: 
          for file in files:
             Attachment(ticket=ticket, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user).save()

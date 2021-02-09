@@ -85,14 +85,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.ticket, self.user.get_full_name())
-
-@receiver(post_save, sender=Ticket)
-def save_ticket_no(sender, instance, **kwargs):
-    instance_id = instance.ticket_id
-    ticket_num = str(instance_id)[-10:].upper()
-    status = instance.request_form.status.get(requestformstatus__order=1)
-
-    if not instance.status:
-        Ticket.objects.filter(pk=instance.pk).update(ticket_no=ticket_num, status=status)
-    else:
-        Ticket.objects.filter(pk=instance.pk).update(ticket_no=ticket_num)
