@@ -95,7 +95,7 @@ class CRUDEventSerializer(serializers.ModelSerializer):
 
    class Meta:
       model = CRUDEvent
-      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields']
+      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr']
 
    def to_representation(self, instance):
       if instance.changed_fields:
