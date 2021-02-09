@@ -15,8 +15,7 @@ $(document).ready(function () {
         $(element).addClass(file_type);
     });
 
-   $('#dd_steps').select2();
-
+    // Attachments table
     $('#dt_attachments').DataTable({
         "searching": false,
         "responsive": true,
@@ -24,6 +23,58 @@ $(document).ready(function () {
         "pageLength": 10,
     })
 
+    // Select2 Action Steps
+    $('#dd_steps').select2();
+
+    // On Change Event Select 2
+    var step = $("#dd_steps option:selected").next().val();  
+    $('#dd_steps').on('change', function () { 
+        step = $("#dd_steps option:selected").val();
+    });    
+    
+    // post action
+    $('.btn-accept').click(function (e) {
+        e.preventDefault();
+        let ticket_id = $(this).data().ticketId;
+
+        axios({
+            url:`/api/requests/lists/${ticket_id}/`,
+            method: "PATCH",
+            data: {status: step},
+            headers: axiosConfig,
+        }).then(function (response) { // success
+            let data = new Object();
+            data.ticket = response.data.ticket_id;
+            data.remark = $('#txtarea-remark').val();
+
+            axios({
+                method: 'POST',
+                url: `/api/config/remark/`,
+                data: data,
+                headers: axiosConfig,
+            }).then(function (res) {
+                socket.send(JSON.stringify({type: 'step_action', data: {ticket_id: ticket_id}}))
+                $.when(
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Success',
+                    }),
+                    $('.overlay').removeClass('d-none')
+                ).then(function () {
+                    $(location).attr('href', '/requests/lists')
+                });
+            });
+
+        }).catch(function (error) { // error
+            console.log(error);
+            Toast.fire({
+                icon: 'error',
+                title: error,
+            });
+        });
+    });
+
+    // post comment
     $('#btn-post-comment').click(function (e){
         e.preventDefault();
 
@@ -42,7 +93,7 @@ $(document).ready(function () {
             socket.send(JSON.stringify({type: 'comment', data: {comment_id: comment_id}}))
             socket.send(JSON.stringify({type: 'notification', data: {ticket_id: response.data.ticket, notification_type: 'comment'}}))
         }).catch(function (error) { // error
-            console.log(error);
+            console.log(error.response);
             Toast.fire({
                 icon: 'error',
                 title: 'Error in creating comment.',

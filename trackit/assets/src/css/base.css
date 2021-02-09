@@ -14,6 +14,12 @@ textarea:focus  {
    border-color: #ff8f34b6 !important;
 }
 
+input:disabled,
+select:disabled,
+.select2-container--default.select2-container--disabled .select2-selection--single {
+   background-color: #e3e5ed58 !important;
+}
+
 label {
    font-weight: normal !important;
    color: #3e454d !important;
@@ -74,6 +80,10 @@ i.far {
 .bg-orange {background-color: #FD7E14 ;}
 .bg-notification {background-color: #ff990017 ;}
 
+.btn {
+   padding: 4px 10px !important;
+}
+
 .btn-light {
    background-color: #ffffff !important;
    border-color: #cdd5df;
@@ -110,7 +120,6 @@ i.far {
    background-color: #FD7E14;
    color:#fff;
 }
-
 
 .btn-link-neutral {
    color: #59626b;

@@ -43,10 +43,16 @@ def detail_ticket(request, ticket_id):
 def view_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
 
-   steps = RequestFormStatus.objects.filter(form_id=ticket.request_form).order_by('order')   
+   formstatuses = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
+
+   for formstatus in formstatuses:
+      if(formstatus.status == ticket.status):
+         step = formstatuses.get(status_id=ticket.status)
    
-   context = {'ticket': ticket, 'attachments':attachments, 'steps':steps}
+   last_step = formstatuses.latest('order')
+
+   context = {'ticket': ticket, 'attachments':attachments, 'steps':formstatuses, 'step':step, 'last_step':last_step}
    return render(request, 'pages/requests/ticket_view.html', context)
 # View Ticker End
 

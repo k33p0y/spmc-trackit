@@ -2,9 +2,10 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator
+from easyaudit.models import CRUDEvent
+from .serializers import DepartmentSerializer, CategorySerializer, CategoryTypeSerializer, StatusSerializer, RemarkSerializer
+from .models import Department, Category, CategoryType, Status, Remark
 
-from .serializers import DepartmentSerializer, CategorySerializer, CategoryTypeSerializer, StatusSerializer
-from .models import Department, Category, CategoryType, Status
 
 # Viewset API
 class DepartmentViewSet(viewsets.ModelViewSet):    
@@ -85,7 +86,6 @@ class CategoryTypeViewSet(viewsets.ModelViewSet):
 
          return qs.order_by('id')
 
-
 class StatusViewSet(viewsets.ModelViewSet):
    serializer_class = StatusSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
@@ -109,3 +109,21 @@ class StatusViewSet(viewsets.ModelViewSet):
                qs = qs.filter(is_active=False)
 
          return qs.order_by('id')
+
+class RemarkViewSet(viewsets.ModelViewSet):
+   serializer_class = RemarkSerializer
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   queryset = Remark.objects.all()
+
+   def create(self, request):
+      ticket = request.data['ticket']
+      remark = request.data['remark']
+
+      log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime')
+      obj = Remark.objects.create(remark=remark, ticket_id=ticket, user=self.request.user, log=log)
+      obj.save()
+      
+      serializer = RemarkSerializer(obj)
+      return Response(serializer.data)
+      
+   

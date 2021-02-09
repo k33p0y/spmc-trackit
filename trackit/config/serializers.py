@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Department, Category, CategoryType, Status
+from .models import Department, Category, CategoryType, Status, Remark
 from core.models import User
 
 # Serializers
@@ -45,3 +45,10 @@ class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
         fields = ['id', 'name', 'is_active', 'is_archive', 'forms']
+
+class RemarkSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Remark
+        fields = ['id', 'remark', 'date_created', 'ticket', 'user', 'log']
+

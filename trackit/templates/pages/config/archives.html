@@ -1,7 +1,10 @@
 {% extends '../../base.html' %}
 {% load static %}
 
-{% block title %} Group {% endblock %}
+{% block title %} Archives {% endblock %}
+
+{% block extrastyle %}
+{% endblock %}
 
 {% block content %}
 <!-- Content Header -->
@@ -9,13 +12,14 @@
    <div class="container-fluid">
       <div class="row mb-2">
          <div class="col-sm-6">
-            <h5 class="font-weight-bolder">Groups </h5>
+            <h5 class="font-weight-bolder">Archive </h5>
          </div>
          <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right text-xs">
-               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-orange"><i class="fas fa-home"></i></a></li>
-               <li class="breadcrumb-item">Authentication and Authorization</li>
-               <li class="breadcrumb-item">Groups</li>
+               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-orange"><i
+                        class="fas fa-home"></i></a></li>
+               <li class="breadcrumb-item">Configuration</li>
+               <li class="breadcrumb-item">Status</li>
                <li class="breadcrumb-item active">List</li>
             </ol>
          </div>
@@ -24,15 +28,16 @@
 </section>
 
 <!-- /.content -->
+{% if perms.config.view_status %}
 <section class="content">
    <div class="container-fluid">
 
       <div class="row">
          <div class="col-12 m-0">
            <div class="d-flex flex-row-reverse row-actions">
-               {% if perms.auth.add_group %}
-               <button class="btn btn-xs btn-orange btn-new" id="btn-create-group">
-                  <i class="fas fa-plus"></i> <span>Add Group</span>
+               {% if perms.config.add_status %}
+               <button class="btn btn-xs btn-orange btn-new" id="btn-create-status">
+                  <i class="fas fa-plus"></i> <span>Add Status</span>
                </button>
                {% endif %}
            </div>
@@ -49,6 +54,13 @@
                         <div class="col-12 col-sm-4 p-1 ">
                            <input id="search-input" type="search" class="form-control form-control-sm" placeholder="Search">
                         </div>
+                        <div class="col-4 col-sm-2 p-1">
+                           <select name="category" class="form-control" style="height: 30px;" id="status-active-select">
+                              <option value=""></option>
+                              <option value="1">Active</option>
+                              <option value="0">Inactive</option>
+                           </select>
+                        </div> 
                         <div class="col-4 col-sm2 p-1">
                            <button id="execute-search" class="btn btn-success btn-sm">Search</button>
                         </div> 
@@ -63,10 +75,11 @@
          <div class="col-12 col-sm-12">
             <div class="card mt-2 mb-2">
                <div class="card-body p-1">
-                  <table id="dt_group" class="table table-hover" width="100%">
+                  <table id="dt_forms" class="table table-hover" width="100%">
                      <thead>
                         <tr>
                            <th>Name</th>
+                           <th>Is Active</th>
                            <th>Action</th>
                         </tr>
                      </thead>
@@ -77,16 +90,21 @@
       </div>
 
    </div>
-   <input type="hidden" id="changeGroupHidden" value="{% if perms.auth.change_group %}true{% else %}false{% endif %}">
+   <input type="hidden" id="changeStatusHidden" value="{% if perms.config.change_status %}true{% else %}false{% endif %}">
+   <input type="hidden" id="deleteStatusHidden" value="{% if perms.config.delete_status %}true{% else %}false{% endif %}">
 
 </section>
-
+{% else %}
+   <section class="content">
+      You don't have permission to view this page
+   </section>
+{% endif %}
 {% endblock %}
 
 {% block modal %}
 <!-- Create -->
-<div class="modal fade" id="modal-add-group" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-   <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
+   <div class="modal-dialog" role="document">
       <div class="modal-content text-sm">
          <div class="modal-header">
             <h6 class="modal-title"></h6>
@@ -94,26 +112,21 @@
          <div class="modal-body">
             <form id="form">
                <div class="form-group">
-                  <label for="nameHelp">Group Name</label>
-                  <input type="text" class="form-control form-control-sm" id="txt-group-name" aria-describedby="nameHelp"
-                     placeholder="Enter Group Name">
-                  <small class="error-info" id="group-name-error"></small>
+                  <!-- Name-->
+                  <label>Name</label>
+                  <input type="text" class="form-control form-control-sm" id="txt_typename"
+                     placeholder="Enter status name">
+                  <small class="error-info name-error"></small>
                </div>
-               <div class="form-group">
-                  <label>Permissions</label>
-                  <select class="form-control form-control-sm" id="select2-permissions" style="width: 100%" multiple>
-                     <option></option>
-                     {% for permission in permissions %}
-                     <option value={{permission.id}}>{{permission}}</option>
-                     {% endfor %}
-                  </select>
-                  <small class="error-info"></small>
+               <div class="icheck-material-green m-0">
+                  <!-- Is Active-->
+                  <input type="checkbox" id="chk_status" checked />
+                  <label for="chk_status">Is Active</label>
                </div>
+
             </form>
          </div>
-
-         <div class="modal-footer">
-            <!-- <a class="text-danger mr-auto btn_delete" id="btn_delete"> Delete </a> -->
+         <div class=" modal-footer">
             <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
                <span>Cancel</span>
             </button>
@@ -122,8 +135,9 @@
       </div>
    </div>
 </div>
+
 {% endblock %}
 
 {% block extrascript %}
-<script type="text/javascript" src="{% static 'src/js/core/group.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/config/status.js' %}"></script>
 {% endblock %}

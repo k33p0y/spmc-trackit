@@ -58,8 +58,8 @@ class RequestFormStatus(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.status
+    # def __str__(self):
+    #     return self.status
 
 class Attachment(models.Model):
     file = models.FileField(upload_to=upload_file_url)
