@@ -134,6 +134,7 @@ const postAction = function(ticket, status, remark) {
 };
 
 // Post Comments
+<<<<<<< HEAD
 const getComments = function(ticket){
    if (ticket){
        axios({
@@ -147,12 +148,35 @@ const getComments = function(ticket){
            $('.comment-section').empty();
            let comments_array = response.data.results
            for (i=0; i<comments_array.length; i++){
+=======
+const getComments = function(ticket, next_page){
+   let url = '/api/requests/comments/'
+   if (next_page) url = next_page;
+
+   if (ticket){
+      axios({
+         method: 'GET',
+         url: url,
+         params: {
+            ticket_id : ticket,
+         },
+         headers: axiosConfig,
+      }).then(function (response) { // success
+         // check if there is next page to comment list API
+         response.data.next ? $('#comment-nextpage-url').val(response.data.next) : $('#comment-nextpage-url').val(null);
+
+         if (!next_page) $('.comment-section').empty();
+         let comments_array = response.data.results
+         for (i=0; i<comments_array.length; i++){
+            if (!$(`.user-comment[data-comment-id="${comments_array[i].id}"]`).length) { // check if comment id already exist
+>>>>>>> b21e94a449c5a707b6acbe382cd1bfc02a53514a
                let fullname = `${comments_array[i].user.first_name} ${comments_array[i].user.last_name}`
                let comment = `${comments_array[i].content}`
                let date_created = `${moment(comments_array[i].date_created).format('MMM DD, YYYY hh:mm a')}`
                let logged_user_id = $('.user-link').data().userId;
 
                $('.comment-section').append(
+<<<<<<< HEAD
                    `<div class="user-comment justify-content-start ${comments_array[i].user.id == logged_user_id ? 'bg-comment-orange' : ''}">
                        <div class="d-inline justify-content-start ">
                        <span class="font-weight-bold text-orange name ">${fullname}</span>
@@ -174,3 +198,27 @@ const getComments = function(ticket){
    }
 };
 
+=======
+                  `<div class="user-comment justify-content-start ${comments_array[i].user.id == logged_user_id ? 'bg-comment-orange' : ''}" data-comment-id="${comments_array[i].id}">
+                     <div class="d-inline justify-content-start ">
+                        <span class="font-weight-bold text-orange name ">${fullname}</span>
+                        <span class="text-muted text-xs"> - ${date_created}</span>
+                     </div>
+                     <div class="mt-2">
+                        <p class="comment-text m-0">${comment}</p>
+                     </div>
+                  </div>`
+               )
+            }
+         }
+         
+      }).catch(function (error) { // error
+         console.log(error)
+         Toast.fire({
+            icon: 'error',
+            title: 'Error in loading comments.',
+         });
+      });
+   }
+};
+>>>>>>> b21e94a449c5a707b6acbe382cd1bfc02a53514a

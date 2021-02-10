@@ -8,7 +8,7 @@ $(document).ready(function () {
 
     // set notification instance to unread = False
     if (localStorage.getItem('notification-id')){
-        axios.put(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {unread: false}, {headers: axiosConfig})
+        axios.delete(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {headers: axiosConfig})
         localStorage.removeItem('notification-id');
     }
 
@@ -83,6 +83,19 @@ $(document).ready(function () {
         });
     });
 
+<<<<<<< HEAD
     // Load Comments
     getComments($('#btn-post-comment').data().ticketId);
+=======
+    $('.comment-section').scroll(function () {         
+        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+            if ($('#comment-nextpage-url').val()){
+                getComments($('#btn-post-comment').data().ticketId, $('#comment-nextpage-url').val());
+            }
+        }
+    });
+
+    // Load Comments
+    getComments($('#btn-post-comment').data().ticketId, null);
+>>>>>>> b21e94a449c5a707b6acbe382cd1bfc02a53514a
 });
