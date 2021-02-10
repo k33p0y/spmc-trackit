@@ -38,7 +38,8 @@ const Toast = Swal.mixin({
    }
 });
 
-let getUserNotifications = function (){
+// Notifications
+const getUserNotifications = function (){
    return axios.get('/api/user/notifications/',).then(response=>response.data).catch(response=>response.data)
 };
 
@@ -51,7 +52,8 @@ media_type.document = ['application/vnd.openxmlformats-officedocument.wordproces
 media_type.presentation = ['application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.ms-powerpoint','application/vnd.oasis.opendocument.presentation'];
 media_type.image = ['image/png','image/jpeg'];
 
-function fileType(file_type, media_type) {
+// File Type
+const fileType = function(file_type, media_type) {
    let file_icon;
 
    if (media_type.text.includes(file_type)) { // Text File
@@ -71,9 +73,10 @@ function fileType(file_type, media_type) {
    }
 
    return file_icon;
-}
+};
 
-function fileSize(bytes) {
+// File Size
+const fileSize = function(bytes) {
    let file_size;
 
    if (bytes < 1024) {
@@ -89,4 +92,85 @@ function fileSize(bytes) {
    }
 
    return file_size;
-}
+};
+
+// Post Action
+const postAction = function(ticket, status, remark) {
+   axios({
+       url:`/api/requests/lists/${ticket}/`,
+       method: "PATCH",
+       data: {status: status},
+       headers: axiosConfig,
+   }).then(function (response) { // success
+       let data = new Object();
+       data.ticket = response.data.ticket_id;
+       data.remark = remark;
+
+       axios({
+           method: 'POST',
+           url: `/api/config/remark/`,
+           data: data,
+           headers: axiosConfig,
+       }).then(function (res) {
+           socket.send(JSON.stringify({type: 'step_action', data: {ticket_id: ticket}}))
+           $.when(
+               Toast.fire({
+                   icon: 'success',
+                   title: 'Success',
+               }),
+               $('.overlay').removeClass('d-none')
+           ).then(function () {
+               $(location).attr('href', '/requests/lists')
+           });
+       });
+
+   }).catch(function (error) { // error
+       console.log(error);
+       Toast.fire({
+           icon: 'error',
+           title: error,
+       });
+   });
+};
+
+// Post Comments
+const getComments = function(ticket){
+   if (ticket){
+       axios({
+           method: 'GET',
+           url: '/api/requests/comments/',
+           params: {
+               ticket_id : ticket,
+           },
+           headers: axiosConfig,
+       }).then(function (response) { // success
+           $('.comment-section').empty();
+           let comments_array = response.data.results
+           for (i=0; i<comments_array.length; i++){
+               let fullname = `${comments_array[i].user.first_name} ${comments_array[i].user.last_name}`
+               let comment = `${comments_array[i].content}`
+               let date_created = `${moment(comments_array[i].date_created).format('MMM DD, YYYY hh:mm a')}`
+               let logged_user_id = $('.user-link').data().userId;
+
+               $('.comment-section').append(
+                   `<div class="user-comment justify-content-start ${comments_array[i].user.id == logged_user_id ? 'bg-comment-orange' : ''}">
+                       <div class="d-inline justify-content-start ">
+                       <span class="font-weight-bold text-orange name ">${fullname}</span>
+                       <span class="text-muted text-xs"> - ${date_created}</span>
+                       </div>
+                       <div class="mt-2">
+                       <p class="comment-text m-0">${comment}</p>
+                       </div>
+                   </div>`
+               )
+           }
+       }).catch(function (error) { // error
+           console.log(error)
+           Toast.fire({
+               icon: 'error',
+               title: 'Error in loading comments.',
+           });
+       });
+   }
+};
+
