@@ -83,10 +83,6 @@ $(document).ready(function () {
         });
     });
 
-<<<<<<< HEAD
-    // Load Comments
-    getComments($('#btn-post-comment').data().ticketId);
-=======
     $('.comment-section').scroll(function () {         
         if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
             if ($('#comment-nextpage-url').val()){
@@ -97,5 +93,4 @@ $(document).ready(function () {
 
     // Load Comments
     getComments($('#btn-post-comment').data().ticketId, null);
->>>>>>> b21e94a449c5a707b6acbe382cd1bfc02a53514a
 });
