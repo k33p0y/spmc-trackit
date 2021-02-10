@@ -1,4 +1,4 @@
-{% for data in tickets.form_data %}
+{% for data in ticket.form_data %}
     {% if form.form_field.type == 'text' and form.form_field.id == data.id %}
     <div class="form-group">
         <label> {{form.title}} </label>

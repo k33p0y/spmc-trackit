@@ -246,6 +246,18 @@ class AttachmentViewSet(viewsets.ModelViewSet):
          else: 
             return Attachment.objects.select_related('ticket').order_by('-uploaded_at')
 
+   def create(self, request):
+      file = request.FILES['file']
+      ticket = json.loads(request.FILES['ticket'].read())
+
+      print(file)
+
+      attachment = Attachment.objects.create(ticket_id=ticket, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user)
+      attachment.save()
+
+      serializer = AttachmentSerializer(attachment)
+      return Response(serializer.data)
+
 class CRUDEventList(generics.ListAPIView):
    serializer_class = CRUDEventSerializer
    permission_classes = [permissions.IsAuthenticated]

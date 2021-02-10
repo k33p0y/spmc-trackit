@@ -1,5 +1,5 @@
 {% for field in form.form_field %}
-    {% for data in tickets.form_data %}
+    {% for data in ticket.form_data %}
         {% if field.type == 'text' and field.id == data.id  %}
         <input type="text" class="form-control form-control-sm form_field_detail" id="{{field.id}}" value="{{data.value}}" placeholder="Enter {{field.name}}" {% if field.required == True %} required {% endif %}>
         {% elif field.type == 'textarea' and field.id == data.id  %}

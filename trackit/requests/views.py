@@ -26,16 +26,23 @@ def create_ticket(request):
 
 @login_required
 def detail_ticket(request, ticket_id):
-   tickets = get_object_or_404(Ticket, ticket_id=ticket_id)
+   ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
    
    forms= RequestForm.objects.filter(is_active=True, is_archive=False)
    types =  CategoryType.objects.filter(is_active=True, is_archive=False)
    departments =  Department.objects.filter(is_active=True, is_archive=False)
-   categories = Category.objects.filter(category_type=tickets.category.category_type, is_active=True, is_archive=False)
+   categories = Category.objects.filter(category_type=ticket.category.category_type, is_active=True, is_archive=False)
 
+   formstatuses = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
-   
-   context = {'tickets': tickets, 'forms': forms, 'types': types, 'departments':departments, 'categories':categories, 'attachments':attachments}
+
+   for formstatus in formstatuses:
+      if(formstatus.status == ticket.status):
+         step = formstatuses.get(status_id=ticket.status)
+         
+   last_step = formstatuses.latest('order')
+
+   context = {'ticket': ticket, 'forms': forms, 'types': types, 'departments':departments, 'categories':categories, 'attachments':attachments, 'steps':formstatuses, 'step':step, 'last_step':last_step}
    return render(request, 'pages/requests/ticket_detail.html', context)
 
 # View Ticket Start

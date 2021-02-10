@@ -1,7 +1,8 @@
 $(document).ready(function () {
-   const ticket_id = $(".ticket-no").data().ticketId;
- 
-   var table = $('#dt_attachments').DataTable({
+   const ticket = $(".ticket-no").data().ticketId;
+   
+   // Attachments Table
+   $('#dt_attachments').DataTable({
       "searching": false,
       "responsive": true,
       "lengthChange": false,
@@ -9,7 +10,7 @@ $(document).ready(function () {
       "ajax": {
          url: '/api/requests/attachments/?format=datatables',
          type: "GET",
-         data: {"ticket_id": ticket_id},
+         data: {"ticket_id": ticket},
       },
       "columns": [
          { 
@@ -49,7 +50,6 @@ $(document).ready(function () {
          }, 
       ]
    });
-
 
    // Load File Icons In Attachment Table
    $('.file-type').each((index, element) => {
@@ -138,7 +138,7 @@ $(document).ready(function () {
 
          axios({
             method: 'PUT',
-            url: `/api/requests/lists/${ticket_id}/`,
+            url: `/api/requests/lists/${ticket}/`,
             data: file_data,
             headers: axiosConfig,
          }).then(function (response) { // success
@@ -166,7 +166,6 @@ $(document).ready(function () {
          });
       }
    });
-
 
    $('#dt_attachments tbody').on('click', '.btn-delete', function () {
       const id = $(this).data().attachmentId;
@@ -198,6 +197,36 @@ $(document).ready(function () {
          };
       });
    });
+   
+   // Post comment
+   $('#btn-post-comment').click(function (e){
+      e.preventDefault();
+
+      let data = new Object() // data
+      data.ticket = $(this).data().ticketId;
+      data.content = $('#txtarea-comment').val();
+
+      $('#form-comment').trigger('reset')
+      axios({
+          method: 'POST',
+          url: '/api/requests/comments/',
+          data: data,
+          headers: axiosConfig,
+      }).then(function (response) { // success
+          let comment_id = response.data.id
+          socket.send(JSON.stringify({type: 'comment', data: {comment_id: comment_id}}))
+          socket.send(JSON.stringify({type: 'notification', data: {ticket_id: response.data.ticket, notification_type: 'comment'}}))
+      }).catch(function (error) { // error
+          console.log(error.response);
+          Toast.fire({
+              icon: 'error',
+              title: 'Error in creating comment.',
+          });
+      });
+   });
+
+   // Load Comments
+   getComments(ticket);
 });
 
 function validateForms() {

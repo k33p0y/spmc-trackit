@@ -1,6 +1,6 @@
 $(document).ready(function () {
+    const ticket = $(".ticket-no").data().ticketId;
 
-    
     // get ticket number in localStorage if available
     if (localStorage.getItem('ticketNumber')){
         localStorage.removeItem('ticketNumber');
@@ -17,43 +17,109 @@ $(document).ready(function () {
         $(element).addClass(file_type);
     });
 
-    // Attachments table
-    $('#dt_attachments').DataTable({
+    let table_attachment = $('#dt_attachments').DataTable({
         "searching": false,
         "responsive": true,
         "lengthChange": false,
         "pageLength": 10,
-    })
-
-    // Select2 Action Steps
-    $('#dd_steps').select2();
-
-    // On Change Event Select 2
-    var step;
-    $('#dd_steps').on('change', function () { 
-        step = $("#dd_steps option:selected").val();
-    });    
-    
-    // Accept action 
-    $('.btn-accept').click(function (e) {
-        e.preventDefault();
-        let ticket_id = $(this).data().ticketId;
-        var next_step = $("#dd_steps option:selected").next().val()
-        let status = (typeof step === "undefined") ? next_step : step;
-        let remark = $('#txtarea-comment').val();
-
-        postAction(ticket_id, status, remark);
+        "ajax": {
+           url: '/api/requests/attachments/?format=datatables',
+           type: "GET",
+           data: {"ticket_id": ticket},
+        },
+        "columns": [
+           { 
+              data: "file_name",
+              render: function (data, type, row) {
+                 let file_type = fileType(row.file_type, media_type);
+                 return data = `<span class="fas fa-lg mr-2 ${file_type}"></span> <a href="${row.file}" class="text-secondary"><b>${row.file_name}</b></a>`
+              }
+           }, 
+           { 
+              data: 'uploaded_at',
+              render: function (data, type, row) {
+                 return data = `${moment(row.uploaded_at).format('DD MMM YYYY')} ${moment(row.uploaded_at).format('h:mm:ss a')}`
+              },
+           }, 
+           { 
+              data: 'uploaded_by',
+              render: function (data, type, row) {
+                 let name = (row.uploaded_by.id == actor) ? 'Me' : `${row.uploaded_by.first_name} ${row.uploaded_by.last_name}`
+                 return data = name
+              },
+           }, 
+           { 
+              data: "file_size",
+              render: function (data, type, row) {
+                 let file_size = fileSize(row.file_size);
+                 return data = file_size
+              },
+           }, 
+           { 
+              data: "null",
+              render: function (data, type, row) {
+                 data = `<a href="${row.file}" class='text-secondary action-link'> <i class='fas fa-download'></i> </a>
+                    <a class='text-danger action-link btn-delete' data-attachment-id="${row.id}"> <i class='fas fa-trash'></i> </a>`;
+                 return data
+              },
+           }, 
+        ],
+        "order": [[ 1, "desc" ]]
     });
 
-    // Refuse action
-    $('.btn-refuse').click(function (e) {
-        e.preventDefault();
-        let ticket_id = $(this).data().ticketId;
-        let prev_step = $("#dd_steps option:selected").prev().val();  
-        let status = (typeof step === "undefined") ? prev_step : step;
-        let remark = $('#txtarea-comment').val();
+    // File Upload
+    $('#file_upload').on('change', function() {
+        const files = this.files;
+        const file_table = $("#file_table");
 
-        postAction(ticket_id, status, remark);
+        Object.values(files).forEach(file => {
+            let type = fileType(file.type, media_type);
+            let size = fileSize(file.size);
+
+            if (type == 'invalid') { // If file is not registered
+                this.value = "";
+                Toast.fire({
+                icon: 'error',
+                title: 'File type is not supported!',
+                })
+            } else if (size == 'invalid') { // If file is more than 25MB
+                this.value = "";
+                Toast.fire({
+                icon: 'error',
+                title: 'File is too big!',
+                })
+            } else {
+                const blob = new Blob([JSON.stringify(ticket)], {type: 'application/json'});
+                const file_data = new FormData();
+                file_data.append('file', file)
+                file_data.append('ticket', blob)
+
+                file_table.prepend(
+                    `<tr>
+                       <td><span class="far fa-lg ${type} mr-2"></span>${file.name}</td>
+                       <td> - </td>
+                       <td> - </td>
+                       <td> ${size} </td>
+                       <td> <div class="progress mt-1"> <div class="progress-bar progress-bar-animated bg-orange" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div></div></td>
+                    </tr>`
+                );
+
+                axios({
+                    method: 'POST',
+                    url: '/api/requests/attachments/',
+                    data: file_data,
+                    headers: axiosConfig,
+                    onUploadProgress: (progress => {
+                        let percentCompleted = Math.round((progress.loaded * 100) / progress.total)
+                        let str_progress = `${percentCompleted}%`
+                        $(".progress-bar").css("width", str_progress).attr("aria-valuenow", percentCompleted);
+                        $(".progress-bar").text(str_progress);
+                    })
+                }).then(response => {
+                    // table_attachment.ajax.reload();
+                });
+            }
+        });
     });
 
     // Post comment
@@ -82,7 +148,6 @@ $(document).ready(function () {
             });
         });
     });
-
     $('.comment-section').scroll(function () {         
         if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
             if ($('#comment-nextpage-url').val()){

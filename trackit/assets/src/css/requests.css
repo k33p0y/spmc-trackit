@@ -191,3 +191,8 @@
    border-radius: 10px !important;
    margin:0 2px !important;
 }  
+
+/* Progress */
+.progress-bar {
+   color: white !important;
+}
