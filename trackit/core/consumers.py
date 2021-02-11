@@ -64,7 +64,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 # ('notif_room_for_user_%s' % self.obj['dept_head_id']),
                 {
                     'type': 'notification_message',
-                    'notification': self.obj
+                    'notification': self.obj,
+                    'sender_channel_name': self.channel_name
                 }
             )
 
@@ -74,7 +75,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 # ('notif_room_for_group_%s' % self.obj['group_id']),
                 {
                     'type': 'notification_message',
-                    'notification': self.obj
+                    'notification': self.obj,
+                    'sender_channel_name': self.channel_name
                 }
             )
         
@@ -93,10 +95,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def notification_message(self, event):
         notification = event['notification']
 
-        # Send notification to WebSocket
-        await self.send(text_data=json.dumps({
-            'notification': notification
-        }))
+        # send to everyone else but the sender
+        if self.channel_name != event['sender_channel_name']:
+            await self.send(text_data=json.dumps({
+                'notification': notification
+            }))
 
     # send comment
     async def comment_message(self, event):

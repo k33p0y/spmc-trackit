@@ -16,10 +16,12 @@ def create_notification(object_id, ticket):
    users = ticket.request_form.group.user_set.all()
    # create notifications for users in selected group
    for user in users:
-      Notification(log=log, user=user).save()
+      if not log.user == user:
+         Notification(log=log, user=user).save()
    # create notification for department head
    if ticket.department.department_head:
-      Notification(log=log, user=ticket.department.department_head).save()
+      if not log.user == ticket.department.department_head:
+         Notification(log=log, user=ticket.department.department_head).save()
 
 class RequestFormViewSet(viewsets.ModelViewSet):    
    serializer_class = RequestFormSerializer
