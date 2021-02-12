@@ -1,0 +1,12 @@
+
+
+.card-header {
+    background-color: #e3E5ED 
+ }
+ .card-header .card-title{
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #717c87;
+ }
+ 
