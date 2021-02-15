@@ -69,9 +69,9 @@
                class="nav-item {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms' or url == 'status_list'  %} menu-open {% endif %}">
                <a href="#"
                   class="nav-link {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms' or url == 'status_list' %} active {% endif %}">
-                  <i class="nav-icon fas fa-cog"></i>
+                  <i class="nav-icon fas fa-th-large"></i>
                   <p>
-                     Configuration
+                     Library
                      <i class="right fas fa-angle-left"></i>
                   </p>
                </a>
@@ -146,7 +146,7 @@
                      <a href="{% url 'create_ticket' %}"
                         class="nav-link {% if url == 'create_ticket' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
-                        <p>Create Ticket</p>
+                        <p>Create Request</p>
                      </a>
                   </li>
                   {% endif %}
@@ -165,8 +165,8 @@
             <li class="nav-item">
                <a href="{% url 'ticket_log_list' %}"
                   class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}">
-                  <i class="nav-icon fas fa-location-arrow"></i>
-                  <p> Track Requests</p>
+                  <i class="nav-icon fas fa-search-location"></i>
+                  <p>Track</p>
                </a>
             </li>
 
@@ -175,7 +175,7 @@
                <a href="{% url 'archive' %}"
                   class="nav-link {% if url == 'archive' %} active {% endif %}">
                   <i class="nav-icon fas fa-trash"></i>
-                  <p> Archives</p>
+                  <p> Archive</p>
                </a>
             </li>
             {% endif %}

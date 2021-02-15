@@ -19,8 +19,7 @@
             <ol class="breadcrumb float-sm-right text-xs">
                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-orange"><i
                         class="fas fa-home"></i></a></li>
-               <li class="breadcrumb-item">Configuration</li>
-               <li class="breadcrumb-item">Status</li>
+               <li class="breadcrumb-item">Archive</li>
                <li class="breadcrumb-item active">List</li>
             </ol>
          </div>
@@ -29,18 +28,33 @@
 </section>
 
 <!-- /.content -->
-{% if perms.config.view_status %}
+{% if user.is_superuser %}
 <section class="content">
    <div class="container-fluid">
       <!-- Default box -->
       <div class="row">
-         <div class="col-lg-6 col-md-6 col-sm-12">
-            <div class="card mt-2 mb-2">
+         <div class="col-lg-7 col-md-7 col-sm-12">
+            <div class="card shadow-sm mt-2 mb-3"> <!-- Requests -->
+               <div class="card-header p-2">
+                  <div class="card-title">Requests</div>
+               </div>
+               <div class="card-body p-0">
+                  <table id="dt_requests" class="table table-hover" width="100%">
+                     <thead>
+                        <tr>
+                           <th>Ticket No.</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+            </div>
+            <div class="card shadow-sm mt-2 mb-3"> <!-- Forms -->
                <div class="card-header p-2">
                   <div class="card-title">Forms</div>
                </div>
-               <div class="card-body p-1">
-                  <table id="dt_forms_forms" class="table table-hover" width="100%">
+               <div class="card-body p-0">
+                  <table id="dt_forms" class="table table-hover" width="100%">
                      <thead>
                         <tr>
                            <th>Name</th>
@@ -50,27 +64,12 @@
                   </table>
                </div>
             </div>
-            <div class="card mt-2 mb-2">
+            <div class="card shadow-sm mt-2 mb-3"> <!-- Status -->
                <div class="card-header p-2">
                   <div class="card-title">Status</div>
                </div>
-               <div class="card-body p-1">
-                  <table id="dt_forms_status" class="table table-hover" width="100%">
-                     <thead>
-                        <tr>
-                           <th>Name</th>
-                           <th>Action</th>
-                        </tr>
-                     </thead>
-                  </table>
-               </div>
-            </div>
-            <div class="card mt-2 mb-2">
-               <div class="card-header p-2">
-                  <div class="card-title">Departments</div>
-               </div>
-               <div class="card-body p-1">
-                  <table id="dt_forms_departments" class="table table-hover" width="100%">
+               <div class="card-body p-0">
+                  <table id="dt_status" class="table table-hover" width="100%">
                      <thead>
                         <tr>
                            <th>Name</th>
@@ -81,13 +80,28 @@
                </div>
             </div>
          </div>
-         <div class="col-lg-6 col-md-6 col-sm-12">
-            <div class="card mt-2 mb-2">
+         <div class="col-lg-5 col-md-5 col-sm-12">
+            <div class="card shadow-sm mt-2 mb-3"> <!-- Department -->
+               <div class="card-header p-2">
+                  <div class="card-title">Departments</div>
+               </div>
+               <div class="card-body p-0">
+                  <table id="dt_departments" class="table table-hover" width="100%">
+                     <thead>
+                        <tr>
+                           <th>Name</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+            </div>
+            <div class="card shadow-sm mt-2 mb-3"> <!-- Categories -->
                <div class="card-header p-2">
                   <div class="card-title">Categories</div>
                </div>
-               <div class="card-body p-1">
-                  <table id="dt_forms_categories" class="table table-hover" width="100%">
+               <div class="card-body p-0">
+                  <table id="dt_category" class="table table-hover" width="100%">
                      <thead>
                         <tr>
                            <th>Name</th>
@@ -97,30 +111,15 @@
                   </table>
                </div>
             </div>
-            <div class="card mt-2 mb-2">
+            <div class="card shadow-sm mt-2 mb-3"> <!-- Category Type -->
                <div class="card-header p-2">
                   <div class="card-title">Category Types</div>
                </div>
-               <div class="card-body p-1">
-                  <table id="dt_forms_category_types" class="table table-hover" width="100%">
+               <div class="card-body p-0">
+                  <table id="dt_category_types" class="table table-hover" width="100%">
                      <thead>
                         <tr>
                            <th>Name</th>
-                           <th>Action</th>
-                        </tr>
-                     </thead>
-                  </table>
-               </div>
-            </div>
-            <div class="card mt-2 mb-2">
-               <div class="card-header p-2">
-                  <div class="card-title">Requests</div>
-               </div>
-               <div class="card-body p-1">
-                  <table id="dt_forms_requests" class="table table-hover" width="100%">
-                     <thead>
-                        <tr>
-                           <th>Ticket No.</th>
                            <th>Action</th>
                         </tr>
                      </thead>
