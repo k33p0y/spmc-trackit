@@ -4,6 +4,7 @@
 {% block title %} Archives {% endblock %}
 
 {% block extrastyle %}
+<link rel="stylesheet" href="{% static 'src/css/archive.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -31,55 +32,95 @@
 {% if perms.config.view_status %}
 <section class="content">
    <div class="container-fluid">
-
-      <div class="row">
-         <div class="col-12 m-0">
-           <div class="d-flex flex-row-reverse row-actions">
-               {% if perms.config.add_status %}
-               <button class="btn btn-xs btn-orange btn-new" id="btn-create-status">
-                  <i class="fas fa-plus"></i> <span>Add Status</span>
-               </button>
-               {% endif %}
-           </div>
-         </div>
-      </div>
-
       <!-- Default box -->
       <div class="row">
-         <div class="col-12 m-0">
-            <div class="card bg-secondary mt-2 mb-2">
-               <div class="card-body p-0">
-                  <div class="container-fluid">
-                     <div class="row">
-                        <div class="col-12 col-sm-4 p-1 ">
-                           <input id="search-input" type="search" class="form-control form-control-sm" placeholder="Search">
-                        </div>
-                        <div class="col-4 col-sm-2 p-1">
-                           <select name="category" class="form-control" style="height: 30px;" id="status-active-select">
-                              <option value=""></option>
-                              <option value="1">Active</option>
-                              <option value="0">Inactive</option>
-                           </select>
-                        </div> 
-                        <div class="col-4 col-sm2 p-1">
-                           <button id="execute-search" class="btn btn-success btn-sm">Search</button>
-                        </div> 
-                     </div>
-                  </div>               
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <div class="row">
-         <div class="col-12 col-sm-12">
+         <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="card mt-2 mb-2">
+               <div class="card-header p-2">
+                  <div class="card-title">Forms</div>
+               </div>
                <div class="card-body p-1">
-                  <table id="dt_forms" class="table table-hover" width="100%">
+                  <table id="dt_forms_forms" class="table table-hover" width="100%">
                      <thead>
                         <tr>
                            <th>Name</th>
-                           <th>Is Active</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+            </div>
+            <div class="card mt-2 mb-2">
+               <div class="card-header p-2">
+                  <div class="card-title">Status</div>
+               </div>
+               <div class="card-body p-1">
+                  <table id="dt_forms_status" class="table table-hover" width="100%">
+                     <thead>
+                        <tr>
+                           <th>Name</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+            </div>
+            <div class="card mt-2 mb-2">
+               <div class="card-header p-2">
+                  <div class="card-title">Departments</div>
+               </div>
+               <div class="card-body p-1">
+                  <table id="dt_forms_departments" class="table table-hover" width="100%">
+                     <thead>
+                        <tr>
+                           <th>Name</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="card mt-2 mb-2">
+               <div class="card-header p-2">
+                  <div class="card-title">Categories</div>
+               </div>
+               <div class="card-body p-1">
+                  <table id="dt_forms_categories" class="table table-hover" width="100%">
+                     <thead>
+                        <tr>
+                           <th>Name</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+            </div>
+            <div class="card mt-2 mb-2">
+               <div class="card-header p-2">
+                  <div class="card-title">Category Types</div>
+               </div>
+               <div class="card-body p-1">
+                  <table id="dt_forms_category_types" class="table table-hover" width="100%">
+                     <thead>
+                        <tr>
+                           <th>Name</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+            </div>
+            <div class="card mt-2 mb-2">
+               <div class="card-header p-2">
+                  <div class="card-title">Requests</div>
+               </div>
+               <div class="card-body p-1">
+                  <table id="dt_forms_requests" class="table table-hover" width="100%">
+                     <thead>
+                        <tr>
+                           <th>Ticket No.</th>
                            <th>Action</th>
                         </tr>
                      </thead>
@@ -88,9 +129,8 @@
             </div>
          </div>
       </div>
-
    </div>
-   <input type="hidden" id="changeStatusHidden" value="{% if perms.config.change_status %}true{% else %}false{% endif %}">
+
    <input type="hidden" id="deleteStatusHidden" value="{% if perms.config.delete_status %}true{% else %}false{% endif %}">
 
 </section>
@@ -101,43 +141,6 @@
 {% endif %}
 {% endblock %}
 
-{% block modal %}
-<!-- Create -->
-<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content text-sm">
-         <div class="modal-header">
-            <h6 class="modal-title"></h6>
-         </div>
-         <div class="modal-body">
-            <form id="form">
-               <div class="form-group">
-                  <!-- Name-->
-                  <label>Name</label>
-                  <input type="text" class="form-control form-control-sm" id="txt_typename"
-                     placeholder="Enter status name">
-                  <small class="error-info name-error"></small>
-               </div>
-               <div class="icheck-material-green m-0">
-                  <!-- Is Active-->
-                  <input type="checkbox" id="chk_status" checked />
-                  <label for="chk_status">Is Active</label>
-               </div>
-
-            </form>
-         </div>
-         <div class=" modal-footer">
-            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
-               <span>Cancel</span>
-            </button>
-            <button type="submit" class="btn btn-sm btn-outline-orange" id="btn_save"><span>Save</span></button>
-         </div>
-      </div>
-   </div>
-</div>
-
-{% endblock %}
-
 {% block extrascript %}
-<script type="text/javascript" src="{% static 'src/js/config/status.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/config/archive.js' %}"></script>
 {% endblock %}
