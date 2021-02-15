@@ -27,46 +27,34 @@
 <section class="content">
    <div class="container-fluid">
 
-      <div class="row">
-         <div class="col-12 m-0">
-           <div class="d-flex flex-row-reverse row-actions">
-               {% if perms.auth.add_group %}
-               <button class="btn btn-xs btn-orange btn-new" id="btn-create-group">
-                  <i class="fas fa-plus"></i> <span>Add Group</span>
-               </button>
-               {% endif %}
-           </div>
-         </div>
-      </div>
-
-      <!-- Default box -->
-      <div class="row">
-         <div class="col-12 m-0">
-            <div class="card bg-secondary mt-2 mb-2">
-               <div class="card-body p-0">
-                  <div class="container-fluid">
-                     <div class="row">
-                        <div class="col-12 col-sm-4 p-1 ">
-                           <input id="search-input" type="search" class="form-control form-control-sm" placeholder="Search">
-                        </div>
-                        <div class="col-4 col-sm2 p-1">
-                           <button id="execute-search" class="btn btn-success btn-sm">Search</button>
-                        </div> 
-                     </div>
-                  </div>               
+      <!-- Content Filters, Search and Create Section -->
+      <div class="d-flex mb-1">
+         <div class="col-auto col-lg-3 p-0"> 
+            <div class="input-group shadow-sm">
+               <input type="search" class="form-control form-control-sm" placeholder="Search" id="search-input">
+               <div class="input-group-append">
+                 <button class="btn btn-sm btn-outline-secondary" type="button" id="execute-search">
+                     <i class="fas fa-sm fa-search"></i>
+                  </button>
                </div>
             </div>
+         </div>
+         <div class="ml-auto">
+            {% if perms.auth.add_group %}
+            <button class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-group"><i class="fas fa-xs fa-plus"></i> <span class="d-none d-sm-inline ml-1">Add Group</span></button>
+            {% endif %}
          </div>
       </div>
 
       <div class="row">
          <div class="col-12 col-sm-12">
-            <div class="card mt-2 mb-2">
-               <div class="card-body p-1">
+            <div class="card mt-2 mb-2 shadow-sm">
+               <div class="card-body p-0">
                   <table id="dt_group" class="table table-hover" width="100%">
                      <thead>
                         <tr>
                            <th>Name</th>
+                           <th>No of Users</th>
                            <th>Action</th>
                         </tr>
                      </thead>

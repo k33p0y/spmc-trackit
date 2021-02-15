@@ -2,10 +2,89 @@ $(document).ready(function () {
    let method, url, action;
    let alert_msg = '';
 
-   var lastNameInput = function() { return $('#last_name-input').val(); }
-   var firstNameInput = function() { return $('#first_name-input').val(); }
-   var usernameInput = function() { return $('#username-input').val(); }
-   var isStaffSelect = function() { return $('#user-staff-select').val(); }
+   var searchInput = function() { return $('#search-input').val(); }
+   var staffFilter = function() { return $('#staff-filter').val(); }
+   var superuserFilter = function() { return $('#superuser-filter').val(); }
+   var activeFilter = function() { return $('#active-filter').val(); }
+   var groupFilter = function() { return $('#group-filter').val(); }
+   var dateFromFilter = function() { return $('#date-from-filter').val(); }
+   var dateToFilter = function() { return $('#date-to-filter').val(); }
+
+   // RETRIEVE / GET
+   let table = $('#dt_user').DataTable({
+      "searching": false,
+      "responsive": true,
+      "lengthChange": false,
+      "autoWidth": false,
+      "serverside": true,
+      "processing": true,
+      "pageLength": 25,
+      "ajax": {
+         url: '/api/core/user/?format=datatables',
+         type: "GET",
+         data: {
+            "search": searchInput,
+            "is_staff": staffFilter,
+            "is_superuser": superuserFilter,
+            "is_active": activeFilter,
+            "group": groupFilter,
+            "date_from": dateFromFilter,
+            "date_to" : dateToFilter
+         }
+      },
+      "columns": [
+         { data: "first_name" },
+         { data: "last_name" },
+         { data: "username"},
+         { 
+            data: "null",
+            render: function (data, type, row) {
+               data = '';
+               if (row.is_staff) data = data + "<i class='fas fa-lg fa-user-tie text-info mr-2' data-toggle='tooltip' data-placement='bottom' title='Staff'></i>";
+               if (row.is_superuser) data = data + "<i class='fas fa-lg fa-unlock-alt text-orange mr-2' data-toggle='tooltip' data-placement='bottom' title='Superuser'></i>";
+               if (!row.is_superuser && !row.is_staff) data = "<i class='fas fa-lg fa-user text-secondary mr-2' data-toggle='tooltip' data-placement='bottom' title='User'></i>";
+               return data
+            },
+         },
+         { 
+            data: "date_joined",
+            render: function (data, type, row) {
+               datetime = moment(row.date_joined).format('MMM DD, YYYY h:mm a');
+               data = `<p class="title mb-1">${datetime}</p>`
+               return data
+            },
+         },
+         { 
+            data: "groups",
+            render: function (data, type, row) {
+               data = '';
+               row.groups.forEach(group => {data = data + `<span class="badge badge-pill bg-orange p-1 mr-2" style="color:#fff !important">${group.name}</span>`})
+               return data
+            },
+         },
+         { 
+            data: "is_active",
+            render: function (data, type, row) {
+               if (row.is_active === true) data = "<i class='fas fa-check-circle text-success'></i>";
+               else data = "<i class='fas fa-times-circle text-secondary'></i>";
+               return data
+            },
+         },
+         {
+            data: "null",
+            render: function (data, type, row) {
+               data = '';
+               if($('#changeUserHidden').val() == 'true') {
+                  data = data + "<a href='#' class='text-warning action-link btn_edit' data-toggle='tooltip' data-placement='bottom' title='Edit'> <i class='fas fa-pen'></i> </a>";
+               }
+               if($('#changePasswordHidden').val() == 'true') {
+                  data = data + "<a href='#' class='text-secondary action-link btn_change_password' data-toggle='tooltip' data-placement='bottom' title='Change Password'> <i class='fas fa-key'></i> </a>";
+               }
+               return data
+            },
+         }
+      ],
+   }); // table end
 
    // Permissions Select2 Config
    $('#select2-permissions').select2({
@@ -28,74 +107,7 @@ $(document).ready(function () {
       cache: true,
    });
 
-   // User: Is Staff Select2 Config
-   $('#user-staff-select').select2({
-      allowClear: true,
-      placeholder: 'Is Staff',
-      cache: true,
-   });
-
-   //SEARCH
-   $("#execute-search").click(function () {
-      table.ajax.reload();
-      return false; // prevent refresh
-   });
-
-   // RETRIEVE / GET
-   let table = $('#dt_user').DataTable({
-      "searching": false,
-      "responsive": true,
-      "lengthChange": false,
-      "autoWidth": false,
-      "serverside": true,
-      "processing": true,
-      "pageLength": 10,
-      "ajax": {
-         url: '/api/core/user/?format=datatables',
-         type: "GET",
-         data: {
-            "last_name_input": lastNameInput,
-            "first_name_input": firstNameInput,
-            "username_input": usernameInput,
-            "is_staff_select": isStaffSelect
-         }
-      },
-      "columns": [
-         { data: "username" },
-         { data: "first_name" },
-         { data: "last_name" },
-         {
-         data: null,
-         render: function (data, type, row) {
-            if (type == 'display') {
-               data = '';
-               if (row.is_staff == true) {
-                  data = "<i class='fas fa-check-circle text-success'></i>";
-               } else {
-                  data = "<i class='fas fa-times-circle text-secondary'></i>";
-               }
-            }
-            return data
-         }
-         },
-         {
-            data: "null",
-            render: function (data, type, row) {
-               data = '';
-               if($('#changeUserHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>";
-               }
-               if($('#changePasswordHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-primary action-link btn_change_password'> <i class='fas fa-key'></i> </a>";
-               }
-               
-               return data
-            },
-         }
-      ],
-   }); // table end
-    
-   // Create new group button
+   // Create
    $('#btn-create-user').click(function(e){
       // Assign Axios Action Type and URL
       method = 'POST';
@@ -118,7 +130,9 @@ $(document).ready(function () {
    $('#dt_user tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
-
+      let groups = new Array();
+      dt_data['groups'].forEach( group => groups.push(group.id));
+      
       // Assign AJAX Action Type/Method and URL
       method = 'PUT';
       action = 'UPDATE';
@@ -142,7 +156,7 @@ $(document).ready(function () {
       if (dt_data['is_superuser']) $('#chk-superuser-status').prop('checked', true); else $('#chk-superuser-status').prop('checked', false); // IS SUPERUSER
       if (dt_data['is_staff']) $('#chk-staff-status').prop('checked', true); else $('#chk-staff-status').prop('checked', false); // IS STAFF
       if (dt_data['is_active']) $('#chk-active-status').prop('checked', true); else $('#chk-active-status').prop('checked', false); // IS ACTIVE
-      $('#select2-groups').val(dt_data['groups']).trigger('change'); // GROUPS
+      $('#select2-groups').val(groups).trigger('change'); // GROUPS
       $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
    });
 
@@ -219,6 +233,47 @@ $(document).ready(function () {
          });
       });
    }); // submit form end
+
+
+   // // //  Filters
+   // Select2 config
+   $('.select-filter').select2();
+
+   // Search Bar onSearch Event
+   $("#search-input").on('search', function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Search Bar onClick Event
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+   // Apply Filter
+   $("#btn_apply").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Clear Filter
+   $("#btn_clear").click(function () {
+      $('#form-filter').trigger("reset");
+      $('#form-filter select').trigger("change");
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+   
+   // Close Dropdown 
+   $('#close_dropdown').click(function (){ toggleFilter() });
+
+   // Close Dropdown When Click Outside 
+   $(document).on('click', function (e) { toggleFilter() });
+
+   // Dropdown Prevent From closing
+   $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
+      if (e.clickEvent) e.preventDefault();      
+   });
 
    let showFieldErrors = function(obj, field){
       if (field === 'password') {

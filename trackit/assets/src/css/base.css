@@ -38,11 +38,6 @@ h1, h2,  h3, h4, h5, h6  {
    font-size: 12px !important;
 }
 
-i.fas,
-i.far {
-   font-size: 11px !important;
-}
-
 .p-1 {
    padding: 5px !important
 };
@@ -79,10 +74,6 @@ i.far {
 .bg-secondary {background-color: #e3E5ED !important;}
 .bg-orange {background-color: #FD7E14 ;}
 .bg-notification {background-color: #ff990017 ;}
-
-.btn {
-   padding: 4px 10px !important;
-}
 
 .btn-light {
    background-color: #ffffff !important;
@@ -132,6 +123,11 @@ i.far {
 .btn-link-orange:active,
 .btn-link-neutral:hover  {
    color: #e77619;
+}
+
+.btn {
+   border-radius: 5px !important;
+   padding: 4px 10px;
 }
 
 .btn span {
@@ -191,7 +187,6 @@ i.far {
    border-top-right-radius: 3px;
    border-bottom-right-radius: 3px;
 }
-
 
 /* Sidebar */
 .sidebar .nav .nav-header {
@@ -313,10 +308,6 @@ table.dataTable tbody tr:hover {
    margin: 0;
 }
 
-.card .card-body .form-control-sm {
-   border-color: #cdd5df;
-}
-
 .card-table {
    background-color: transparent !important;
    border:none;
@@ -397,12 +388,56 @@ table.dataTable tbody tr:hover {
 }
 
 .form-group {
-   margin-bottom: 10px !important;
+   margin-bottom: 8px !important;
 }
 /* .form-control-sm {
    height: 30px !important;
    border-color:transparent;
 } */
+
+.input-group {
+   border-radius: .25rem ;
+}
+
+.input-group .form-control,
+.input-group .input-group-append .btn {
+   border-color: #ffffff;
+}
+
+.input-group .input-group-append .btn {
+   background-color: #fff;
+}
+
+.input-group .form-control,
+.input-group .form-control:focus {
+   border-right: 0;
+}
+.input-group .input-group-append .btn {
+   border-left: 0;
+   border-top-left-radius: 0 !important;
+   border-bottom-left-radius: 0 !important;
+   margin-left: 1px;
+}
+
+.input-group .form-control:focus + .input-group-append .btn {
+   border-color: #ff8f34b6 !important;
+   color: #FD7E14;
+}
+
+.input-group .input-group-append .btn:hover,
+.input-group .form-control:focus + .input-group-append .btn:hover {
+   color: #ff7300;
+}
+
+.input-group .input-group-append .btn:focus,
+.input-group .input-group-append .btn:active,
+.input-group .input-group-append .btn:visited,
+.input-group .form-control:focus + .input-group-append .btn:active,
+.input-group .form-control:focus + .input-group-append .btn:focus,
+.input-group .form-control:focus + .input-group-append .btn:visited {
+   background-color: #fff;
+   border-color: #fff !important;
+}
 
 /* Sweet alert */
 .swal2-popup {
@@ -441,3 +476,27 @@ table.dataTable tbody tr:hover {
  ::-webkit-scrollbar-thumb:hover {
    background: #888a8d; 
  }
+
+.card-filters .card-header {
+   background-color: #e3E5ED 
+}
+
+.card-filters .card-header .card-title {
+   font-size: 10px;
+   font-weight: bold;
+   text-transform: uppercase;
+   color: #717c87;
+}
+
+/* Dropdown */
+.dropdown-filter .btn-light {
+   border-color: #fff !important;
+}
+
+.dropdown-filter .btn-light:hover,
+.dropdown-filter .btn-light:active,
+.dropdown-filter .btn-light:focus,
+.dropdown-filter .btn-light:visited {
+   background-color: #fbfbfb !important;
+   border-color: #ff8f34b6 !important;
+}

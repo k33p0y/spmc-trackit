@@ -1,6 +1,7 @@
 from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import Group
+from django.db.models import Q
 from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer
 from .models import User
 
@@ -11,33 +12,29 @@ class UserViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated]
 
    def get_queryset(self):
-      # search_input = self.request.GET.get('search_input', None)
-      # is_active = self.request.GET.get('is_active', None)
+      # Search & Filter Parameters
+      search = self.request.query_params.get("search", None)
+      is_staff = self.request.query_params.get("is_staff", None)
+      is_superuser = self.request.query_params.get("is_superuser", None)
+      is_active = self.request.query_params.get("is_active", None)
+      group = self.request.query_params.get("group", None)
+      date_from = self.request.query_params.get('date_from', None)
+      date_to = self.request.query_params.get('date_to', None)
 
-      last_name_input = self.request.GET.get("last_name_input", None)
-      first_name_input = self.request.GET.get("first_name_input", None)
-      username_input = self.request.GET.get("username_input", None)
-      is_staff_select = self.request.GET.get("is_staff_select", None)
-
-
-      if not self.request.user.has_perm('requests.view_requestform'):
+      if not self.request.user.has_perm('core.view_user'):
          return User.objects.none()
       else:
-         # return User.objects.all().order_by('id')
-         qs = User.objects.all()
-         # qs = qs.filter(is_archive=False)
+         # Queryset
+         qs = User.objects.all().order_by('-id')
 
-         if last_name_input:
-               qs = qs.filter(last_name__icontains=last_name_input)
-         if first_name_input:
-               qs = qs.filter(first_name__icontains=first_name_input)
-         if username_input:
-               qs = qs.filter(username__icontains=username_input)
-         if is_staff_select:
-            if is_staff_select == "1":
-               qs = qs.filter(is_staff=True)
-            else:
-               qs = qs.filter(is_staff=False)
+         # Parameters
+         if search: qs = qs.filter(Q(last_name__icontains=search) | Q(first_name__icontains=search) | Q(username__icontains=search))
+         if is_staff: qs = qs.filter(is_staff=True) if is_staff =='0' else qs.filter(is_staff=False)
+         if is_superuser: qs = qs.filter(is_superuser=True) if is_superuser == '0' else qs.filter(is_superuser=False)
+         if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
+         if group: qs = qs.filter(groups__in=group)
+         if date_from: qs = qs.filter(date_joined__gte=date_from)
+         if date_to: qs = qs.filter(date_joined__lte=date_to)
 
          return qs
 
@@ -52,12 +49,9 @@ class GroupViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated]
 
    def get_queryset(self):
-      search_input = self.request.GET.get('search_input', None)
-      qs = Group.objects.all()
+      # Search Parameter
+      search = self.request.query_params.get("search", None)
       
-      print(search_input)
-
-      if search_input:
-            qs = qs.filter(name__icontains=search_input)
-
+      qs = Group.objects.all()
+      if search: qs = qs.filter(name__icontains=search)
       return qs

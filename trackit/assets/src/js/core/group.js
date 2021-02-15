@@ -24,11 +24,12 @@ $(document).ready(function () {
          url: '/api/core/group/?format=datatables',
          type: "GET",
          data: {
-            search_input: searchInput
+            "search": searchInput,
          }
       },
       "columns": [
          { data: "name" },
+         { data: "user_count" },
          {
             data: "null",
             render: function (data, type, row) {
@@ -40,13 +41,6 @@ $(document).ready(function () {
             },
          }
       ],
-   });
-
-   //SEARCH
-   $("#execute-search").click(function () {
-      table.ajax.reload();
-      console.log($('#search-input').val())
-      return false; // prevent refresh
    });
    
    // Create new group button
@@ -135,6 +129,18 @@ $(document).ready(function () {
             });
          });
       }
+   });
+
+   // Search Bar onSearch Event
+   $("#search-input").on('search', function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Search Bar onClick Event
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
    });
 
 });

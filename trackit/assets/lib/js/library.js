@@ -28,14 +28,14 @@ const actor = $('.user-link').data().userId;
 // Sweet Alert Toast
 const Toast = Swal.mixin({
    toast: true,
-   position: 'center',
+   position: 'top-end',
    showConfirmButton: false,
-   timer: 1500,
-   timerProgressBar: true,
-   onOpen: (toast) => {
-      toast.addEventListener('mouseenter', Swal.stopTimer)
-      toast.addEventListener('mouseleave', Swal.resumeTimer)
-   }
+   timer: 2000,
+   // timerProgressBar: true,
+   // onOpen: (toast) => {
+   //    toast.addEventListener('mouseenter', Swal.stopTimer)
+   //    toast.addEventListener('mouseleave', Swal.resumeTimer)
+   // }
 });
 
 // Notifications
@@ -182,3 +182,6 @@ const getComments = function(ticket, next_page){
       });
    }
 };
+
+// Dropdown Filter Config
+const toggleFilter = function() {return $(".dropdown-filter-toggle").dropdown('hide')}

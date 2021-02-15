@@ -82,7 +82,6 @@ function updateStatus(ticket, status) {
         data: {status: status},
         headers: axiosConfig,
     }).then(response => {
-        console.log(response)
         Toast.fire({
             icon: 'success',
             title: 'Status Updated',

@@ -1,27 +1,14 @@
 $(document).ready(function () {
 
    var searchInput = function() { return $('#search-input').val(); }
-   var categoryTypeId = function() { return $('#category-type-select').val(); }
-   var isActive = function() { return $('#category-active-select').val(); }
+   var typeFilter = function() { return $('#type-filter').val(); }
+   var activeFilter = function() { return $('#active-filter').val(); }
 
    // Local Variables
    let dd_type_id;
    let chk_status = true;
    let action_type, url;
    let alert_msg = '';
-
-   // Sweet Alert Toast 
-   const Toast = Swal.mixin({
-      toast: true,
-      position: 'center',
-      showConfirmButton: false,
-      timer: 1500,
-      timerProgressBar: true,
-      onOpen: (toast) => {
-         toast.addEventListener('mouseenter', Swal.stopTimer)
-         toast.addEventListener('mouseleave', Swal.resumeTimer)
-      }
-   });
 
    // GET
    // List Table
@@ -36,9 +23,10 @@ $(document).ready(function () {
          url: '/api/config/category/?format=datatables',
          type: "GET",
          data: {
-            "search_input": searchInput,
-            "category_type_id": categoryTypeId,
-            "is_active": isActive
+            "search": searchInput,
+            "category_type": typeFilter,
+            "is_active": activeFilter,
+            "is_archive": false
          }
       },
       "columns": [
@@ -78,18 +66,6 @@ $(document).ready(function () {
    $('#dd_types').select2({
       allowClear: true,
       placeholder: 'Select Category Type',
-      cache: true,
-   });
-
-   $('#category-type-select').select2({
-      allowClear: true,
-      placeholder: 'Category Type',
-      cache: true,
-   });
-
-   $('#category-active-select').select2({
-      allowClear: true,
-      placeholder: 'Is Active',
       cache: true,
    });
 
@@ -260,43 +236,6 @@ $(document).ready(function () {
       })
    });
 
-   // DELETE / PATCH
-   $('#dt_department tbody').on('click', '.btn_delete', function () {
-      let dt_data = table.row($(this).parents('tr')).data();
-      let id = dt_data['id'];
-
-      Swal.fire({
-         title: 'Are you sure?',
-         icon: 'error',
-         showCancelButton: true,
-         confirmButtonText: 'Delete',
-         confirmButtonColor: '#d9534f',
-      }).then((result) => {
-         if (result.value) {
-            $.ajax({
-               url: `/api/config/category/${id}/`,
-               type: 'PATCH',
-               data: {
-                  is_archive: true,
-               },
-               success: function (result) {
-                  Toast.fire({
-                     icon: 'success',
-                     title: 'Delete Successfully',
-                  });
-                  table.ajax.reload();
-               },
-               error: function (a, b, error) {
-                  Toast.fire({
-                     icon: 'error',
-                     title: error,
-                  });
-               },
-            })
-         }
-      })
-   });
-
    //Modal Cancel
    $('#btn_cancel').click(function () {
       // Reset Fields to Defaults
@@ -307,15 +246,45 @@ $(document).ready(function () {
       $('#dd_types').val('').trigger('change');
    });
 
-   // RELOAD TABLE
-   $("#btn_reload").click(function () {
+   // // //  Filters
+   // Select2 config
+   $('.select-filter').select2();
+
+   // Search Bar onSearch Event
+   $("#search-input").on('search', function () {
       table.ajax.reload();
+      return false; // prevent refresh
    });
 
-   //SEARCH
+   // Search Bar onClick Event
    $("#execute-search").click(function () {
       table.ajax.reload();
       return false; // prevent refresh
+   });
+
+   // Apply Filter
+   $("#btn_apply").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Clear Filter
+   $("#btn_clear").click(function () {
+      $('#form-filter').trigger("reset");
+      $('#form-filter select').trigger("change");
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+   
+   // Close Dropdown 
+   $('#close_dropdown').click(function (){ toggleFilter() });
+
+   // Close Dropdown When Click Outside 
+   $(document).on('click', function (e) { toggleFilter() });
+
+   // Dropdown Prevent From closing
+   $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
+      if (e.clickEvent) e.preventDefault();      
    });
 
 });

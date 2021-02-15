@@ -1,7 +1,7 @@
 {% extends '../../base.html' %}
 {% load static %}
 
-{% block title %} Department {% endblock %}
+{% block title %} Category {% endblock %}
 
 {% block content %}
 <!-- Content Header -->
@@ -29,58 +29,65 @@
 <section class="content">
    <div class="container-fluid">
 
-      <div class="row">
-         <div class="col-12 m-0">
-           <div class="d-flex flex-row-reverse row-actions">
-               {% if perms.config.add_category %}
-               <button class="btn btn-xs btn-orange btn-new" id="btn-create-category">
-                  <i class="fas fa-plus"></i> <span>Add Category</span>
-               </button>
-               {% endif %}
-           </div>
-         </div>
-      </div>
-
-      <!-- Default box -->
-      <div class="row">
-         <div class="col-12 m-0">
-            <div class="card bg-secondary mt-2 mb-2">
-               <div class="card-body p-0">
-                  <div class="container-fluid">
-                     <div class="row">
-                        <div class="col-12 col-sm-4 p-1 ">
-                           <input id="search-input" type="search" class="form-control form-control-sm" placeholder="Search">
-                        </div>
-                        <div class="col-4 col-sm-2 p-1">
-                           <select name="category_type" class="form-control" style="height: 30px;" id="category-type-select">
-                              <option value=""></option>
-                                 <option></option>
-                                 {% for type in types %}
-                                 <option value={{type.id}}>{{type.name}}</option>
-                              {% endfor %}
-                           </select>
-                        </div> 
-                        <div class="col-4 col-sm-2 p-1">
-                           <select name="category" class="form-control" style="height: 30px;" id="category-active-select">
-                              <option value=""></option>
-                              <option value="1">Active</option>
-                              <option value="0">Inactive</option>
-                           </select>
-                        </div> 
-                        <div class="col-4 col-sm-2 p-1">
-                           <button id="execute-search" class="btn btn-success btn-sm">Search</button>
-                        </div> 
+      <!-- Content Filters, Search and Create Section -->
+      <div class="d-flex mb-1">
+         <div class="dropdown dropdown-filter mr-2">
+            <button class="btn btn-sm btn-light shadow-sm dropdown-filter-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <i class="fas fa-xs fa-filter m-0 d-inline d-md-none"></i>
+               <span class="d-none d-md-inline pl-1">Filter <i class="fas fa-caret-down ml-1"></i></span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-filter-menu">
+               <form id="form-filter">
+                  <div class="p-3">
+                     <div class="form-group mb-1">
+                        <label for="active-filter">By Type </label>
+                        <select class="form-control form-control-sm select-filter" id="type-filter">
+                           <option value="">All</option>
+                           {% for type in types %}
+                           <option value={{type.id}}>{{type.name}}</option>
+                           {% endfor %}
+                        </select>
                      </div>
-                  </div>               
+                     <div class="form-group mb-1">
+                        <label for="active-filter">By Active </label>
+                        <select class="form-control form-control-sm select-filter" id="active-filter">
+                           <option value="">All</option>
+                           <option value="0">Yes</option>
+                           <option value="1">No</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <div class="d-flex flex-row-reverse pt-2 pb-2 pl-3 pr-3">
+                     <div><button class="btn btn-sm btn-orange ml-1" id="btn_apply"> <span>Apply</span> </button></div>
+                     <div><a class="btn btn-sm btn-link text-secondary" id="btn_clear"> <span>Clear</span> </a></div>
+                     <div class="mr-auto"><a class="btn btn-sm btn-link text-secondary pl-0" id="close_dropdown"> <span>Close</span> </a></div>
+                  </div>
+               </form>
+            </div>
+         </div>
+         <div class="col-auto col-lg-3 p-0"> 
+            <div class="input-group shadow-sm">
+               <input type="search" class="form-control form-control-sm" placeholder="Search" id="search-input">
+               <div class="input-group-append">
+                 <button class="btn btn-sm btn-outline-secondary" type="button" id="execute-search">
+                     <i class="fas fa-sm fa-search"></i>
+                  </button>
                </div>
             </div>
          </div>
+         <div class="ml-auto">
+            {% if perms.config.add_category %}
+            <button class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-category"><i class="fas fa-xs fa-plus"></i> <span class="d-none d-sm-inline ml-1">Add Category</span></button>
+            {% endif %}
+         </div>
       </div>
 
+      <!-- Table  -->
       <div class="row">
          <div class="col-12 col-sm-12">
-            <div class="card mt-2 mb-2">
-               <div class="card-body p-1">
+            <div class="card shadow-sm mt-2 mb-2">
+               <div class="card-body p-0">
                   <table id="dt_category" class="table table-hover" width="100%">
                      <thead>
                         <tr>

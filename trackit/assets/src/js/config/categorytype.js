@@ -1,25 +1,12 @@
 $(document).ready(function () {
 
    var searchInput = function() { return $('#search-input').val(); }
-   var isActive = function() { return $('#category-type-active-select').val(); }
+   var activeFilter = function() { return $('#active-filter').val(); }
 
    // Local Variables
    let chk_status = true;
    let action_type, url;
    let alert_msg = '';
-
-   // Sweet Alert Toast 
-   const Toast = Swal.mixin({
-      toast: true,
-      position: 'center',
-      showConfirmButton: false,
-      timer: 1500,
-      timerProgressBar: true,
-      onOpen: (toast) => {
-         toast.addEventListener('mouseenter', Swal.stopTimer)
-         toast.addEventListener('mouseleave', Swal.resumeTimer)
-      }
-   });
 
    // GET
    // List Table
@@ -34,14 +21,10 @@ $(document).ready(function () {
          url: '/api/config/categorytype/?format=datatables',
          type: "GET",
          data: {
-            "search_input": searchInput,
-            "is_active": isActive
+            "search": searchInput,
+            "is_active": activeFilter,
+            "is_archive": false
          },
-         // dataSrc: function (json) {
-         //    return json.data.filter(function (item) {
-         //       return item.is_archive == false;
-         //    });
-         // }
       },
       "columns": [
          { data: "name" },
@@ -75,13 +58,6 @@ $(document).ready(function () {
       ],
    });
 
-   // Select2 Config
-   $('#category-type-active-select').select2({
-      allowClear: true,
-      placeholder: 'Is Active',
-      cache: true,
-   });
-
    // Get Checkbox State
    $('#chk_status').click(function () {
       if ($(this).prop("checked") == true) {
@@ -93,7 +69,6 @@ $(document).ready(function () {
    });
 
    // CREATE / POST
-   // New Department
    $('#btn-create-type').on('click', function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
@@ -105,9 +80,7 @@ $(document).ready(function () {
       $('#txt_typename').val('');
    });
 
-
    // UPDATE / PUT
-   // Edit Department
    $('#dt_category_type tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
@@ -126,7 +99,6 @@ $(document).ready(function () {
       $('#txt_typename').val(dt_data['name']);
       $('#chk_status').prop("checked", dt_data['is_active']);
    });
-
 
    // Submit Form
    $("#btn_save").click(function (e) {
@@ -235,15 +207,45 @@ $(document).ready(function () {
       $('#chk_status').prop("checked", true);
    });
 
-   // RELOAD TABLE
-   $("#btn_reload").click(function () {
+   // // //  Filters
+   // Select2 config
+   $('.select-filter').select2();
+
+   // Search Bar onSearch Event
+   $("#search-input").on('search', function () {
       table.ajax.reload();
+      return false; // prevent refresh
    });
-   
-   //SEARCH
+
+   // Search Bar onClick Event
    $("#execute-search").click(function () {
       table.ajax.reload();
       return false; // prevent refresh
+   });
+
+   // Apply Filter
+   $("#btn_apply").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Clear Filter
+   $("#btn_clear").click(function () {
+      $('#form-filter').trigger("reset");
+      $('#form-filter select').trigger("change");
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+   
+   // Close Dropdown 
+   $('#close_dropdown').click(function (){ toggleFilter() });
+
+   // Close Dropdown When Click Outside 
+   $(document).on('click', function (e) { toggleFilter() });
+
+   // Dropdown Prevent From closing
+   $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
+      if (e.clickEvent) e.preventDefault();      
    });
 
 });

@@ -12,9 +12,9 @@ import json
 def ticket(request):
    tickets = Ticket.objects.all()
    departments =  Department.objects.filter(is_active=True, is_archive=False)
-   categories = Category.objects.filter(is_active=True, is_archive=False)
+   types = CategoryType.objects.filter(is_active=True, is_archive=False)
    statuses = Status.objects.filter(is_active=True, is_archive=False)
-   return render(request, 'pages/requests/ticket_lists.html', {'tickets': tickets, 'departments':departments, 'categories':categories, 'statuses': statuses})
+   return render(request, 'pages/requests/ticket_lists.html', {'tickets': tickets, 'departments':departments, 'types':types, 'statuses': statuses})
 
 @login_required
 def create_ticket(request):
@@ -69,19 +69,6 @@ def boards(request):
    
    context = {'forms':forms}
    return render(request, 'pages/requests/boards.html', context)
-
-@login_required
-def get_category(request):
-   # decode byte string
-   body_unicode = request.body.decode('utf-8')
-   data = json.loads(body_unicode)
-   
-   type_id = data['type_id']
-
-   categories = Category.objects.filter(category_type = type_id, is_active=True, is_archive=False).values('id', 'name')
-   category_lists = list(categories)
-
-   return JsonResponse(category_lists, safe=False)
 
 def ticket_log_list(request):
    return render(request, 'pages/requests/track.html', {})

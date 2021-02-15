@@ -28,41 +28,23 @@ class RequestFormViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      search_input = self.request.GET.get('search_input', None)
-      is_active = self.request.GET.get('is_active', None)
+      # Search & Filter Parameters
+      search = self.request.query_params.get('search', None)
+      is_active = self.request.query_params.get('is_active', None)
+      is_archive = self.request.query_params.get('is_archive', None)
 
-      if 'is_archive' in self.request.GET:
-         return RequestForm.objects.all().filter(is_archive=True)
+      if (not self.request.user.has_perm('requests.view_requestform') or not self.request.user.has_perm('requests.add_ticket')):
+         return RequestForm.objects.none()
       else:
-         if (self.request.user.is_superuser or self.request.user.is_staff or self.request.user.has_perm('requests.view_requestform') or self.request.user.has_perm('requests.add_ticket')):
-            qs = RequestForm.objects.all().filter(is_archive=False)
-            if search_input:
-                  qs = qs.filter(name__icontains=search_input)
-            if is_active:
-               if is_active == "1":
-                  qs = qs.filter(is_active=True)
-               else:
-                  qs = qs.filter(is_active=False)
-            return qs
-         else:
-            return RequestForm.objects.none()
+         # Queryset
+         qs = RequestForm.objects.select_related('group').order_by('-id')
 
-      # if not self.request.user.has_perm('requests.view_requestform'):
-      #    return RequestForm.objects.none()
-      # else:
-      #    # return RequestForm.objects.all().order_by('id')
-      #    qs = RequestForm.objects.all()
-      #    qs = qs.filter(is_archive=False)
+         # Parameters
+         if search: qs = qs.filter(name__icontains=search)
+         if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
+         if is_archive: qs = qs.filter(is_archive=json.loads(is_archive))
 
-      #    if search_input:
-      #          qs = qs.filter(name__icontains=search_input)
-      #    if is_active:
-      #       if is_active == "1":
-      #          qs = qs.filter(is_active=True)
-      #       else:
-      #          qs = qs.filter(is_active=False)
-
-      #    return qs
+         return qs
 
    def create(self, request):
       name = request.data['name']
@@ -111,12 +93,10 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       return Response(serializer.data)
 
    def partial_update(self, request, pk):
-      print(type(request.data['is_archive']) == bool)
       request_form = RequestForm.objects.get(pk=pk)
-      request_form.is_archive = request.data['is_archive'] if type(request.data['is_archive']) ==  bool else json.loads(request.data['is_archive'])
-      request_form.save()
-
-      serializer = RequestFormSerializer(request_form, partial=True)
+      serializer = RequestFormSerializer(request_form, data=request.data, partial=True)
+      serializer.is_valid(raise_exception=True)
+      serializer.save()
       return Response(serializer.data)
 
 class TicketViewSet(viewsets.ModelViewSet):    
@@ -124,55 +104,45 @@ class TicketViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
-      status = self.request.GET.get('status', None)
-      form = self.request.GET.get('form', None)
+      # Search & Filter Parameters
+      search = self.request.query_params.get('search', None)
+      category_type = self.request.query_params.get('category_type', None)
+      category = self.request.query_params.get('category', None)
+      department = self.request.query_params.get('department', None)
+      status = self.request.query_params.get('status', None)
+      date_from = self.request.query_params.get('date_from', None)
+      date_to = self.request.query_params.get('date_to', None)
+      is_active = self.request.query_params.get('is_active', None)
+      is_archive = self.request.query_params.get('is_archive', None)
 
-      search_input = self.request.GET.get('search_input', None)
-      category_id = self.request.GET.get('category_id', None)
-      department_id = self.request.GET.get('department_id', None)
-      status_id = self.request.GET.get('status_id', None)
-      is_active = self.request.GET.get('is_active', None)
-
-
-
-      if 'is_archive' in self.request.GET:
-         return Ticket.objects.filter(is_archive=True)
-      else:
-         if not self.request.user.has_perm('requests.view_ticket'):
-            return Ticket.objects.none()
+      if not self.request.user.has_perm('requests.view_ticket'):
+         return Ticket.objects.none()
+      else:        
+         # Queryset
+         if self.request.user.is_superuser:
+            qs = Ticket.objects.select_related('request_form', 'department', 'category', 'requested_by', 'status')
+         elif self.request.user.is_staff:
+            groups = list(self.request.user.groups.all())
+            qs = Ticket.objects.select_related('request_form', 'department', 'category', 'requested_by', 'status').filter(request_form__group__in=groups)
          else:
-            if(self.request.user.is_superuser):
-               qs = Ticket.objects.filter(is_archive=False)
+            qs = Ticket.objects.select_related('request_form', 'department', 'category', 'requested_by', 'status').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user))
+         
+         # Parameters
+         if search: qs = qs.filter(ticket_no__icontains=search)
+         if category_type: qs = qs.filter(category__category_type_id__exact=category_type)
+         if category: qs = qs.filter(category_id__exact=category)
+         if department: qs = qs.filter(department_id__exact=department)
+         if status: qs = qs.filter(status_id__exact=status)
+         if date_from: qs = qs.filter(date_created__gte=date_from)
+         if date_to: qs = qs.filter(date_created__lte=date_to)
+         if status: qs = qs.filter(status_id__exact=status)
+         if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
+         if is_archive: qs = qs.filter(is_archive=json.loads(is_archive))
 
-            elif(self.request.user.is_staff):
-               groups = list(self.request.user.groups.all())
-               qs = Ticket.objects.filter(request_form__group__in=groups, is_archive=False)
-            else:
-               # qs = Ticket.objects.select_related('requested_by').filter(requested_by=self.request.user)
-               qs = Ticket.objects.filter((Q(requested_by = self.request.user) | Q(department__department_head = self.request.user)), is_archive=False)
+         return qs
 
-            if form:
-               return qs.filter(status=status, request_form=form, is_active=True, is_archive=False)
-            else:
-               qs = qs.filter(is_archive=False)
-               if search_input:
-                  qs = qs.filter(ticket_no__icontains=search_input)
-               if category_id:
-                  qs = qs.filter(category_id__exact=category_id)
-               if department_id:
-                  qs = qs.filter(department_id__exact=department_id)
-               if status_id:
-                  qs = qs.filter(status_id__exact=status_id)
-               if is_active:
-                  if is_active == "1":
-                     qs = qs.filter(is_active=True)
-                  else:
-                     qs = qs.filter(is_active=False)
-
-            return qs
-
-   # disable pagination, show all rows
    def paginate_queryset(self, queryset):
+      # disable pagination, show all rows
       if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
          return None
       return super().paginate_queryset(queryset)
@@ -244,21 +214,19 @@ class AttachmentViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated]
 
    def get_queryset(self):
-      ticket_id = self.request.GET.get('ticket_id', None)
+      # Parameters
+      ticket_id = self.request.query_params.get('ticket_id', None)
 
       if not self.request.user.has_perm('requests.view_attachment'):
          return Attachment.objects.none()
       else:
-         if ticket_id:
-            return Attachment.objects.select_related('ticket').filter(ticket_id=ticket_id).order_by('-uploaded_at')
-         else: 
-            return Attachment.objects.select_related('ticket').order_by('-uploaded_at')
+         qs = Attachment.objects.select_related('ticket').order_by('-uploaded_at')
+         if ticket_id: qs=qs.filter(ticket_id=ticket_id)
+         return qs
 
    def create(self, request):
       file = request.FILES['file']
       ticket = json.loads(request.FILES['ticket'].read())
-
-      print(file)
 
       attachment = Attachment.objects.create(ticket_id=ticket, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user)
       attachment.save()

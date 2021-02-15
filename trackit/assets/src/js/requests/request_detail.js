@@ -217,7 +217,6 @@ $(document).ready(function () {
           socket.send(JSON.stringify({type: 'comment', data: {comment_id: comment_id}}))
           socket.send(JSON.stringify({type: 'notification', data: {ticket_id: response.data.ticket, notification_type: 'comment'}}))
       }).catch(function (error) { // error
-          console.log(error.response);
           Toast.fire({
               icon: 'error',
               title: 'Error in creating comment.',

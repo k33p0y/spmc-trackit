@@ -30,31 +30,25 @@
 <section class="content">
    <div class="container-fluid">
 
-
-      <!-- Default box -->
-      <div class="row">
-         <div class="col-12 m-0">
-            <div class="card bg-secondary mt-2 mb-2">
-               <div class="card-body p-0">
-                  <div class="container-fluid">
-                     <form onSubmit="return false;">
-                        <div class="row">
-                           <div class="col-12 col-sm-4 p-1 ">
-                              <input id="txt_tracking_num" type="search" class="form-control form-control-sm" placeholder="Input tracking number">
-                           </div>
-                        </div>
-                     </form>
-                  </div>               
+      <!-- Content Filters, Search and Create Section -->
+      <div class="d-flex mb-1">
+         <div class="col-auto col-lg-3 p-0"> 
+            <div class="input-group shadow-sm">
+               <input type="search" class="form-control form-control-sm" placeholder="Enter tracking number" id="search-input">
+               <div class="input-group-append">
+                 <button class="btn btn-sm btn-outline-secondary" type="button" id="execute-search">
+                     <i class="fas fa-sm fa-search"></i>
+                  </button>
                </div>
             </div>
          </div>
       </div>
-
+      
       <div class="row">
          <!-- Datatable -->
          <div class="col-md col-sm-12">
-            <div class="card mt-2 mb-2">
-               <div class="card-body p-1">
+            <div class="card shadow-sm mt-2 mb-2">
+               <div class="card-body p-0">
                   <table id="dt_tracking" class="table table-hover" width="100%">
                      <thead>
                         <tr>
@@ -64,11 +58,6 @@
                            <th>Action Officer</th>
                         </tr>
                      </thead>
-                     <!-- <tbody>
-                        <tr>
-                           <td colspan="4" class="text-center">No data available in table</td>
-                        </tr>
-                     </tbody> -->
                   </table>
                </div>
             </div>

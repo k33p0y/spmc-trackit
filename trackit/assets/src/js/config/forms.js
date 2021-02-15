@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
    var searchInput = function() { return $('#search-input').val(); }
-   var isActive = function() { return $('#form-active-select').val(); }
+   var activeFilter = function() { return $('#active-filter').val(); }
 
    // Local Variables
    let chk_status = true;
@@ -18,12 +18,6 @@ $(document).ready(function () {
    $('.select2_status').select2({
       allowClear: true,
       placeholder: 'Select Status',
-      // cache: true,
-   });
-
-   $('#form-active-select').select2({
-      allowClear: true,
-      placeholder: 'Is Active',
       // cache: true,
    });
 
@@ -51,8 +45,9 @@ $(document).ready(function () {
          url: '/api/requests/forms/?format=datatables',
          type: "GET",
          data: {
-            "search_input": searchInput,
-            "is_active": isActive
+            "search": searchInput,
+            "is_active": activeFilter,
+            "is_archive" : false
          },
       },
       "columns": [
@@ -362,10 +357,45 @@ $(document).ready(function () {
       $('#select2_status').val([]).trigger('change');
    });
 
-   //SEARCH
+   // // //  Filters
+   // Select2 config
+   $('.select-filter').select2();
+
+   // Search Bar onSearch Event
+   $("#search-input").on('search', function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Search Bar onClick Event
    $("#execute-search").click(function () {
       table.ajax.reload();
       return false; // prevent refresh
+   });
+
+   // Apply Filter
+   $("#btn_apply").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Clear Filter
+   $("#btn_clear").click(function () {
+      $('#form-filter').trigger("reset");
+      $('#form-filter select').trigger("change");
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+   
+   // Close Dropdown 
+   $('#close_dropdown').click(function (){ toggleFilter() });
+
+   // Close Dropdown When Click Outside 
+   $(document).on('click', function (e) { toggleFilter() });
+
+   // Dropdown Prevent From closing
+   $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
+      if (e.clickEvent) e.preventDefault();      
    });
 
 });
@@ -412,9 +442,6 @@ function getStatusRowValues() {
 
 function setStatusOrder(status) {
    let counter = 1;
-
-   console.log(status)
-
    status.forEach(stat => {
       $(`#status_${counter}`).val(stat.id).trigger('change');
       $(`#order_${counter}`).val(stat.order);

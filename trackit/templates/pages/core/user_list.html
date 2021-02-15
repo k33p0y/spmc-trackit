@@ -26,63 +26,97 @@
 <!-- /.content -->
 <section class="content">
    <div class="container-fluid">
-
-      <div class="row">
-         <div class="col-12 m-0">
-           <div class="d-flex flex-row-reverse row-actions">
-               {% if perms.cores.add_user %}
-               <button class="btn btn-xs btn-orange btn-new" id="btn-create-user">
-                  <i class="fas fa-plus"></i> <span>Add User</span>
-               </button>
-               {% endif %}
-           </div>
-         </div>
-      </div>
-
-      <!-- Default box -->
-      <div class="row">
-         <div class="col-12 m-0">
-            <div class="card bg-secondary mt-2 mb-2">
-               <div class="card-body p-0">
-                  <div class="container-fluid">
-                     <div class="row">
-                        <div class="col-12 col-sm-3 col-md-3 p-1 ">
-                           <input id="username-input" type="search" class="form-control form-control-sm" placeholder="Usernames">
-                        </div>
-                        <div class="col-12 col-sm-3 col-md-3 p-1 ">
-                           <input id="first_name-input" type="search" class="form-control form-control-sm" placeholder="First Name">
-                        </div>
-                        <div class="col-12 col-sm-3 col-md-3 p-1 ">
-                           <input id="last_name-input" type="search" class="form-control form-control-sm" placeholder="Last Name">
-                        </div>
-                        <div class="col-12 col-sm-3 col-md-3 p-1">
-                           <select name="is_staff" class="form-control" style="height: 30px;" id="user-staff-select">
-                              <option value=""></option>
-                              <option value="1">Staff</option>
-                              <option value="0">Not Staff</option>
-                           </select>
-                        </div> 
-                        <div class="col-12 col-sm-3 col-md-3 p-1">
-                           <button id="execute-search" class="btn btn-success btn-sm">Search</button>
-                        </div> 
+      
+      <!-- Content Filters, Search and Create Section -->
+      <div class="d-flex mb-1">
+         <div class="dropdown dropdown-filter mr-2">
+            <button class="btn btn-sm btn-light shadow-sm dropdown-filter-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <i class="fas fa-xs fa-filter m-0 d-inline d-md-none"></i>
+               <span class="d-none d-md-inline pl-1">Filter <i class="fas fa-caret-down ml-1"></i></span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-filter-menu">
+               <form id="form-filter">
+                  <div class="p-3">
+                     <div class="form-group">
+                        <label for="staff-filter">By Staff </label>
+                        <select class="form-control form-control-sm select-filter" id="staff-filter">
+                           <option value="">All</option>
+                           <option value="0">Yes</option>
+                           <option value="1">No</option>
+                        </select>
                      </div>
-                  </div>               
+                     <div class="form-group">
+                        <label for="superuser-filter">By Superuser </label>
+                        <select class="form-control form-control-sm select-filter" id="superuser-filter">
+                           <option value="">All</option>
+                           <option value="0">Yes</option>
+                           <option value="1">No</option>
+                        </select>
+                     </div>
+                     <div class="form-group mb-1">
+                        <label for="active-filter">By Active </label>
+                        <select class="form-control form-control-sm select-filter" id="active-filter">
+                           <option value="">All</option>
+                           <option value="0">Yes</option>
+                           <option value="1">No</option>
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label for="group-filter">By Group </label>
+                        <select class="form-control form-control-sm select-filter" id="group-filter">
+                           <option value="">All</option>
+                           {% for group in groups %}
+                           <option value={{group.id}}>{{group}}</option>
+                           {% endfor %}
+                        </select>
+                     </div>
+                     <div class="form-group mb-1">
+                        <label for="date-filter">By Date Created </label>
+                        <input type="date" class="form-control form-control-sm mb-2" id="date-from-filter" name="date-filter" placeholder="From">
+                        <input type="date" class="form-control form-control-sm" id="date-to-filter" name="date-filter" placeholder="To">
+                     </div>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <div class="d-flex flex-row-reverse pt-2 pb-2 pl-3 pr-3">
+                     <div><button class="btn btn-sm btn-orange ml-1" id="btn_apply"> <span>Apply</span> </button></div>
+                     <div><a class="btn btn-sm btn-link text-secondary" id="btn_clear"> <span>Clear</span> </a></div>
+                     <div class="mr-auto"><a class="btn btn-sm btn-link text-secondary pl-0" id="close_dropdown"> <span>Close</span> </a></div>
+                  </div>
+               </form>
+            </div>
+         </div>
+         <div class="col-auto col-lg-3 p-0"> 
+            <div class="input-group shadow-sm">
+               <input type="search" class="form-control form-control-sm" placeholder="Search" id="search-input">
+               <div class="input-group-append">
+                 <button class="btn btn-sm btn-outline-secondary" type="button" id="execute-search">
+                     <i class="fas fa-sm fa-search"></i>
+                  </button>
                </div>
             </div>
          </div>
+         <div class="ml-auto">
+            {% if perms.cores.add_user %}
+            <button class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-user"><i class="fas fa-xs fa-plus"></i> <span class="d-none d-sm-inline ml-1">Add User</span></button>
+            {% endif %}
+         </div>
       </div>
-
-      <div class="row">
-         <div class="col-12 col-sm-12">
-            <div class="card mt-2 mb-2">
-               <div class="card-body p-1">
+      
+      <!-- Table Section -->
+      <div class="row flex-column-reverse flex-lg-row">
+         <div class="col-12">
+            <div class="card shadow-sm mt-2 mb-2">
+               <div class="card-body p-0">
                   <table id="dt_user" class="table table-hover" width="100%">
                      <thead>
                         <tr>
-                           <th>Username</th>
                            <th>First Name</th>
                            <th>Last Name</th>
-                           <th>Staff Status</th>
+                           <th>Username</th>
+                           <th>Role</th>
+                           <th>Date Created</th>
+                           <th>Groups</th>
+                           <th>is Active</th>
                            <th>Action</th>
                         </tr>
                      </thead>
@@ -90,14 +124,13 @@
                </div>
             </div>
          </div>
-      </div>
-
+      </div>     
    </div>
+
    <input type="hidden" id="changeUserHidden" value="{% if perms.core.change_user %}true{% else %}false{% endif %}">
    <input type="hidden" id="changePasswordHidden" value="{% if perms.core.change_user_password %}true{% else %}false{% endif %}">
 
 </section>
-
 {% endblock %}
 
 {% block modal %}
@@ -195,7 +228,7 @@
          </div>
       </div>
    </div>
-</div>
+</div>  
 {% endblock %}
 
 {% block extrascript %}

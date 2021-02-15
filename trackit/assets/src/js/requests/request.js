@@ -1,9 +1,13 @@
 $(document).ready(function () {
+
    var searchInput = function() { return $('#search-input').val(); }
-   var categoryId = function() { return $('#category-select').val(); }
-   var departmentId = function() { return $('#department-select').val(); }
-   var statusId = function() { return $('#status-select').val(); }
-   var isActive = function() { return $('#ticket-active-select').val(); }
+   var typeFilter = function() { return $('#type-filter').val(); }
+   var categoryFilter = function() { return $('#category-filter').val(); }
+   var departmentFilter = function() { return $('#department-filter').val(); }
+   var statusFilter = function() { return $('#status-filter').val(); }
+   var dateFromFilter = function() { return $('#date-from-filter').val(); }
+   var dateToFilter = function() { return $('#date-to-filter').val(); }
+   var activeFilter = function() { return $('#active-filter').val(); }
 
    // RETRIEVE / GET
    // List Table
@@ -19,11 +23,15 @@ $(document).ready(function () {
          url: '/api/requests/lists/?format=datatables',
          type: "GET",
          data: {
-            "search_input": searchInput,
-            "category_id": categoryId,
-            "department_id": departmentId,
-            "status_id": statusId,
-            "is_active": isActive
+            "search": searchInput,
+            "category_type": typeFilter,
+            "category": categoryFilter,
+            "department": departmentFilter,
+            "status": statusFilter,
+            "date_from": dateFromFilter,
+            "date_to": dateToFilter,
+            "is_active": activeFilter,
+            "is_archive":  false
          },
       },
       "columns": [
@@ -138,43 +146,9 @@ $(document).ready(function () {
       "order": [[ 5, "desc" ]],
    });
 
-   $('#ticket-active-select').select2({
-      allowClear: true,
-      placeholder: 'Is Active',
-      // cache: true,
-   });
-
-   $('#category-select').select2({
-      allowClear: true,
-      placeholder: 'Select Category',
-      // cache: true,
-   });
-
-   $('#department-select').select2({
-      allowClear: true,
-      placeholder: 'Select Department',
-      // cache: true,
-   });
-
-   $('#status-select').select2({
-      allowClear: true,
-      placeholder: 'Select Status',
-      // cache: true,
-   });
-
-   //SEARCH
-   $("#execute-search").click(function () {
-      table.ajax.reload();
-      return false; // prevent refresh
-   });
-
    // DELETE / PATCH
    $('#dt_requests tbody').on('click', '.btn_delete', function () {
-      // let dt_data = table.row($(this).parents('tr')).data();
-      // let id = dt_data['id'];
-      // console.log('id', id)
       var id = $(this).data('id');
-      console.log(id);
 
       Swal.fire({
          title: 'Are you sure?',
@@ -203,35 +177,64 @@ $(document).ready(function () {
                   title: error,
                });
             });
-
-
-            // $.ajax({
-            //    url: `/api/requests/lists/${id}/`,
-            //    type: 'PATCH',
-            //    data: {
-            //       is_archive: true,
-            //    },
-            //    beforeSend: function (xhr, settings) {
-            //       xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            //    },
-            //    success: function (result) {
-            //       Toast.fire({
-            //          icon: 'success',
-            //          title: 'Delete Successfully',
-            //       });
-            //       table.ajax.reload();
-            //    },
-            //    error: function (a, b, error) {
-            //       console.log('a', a);
-            //       console.log('b', b);
-            //       console.log('error', error);
-            //       Toast.fire({
-            //          icon: 'error',
-            //          title: error,
-            //       });
-            //    },
-            // })
          }
       })
+   });
+   
+   // // //  Filters
+   // Select2 config
+   $('.select-filter').select2();
+
+   // Type Filter on change
+   $('#type-filter').on('change', function () { // category type dropdown
+      category_type = $("#type-filter option:selected").val();
+
+      axios.get('/api/config/category', {params: {"category_type" : category_type}}, axiosConfig).then(res => {
+         $("#category-filter")
+            .empty()
+            .append('<option value="">All</option>')
+            .removeAttr('disabled');
+
+         res.data.results.forEach(category => {
+            $("#category-filter").append(`<option value='${category.id}'>${category.name}</option>`)
+         });
+       });
+   });
+
+   // Search Bar onSearch Event
+   $("#search-input").on('search', function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Search Bar onClick Event
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Apply Filter
+   $("#btn_apply").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Clear Filter
+   $("#btn_clear").click(function () {
+      $('#form-filter').trigger("reset");
+      $('#form-filter select').trigger("change");
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+   
+   // Close Dropdown 
+   $('#close_dropdown').click(function (){ toggleFilter() });
+
+   // Close Dropdown When Click Outside 
+   $(document).on('click', function (e) { toggleFilter() });
+
+   // Dropdown Prevent From closing
+   $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
+      if (e.clickEvent) e.preventDefault();      
    });
 });

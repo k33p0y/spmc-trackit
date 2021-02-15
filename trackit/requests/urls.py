@@ -16,7 +16,6 @@ urlpatterns = [
    path('requests/<uuid:ticket_id>/detail', views.detail_ticket, name='detail_ticket'),
    path('requests/<uuid:ticket_id>/view', views.view_ticket, name='view_ticket'),
    path('requests/boards', views.boards, name='boards'),
-   path('requests/categories/json', views.get_category, name='get_category'),
    path('requests/track', views.ticket_log_list, name='ticket_log_list'),
    path('api/ticket/logs/', CRUDEventList.as_view()), # easyaudit_crudevent api
    path('api/requests/comments/', CommentListCreateAPIView.as_view(), name='list-create-comment'), # list/create comment api
