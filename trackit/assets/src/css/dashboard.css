@@ -20,3 +20,23 @@
 .card .card-body .card-label {
     font-size: 9px !important;
 }
+
+.card .card-wrap {
+   position: relative;
+   overflow: hidden;
+}
+
+.card .card-wrap .wrap-label {
+   color: #fd7e14 !important
+}
+
+.card .card-wrap .icon-overlay  {
+   text-decoration: inherit;
+   position: absolute;
+   font-size: 90px;
+   color: #fd7e14;
+   top: -14px;
+   right: 0;
+   transform: rotate(-20deg);
+   opacity: 0.1;
+}
