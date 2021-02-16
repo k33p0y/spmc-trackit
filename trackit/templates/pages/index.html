@@ -54,25 +54,71 @@
             </div>
          </div>
       </div>
-
+       
+      {% if user.is_superuser %}
       <div class="row">
-         <div class="col-12 col-lg-4">
+         <div class="col-12 col-lg-7 col-xl-8">
             <div class="card card-dash">
-               <div class="card-header p-2 pl-3 pr-3"> <span>Latest Users</span> </div>
+               <div class="card-header d-flex align-items-center p-2 pl-3 pr-3"> 
+                  <div class="card-title m-0"> Latest Requests </div>
+                  <div class="ml-auto">
+                     <a href="{% url 'create_ticket' %}" class="btn btn-xs btn-outline-secondary p-0 pl-2 pr-2" id="btn-create-list"><i class="fas fa-xs fa-plus"></i> <span class="d-none d-sm-inline ml-1 text-xs">Create Request</span></a>
+                  </div>
+               </div>
                <div class="card-body p-0">
+                  <table id="dt_requests" class="table" width="100%">
+                     <thead>
+                        <tr>
+                           <th>Ticket No</th>
+                           <th>Request Type</th>
+                           <th>Category</th>
+                           <th>Status</th>
+                           <th>Requested By</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% for ticket in tickets %}
+                        <tr>
+                           <td>{{ticket.ticket_no}}</td>
+                           <td><h6 class="m-0"><span class="badge p-1" style="background-color:{{ticket.request_form.color}}">{{ticket.request_form}}</span></h6></td>
+                           <td>{{ticket.category}}</td>
+                           <td>{{ticket.status}}</td>
+                           <td>{{ticket.requested_by}}</td>
+                        </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </div>
+               <div class="card-footer d-flex justify-content-end pt-2 pb-2">
+                  <a href="{% url 'ticket' %}" class="text-xs text-secondary align-self-center"> View All <i class="fas fa-caret-right"></i></a>
+               </div>
+            </div>
+         </div>
+
+         <!-- Users -->
+         <div class="col-12 col-lg-5 col-xl-4">
+            <div class="card card-dash">
+               <div class="card-header p-2 pl-3 pr-3"> 
+                  <div class="card-title m-0"> Latest Users</div> 
+               </div>
+               <div class="card-body p-1">
                   <div class="d-flex flex-wrap">
                      {% for user in users %}
                      <div class="col-3 item-col text-center p-2">
-                        <div class="item-image">{{user.first_name|make_list|first}}{{user.last_name|make_list|first}}</div>
-                        <p class="m-0">{{user}}</p>
-                        <small class="text-muted">{{user.date_joined|date:"d M"}}</small>
+                        <div class="item-image {% if user.is_staff %} staff {% endif %}">{{user.first_name|make_list|first}}{{user.last_name|make_list|first}}</div>
+                        <p class="item-name m-0 mt-1">{{user}}</p>
+                        <div class="item-date text-muted mt-1">{{user.date_joined|date:"d M"}}</div>
                      </div>
                      {% endfor %}
                   </div>
                </div>
+               <div class="card-footer d-flex justify-content-end pt-2 pb-2">
+                  <a href="{% url 'user_list' %}" class="text-xs text-secondary align-self-center"> View All <i class="fas fa-caret-right"></i></a>
+               </div>
             </div>
          </div>
       </div>
+      {% endif %}
 	</div>
 </section>
 <!-- /.content -->

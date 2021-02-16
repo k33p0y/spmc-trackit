@@ -8,9 +8,12 @@ from datetime import datetime
 
 @login_required
 def home(request):
-   today = datetime.now().date()
-   users = User.objects.filter(date_joined__lte=today, is_active=True, is_superuser=False).order_by('-date_joined')[:8]
-   return render(request, 'pages/index.html', {"users": users})
+   now = datetime.now().date()
+   users = User.objects.filter(date_joined__lte=now, is_active=True, is_superuser=False).order_by('-date_joined')[:8]
+   tickets = Ticket.objects.filter(date_created__lte=now, is_active=True, is_archive=False).order_by('-date_created')[:8]
+
+   context =  {"users": users, "tickets":tickets}
+   return render(request, 'pages/index.html', context)
 
 @login_required
 def group_list(request):

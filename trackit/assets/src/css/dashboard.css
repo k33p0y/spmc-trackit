@@ -41,22 +41,43 @@
    opacity: 0.1;
 }
 
-.card-dash .item-col .item-image {
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    margin: 0 auto;
-    text-align: center;
-    vertical-align: middle;
-    background-color: #fccfaa;
+.card-dash .card-title {
+   text-transform: capitalize !important;
+   color: #3e454d !important;   
 }
 
 .card-dash .item-col .item-image {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    margin: 0 auto;
+    background-color: #fccfaa;
     display: flex;
     justify-content: center;
     align-items: center;
     vertical-align: middle;
-    font-size: 32px;
+    font-size: 20px;
     font-weight: bold;
     color: #997867;
 }
+
+.card-dash .item-col .staff {
+   background-color: #997867 !important;
+   color: #fccfaa !important;
+}
+
+.card-dash .item-col .item-name {
+   font-size: 10px !important;
+}
+.card-dash .item-col .item-date {
+   font-size: 8px !important;
+}
+
+/* Disable Hover on datatable */
+.card-dash table.dataTable tbody tr:hover {
+   background-color: #ffffff;
+}
+  
+.card-dash table.dataTable tbody tr:hover > .sorting_1 {
+   background-color: #ffffff;
+ }
