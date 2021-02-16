@@ -24,6 +24,7 @@
 </section>
 
 <!-- /.content -->
+{% if user.is_superuser %}
 <section class="content">
    <div class="container-fluid">
 
@@ -68,7 +69,11 @@
    <input type="hidden" id="changeGroupHidden" value="{% if perms.auth.change_group %}true{% else %}false{% endif %}">
 
 </section>
-
+{% else %}
+<section class="content">
+   You don't have permission to view this page
+</section>
+{% endif %}
 {% endblock %}
 
 {% block modal %}

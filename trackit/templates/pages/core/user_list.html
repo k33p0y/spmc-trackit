@@ -24,9 +24,10 @@
 </section>
 
 <!-- /.content -->
+{% if user.is_superuser %}
 <section class="content">
    <div class="container-fluid">
-      
+
       <!-- Content Filters, Search and Create Section -->
       <div class="d-flex mb-1">
          <div class="dropdown dropdown-filter mr-2">
@@ -131,6 +132,11 @@
    <input type="hidden" id="changePasswordHidden" value="{% if perms.core.change_user_password %}true{% else %}false{% endif %}">
 
 </section>
+{% else %}
+<section class="content">
+   You don't have permission to view this page
+</section>
+{% endif %}
 {% endblock %}
 
 {% block modal %}

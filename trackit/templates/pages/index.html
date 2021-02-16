@@ -30,24 +30,24 @@
       
       <div class="row">
          <div class="col-12">
-            <div class="card shadow-sm">
-               <div class="card-body p-3 card-wrap">
+            <div class="card card-wrap shadow-sm">
+               <div class="card-body p-3">
                   <div>
                      <p class="text-xs font-weight-bold text-uppercase mb-2 wrap-label">OVERVIEW</p>
                      <h6 class="font-weight-bold m-0">Track-it Web Application System</h6>
-                     <small>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus totam commodi fugit facere cum eos voluptate doloremque voluptates sunt, fuga voluptatem recusandae molestias omnis nisi. Suscipit unde nesciunt quam dicta!</small>
+                     <small class="text-muted">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus totam commodi fugit facere cum eos voluptate doloremque voluptates sunt, fuga voluptatem recusandae molestias omnis nisi. Suscipit unde nesciunt quam dicta!</small>
                   </div>
                   <div class="icon-overlay"><i class="fas fa-thumbtack"></i></div>
                </div>
             </div>
          </div>
          <div class="col-12">
-            <div class="card shadow-sm">
-               <div class="card-body p-3 card-wrap">
+            <div class="card card-wrap shadow-sm">
+               <div class="card-body p-3">
                   <div>
                      <p class="text-xs font-weight-bold text-uppercase mb-2 wrap-label">DEVELOPER</p>
                      <h6 class="font-weight-bold m-0">Integrated Hospital Operations and Management Program (IHOMP)</h6>
-                     <small>Software and Systems Development Unit (SSD)</small>
+                     <small class="text-muted">Software and Systems Development Unit (SSD)</small>
                   </div>
                   <div class="icon-overlay"><i class="fas fa-laptop-code"></i></div>
                </div>
@@ -55,104 +55,24 @@
          </div>
       </div>
 
-		<div class="dashcards">
-			<!-- Default box -->
-			<div class="row">
-				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-					<a href="#" class>
-						<div class="card text-center p-3">
-							<p class="card-title">Users</p>
-							<div class="card-body m-0 p-0 row">
-								<div class="col-4">
-									<span class="card-no">{{ userActiveCount }}</span>
-									<p class="card-label m-0">Active Userss</p>
-								</div>
-								<div class="col-4">
-									<span class="card-no">{{ userInactiveCount }}</span>
-									<p class="card-label m-0">Inactive Users</p>
-								</div>
-								<div class="col-4">
-									<span class="card-no">{{ userCount }}</span>
-									<p class="card-label m-0">Total Users</p>
-								</div>
-							</div>
-						</div>
-					</a>
-				</div>
-				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
-					<a href="#" class>
-						<div class="card text-center p-3">
-							<p class="card-title">Requests</p>
-							<div class="card-body m-0 p-0 row">
-								<div class="col-2">
-									<span class="card-no">500</span>
-									<p class="card-label m-0">Served</p>
-								</div>
-								<div class="col-2">
-									<span class="card-no">354</span>
-									<p class="card-label m-0">Pending</p>
-								</div>
-								<div class="col-2">
-									<span class="card-no">125</span>
-									<p class="card-label m-0">Department</p>
-								</div>
-								<div class="col-2">
-									<span class="card-no">500</span>
-									<p class="card-label m-0">Category</p>
-								</div>
-								<div class="col-2">
-									<span class="card-no">{{ requestFormCount }}</span>
-									<p class="card-label m-0">Total Forms</p>
-								</div>
-								<div class="col-2">
-									<span class="card-no">{{ ticketCount }}</span>
-									<p class="card-label m-0">Total Tickets</p>
-								</div>
-							</div>
-						</div>
-					</a>
-				</div>
-				<!-- <div class="col-xs-12 col-sm-6 col-md-3 col-lg-4">
-					<a href="#" class>
-						<div class="card text-center p-3">
-							<p class="card-title">Forms</p>
-							<div class="card-body m-0 p-0 row">
-								<div class="col-4">
-									<span class="card-no">10</span>
-									<p class="card-label m-0">Total Users</p>
-								</div>
-								<div class="col-4">
-									<span class="card-no">10</span>
-									<p class="card-label m-0">Total Users</p>
-								</div>
-								<div class="col-4">
-									<span class="card-no">10</span>
-									<p class="card-label m-0">Total Users</p>
-								</div>
-							</div>
-						</div>
-					</a>
-				</div> -->
-			</div>
-         
-			<div class="row">
-				<div class="col-md-8">
-					<div class="card mt-2 mb-2">
-						<div class="card-body p-0">
-							<p class="text-center" style="margin-top: 10px;">REQUESTS</p>
-							<table id="dt_requests" class="table table-hover" width="100%">
-							<thead>
-								<tr>
-									<th>Ticket No</th>
-									<th>Status</th>
-								</tr>
-							</thead>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+      <div class="row">
+         <div class="col-12 col-lg-4">
+            <div class="card card-dash">
+               <div class="card-header p-2 pl-3 pr-3"> <span>Latest Users</span> </div>
+               <div class="card-body p-0">
+                  <div class="d-flex flex-wrap">
+                     {% for user in users %}
+                     <div class="col-3 item-col text-center p-2">
+                        <div class="item-image">{{user.first_name|make_list|first}}{{user.last_name|make_list|first}}</div>
+                        <p class="m-0">{{user}}</p>
+                        <small class="text-muted">{{user.date_joined|date:"d M"}}</small>
+                     </div>
+                     {% endfor %}
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
 	</div>
 </section>
 <!-- /.content -->

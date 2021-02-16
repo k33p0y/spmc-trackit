@@ -4,24 +4,13 @@ from django.contrib.auth.models import Permission, Group
 from core.models import User
 from requests.models import Ticket, RequestForm
 
+from datetime import datetime
+
 @login_required
 def home(request):
-   userCount = User.objects.all().count()
-   userActiveCount = User.objects.filter(is_active=True).count()
-   userInactiveCount = User.objects.filter(is_active= False).count()
-   ticketCount = Ticket.objects.all().count()
-   ticketActiveCount = Ticket.objects.filter(is_active=True).count()
-   ticketInactiveCount = Ticket.objects.filter(is_active=False).count()
-   requestFormCount = RequestForm.objects.all().count()
-   return render(request, 'pages/index.html', {
-      'userCount': userCount,
-      'userActiveCount': userActiveCount,
-      'userInactiveCount': userInactiveCount,
-      'ticketCount': ticketCount,
-      'ticketActiveCount': ticketActiveCount,
-      'ticketInactiveCount': ticketInactiveCount,
-      'requestFormCount': requestFormCount
-   })
+   today = datetime.now().date()
+   users = User.objects.filter(date_joined__lte=today, is_active=True, is_superuser=False).order_by('-date_joined')[:8]
+   return render(request, 'pages/index.html', {"users": users})
 
 @login_required
 def group_list(request):

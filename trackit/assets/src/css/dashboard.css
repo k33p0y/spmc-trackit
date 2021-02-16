@@ -21,16 +21,16 @@
     font-size: 9px !important;
 }
 
-.card .card-wrap {
+.card-wrap .card-body {
    position: relative;
    overflow: hidden;
 }
 
-.card .card-wrap .wrap-label {
+.card-wrap .card-body .wrap-label {
    color: #fd7e14 !important
 }
 
-.card .card-wrap .icon-overlay  {
+.card-wrap .card-body .icon-overlay  {
    text-decoration: inherit;
    position: absolute;
    font-size: 90px;
@@ -39,4 +39,24 @@
    right: 0;
    transform: rotate(-20deg);
    opacity: 0.1;
+}
+
+.card-dash .item-col .item-image {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    margin: 0 auto;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #fccfaa;
+}
+
+.card-dash .item-col .item-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    font-size: 32px;
+    font-weight: bold;
+    color: #997867;
 }
