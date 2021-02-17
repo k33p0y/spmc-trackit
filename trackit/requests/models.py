@@ -19,7 +19,7 @@ class RequestForm(models.Model):
     color = models.CharField(max_length=10, blank=True)
     status = models.ManyToManyField(Status, related_name='forms', blank=True, through='RequestFormStatus')
     fields = JSONField()
-    group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
+    group = models.ManyToManyField(Group, related_name='groups', blank=True)
     is_active = models.BooleanField(default=True)
     is_archive = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
