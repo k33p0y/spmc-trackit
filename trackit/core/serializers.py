@@ -4,18 +4,14 @@ from rest_framework import serializers
 from django.contrib.auth.models import Group, Permission
 from .models import User
 
-class GroupSerializer(serializers.ModelSerializer):
-   user_count = serializers.SerializerMethodField()
-
-   def get_user_count(self, obj):
-      return obj.user_set.count()
+class GroupReadOnlySerializer(serializers.ModelSerializer):
 
    class Meta:
       model = Group
-      fields = ['id', 'name', 'permissions', 'user_count']
+      fields = ['id', 'name']
         
 class UserSerializer(serializers.ModelSerializer):
-    groups = GroupSerializer(many=True)
+    groups = GroupReadOnlySerializer(many=True, read_only=True)
 
     def create(self, validated_data):
         user = User(
@@ -89,3 +85,12 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.save() 
         return instance
 
+class GroupSerializer(serializers.ModelSerializer):
+   user_count = serializers.SerializerMethodField()
+
+   def get_user_count(self, obj):
+      return obj.user_set.count()
+
+   class Meta:
+      model = Group
+      fields = ['id', 'name', 'permissions', 'user_count']

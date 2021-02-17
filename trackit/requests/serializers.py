@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from config.models import Department, Status
 from core.models import User
+from core.serializers import GroupReadOnlySerializer
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer
 from django.db import transaction
 from easyaudit.models import CRUDEvent
@@ -21,6 +22,7 @@ class RequestFormStatusSerializer(serializers.ModelSerializer):
 class RequestFormSerializer(serializers.ModelSerializer):
    color = serializers.CharField(required=True, max_length=10)
    status = RequestFormStatusSerializer(source="requestformstatus_set", many=True, read_only=True)
+   group = GroupReadOnlySerializer(many=True, read_only=True)
 
    class Meta:
       model = RequestForm

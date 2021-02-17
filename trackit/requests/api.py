@@ -48,18 +48,16 @@ class RequestFormViewSet(viewsets.ModelViewSet):
          return qs
 
    def create(self, request):
-      request_form = RequestForm(
-         name = request.data['name'], 
-         color = request.data['color'],
-         is_active = request.data['is_active'], 
-         is_archive = request.data['is_archive'], 
-         fields = request.data['fields']
-      )
-      request_form.save()
+      name = request.data['name']
+      color = request.data['color']
+      is_active = request.data['is_active']
+      fields = request.data['fields']
+
+      request_form = RequestForm.objects.create(name=name, color=color, is_active=is_active, fields=fields)
       request_form.group.add(*request.data['groups'])
       
       for stat in request.data['status']:
-         form_status = RequestFormStatus(
+         RequestFormStatus.objects.create(
             status_id = stat['status'], 
             order = stat['order'], 
             is_client_step = stat['is_client'],
@@ -67,7 +65,6 @@ class RequestFormViewSet(viewsets.ModelViewSet):
             has_pass_fail = stat['has_pass_fail'],
             form = request_form
          )
-         form_status.save()         
 
       serializer = RequestFormSerializer(request_form)
       return Response(serializer.data)
@@ -79,13 +76,15 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       request_form.color = request.data['color']
       request_form.fields = request.data['fields']
       request_form.is_active = request.data['is_active']
-      request_form.is_archive = request.data['is_archive']
       request_form.save()
+
+      request_form.group.clear()
+      request_form.group.add(*request.data['groups'])
 
       RequestFormStatus.objects.filter(form=pk).delete()
       
       for stat in request.data['status']:
-         form_status = RequestFormStatus(
+         RequestFormStatus.objects.create(
             status_id = stat['status'], 
             order = stat['order'], 
             is_client_step = stat['is_client'],
@@ -93,7 +92,6 @@ class RequestFormViewSet(viewsets.ModelViewSet):
             has_pass_fail = stat['has_pass_fail'],
             form = request_form
          )
-         form_status.save()
 
       serializer = RequestFormSerializer(request_form)
       return Response(serializer.data)

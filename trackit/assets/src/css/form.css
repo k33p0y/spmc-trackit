@@ -55,3 +55,26 @@
 .has-error .select2-selection {
    border-color: rgb(185, 74, 72) !important;
 }
+
+.color-palette {
+   width: 25px;
+   height: 25px;
+   transition: all 0.1s ease-in-out;
+}
+
+.color-palette:hover {
+   filter: brightness(85%);
+   transform: rotate(-10deg);
+}
+
+.yale {background-color: #104C92;}
+.sapphire {background-color: #0B54BC;}
+.maya {background-color: #73C2FB;}
+.jungle {background-color: #29AB89;}
+.pine {background-color: #01796F;}
+.cider {background-color: #B4652A;}
+.peanut {background-color: #946e38;}
+.persian {background-color: #cf4949;}
+.redwood {background-color: #bd5f5f;}
+.grape {background-color: #6F2DA9;}
+.royal {background-color: #845baf;}

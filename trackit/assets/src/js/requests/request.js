@@ -40,7 +40,7 @@ $(document).ready(function () {
             data: "request_form",
             render: function (data, type, row) {
                if (type == 'display') {
-                  data = `<span class="td-badge" style="background-color:${row.request_form.color}">${row.request_form.name}</span>`
+                  data = `<span class="td-badge text-light" style="background-color:${row.request_form.color}">${row.request_form.name}</span>`
                }
                return data
             }

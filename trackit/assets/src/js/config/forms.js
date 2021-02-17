@@ -8,10 +8,11 @@ $(document).ready(function () {
    let action_type, url;
    let alert_msg = '';
 
-   // Spectrum Picker
-   $('#txt_color').spectrum({
-      type: "text",
-      showPalette: false,
+   // Colors
+   $('.color-palette').click(function () {
+      let bg_color = $(this).css('background-color');
+      let hex = rgb2hex(bg_color);
+      $('#txt_color').val(hex).css('background-color', bg_color).addClass('text-light')
    });
 
    // Status Select2 Config
@@ -118,12 +119,7 @@ $(document).ready(function () {
 
    // Get Checkbox State
    $('#chk_status').click(function () {
-      if ($(this).prop("checked") == true) {
-         chk_status = true;
-      }
-      else if ($(this).prop("checked") == false) {
-         chk_status = false;
-      }
+      chk_status = ($(this).prop("checked") == true) ? true : false;
    });
 
    var counter = 4;
@@ -165,7 +161,7 @@ $(document).ready(function () {
       $(".modal-title").text('New Form');
       $("#btn_delete").hide()
       $('#txt_typename').val('');
-      $('#txt_color').val('');
+      $('#txt_color').val('').css('background-color', 'unset').removeClass('text-light');
       $("#select2-groups").val([]).trigger('change');
       $('#txt_json').val(JSON.stringify(samp_json));
 
@@ -190,7 +186,9 @@ $(document).ready(function () {
       const dt_data = table.row($(this).parents('tr')).data();
       const id = dt_data['id'];
       const status = dt_data['status'];
-
+      const groups = new Array();
+      dt_data['group'].forEach( group => groups.push(group.id));
+      
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
       url = `/api/requests/forms/${id}/`;
@@ -206,8 +204,8 @@ $(document).ready(function () {
 
       // Populate Fields
       $('#txt_typename').val(dt_data['name']);
-      $('#txt_color').val(dt_data['color']);
-      $('#select2-groups').val(dt_data['group']).trigger('change');
+      $('#txt_color').val(dt_data['color']).css('background-color', dt_data['color']).addClass('text-light');
+      $('#select2-groups').val(groups).trigger('change');
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
       setStatusOrder(status)
 
@@ -229,7 +227,6 @@ $(document).ready(function () {
          data.status = getStatusRowValues();
          data.fields = JSON.parse($('#txt_json').val());
          data.is_active = chk_status;
-         data.is_archive = false;
 
          axios({
             method: action_type,
@@ -451,4 +448,12 @@ function validateForms() {
    });
 
    return success;
+}
+
+function rgb2hex(bg_color){
+   var rgb = bg_color.replace(/\s/g,'').match(/^rgba?\((\d+),(\d+),(\d+)/i);
+   return (rgb && rgb.length === 4) ? "#" +
+    ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+    ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+    ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : bg_color;
 }
