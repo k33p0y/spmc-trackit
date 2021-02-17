@@ -121,7 +121,7 @@
                   <div class="card card-form mt-2 mb-1">
                      <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
                         <div class="card-header p-2">
-                           <div class="card-title">Request Details I</div>
+                           <div class="card-title">Request Details</div>
                         </div>
                      </a>
                      <div id="collapseDetails" class="collapse show">
@@ -153,12 +153,13 @@
                   </div>
                </div>
             </div>
+            {% if user.is_staff %}
             <div class="row" id="row-field">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
                      <a href="#collapseFields" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFields">
                         <div class="card-header p-2">
-                           <div class="card-title">Request Details II</div>
+                           <div class="card-title">Request Details</div>
                         </div>
                      </a>
                      <div id="collapseFields" class="collapse show">
@@ -184,12 +185,13 @@
                   </div>
                </div>
             </div>
+            {% endif %}
             <div class="row" id="row-field-admin">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
                      <a href="#collapseFieldsAdmin" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFieldsAdmin">
                         <div class="card-header p-2">
-                           <div class="card-title">Request Details III (To be filled by IHOMP)</div>
+                           <div class="card-title">Request Details</div>
                         </div>
                      </a>
                      <div id="collapseFieldsAdmin" class="collapse show">
@@ -251,8 +253,8 @@
             <div class="row pt-2 pb-5" id="row-buttons">
                <div class="col-12">
                   <div class="form-actions mt-2 d-flex flex-row-reverse">
-                     <button type="submit" class="btn btn-sm btn-orange" id="btn_update" data-ticket-id="{{ticket.ticket_id}}"><span>Save</span></button>
-                     <button type="submit" class="btn btn-sm btn-light"><span>Save and continue editing</span></button>
+                     <button type="submit" class="btn btn-sm btn-orange pl-3 pr-3" id="btn_update" data-ticket-id="{{ticket.ticket_id}}"><span>Save</span></button>
+                     <!-- <button type="submit" class="btn btn-sm btn-light"><span>Save and continue editing</span></button> -->
                      <a href="{% url 'ticket' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
                   </div>
                </div>
