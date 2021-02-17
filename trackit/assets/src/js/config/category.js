@@ -19,6 +19,7 @@ $(document).ready(function () {
       "autoWidth": false,
       "serverside": true,
       "processing": true,
+      "pageLength": 20,
       "ajax": {
          url: '/api/config/category/?format=datatables',
          type: "GET",

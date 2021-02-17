@@ -211,6 +211,6 @@ $(document).ready(function () {
    $('#dt_category_types').on('click', '.btn_restore', function () {
       let dt_data = tbl_types.row($(this).parents('tr')).data();
       let id = dt_data['id'];
-      restoreData(`/api/config/types/${id}/`, tbl_types)
+      restoreData(`/api/config/categorytype/${id}/`, tbl_types)
    });
 });

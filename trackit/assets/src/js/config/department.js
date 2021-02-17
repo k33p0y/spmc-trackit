@@ -18,7 +18,7 @@ $(document).ready(function () {
       "autoWidth": false,
       "serverside": true,
       "processing": true,
-      "pageLength": 4,
+      "pageLength": 20,
       "ajax": {
          url: '/api/config/department/?format=datatables',
          type: "GET",
