@@ -14,11 +14,18 @@ $(document).ready(function () {
       showPalette: false,
    });
 
-   // Select2 Config
+   // Status Select2 Config
    $('.select2_status').select2({
       allowClear: true,
       placeholder: 'Select Status',
       // cache: true,
+   });
+
+   // Groups Select2 Config
+   $('#select2-groups').select2({
+      allowClear: true,
+      placeholder: 'Select Groups',
+      cache: true,
    });
 
    // clear form status select2 field on modal close
@@ -142,14 +149,13 @@ $(document).ready(function () {
 
       let samp_json = [{
          "title": "",
-         "fields": [
+         "form_field": [
             {
                "id": "",
-               "name": null,
-               "size": "",
                "type": "",
-               "answer": null,
-               "option": null
+               "value" : null,
+               "option": null,
+               "required" : false
             }
          ],
          "is_admin": true
@@ -160,6 +166,7 @@ $(document).ready(function () {
       $("#btn_delete").hide()
       $('#txt_typename').val('');
       $('#txt_color').val('');
+      $("#select2-groups").val([]).trigger('change');
       $('#txt_json').val(JSON.stringify(samp_json));
 
       const form_wrapper = $('.form-row-extras').empty();
@@ -200,6 +207,7 @@ $(document).ready(function () {
       // Populate Fields
       $('#txt_typename').val(dt_data['name']);
       $('#txt_color').val(dt_data['color']);
+      $('#select2-groups').val(dt_data['group']).trigger('change');
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
       setStatusOrder(status)
 
@@ -212,68 +220,17 @@ $(document).ready(function () {
       e.preventDefault();
 
       // Variables
-      let success = 0;
-      const data = new Object()
-
-      // Data
-      data.name = $('#txt_typename').val();
-      data.color = $('#txt_color').val();
-      data.status = getStatusRowValues();
-      data.fields = JSON.parse($('#txt_json').val());
-      data.is_active = chk_status;
-      data.is_archive = false;
-
-      // Validation for typename
-      let nameInput = false;
-      let name_message = $('#txt_typename').siblings('small');
-      let name_input = name_message.siblings('input');
-      if ($('#txt_typename').val() == '') {
-         name_input.addClass('form-error');
-         name_message.html('*This field cannot be empty');
-      } else {
-         name_input.removeClass('form-error');
-         name_message.html('');
-         nameInput = true;
-      }
-
-      // Validation for color
-      let colorInput = false;
-      let color_message = $('#txt_color').parent().siblings('small');
-      let color_input = color_message.siblings('span').children('input');
-      if ($('#txt_color').val() == '') {
-         color_input.addClass('form-error');
-         color_message.html('*This field cannot be empty');
-      } else {
-         color_input.removeClass('form-error');
-         color_message.html('');
-         colorInput = true;
-      }
-
-      // Validation for status and order
-      let statusOrderInput = false;
-      const form_row = $(".form-wrapper div.form-row");
-   
-      form_row.each(function () {
-         const status = $(this).find('div.form-group select');
-         const order = $(this).find('div.form-group input');
-   
-         if (status.val() != '' && order.val() != '') {
-            $(this).find('div.form-group').removeClass('has-error');;
-            $(this).find('.txt_order').removeClass('form-error');
-            $(this).find('div.form-group').find('.status-error').html('');
-            statusOrderInput = true;
-         } else {
-            $(this).find('div.form-group').addClass('has-error');
-            $(this).find('.txt_order').addClass('form-error');
-            $(this).find('div.form-group').find('.status-error').html('*This field row cannot be empty');
-         }
-      });
-
-
-      if(nameInput && colorInput && statusOrderInput) { success = 1; }
-
-      // // Form is Valid
+      let success = validateForms();
       if (success == 1) {
+         const data = new Object()
+         data.name = $('#txt_typename').val();
+         data.color = $('#txt_color').val();
+         data.groups = $('#select2-groups').val();
+         data.status = getStatusRowValues();
+         data.fields = JSON.parse($('#txt_json').val());
+         data.is_active = chk_status;
+         data.is_archive = false;
+
          axios({
             method: action_type,
             url: url,
@@ -286,29 +243,30 @@ $(document).ready(function () {
             });
             $('#formModal').modal('toggle');
             $("#form").trigger("reset");
+            $('#select2_groups').val([]).trigger('change');
             $('#select2_status').val([]).trigger('change');
             table.ajax.reload();
          }).catch(function (error) { // error
             if (error.response.data.name) {
                $('#txt_typename').addClass('form-error');
-               $('.name-error').html(`* ${error.response.data.name}`)
+               $('#name_error').html(`* ${error.response.data.name}`)
             } else {
                $('#txt_typename').removeClass('form-error');
-               $('.name-error').html('')
+               $('#name_error').html('')
             }
             if (error.response.data.color) {
                $('#txt_color').addClass('form-error');
-               $('.color-error').html(`* ${error.response.data.color}`)
+               $('#color_error').html(`* ${error.response.data.color}`)
             } else {
                $('#txt_color').removeClass('form-error');
-               $('.color-error').html('')
+               $('#color_error').html('')
             }
             Toast.fire({
                icon: 'error',
                title: error,
             });
          });
-      };
+      } 
    });
 
    // DELETE / PATCH
@@ -451,4 +409,46 @@ function setStatusOrder(status) {
 
       counter++;
    });
+}
+
+function validateForms() {
+   var success = 1;
+
+   // Validate Request Details
+   if ($('#txt_typename').val() == '') {
+      $('#txt_typename').addClass('form-error');
+      $('#name_error').html('*This field cannot be empty')
+      success--;
+   } else {
+      $('#txt_typename').removeClass('form-error');
+      $('#name_error').html('');
+   }
+   
+   if ($('#txt_color').val() == '') {
+      $('#txt_color').addClass('form-error');
+      $('#color_error').html('*This field cannot be empty')
+      success--;
+   } else {
+      $('#txt_color').removeClass('form-error');
+      $('#color_error').html('');
+   }
+
+   const form_row = $(".form-wrapper div.form-row");
+   form_row.each(function () {
+      const status = $(this).find('div.form-group select');
+      const order = $(this).find('div.form-group input');
+
+      if (status.val() != '' && order.val() != '') {
+         $(this).find('div.form-group').removeClass('has-error');;
+         $(this).find('.txt_order').removeClass('form-error');
+         $(this).find('div.form-group').find('.status-error').html('');
+      } else {
+         $(this).find('div.form-group').addClass('has-error');
+         $(this).find('.txt_order').addClass('form-error');
+         $(this).find('div.form-group').find('.status-error').html('*This field row cannot be empty');
+         success--;
+      }
+   });
+
+   return success;
 }

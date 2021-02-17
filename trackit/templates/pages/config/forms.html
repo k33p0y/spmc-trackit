@@ -133,26 +133,35 @@
                </nav>
 
                <div class="tab-content" id="nav-tabContent">
-                  <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="nav-home-tab">
-
-                     <div class="form-group">
+                  <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="nav-home-tab">           
+                     <div class="form-group"> <!-- Name -->
                         <label>Name</label>
                         <input type="text" class="form-control form-control-sm" id="txt_typename"
                            placeholder="Enter form name">
-                        <small class="error-info name-error"></small>
-                     </div>
-                     <div class="form-group">
+                        <small class="error-info" id="name_error"></small>
+                     </div>          
+                     <div class="form-group"> <!-- Color -->
                         <label>Color</label>
                         <input type="text" class="form-control form-control-sm" id="txt_color"
                            placeholder="Choose color">
-                        <small class="error-info color-error"></small>
+                        <small class="error-info" id="color_error"></small>
                      </div>
-
-                     <div class="icheck-material-green m-0">
+                     <div class="form-group m2m-group"> <!-- Groups -->
+                        <label>Groups</label>
+                        <select class="form-control form-control-sm" id="select2-groups" style="width: 100%" multiple>
+                           <option></option>
+                           {% for group in groups %}
+                           <option value={{group.id}}>{{group}}</option>
+                           {% endfor %}
+                        </select>
+                        <small class="error-info"></small>
+                     </div>
+                     <div class="icheck-material-green m-0">  <!-- Is Active -->
                         <input type="checkbox" id="chk_status" checked />
                         <label for="chk_status">Is Active</label>
-                     </div>
+                     </div>                    
                   </div>
+                  <!-- Status Tab -->
                   <div class="tab-pane fade" id="status" role="tabpanel" aria-labelledby="nav-profile-tab">
                      <div class="form-row">
                         <div class="col-4"><label>Status/Step Name</label></div>
@@ -168,7 +177,7 @@
                            <div class="form-group col-4">
                               <select class="form-control form-control-sm select2_status" style="width: 100%">
                                  <option></option>
-                                 {% for status in status_qs %}
+                                 {% for status in statuses %}
                                  <option value={{status.id}}> {{status}}
                                  </option>
                                  {% endfor %}
@@ -208,6 +217,7 @@
                         <span>Add a another status/step</span>
                      </button>
                   </div>
+                  <!-- JSON Field -->
                   <div class="tab-pane fade" id="fields" role="tabpanel" aria-labelledby="nav-contact-tab">
                      <div class="form-group">
                         <label>JSON</label>
@@ -241,7 +251,7 @@
          <div class="form-group col-4">
             <select class="form-control form-control-sm select2_status" style="width: 100%">
                <option></option>
-               {% for status in status_qs %}
+               {% for status in statuses %}
                <option value={{status.id}}>{{status}}</option>
                {% endfor %}
             </select>
@@ -291,7 +301,7 @@
                <div class="form-group col-4">
                   <select class="form-control form-control-sm select2_status" id="status_${counter}" style="width: 100%">
                      <option></option>
-                     {% for status in status_qs %}
+                     {% for status in statuses %}
                      <option value={{status.id}}>{{status}}</option>
                      {% endfor %}
                   </select>

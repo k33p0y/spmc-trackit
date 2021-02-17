@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.contrib.auth.models import Group
 
 from .models import CategoryType, Status
 from core.models import User
@@ -24,8 +25,9 @@ def types(request):
 
 @login_required
 def forms(request):
-   status_qs = Status.objects.filter(is_active=True, is_archive=False)
-   context = {'status_qs': status_qs}
+   statuses = Status.objects.filter(is_active=True, is_archive=False)
+   groups = Group.objects.all()
+   context = {'statuses': statuses, 'groups': groups}
    return render(request, 'pages/config/forms.html', context)
 
 @login_required

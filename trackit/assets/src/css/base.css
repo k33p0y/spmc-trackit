@@ -384,7 +384,7 @@ table.dataTable tbody tr:hover {
 }
 
 .error-info {
-   color: #dc3545;
+   color: #dc3545 !important;
 }
 
 .form-group {

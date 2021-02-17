@@ -24,7 +24,7 @@ class RequestFormSerializer(serializers.ModelSerializer):
 
    class Meta:
       model = RequestForm
-      fields = ['id', 'name', 'color', 'date_created', 'date_modified', 'fields', 'is_active', 'is_archive', 'status']
+      fields = ['id', 'name', 'color', 'date_created', 'date_modified', 'fields', 'is_active', 'is_archive', 'status', 'group']
       depth = 1
 
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):

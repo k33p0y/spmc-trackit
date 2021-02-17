@@ -1,6 +1,7 @@
 from rest_framework import generics, viewsets, permissions, serializers
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
 from django.db.models import Q
 
@@ -37,7 +38,7 @@ class RequestFormViewSet(viewsets.ModelViewSet):
          return RequestForm.objects.none()
       else:
          # Queryset
-         qs = RequestForm.objects.select_related('group').order_by('-id')
+         qs = RequestForm.objects.all().order_by('-id')
 
          # Parameters
          if search: qs = qs.filter(name__icontains=search)
@@ -47,23 +48,26 @@ class RequestFormViewSet(viewsets.ModelViewSet):
          return qs
 
    def create(self, request):
-      name = request.data['name']
-      color = request.data['color']
-      fields = request.data['fields']
-      status_dict = request.data['status']
-      is_active = request.data['is_active']
-      is_archive = request.data['is_archive']
-
-      request_form = RequestForm.objects.create(name=name, color=color, fields=fields, is_active=is_active, is_archive=is_archive)
+      request_form = RequestForm(
+         name = request.data['name'], 
+         color = request.data['color'],
+         is_active = request.data['is_active'], 
+         is_archive = request.data['is_archive'], 
+         fields = request.data['fields']
+      )
       request_form.save()
-
-      for stat in status_dict:
-         status_id = stat['status']
-         order = stat['order']
-         is_client_step = stat['is_client']
-         has_pass_fail = stat['has_pass_fail']
-         has_approving = stat['has_approving']
-         RequestFormStatus(form=request_form, status_id=status_id, order=order, has_approving=has_approving, is_client_step=is_client_step, has_pass_fail=has_pass_fail).save()
+      request_form.group.add(*request.data['groups'])
+      
+      for stat in request.data['status']:
+         form_status = RequestFormStatus(
+            status_id = stat['status'], 
+            order = stat['order'], 
+            is_client_step = stat['is_client'],
+            has_approving = stat['has_approving'],
+            has_pass_fail = stat['has_pass_fail'],
+            form = request_form
+         )
+         form_status.save()         
 
       serializer = RequestFormSerializer(request_form)
       return Response(serializer.data)
@@ -79,15 +83,17 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       request_form.save()
 
       RequestFormStatus.objects.filter(form=pk).delete()
-      status_dict = request.data['status']
       
-      for stat in status_dict:
-         status_id = stat['status']
-         order = stat['order']
-         is_client_step = stat['is_client']
-         has_pass_fail = stat['has_pass_fail']
-         has_approving = stat['has_approving']
-         RequestFormStatus(form=request_form, status_id=status_id, order=order, has_approving=has_approving, is_client_step=is_client_step, has_pass_fail=has_pass_fail).save()
+      for stat in request.data['status']:
+         form_status = RequestFormStatus(
+            status_id = stat['status'], 
+            order = stat['order'], 
+            is_client_step = stat['is_client'],
+            has_approving = stat['has_approving'],
+            has_pass_fail = stat['has_pass_fail'],
+            form = request_form
+         )
+         form_status.save()
 
       serializer = RequestFormSerializer(request_form)
       return Response(serializer.data)
