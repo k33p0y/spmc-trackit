@@ -5,6 +5,8 @@ from django.db.models import Q
 from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer
 from .models import User
 
+import datetime
+
 # Users Viewset API
 class UserViewSet(viewsets.ModelViewSet):    
    serializer_class = UserSerializer
@@ -34,7 +36,7 @@ class UserViewSet(viewsets.ModelViewSet):
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
          if group: qs = qs.filter(groups__in=group)
          if date_from: qs = qs.filter(date_joined__gte=date_from)
-         if date_to: qs = qs.filter(date_joined__lte=date_to)
+         if date_to: qs = qs.filter(date_joined__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
 
          return qs
 

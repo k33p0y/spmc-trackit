@@ -8,7 +8,7 @@ from .serializers import RequestFormSerializer, RequestFormStatusSerializer, Tic
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from easyaudit.models import CRUDEvent
 
-import json, uuid
+import json, uuid, datetime
 
 # create notification method
 def create_notification(object_id, ticket):
@@ -134,7 +134,7 @@ class TicketViewSet(viewsets.ModelViewSet):
          if department: qs = qs.filter(department_id__exact=department)
          if status: qs = qs.filter(status_id__exact=status)
          if date_from: qs = qs.filter(date_created__gte=date_from)
-         if date_to: qs = qs.filter(date_created__lte=date_to)
+         if date_to: qs = qs.filter(date_created__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
          if status: qs = qs.filter(status_id__exact=status)
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
          if is_archive: qs = qs.filter(is_archive=json.loads(is_archive))
