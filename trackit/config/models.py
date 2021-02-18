@@ -45,6 +45,9 @@ class Remark(models.Model):
     ticket = models.ForeignKey('requests.Ticket', related_name='remarks', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='all_remarks', on_delete=models.CASCADE)
     log = models.ForeignKey(CRUDEvent, on_delete=models.CASCADE)
+    status = models.ForeignKey(Status, related_name='statuses', on_delete=models.CASCADE)
+    is_approve = models.BooleanField(null=True)
+    is_pass = models.BooleanField(null=True)
 
     def __str__(self):
         return self.remark

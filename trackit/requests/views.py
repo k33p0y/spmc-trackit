@@ -53,14 +53,23 @@ def view_ticket(request, ticket_id):
    formstatuses = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
 
-   for formstatus in formstatuses:
-      if(formstatus.status == ticket.status):
-         step = formstatuses.get(status_id=ticket.status)
-   
+   first_step = formstatuses.earliest('order')
    last_step = formstatuses.latest('order')
 
-   context = {'ticket': ticket, 'attachments':attachments, 'steps':formstatuses, 'step':step, 'last_step':last_step}
+   try: 
+      if first_step.is_client_step and first_step.has_approving:
+         remark = ticket.remarks.get(ticket_id=ticket_id, status_id=first_step.status_id)
+   except:
+      remark = None
+         
+
+   for formstatus in formstatuses:
+      if(formstatus.status == ticket.status): 
+         step = formstatuses.get(status_id=ticket.status)
+
+   context = {'ticket': ticket, 'attachments':attachments, 'steps':formstatuses, 'step':step, 'last_step':last_step, 'first_step':first_step, 'remark': remark}
    return render(request, 'pages/requests/ticket_view.html', context)
+
 # View Ticker End
 
 @login_required

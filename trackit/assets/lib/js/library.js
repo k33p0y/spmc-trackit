@@ -94,45 +94,6 @@ const fileSize = function(bytes) {
    return file_size;
 };
 
-// Post Action
-const postAction = function(ticket, status, remark) {
-   axios({
-       url:`/api/requests/lists/${ticket}/`,
-       method: "PATCH",
-       data: {status: status},
-       headers: axiosConfig,
-   }).then(function (response) { // success
-       let data = new Object();
-       data.ticket = response.data.ticket_id;
-       data.remark = remark;
-
-       axios({
-           method: 'POST',
-           url: `/api/config/remark/`,
-           data: data,
-           headers: axiosConfig,
-       }).then(function (res) {
-           socket.send(JSON.stringify({type: 'step_action', data: {ticket_id: ticket}}))
-           $.when(
-               Toast.fire({
-                   icon: 'success',
-                   title: 'Success',
-               }),
-               $('.overlay').removeClass('d-none')
-           ).then(function () {
-               $(location).attr('href', '/requests/lists')
-           });
-       });
-
-   }).catch(function (error) { // error
-       console.log(error);
-       Toast.fire({
-           icon: 'error',
-           title: error,
-       });
-   });
-};
-
 // Post Comments
 const getComments = function(ticket, next_page){
    let url = '/api/requests/comments/'
