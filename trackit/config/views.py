@@ -9,7 +9,7 @@ from requests.models import RequestForm
 # Create your views here.
 @login_required
 def department(request):
-   users = User.objects.filter(is_active=True, is_archive=False)
+   users = User.objects.filter(is_active=True)
    context = {'users': users}
    return render(request, 'pages/config/department.html', context)
 
