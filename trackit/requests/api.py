@@ -14,11 +14,14 @@ import json, uuid, datetime
 # create notification method
 def create_notification(object_id, ticket):
    log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
-   users = ticket.request_form.group.user_set.all()
-   # create notifications for users in selected group
-   for user in users:
-      if not log.user == user:
-         Notification(log=log, user=user).save()
+   groups = ticket.request_form.group.all()
+
+   for group in groups:
+      users = group.user_set.all()
+      # create notifications for users in selected group
+      for user in users:
+         if not log.user == user:
+            Notification(log=log, user=user).save()
    # create notification for department head
    if ticket.department.department_head:
       if not log.user == ticket.department.department_head:

@@ -69,16 +69,16 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 }
             )
 
-            # send notification to group
-            await self.channel_layer.group_send(
-                'notif_room_for_group_' + str(self.obj['group_id']),
-                # ('notif_room_for_group_%s' % self.obj['group_id']),
-                {
-                    'type': 'notification_message',
-                    'notification': self.obj,
-                    'sender_channel_name': self.channel_name
-                }
-            )
+            for group_id in self.obj['group_ids']:
+                # send notification to group
+                await self.channel_layer.group_send(
+                    'notif_room_for_group_' + str(group_id['id']),
+                    {
+                        'type': 'notification_message',
+                        'notification': self.obj,
+                        'sender_channel_name': self.channel_name
+                    }
+                )
         
         # COMMENT
         if text_data_json['type'] == 'comment':
@@ -118,7 +118,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         obj = dict()
         obj['ticket_id'] = str(ticket.pk)
         obj['ticket_no'] = ticket.ticket_no
-        obj['group_id'] = ticket.request_form.group.pk
+        obj['group_ids'] = list(ticket.request_form.group.values('id'))
         obj['dept_head_id'] = ticket.department.department_head.pk
         obj['actor'] = log.user.get_full_name()
         obj['notification_type'] = notification_type
