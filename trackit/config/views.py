@@ -9,13 +9,13 @@ from requests.models import RequestForm
 # Create your views here.
 @login_required
 def department(request):
-   users = User.objects.all()
+   users = User.objects.filter(is_active=True, is_archive=False)
    context = {'users': users}
    return render(request, 'pages/config/department.html', context)
 
 @login_required
 def category(request):
-   types = CategoryType.objects.all()
+   types = CategoryType.objects.filter(is_active=True, is_archive=False)
    context = {'types': types}
    return render(request, 'pages/config/category.html', context)
 
