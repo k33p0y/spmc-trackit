@@ -249,11 +249,14 @@ class CRUDEventList(generics.ListAPIView):
 
    def get_queryset(self):
       ticket_num = self.request.GET.get('tracking_num', None)
-
-      if not ticket_num or len(ticket_num) < 10: # if ticket number is less than 10 characters, return none
-         return CRUDEvent.objects.none()
-      else:
-         return CRUDEvent.objects.filter(object_id__icontains=ticket_num)
+      if ticket_num:
+         try:
+            ticket = Ticket.objects.get(ticket_no__iexact=ticket_num)
+            return CRUDEvent.objects.filter(object_id__endswith=str(ticket.ticket_id)[-12:])
+         except Ticket.DoesNotExist:
+            pass
+      return CRUDEvent.objects.none()
+         
 
 class NotificationViewSet(viewsets.ModelViewSet):
    serializer_class = NotificationSerializer

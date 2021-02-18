@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
    var getTrackingNum = function() {
-      let tracking_num = $('#txt_tracking_num').val();
+      let tracking_num = $('#search-input').val();
       if (!tracking_num) tracking_num = "None";
       return tracking_num
    }
