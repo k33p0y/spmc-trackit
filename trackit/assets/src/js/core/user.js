@@ -35,6 +35,7 @@ $(document).ready(function () {
       "columns": [
          { data: "first_name" },
          { data: "last_name" },
+         { data: "email" },
          { data: "username"},
          { 
             data: "null",
@@ -51,14 +52,6 @@ $(document).ready(function () {
             render: function (data, type, row) {
                datetime = moment(row.date_joined).format('MMM DD, YYYY h:mm a');
                data = `<p class="title mb-1">${datetime}</p>`
-               return data
-            },
-         },
-         { 
-            data: "groups",
-            render: function (data, type, row) {
-               data = '';
-               row.groups.forEach(group => {data = data + `<span class="badge badge-pill bg-orange p-1 mr-2" style="color:#fff !important">${group.name}</span>`})
                return data
             },
          },
@@ -130,8 +123,6 @@ $(document).ready(function () {
    $('#dt_user tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
-      let groups = new Array();
-      dt_data['groups'].forEach( group => groups.push(group.id));
       
       // Assign AJAX Action Type/Method and URL
       method = 'PUT';
@@ -156,7 +147,7 @@ $(document).ready(function () {
       if (dt_data['is_superuser']) $('#chk-superuser-status').prop('checked', true); else $('#chk-superuser-status').prop('checked', false); // IS SUPERUSER
       if (dt_data['is_staff']) $('#chk-staff-status').prop('checked', true); else $('#chk-staff-status').prop('checked', false); // IS STAFF
       if (dt_data['is_active']) $('#chk-active-status').prop('checked', true); else $('#chk-active-status').prop('checked', false); // IS ACTIVE
-      $('#select2-groups').val(groups).trigger('change'); // GROUPS
+      $('#select2-groups').val(dt_data['groups']).trigger('change'); // GROUPS
       $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
    });
 
