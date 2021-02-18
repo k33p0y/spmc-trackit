@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
-from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
+from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment, Status
 from easyaudit.models import CRUDEvent
 
 import json, uuid, datetime
@@ -14,11 +14,14 @@ import json, uuid, datetime
 # create notification method
 def create_notification(object_id, ticket):
    log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
-   users = ticket.request_form.group.user_set.all()
-   # create notifications for users in selected group
-   for user in users:
-      if not log.user == user:
-         Notification(log=log, user=user).save()
+   groups = ticket.request_form.group.all()
+
+   for group in groups:
+      users = group.user_set.all()
+      # create notifications for users in selected group
+      for user in users:
+         if not log.user == user:
+            Notification(log=log, user=user).save()
    # create notification for department head
    if ticket.department.department_head:
       if not log.user == ticket.department.department_head:
@@ -192,6 +195,7 @@ class TicketViewSet(viewsets.ModelViewSet):
       if files: 
          for file in files:
             Attachment(ticket_id=pk, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user).save()
+      create_notification(str(ticket.ticket_id), ticket) # create notification instance
       
       serializer = TicketSerializer(ticket)
       return Response(serializer.data)
@@ -201,6 +205,7 @@ class TicketViewSet(viewsets.ModelViewSet):
       serializer = TicketSerializer(ticket, data=request.data, partial=True)
       serializer.is_valid(raise_exception=True)
       serializer.save()
+      create_notification(str(ticket.ticket_id), ticket) # create notification instance
       return Response(serializer.data)
 
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
@@ -244,11 +249,14 @@ class CRUDEventList(generics.ListAPIView):
 
    def get_queryset(self):
       ticket_num = self.request.GET.get('tracking_num', None)
-
-      if not ticket_num or len(ticket_num) < 10: # if ticket number is less than 10 characters, return none
-         return CRUDEvent.objects.none()
-      else:
-         return CRUDEvent.objects.filter(object_id__icontains=ticket_num)
+      if ticket_num:
+         try:
+            ticket = Ticket.objects.get(ticket_no__iexact=ticket_num)
+            return CRUDEvent.objects.filter(object_id__endswith=str(ticket.ticket_id)[-12:])
+         except Ticket.DoesNotExist:
+            pass
+      return CRUDEvent.objects.none()
+         
 
 class NotificationViewSet(viewsets.ModelViewSet):
    serializer_class = NotificationSerializer
