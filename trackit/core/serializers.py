@@ -3,16 +3,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from django.contrib.auth.models import Group, Permission
 from .models import User
-
-class GroupReadOnlySerializer(serializers.ModelSerializer):
-
-   class Meta:
-      model = Group
-      fields = ['id', 'name']
         
 class UserSerializer(serializers.ModelSerializer):
-    groups = GroupReadOnlySerializer(many=True, read_only=True)
-
     def create(self, validated_data):
         user = User(
             username = validated_data['username'],
@@ -94,3 +86,10 @@ class GroupSerializer(serializers.ModelSerializer):
    class Meta:
       model = Group
       fields = ['id', 'name', 'permissions', 'user_count']
+      
+
+class GroupReadOnlySerializer(serializers.ModelSerializer):
+
+   class Meta:
+      model = Group
+      fields = ['id', 'name']
