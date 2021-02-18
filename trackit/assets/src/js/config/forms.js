@@ -48,7 +48,7 @@ $(document).ready(function () {
       "autoWidth": false,
       "serverside": true,
       "processing": true,
-      "pageLength": 25,
+      "pageLength": 20,
       "ajax": {
          url: '/api/requests/forms/?format=datatables',
          type: "GET",
