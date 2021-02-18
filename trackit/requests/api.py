@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
-from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
+from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment, Status
 from easyaudit.models import CRUDEvent
 
 import json, uuid, datetime
@@ -192,6 +192,7 @@ class TicketViewSet(viewsets.ModelViewSet):
       if files: 
          for file in files:
             Attachment(ticket_id=pk, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user).save()
+      create_notification(str(ticket.ticket_id), ticket) # create notification instance
       
       serializer = TicketSerializer(ticket)
       return Response(serializer.data)
@@ -201,6 +202,7 @@ class TicketViewSet(viewsets.ModelViewSet):
       serializer = TicketSerializer(ticket, data=request.data, partial=True)
       serializer.is_valid(raise_exception=True)
       serializer.save()
+      create_notification(str(ticket.ticket_id), ticket) # create notification instance
       return Response(serializer.data)
 
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
