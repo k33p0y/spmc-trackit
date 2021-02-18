@@ -7,12 +7,6 @@ $(document).ready(function () {
    let chk_status = true;
    let action_type, url;
    let alert_msg = '';
-
-   // Spectrum Picker
-   $('#txt_color').spectrum({
-      type: "text",
-      showPalette: false,
-   });
  
    // RETRIEVE / GET
    // List Table
