@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Q
 
 from config.models import Category, CategoryType, Department, Status
 from .models import Ticket, RequestForm, Attachment, RequestFormStatus
@@ -45,32 +46,26 @@ def detail_ticket(request, ticket_id):
    context = {'ticket': ticket, 'forms': forms, 'types': types, 'departments':departments, 'categories':categories, 'attachments':attachments, 'steps':formstatuses, 'step':step, 'last_step':last_step}
    return render(request, 'pages/requests/ticket_detail.html', context)
 
-# View Ticket Start
+
 @login_required
 def view_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
 
-   formstatuses = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
+   steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
 
-   first_step = formstatuses.earliest('order')
-   last_step = formstatuses.latest('order')
+   last_step = steps.latest('order')
 
-   try: 
-      if first_step.is_client_step and first_step.has_approving:
-         remark = ticket.remarks.get(ticket_id=ticket_id, status_id=first_step.status_id)
-   except:
-      remark = None
-         
+   for step in steps:
+      if step.status == ticket.status: 
+         curr_step = steps.get(status_id=ticket.status) 
 
-   for formstatus in formstatuses:
-      if(formstatus.status == ticket.status): 
-         step = formstatuses.get(status_id=ticket.status)
+      remarks = ticket.remarks.filter(ticket_id=ticket_id, status_id=step.status_id, is_approve=True) 
+      if step.is_client_step and step.has_approving: 
+         remark = remarks.earliest('id') if remarks else None
 
-   context = {'ticket': ticket, 'attachments':attachments, 'steps':formstatuses, 'step':step, 'last_step':last_step, 'first_step':first_step, 'remark': remark}
+   context = {'ticket': ticket, 'attachments':attachments, 'steps':steps, 'curr_step':curr_step, 'last_step':last_step, 'remark': remark}
    return render(request, 'pages/requests/ticket_view.html', context)
-
-# View Ticker End
 
 @login_required
 def boards(request):

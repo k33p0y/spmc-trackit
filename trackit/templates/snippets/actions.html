@@ -22,15 +22,15 @@
                       <textarea class="form-control" id="txtarea-remark" rows="2" placeholder="Write your remarks here"></textarea>
                       <small class="error-info" id="error-info-form"></small>
                    </div>
-                   {% if step.status != last_step.status or user.is_superuser %}
+                   {% if curr_step.status != last_step.status or user.is_superuser %}
                    <div class="d-flex flex-row-reverse">
-                     {% if step.has_approving %}
-                        {% if ticket.department.department_head == user and step.is_client_step or user.is_superuser %}
+                     {% if curr_step.has_approving %}
+                        {% if ticket.department.department_head == user and curr_step.is_client_step or user.is_superuser %}
                            <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}" data-approve="true"><span>Approve</span></button>
                            <button class="btn btn-danger btn-xs btn-refuse" type="button" data-ticket-id="{{ticket.ticket_id}}" data-approve="false"><span>Disapprove</span></button>
                         {% endif %}
-                     {% elif step.has_pass_fail %}
-                        {% if ticket.requested_by == user and step.is_client_step or user.is_superuser %}
+                     {% elif curr_step.has_pass_fail %}
+                        {% if ticket.requested_by == user and curr_step.is_client_step or user.is_superuser %}
                            <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}" data-pass="true"><span>Pass</span></button>
                            <button class="btn btn-danger btn-xs btn-refuse" type="button" data-ticket-id="{{ticket.ticket_id}}" data-pass="false"><span>Fail</span></button>
                         {% endif %}

@@ -60,7 +60,7 @@
                               <select class="form-control form-control-sm" id="dd_departments" style="width: 100%">
                                  <option></option>
                                  {% for department in departments %}
-                                 <option value={{department.id}}>{{department.name}}</option>
+                                 <option value={{department.id}}>{{department.name}} {% if department.department_head %} - {{department.department_head}}{% endif%}</option>
                                  {% endfor %}
                               </select>
                               <small class="error-info" id="error-info-department"></small>

@@ -173,13 +173,18 @@ $(document).ready(function () {
    $('#dd_types').on('change', function () { // category type dropdown
       category_type = $("#dd_types option:selected").val();
 
-      axios.get('/api/config/category', {params: {"category_type" : category_type}}, axiosConfig).then(res => {
+      axios.get('/api/config/category', {
+         params: {
+            "category_type" : category_type,
+            "is_archive:" : false
+         }
+      }, axiosConfig).then(res => {
          $("#dd_categories")
             .empty()
             .append('<option></option>')
             .removeAttr('disabled');
 
-         res.data.results.forEach(category => {
+         res.data.forEach(category => {
             $("#dd_categories").append(`<option value='${category.id}'>${category.name}</option>`)
          });
       });
