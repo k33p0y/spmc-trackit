@@ -57,6 +57,9 @@ $(document).ready(function () {
                if($('#deleteCategoryHidden').val() == 'true') {
                   data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
                }
+               if($('#changeCategoryHidden').val() != 'true' && $('#deleteCategoryHidden').val() != 'true') {
+                  data = data + "<span class='text-secondary action-link' data-toggle='tooltip' data-placement='bottom' title='No Action Aavailable'> <i class='fas fa-eye-slash'></i> </span>";
+               }
                return data
             },
          }

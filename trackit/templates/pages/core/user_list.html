@@ -4,6 +4,7 @@
 {% block title %} User {% endblock %}
 
 {% block content %}
+{% if request.user.is_superuser or request.user.is_staff %}
 <!-- Content Header -->
 <section class="content-header">
    <div class="container-fluid">
@@ -24,7 +25,7 @@
 </section>
 
 <!-- /.content -->
-{% if user.is_superuser %}
+{% if perms.core.view_user %}
 <section class="content">
    <div class="container-fluid">
 
@@ -97,7 +98,7 @@
             </div>
          </div>
          <div class="ml-auto">
-            {% if perms.cores.add_user %}
+            {% if perms.core.add_user %}
             <button class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-user"><i class="fas fa-xs fa-plus"></i> <span class="d-none d-sm-inline ml-1">Add User</span></button>
             {% endif %}
          </div>
@@ -133,9 +134,10 @@
 
 </section>
 {% else %}
-<section class="content">
-   You don't have permission to view this page
-</section>
+   <section class="content">
+      You don't have permission to view this page
+   </section>
+   {% endif %}
 {% endif %}
 {% endblock %}
 

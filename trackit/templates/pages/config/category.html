@@ -4,6 +4,7 @@
 {% block title %} Category {% endblock %}
 
 {% block content %}
+{% if request.user.is_superuser or request.user.is_staff %}
 <!-- Content Header -->
 <section class="content-header">
    <div class="container-fluid">
@@ -108,10 +109,11 @@
    <input type="hidden" id="deleteCategoryHidden" value="{% if perms.config.delete_category %}true{% else %}false{% endif %}">
 
 </section>
-{% else %}
-   <section class="content">
-      You don't have permission to view this page
-   </section>
+   {% else %}
+      <section class="content">
+         You don't have permission to view this page
+      </section>
+   {% endif %}
 {% endif %}
 {% endblock %}
 

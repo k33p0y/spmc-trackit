@@ -33,101 +33,104 @@
                </a>
             </li>
             {% endcomment %}
-
-            {% if request.user.is_superuser or perms.auth.view_group or perms.core.view_user %}
-            <li
-               class="nav-item {% if url == 'group_list' or url == 'user_list' %} menu-open {% endif %}">
-               <a href="#"
-                  class="nav-link {% if url == 'group_list' or url == 'user_list' %} active {% endif %}">
-                  <i class="nav-icon fas fa-users"></i>
-                  <p>
-                     Users & Groups
-                     <i class="right fas fa-angle-left"></i>
-                  </p>
-               </a>
-               <ul class="nav nav-treeview">
-                  {% if perms.auth.view_group %}
-                  <li class="nav-item">
-                     <a href="{% url 'user_list' %}" class="nav-link {% if url == 'user_list' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>User</p>
-                     </a>
-                  </li>
-                  {% endif %}
-                  {% if perms.auth.view_group %}
-                  <li class="nav-item">
-                     <a href="{% url 'group_list' %}" class="nav-link {% if url == 'group_list' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Group</p>
-                     </a>
-                  </li>
-                  {% endif %}
-               </ul>
-            </li>
+            {% if request.user.is_superuser or request.user.is_staff %}
+               {% if perms.auth.view_group or perms.core.view_user %}
+               <li
+                  class="nav-item {% if url == 'group_list' or url == 'user_list' %} menu-open {% endif %}">
+                  <a href="#"
+                     class="nav-link {% if url == 'group_list' or url == 'user_list' %} active {% endif %}">
+                     <i class="nav-icon fas fa-users"></i>
+                     <p>
+                        Users & Groups
+                        <i class="right fas fa-angle-left"></i>
+                     </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                     {% if perms.auth.view_group %}
+                     <li class="nav-item">
+                        <a href="{% url 'user_list' %}" class="nav-link {% if url == 'user_list' %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>User</p>
+                        </a>
+                     </li>
+                     {% endif %}
+                     {% if perms.auth.view_group %}
+                     <li class="nav-item">
+                        <a href="{% url 'group_list' %}" class="nav-link {% if url == 'group_list' %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>Group</p>
+                        </a>
+                     </li>
+                     {% endif %}
+                  </ul>
+               </li>
+               {% endif %}
             {% endif %}
 
-            {% if perms.config.view_department or perms.config.view_category or perms.config.view_categorytype or perms.requests.view_requestform or perms.config.view_status %}
-            <li
-               class="nav-item {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms' or url == 'status_list'  %} menu-open {% endif %}">
-               <a href="#"
-                  class="nav-link {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms' or url == 'status_list' %} active {% endif %}">
-                  <i class="nav-icon fas fa-th-large"></i>
-                  <p>
-                     Library
-                     <i class="right fas fa-angle-left"></i>
-                  </p>
-               </a>
-               <ul class="nav nav-treeview">
-                  {% if perms.config.view_department %}
-                  <li class="nav-item">
-                     <a href="{% url 'department' %}" class="nav-link {% if url == 'department' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Departments</p>
-                     </a>
-                  </li>
-                  {% endif %}
-                  {% if perms.config.view_category %}
-                  <li class="nav-item">
-                     <a href="{% url 'category' %}" class="nav-link {% if url == 'category' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Categories</p>
-                     </a>
-                  </li>
-                  {% endif %}
-                  {% if perms.config.view_categorytype %}
-                  <li class="nav-item">
-                     <a href="{% url 'types' %}" class="nav-link {% if url == 'types' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Category Types</p>
-                     </a>
-                  </li>
-                  {% endif %}
-                  {% if perms.requests.view_requestform %}
-                  <li class="nav-item">
-                     <a href="{% url 'forms' %}" class="nav-link {% if url == 'forms' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Forms</p>
-                     </a>
-                  </li>
-                  {% endif %}
-                  {% if perms.config.view_status %}
-                  <li class="nav-item">
-                     <a href="{% url 'status_list' %}"
-                        class="nav-link {% if url == 'status_list' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Status</p>
-                     </a>
-                  </li>
-                  {% endif %}
-               </ul>
-            </li>
+            {% if request.user.is_superuser or request.user.is_staff %}
+               {% if perms.config.view_department or perms.config.view_category or perms.config.view_categorytype or perms.requests.view_requestform or perms.config.view_status %}
+               <li
+                  class="nav-item {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms' or url == 'status_list'  %} menu-open {% endif %}">
+                  <a href="#"
+                     class="nav-link {% if url == 'department' or url == 'category' or url == 'types' or url == 'forms' or url == 'status_list' %} active {% endif %}">
+                     <i class="nav-icon fas fa-th-large"></i>
+                     <p>
+                        Library
+                        <i class="right fas fa-angle-left"></i>
+                     </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                     {% if perms.config.view_department %}
+                     <li class="nav-item">
+                        <a href="{% url 'department' %}" class="nav-link {% if url == 'department' %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>Departments</p>
+                        </a>
+                     </li>
+                     {% endif %}
+                     {% if perms.config.view_category %}
+                     <li class="nav-item">
+                        <a href="{% url 'category' %}" class="nav-link {% if url == 'category' %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>Categories</p>
+                        </a>
+                     </li>
+                     {% endif %}
+                     {% if perms.config.view_categorytype %}
+                     <li class="nav-item">
+                        <a href="{% url 'types' %}" class="nav-link {% if url == 'types' %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>Category Types</p>
+                        </a>
+                     </li>
+                     {% endif %}
+                     {% if perms.requests.view_requestform %}
+                     <li class="nav-item">
+                        <a href="{% url 'forms' %}" class="nav-link {% if url == 'forms' %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>Forms</p>
+                        </a>
+                     </li>
+                     {% endif %}
+                     {% if perms.config.view_status %}
+                     <li class="nav-item">
+                        <a href="{% url 'status_list' %}"
+                           class="nav-link {% if url == 'status_list' %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>Status</p>
+                        </a>
+                     </li>
+                     {% endif %}
+                  </ul>
+               </li>
+               {% endif %}
             {% endif %}
 
-            {% if request.user.is_superuser or perms.requests.add_ticket or perms.requests.view_ticket %}
+            {% if perms.requests.add_ticket or perms.requests.view_ticket %}
             <li
-               class="nav-item {% if url == 'ticket' or url == 'boards' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} menu-open {% endif %}">
+               class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} menu-open {% endif %}">
                <a href="#"
-                  class="nav-link {% if url == 'ticket' or url == 'boards' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
+                  class="nav-link {% if url == 'ticket' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
                   <i class="nav-icon fas fa-pen"></i>
                   <p>
                      Request
@@ -135,14 +138,6 @@
                   </p>
                </a>
                <ul class="nav nav-treeview">
-                  {% if request.user.is_superuser %}
-                  <li class="nav-item">
-                     <a href="{% url 'boards' %}" class="nav-link {% if url == 'boards' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Boards</p>
-                     </a>
-                  </li>
-                  {% endif %}
                   {% if perms.requests.add_ticket %}
                   <li class="nav-item">
                      <a href="{% url 'create_ticket' %}"

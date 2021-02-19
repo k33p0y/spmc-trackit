@@ -53,6 +53,9 @@ $(document).ready(function () {
                if($('#deleteTypeHidden').val() == 'true') {
                   data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
                }
+               if($('#changeTypeHidden').val() != 'true' && $('#deleteTypeHidden').val() != 'true') {
+                  data = data + "<span class='text-secondary action-link' data-toggle='tooltip' data-placement='bottom' title='No Action Aavailable'> <i class='fas fa-eye-slash'></i> </span>";
+               }
                return data
             },
          }
