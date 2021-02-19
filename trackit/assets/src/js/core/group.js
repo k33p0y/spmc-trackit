@@ -35,7 +35,9 @@ $(document).ready(function () {
             render: function (data, type, row) {
                data = '';
                if($('#changeGroupHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>";
+                  data = data + "<a href='#' class='text-secondary action-link btn_edit'> <i class='fas fa-pen'></i> </a>";
+               } else {
+                  data = data + "<span class='text-secondary action-link btn_edit' data-toggle='tooltip' data-placement='bottom' title='No Action Aavailable'> <i class='fas fa-eye-slash'></i> </span>";
                }
                return data
             },

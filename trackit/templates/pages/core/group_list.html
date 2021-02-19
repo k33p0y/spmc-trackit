@@ -4,6 +4,7 @@
 {% block title %} Group {% endblock %}
 
 {% block content %}
+{% if request.user.is_superuser or request.user.is_staff %}
 <!-- Content Header -->
 <section class="content-header">
    <div class="container-fluid">
@@ -24,7 +25,6 @@
 </section>
 
 <!-- /.content -->
-{% if user.is_superuser %}
 <section class="content">
    <div class="container-fluid">
 
@@ -41,7 +41,7 @@
             </div>
          </div>
          <div class="ml-auto">
-            {% if perms.auth.add_group %}
+            {% if request.user.is_superuser %}
             <button class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-group"><i class="fas fa-xs fa-plus"></i> <span class="d-none d-sm-inline ml-1">Add Group</span></button>
             {% endif %}
          </div>
@@ -66,7 +66,7 @@
       </div>
 
    </div>
-   <input type="hidden" id="changeGroupHidden" value="{% if perms.auth.change_group %}true{% else %}false{% endif %}">
+   <input type="hidden" id="changeGroupHidden" value="{% if request.user.is_superuser %}true{% else %}false{% endif %}">
 
 </section>
 {% else %}
