@@ -37,7 +37,7 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       is_active = self.request.query_params.get('is_active', None)
       is_archive = self.request.query_params.get('is_archive', None)
 
-      if (not self.request.user.has_perm('requests.view_requestform') or not self.request.user.has_perm('requests.add_ticket')):
+      if not self.request.user.has_perm('requests.view_requestform') and not self.request.user.has_perm('requests.add_ticket'):
          return RequestForm.objects.none()
       else:
          # Queryset
@@ -148,12 +148,6 @@ class TicketViewSet(viewsets.ModelViewSet):
 
          return qs
 
-   def paginate_queryset(self, queryset):
-      # disable pagination, show all rows
-      if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
-         return None
-      return super().paginate_queryset(queryset)
-
    def create(self, request):
       files = request.FILES.getlist('file', None)
       data = json.loads(request.FILES['data'].read())
@@ -257,7 +251,6 @@ class CRUDEventList(generics.ListAPIView):
             pass
       return CRUDEvent.objects.none()
          
-
 class NotificationViewSet(viewsets.ModelViewSet):
    serializer_class = NotificationSerializer
 

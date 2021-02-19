@@ -2,6 +2,7 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator
+
 from django.db.models import Q
 from easyaudit.models import CRUDEvent
 from .serializers import DepartmentSerializer, CategorySerializer, CategoryTypeSerializer, StatusSerializer, RemarkSerializer
@@ -51,7 +52,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
       is_active = self.request.query_params.get('is_active', None)
       is_archive = self.request.query_params.get('is_archive', None)
 
-      if not self.request.user.has_perm('config.view_category'):
+      if not self.request.user.has_perm('config.view_category') and not self.request.user.has_perm('requests.add_ticket'):
          return Category.objects.none()
       else:
          # Queryset
@@ -64,6 +65,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
          if is_archive: qs = qs.filter(is_archive=json.loads(is_archive))
 
          return qs
+
+   def paginate_queryset(self, queryset):
+      # Disable Pagination
+      if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
+         return None
+      return super().paginate_queryset(queryset)
 
    def partial_update(self, request, pk):
       category = Category.objects.get(pk=pk)
