@@ -218,7 +218,7 @@ $(document).ready(function () {
          } else {
             file_lists.append(
                `<div class="list-group-item border-0 d-flex p-1 mb-1">
-                  <div class="file-icon"><i class="${type}"></i></div>
+                  <div class="file-icon"><i class="far fa-lg ${type}"></i></div>
                   <div class="w-100">
                      <p class="mb-0 font-weight-bold">${file.name}</p>
                      <small class="mb-0">${size}</small>

@@ -74,9 +74,11 @@ def view_ticket(request, ticket_id):
    remark = None
 
    for step in steps:
+      # Get current step in ticket
       if step.status == ticket.status: 
          curr_step = steps.get(status_id=ticket.status) 
 
+      # Get remark if has approving and is client step 
       remarks = ticket.remarks.filter(ticket_id=ticket_id, status_id=step.status_id, is_approve=True) 
       if step.is_client_step and step.has_approving: 
          remark = remarks.earliest('id') if remarks else None
