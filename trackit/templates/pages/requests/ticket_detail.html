@@ -65,14 +65,6 @@
                               <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{ticket.requested_by}}</p>
-                                       <span class="label">Requestor</span>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
-                                 <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
                                        <p class="context text-truncate">{{ticket.date_created|date:"d F Y h:i A"}}</p>
                                        <span class="label">Date Created</span>
                                     </div>
@@ -85,7 +77,25 @@
                                        <span class="label">Last Modified</span>
                                     </div>
                                  </div>
-                              </div>                   
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                       <p class="context">{{ticket.requested_by}}</p>
+                                       <span class="label">Requestor</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              {% if remark.is_approve %}
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                       <p class="context">{{remark.user}} </p>
+                                       <span class="label">Approved By</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              {% endif %}                   
                               <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
@@ -170,11 +180,11 @@
                                  {% if form.form_field|length < 4 %}
                                     <div class="form-group">
                                        <label> {{form.title}}  </label>
-                                       <div class="type-group">{% include '../../snippets/form2.html' %}</div>
+                                       <div class="type-group">{% include '../../snippets/fragments/form2.html' %}</div>
                                        <small class="error-info" id="error-info-type"></small>
                                     </div>
                                  {% else %}
-                                    {% include '../../snippets/form.html' %}
+                                    {% include '../../snippets/fragments/form.html' %}
                                  {% endif %}
                               {% endif %}
                            {% endfor %}
@@ -202,11 +212,11 @@
                                     {% if form.form_field|length < 4 %}
                                        <div class="form-group">
                                           <label> {{form.title}}  </label>
-                                          <div class="type-group">{% include '../../snippets/form2.html' %}</div>
+                                          <div class="type-group">{% include '../../snippets/fragments/form2.html' %}</div>
                                           <small class="error-info" id="error-info-type"></small>
                                        </div>
                                     {% else %}
-                                       {% include '../../snippets/form.html' %}
+                                       {% include '../../snippets/fragments/form.html' %}
                                     {% endif %}
                                  {% endif %}
                               {% endfor %}
@@ -261,29 +271,21 @@
             </div>
          </div>
          <div class="col-12 col-sm-12 col-md-12 col-lg-3">
-         {% if step.status != last_step.status or user.is_superuser %}
-            {% if step.has_approving %}
-               {% with accept="Approve" refuse="Disapprove" %}   
-                  {% if ticket.department.department_head == user and step.is_client_step or user.is_superuser %}
-                     {% include '../../snippets/actions.html' %}
-                  {% elif user.is_staff %}
-                     {% include '../../snippets/actions.html' %}
-                  {% endif %}
-               {% endwith %}
-            {% elif step.has_pass_fail %}
-               {% with accept="Pass" refuse="Fail" %}     
-                  {% if ticket.requested_by == user and step.is_client_step or user.is_superuser %}
-                     {% include '../../snippets/actions.html' %}
-                  {% elif user.is_staff %}
-                     {% include '../../snippets/actions.html' %}
-                  {% endif %}
-               {% endwith %}
-            {% else %}
-               {% if user.is_staff or user.is_superuser %} 
-                  {% with accept="Proceed" %}
-                     {% include '../../snippets/actions.html' %}
-                  {% endwith %}
+         {% if curr_step.status != last_step.status or user.is_superuser %}
+            {% if curr_step.has_approving %}
+               {% if curr_step.is_client_step and ticket.department.department_head == user or user.is_superuser %} 
+                  {% include '../../snippets/fragments/actions_approval.html' %}
+               {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser%} 
+                  {% include '../../snippets/fragments/actions_approval.html' %} 
                {% endif %}
+            {% elif curr_step.has_pass_fail %}
+               {% if curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %} 
+                  {% include '../../snippets/fragments/actions_pass_fail.html' %}
+               {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser %} 
+                  {% include '../../snippets/fragments/actions_pass_fail.html' %} 
+               {% endif %}
+            {% else %}
+               {% if user.is_staff %} {% include '../../snippets/fragments/actions_default.html' %} {% endif %}
             {% endif %}
          {% endif %}
          

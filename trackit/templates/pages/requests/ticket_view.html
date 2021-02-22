@@ -159,11 +159,11 @@
                               <li class="list-group-item d-flex p-3">
                                  <div class="mr-auto">{{form.title}} </div>
                                  <div class="font-weight-bold" style="width: 60% !important;">
-                                    {% include '../../snippets/list2.html' %}
+                                    {% include '../../snippets/fragments/list2.html' %}
                                  </div>
                              </li>
                               {% else %}
-                                 {% include '../../snippets/list.html' %}
+                                 {% include '../../snippets/fragments/list.html' %}
                               {% endif %}
                            {% endfor %}
                            </ul>
@@ -212,7 +212,21 @@
 
          <div class="col-12 col-sm-12 col-md-12 col-lg-3">
             {% if curr_step.status != last_step.status or user.is_superuser %}
-               {% include '../../snippets/actions.html' %}
+               {% if curr_step.has_approving %}
+                  {% if curr_step.is_client_step and ticket.department.department_head == user or user.is_superuser %} 
+                     {% include '../../snippets/fragments/actions_approval.html' %}
+                  {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser%} 
+                     {% include '../../snippets/fragments/actions_approval.html' %} 
+                  {% endif %}
+               {% elif curr_step.has_pass_fail %}
+                  {% if curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %} 
+                     {% include '../../snippets/fragments/actions_pass_fail.html' %}
+                  {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser %} 
+                     {% include '../../snippets/fragments/actions_pass_fail.html' %} 
+                  {% endif %}
+               {% else %}
+                  {% if user.is_staff %} {% include '../../snippets/fragments/actions_default.html' %} {% endif %}
+               {% endif %}
             {% endif %}
                      
             {% if user == ticket.requested_by or user == ticket.department.department_head or user.is_staff or user.is_superuser  %}

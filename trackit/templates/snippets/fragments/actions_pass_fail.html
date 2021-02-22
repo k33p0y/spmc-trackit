@@ -1,0 +1,36 @@
+<div class="row" id="row-actions">
+    <div class="col-12 col-sm-12">
+       <div class="card card-form mt-2 mb-1">
+          <a href="#collapseAction" data-toggle="collapse" aria-expanded="true" aria-controls="collapseAction">
+             <div class="card-header p-2">
+                <div class="card-title">Actions</div>
+             </div>
+          </a>
+          <div id="collapseAction" class="collapse show">
+             <div class="card-body p-3">
+                <form class="form-actions">
+                   <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step %} d-none {% endif %}">
+                      <label>Current Step</label>
+                      <select class="form-control form-control-sm" id="dd_steps" style="width: 100%">
+                         {% for step in steps %}
+                            <option value="{{step.status_id}}" {% if step.status == ticket.status %} selected {% endif %}>{{step.status}}</option>
+                         {% endfor %}
+                      </select>
+                   </div>
+                   <div class="form-group">
+                      <label>Remarks</label>
+                      <textarea class="form-control" id="txtarea-remark" rows="2" placeholder="Write your remarks here"></textarea>
+                      <small class="error-info" id="error-info-form"></small>
+                   </div>
+                   {% if curr_step.status != last_step.status or user.is_superuser %}
+                   <div class="d-flex flex-row-reverse">
+                        <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}" data-approve="true"><span>Pass</span></button>
+                        <button class="btn btn-danger btn-xs btn-refuse" type="button" data-ticket-id="{{ticket.ticket_id}}" data-approve="false"><span>Fail</span></button>
+                   </div>
+                   {% endif %}
+                </form>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
