@@ -255,10 +255,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
    serializer_class = NotificationSerializer
 
    def get_queryset(self):
-      if not self.request.user.has_perm('requests.view_notification'):
-         return Notification.objects.none()
-      else:
-         return Notification.objects.select_related('user').filter(user__id=self.request.user.pk).order_by('-unread', '-log__datetime')
+      return Notification.objects.select_related('user').filter(user__id=self.request.user.pk).order_by('-unread', '-log__datetime')
 
    # disable pagination, show all rows
    def paginate_queryset(self, queryset):
