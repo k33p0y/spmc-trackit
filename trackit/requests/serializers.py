@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
-from config.models import Department, Status
+from config.models import Department, Status, Remark
 from core.models import User
 from core.serializers import GroupReadOnlySerializer
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer
@@ -95,6 +95,7 @@ class CRUDEventSerializer(serializers.ModelSerializer):
    event_type = ChoiceField(choices=CRUDEvent.TYPES)
    changed_fields = serializers.JSONField()
    ticket_no = serializers.SerializerMethodField()
+   remark = serializers.SerializerMethodField()
 
    def get_ticket_no(self, instance):
       object_json_repr = json.loads(instance.object_json_repr)
@@ -103,9 +104,13 @@ class CRUDEventSerializer(serializers.ModelSerializer):
          return ticket.ticket_no
       return ''
 
+   def get_remark(self, instance):
+      obj = Remark.objects.get(log_id=instance.id)
+      return obj.remark if obj else ''
+
    class Meta:
       model = CRUDEvent
-      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr', 'ticket_no']
+      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr', 'ticket_no', 'remark']
 
    def to_representation(self, instance):
       if instance.changed_fields:

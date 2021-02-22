@@ -15,11 +15,11 @@ $(document).ready(function () {
        var next_step = $("#dd_steps option:selected").next().val()
        let status = (typeof step === "undefined") ? next_step : step;
 
-       let remark = $('#txtarea-comment').val();
+       let remark = $('#txtarea-remark').val();
        let is_approve = ($(this).data().approve) ? true : '';
        let is_pass = ($(this).data().pass) ? true : '';
 
-        postAction(ticket_id, status, remark, is_approve, is_pass);
+      postAction(ticket_id, status, remark, is_approve, is_pass);
    });
 
    // Refuse action
@@ -29,7 +29,7 @@ $(document).ready(function () {
        let prev_step = $("#dd_steps option:selected").prev().val();  
        let status = (typeof step === "undefined") ? prev_step : step;
 
-       let remark = $('#txtarea-comment').val();
+       let remark = $('#txtarea-remark').val();
        let is_approve = ($(this).data().approve == false) ? false : '';
        let is_pass = ($(this).data().pass == false) ? false : '';
 
