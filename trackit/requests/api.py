@@ -165,7 +165,7 @@ class TicketViewSet(viewsets.ModelViewSet):
          request_form_id=request_form, form_data=form_data, category_id=category, department_id=department, requested_by=self.request.user,
          status=status, ticket_no=ticket_no
       )
-      # create_notification(str(ticket.ticket_id), ticket) # create notification instance
+      create_notification(str(ticket.ticket_id), ticket) # create notification instance
       
       if files: 
          for file in files:
