@@ -62,6 +62,7 @@ $(document).ready(function () {
                   return data
                },
          }, // STATUS
+         { data: "remark" }, // REMARK
          { 
                data: "user",
                render: function (data, type, row) {
