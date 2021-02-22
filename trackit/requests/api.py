@@ -8,10 +8,11 @@ from django.db.models import Q
 from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment, Status
 from easyaudit.models import CRUDEvent
+from config.models import Remark
 
 import json, uuid, datetime
 
-# create notification method
+# Create notification method
 def create_notification(object_id, ticket):
    log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
    groups = ticket.request_form.group.all()
@@ -26,6 +27,17 @@ def create_notification(object_id, ticket):
    if ticket.department.department_head:
       if not log.user == ticket.department.department_head:
          Notification(log=log, user=ticket.department.department_head).save()
+
+# Remark Method
+def create_remark(object_id, ticket):
+   log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
+   remark = Remark(
+      ticket=ticket,
+      status=ticket.status,
+      action_officer=ticket.requested_by,
+      log=log,
+   )
+   remark.save()
 
 class RequestFormViewSet(viewsets.ModelViewSet):    
    serializer_class = RequestFormSerializer
@@ -159,17 +171,31 @@ class TicketViewSet(viewsets.ModelViewSet):
 
       rf = RequestForm.objects.get(pk=request_form)
       status = rf.status.get(requestformstatus__order=1)
-      ticket_no = uuid.uuid4().hex[-10:].upper()
+      ticket_no = uuid.uuid4().hex[-10:].upper()                     
 
+      # Create Ticket
       ticket = Ticket.objects.create(
-         request_form_id=request_form, form_data=form_data, category_id=category, department_id=department, requested_by=self.request.user,
-         status=status, ticket_no=ticket_no
+         request_form_id=request_form, 
+         form_data=form_data, 
+         category_id=category, 
+         department_id=department,
+         requested_by=self.request.user,
+         status=status, 
+         ticket_no=ticket_no
       )
-      create_notification(str(ticket.ticket_id), ticket) # create notification instance
-      
-      if files: 
+
+      create_notification(str(ticket.ticket_id), ticket)  # Create notification instance
+      create_remark(str(ticket.ticket_id), ticket) # Create initial remark
+
+      if files:
          for file in files:
-            Attachment(ticket=ticket, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user).save()
+            Attachment.objects.create(
+               ticket=ticket, 
+               file=file, 
+               file_name=file.name,
+               file_type=file.content_type, 
+               uploaded_by=self.request.user
+            )
       
       serializer = TicketSerializer(ticket)
       return Response(serializer.data)
@@ -188,7 +214,14 @@ class TicketViewSet(viewsets.ModelViewSet):
 
       if files: 
          for file in files:
-            Attachment(ticket_id=pk, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user).save()
+            Attachment.objects.create(
+               ticket_id=pk, 
+               file=file, 
+               file_name=file.name, 
+               file_type=file.content_type, 
+               uploaded_by=self.request.user
+            )
+
       create_notification(str(ticket.ticket_id), ticket) # create notification instance
       
       serializer = TicketSerializer(ticket)

@@ -43,7 +43,7 @@ class Remark(models.Model):
     remark = models.CharField(max_length=50)
     date_created = models.DateTimeField(auto_now_add=True)
     ticket = models.ForeignKey('requests.Ticket', related_name='remarks', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, related_name='all_remarks', on_delete=models.CASCADE)
+    action_officer = models.ForeignKey(User, related_name='all_remarks', on_delete=models.CASCADE)
     log = models.ForeignKey(CRUDEvent, on_delete=models.CASCADE)
     status = models.ForeignKey(Status, related_name='statuses', on_delete=models.CASCADE)
     is_approve = models.BooleanField(null=True)
