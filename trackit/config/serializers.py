@@ -50,5 +50,5 @@ class RemarkSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Remark
-        fields = ['id', 'remark', 'date_created', 'ticket', 'user', 'log']
+        fields = ['id', 'remark', 'date_created', 'ticket', 'action_officer', 'log']
 

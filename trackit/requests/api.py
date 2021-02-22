@@ -35,7 +35,7 @@ def create_remark(object_id, ticket):
       ticket=ticket,
       status=ticket.status,
       action_officer=ticket.requested_by,
-      log=log,
+      log=log
    )
    remark.save()
 

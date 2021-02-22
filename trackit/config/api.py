@@ -150,9 +150,9 @@ class RemarkViewSet(viewsets.ModelViewSet):
       status = request.data['status']
       is_approve = request.data['is_approve']
       is_pass = request.data['is_pass']
-
+      
       log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime')
-      obj = Remark.objects.create(remark=remark, ticket_id=ticket, user=self.request.user, log=log, status_id=status, is_approve=is_approve, is_pass=is_pass)
+      obj = Remark.objects.create(remark=remark, ticket_id=ticket, action_officer=self.request.user, log=log, status_id=status, is_approve=is_approve, is_pass=is_pass)
       
       serializer = RemarkSerializer(obj)
       return Response(serializer.data)
