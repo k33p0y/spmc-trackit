@@ -273,9 +273,11 @@
          <div class="col-12 col-sm-12 col-md-12 col-lg-3">
          {% if curr_step.status != last_step.status or user.is_superuser %}
             {% if curr_step.has_approving %}
-               {% if curr_step.is_client_step and ticket.department.department_head == user or user.is_superuser %} 
+               {% if curr_step.is_head_step and ticket.department.department_head == user or user.is_superuser %} 
                   {% include '../../snippets/fragments/actions_approval.html' %}
-               {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser%} 
+               {% elif curr_step.is_client_step and ticket.requested_by == user  or user.is_superuser%} 
+                  {% include '../../snippets/fragments/actions_approval.html' %} 
+               {% elif not curr_step.is_client_step and not curr_step.is_head_step and user.is_staff or user.is_superuser%} 
                   {% include '../../snippets/fragments/actions_approval.html' %} 
                {% endif %}
             {% elif curr_step.has_pass_fail %}
@@ -288,7 +290,7 @@
                {% if user.is_staff %} {% include '../../snippets/fragments/actions_default.html' %} {% endif %}
             {% endif %}
          {% endif %}
-         
+
          {% if user == ticket.requested_by or user == ticket.department.department_head or user.is_staff or user.is_superuser  %}
          <div class="row" id="row-comments">
             <div class="col-12 col-sm-12">

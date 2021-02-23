@@ -373,6 +373,7 @@ function getStatusRowValues() {
       const status = $(this).find('div.form-group select');
       const order = $(this).find('div.form-group input.txt_order');
       const is_client = $(this).find('div.form-group input.client-box');
+      const is_head = $(this).find('div.form-group input.head-box');
       const has_approving = $(this).find('div.form-group input.approving-box');
       const has_pass_fail = $(this).find('div.form-group input.pass-fail-box');
 
@@ -381,6 +382,7 @@ function getStatusRowValues() {
             'status': status.val(),
             'order': order.val(),
             'is_client' : (is_client.is(":checked")) ? true : false,
+            'is_head' : (is_head.is(":checked")) ? true : false,
             'has_approving' : (has_approving.is(":checked")) ? true : false,
             'has_pass_fail' : (has_pass_fail.is(":checked")) ? true : false,
          });
@@ -404,6 +406,7 @@ function setStatusOrder(status) {
       $(`#status_${counter}`).val(stat.id).trigger('change');
       $(`#order_${counter}`).val(stat.order);
       $(`#chk_is_client_${counter}`).prop("checked", stat.is_client_step);
+      $(`#chk_is_head_${counter}`).prop("checked", stat.is_head_step);
       $(`#chk_has_approving_${counter}`).prop("checked", stat.has_approving);
       $(`#chk_has_pass_fail_${counter}`).prop("checked", stat.has_pass_fail);
 

@@ -137,9 +137,6 @@ $(document).ready(function () {
                   data = data + `<a href='#' class='text-danger action-link btn_delete' data-id="${id}"> <i class='fas fa-trash'></i> </a>`;
                }
                return data;
-               // data = `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>
-               //           <a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>`;
-               // return data
             },
          } // Action
       ],

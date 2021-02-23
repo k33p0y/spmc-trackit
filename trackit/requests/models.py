@@ -53,6 +53,7 @@ class RequestFormStatus(models.Model):
     status = models.ForeignKey(Status, on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField(null=True, blank=True)
     is_client_step =  models.BooleanField(default=False)
+    is_head_step =  models.BooleanField(default=False)
     has_pass_fail = models.BooleanField(default=False)
     has_approving = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)

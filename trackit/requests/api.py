@@ -76,6 +76,7 @@ class RequestFormViewSet(viewsets.ModelViewSet):
             status_id = stat['status'], 
             order = stat['order'], 
             is_client_step = stat['is_client'],
+            is_head_step = stat['is_head'],
             has_approving = stat['has_approving'],
             has_pass_fail = stat['has_pass_fail'],
             form = request_form
@@ -103,6 +104,7 @@ class RequestFormViewSet(viewsets.ModelViewSet):
             status_id = stat['status'], 
             order = stat['order'], 
             is_client_step = stat['is_client'],
+            is_head_step = stat['is_head'],
             has_approving = stat['has_approving'],
             has_pass_fail = stat['has_pass_fail'],
             form = request_form

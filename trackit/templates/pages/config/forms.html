@@ -113,7 +113,7 @@
 {% block modal %}
 <!-- Create -->
 <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-   <div class="modal-dialog modal-md" role="document">
+   <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content text-sm">
          <div class="modal-header">
             <h6 class="modal-title"></h6>
@@ -175,11 +175,12 @@
                   <!-- Status Tab -->
                   <div class="tab-pane fade" id="status" role="tabpanel" aria-labelledby="nav-profile-tab">
                      <div class="form-row">
-                        <div class="col-4"><label>Status/Step Name</label></div>
+                        <div class="col-4"><label>Status / Step Name</label></div>
                         <div class="col"> <label>Order</label></div>
-                        <div class="col"> <label>Is Client Step</label></div>
-                        <div class="col"> <label>Has Approving</label></div>
-                        <div class="col"> <label>Has Pass & Fail</label></div>
+                        <div class="col text-center"> <label>Is Client Step</label></div>
+                        <div class="col text-center"> <label>Is Head Step</label></div>
+                        <div class="col text-center"> <label>Has Approving</label></div>
+                        <div class="col text-center"> <label>Has Pass & Fail</label></div>
 
                         <div class="col-1"></div>
                      </div>
@@ -204,6 +205,12 @@
                               <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
                                  <input type="checkbox" class="client-box" id="chk_is_client" />
                                  <label for="chk_is_client"></label>
+                              </div>
+                           </div>
+                           <div class="form-group col">
+                              <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
+                                 <input type="checkbox" class="head-box" id="chk_is_head" />
+                                 <label for="chk_is_head"></label>
                               </div>
                            </div>
                            <div class="form-group col">
@@ -279,6 +286,12 @@
          </div>
          <div class="form-group col">
             <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
+               <input type="checkbox" class="head-box" id="chk_is_head_${count}" />
+               <label for="chk_is_head_${count}"></label>
+            </div>
+         </div>
+         <div class="form-group col">
+            <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
                <input type="checkbox" class="approving-box" id="chk_has_approving_${count}"/>
                <label for="chk_has_approving_${count}"></label>
             </div>
@@ -323,6 +336,12 @@
                   <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
                      <input type="checkbox" class="client-box" id="chk_is_client_${counter}" />
                      <label for="chk_is_client_${counter}"></label>
+                  </div>
+               </div>
+               <div class="form-group col">
+                  <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
+                     <input type="checkbox" class="head-box" id="chk_is_head_${counter}" />
+                     <label for="chk_is_head_${counter}"></label>
                   </div>
                </div>
                <div class="form-group col">

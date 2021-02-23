@@ -28,15 +28,17 @@
 </section>
 
 <!-- /.content -->
-{% if perms.requests.change_ticket %}
+{% if perms.requests.view_ticket %}
 <section class="content pb-4">
    <div class="container-fluid">
       <div class="overlay d-none"></div>
       
       <div class="d-flex flex-row-reverse ">
+         {% if perms.requests.change_ticket %}
          <a href="{% url 'detail_ticket' ticket.ticket_id %}" class="btn btn-xs btn-link text-secondary">
             <i class="fas fa-pencil-alt"></i> <span>Update Request</span> 
          </a>
+         {% endif %}
          <a class="btn btn-xs btn-link text-secondary">
             <i class="fas fa-history"></i> <span>View Logs</span> 
          </a>
@@ -98,7 +100,7 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{remark.user}} </p>
+                                       <p class="context">{{remark.action_officer}} </p>
                                        <span class="label">Approved By</span>
                                     </div>
                                  </div>
@@ -213,9 +215,11 @@
          <div class="col-12 col-sm-12 col-md-12 col-lg-3">
             {% if curr_step.status != last_step.status or user.is_superuser %}
                {% if curr_step.has_approving %}
-                  {% if curr_step.is_client_step and ticket.department.department_head == user or user.is_superuser %} 
+                  {% if curr_step.is_head_step and ticket.department.department_head == user or user.is_superuser %} 
                      {% include '../../snippets/fragments/actions_approval.html' %}
-                  {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser%} 
+                  {% elif curr_step.is_client_step and ticket.requested_by == user  or user.is_superuser%} 
+                     {% include '../../snippets/fragments/actions_approval.html' %} 
+                  {% elif not curr_step.is_client_step and not curr_step.is_head_step and user.is_staff or user.is_superuser%} 
                      {% include '../../snippets/fragments/actions_approval.html' %} 
                   {% endif %}
                {% elif curr_step.has_pass_fail %}
