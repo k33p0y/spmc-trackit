@@ -16,6 +16,7 @@ def upload_file_url(instance, filename):
 # Create your models here.
 class RequestForm(models.Model):
     name =  models.CharField(max_length=255)
+    prefix = models.CharField(max_length=5)
     color = models.CharField(max_length=10, blank=True)
     status = models.ManyToManyField(Status, related_name='forms', blank=True, through='RequestFormStatus')
     fields = JSONField()
@@ -32,6 +33,7 @@ class RequestForm(models.Model):
 class Ticket(models.Model):
     ticket_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ticket_no = models.CharField(max_length=25, blank=True)
+    reference_no = models.CharField(max_length=15, blank=True)
     form_data = JSONField()
     
     request_form = models.ForeignKey(RequestForm, related_name='formtype_tickets', on_delete=models.PROTECT)
