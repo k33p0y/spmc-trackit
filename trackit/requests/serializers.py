@@ -95,7 +95,7 @@ class CRUDEventSerializer(serializers.ModelSerializer):
    event_type = ChoiceField(choices=CRUDEvent.TYPES)
    changed_fields = serializers.JSONField()
    ticket_no = serializers.SerializerMethodField()
-   remark = serializers.SerializerMethodField()
+   remarks = serializers.SerializerMethodField()
 
    def get_ticket_no(self, instance):
       object_json_repr = json.loads(instance.object_json_repr)
@@ -104,16 +104,23 @@ class CRUDEventSerializer(serializers.ModelSerializer):
          return ticket.ticket_no
       return ''
 
-   def get_remark(self, instance):
+   def get_remarks(self, instance):
       try:
          obj = Remark.objects.get(log_id=instance.id)
-         return obj.remark if obj else ''
+         if obj:
+            return {
+               'remark' : obj.remark,
+               'is_approve' : obj.is_approve,
+               'is_pass' : obj.is_pass
+            }
+         else:
+            ''
       except Remark.DoesNotExist:
          pass
 
    class Meta:
       model = CRUDEvent
-      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr', 'ticket_no', 'remark']
+      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr', 'ticket_no', 'remarks']
 
    def to_representation(self, instance):
       if instance.changed_fields:

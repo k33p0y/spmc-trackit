@@ -20,57 +20,82 @@ $(document).ready(function () {
          url: `/api/ticket/logs/?format=datatables`,
          type: "GET",
          data: {
-               "tracking_num": getTrackingNum,
+            "tracking_num": getTrackingNum,
          },
          dataSrc: function (json) {
-               return json.data.filter(function (item) {
-                  return (item.event_type === "Create") || (item.event_type === "Update" && item.changed_fields.status);
-               });
+            return json.data.filter(function (item) {
+               return (item.event_type === "Create") || (item.event_type === "Update" && item.changed_fields.status);
+            });
          }
       },
       "columns": [
          { 
-               data: null,
-               render: function (data, type, row) {
-                  if (type == 'display') {
-                     var date = moment(row.datetime).format('DD MMMM YYYY');
-                     data = `<p class="title mb-1">${date}</p>`
-                  }
-                  return data
-               },
+            data: null,
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  var date = moment(row.datetime).format('DD MMMM YYYY');
+                  data = `<p class="title mb-1">${date}</p>`
+               }
+               return data
+            },
          }, // DATE
          {
-               data: null,
-               render: function (data, type, row) {
-                  if (type == 'display') {
-                     var time = moment(row.datetime).format('h:mm:ss a');
-                     data = `<p class="title mb-1">${time}</p>`
-                  }
-                  return data
-               },
+            data: null,
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  var time = moment(row.datetime).format('h:mm:ss a');
+                  data = `<p class="title mb-1">${time}</p>`
+               }
+               return data
+            },
          }, // TIME
          {
-               data: "event_type",
-               render: function (data, type, row) {
-                  if (type == 'display') {
-                     if (row.event_type === "Create") {
-                           data = `${row.event_type}`
-                     } else if (row.event_type === "Update") {
-                           data = `${row.changed_fields.status[0]}` // index 0 for the current status, 1 for the previous status
-                     }
+            data: "event_type",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  if (row.event_type === "Create") {
+                        data = `${row.event_type}`
+                  } else if (row.event_type === "Update") {
+                        data = `${row.changed_fields.status[0]}` // index 0 for the current status, 1 for the previous status
                   }
-                  return data
-               },
+               }
+               return data
+            },
          }, // STATUS
-         { data: "remark" }, // REMARK
-         { 
-               data: "user",
-               render: function (data, type, row) {
-                  if (type == 'display') {
-                     data = `${row.user.first_name} ${row.user.last_name}`
+         {  
+            data: null,
+            render: function (data, type, row) {
+               let is_approve = JSON.parse(`${row.remarks.is_approve}`);
+               let is_pass = JSON.parse(`${row.remarks.is_pass}`);
+               
+               if (is_approve != null) { // Has Approve
+                  if (is_approve) {
+                     data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Approved </span>";
+                  } else {
+                     data = "<span class='text-danger'> <i class='fas fa-sm fa-times-circle'></i> Disapproved </span>";
                   }
-                  return data
-               },
+               } else if (is_pass != null) { // Has Pass
+                  if (is_pass) {
+                     data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Passed </span>";
+                  } else {
+                     data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Failed </span>";
+                  }
+               } else {
+                  data = ''
+               }
+
+               return data
+            },
+         }, // APPROVE_PASS
+         { data: "remarks.remark" }, // REMARK
+         { 
+            data: "user",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = `${row.user.first_name} ${row.user.last_name}`
+               }
+               return data
+            },
          }, // USER
       ],
    });
@@ -86,5 +111,4 @@ $(document).ready(function () {
       table.ajax.reload();
       return false; // prevent refresh
    });
-   
 });

@@ -24,8 +24,8 @@
                    </div>
                    {% if curr_step.status != last_step.status or user.is_superuser %}
                    <div class="d-flex flex-row-reverse">
-                        <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}" data-approve="true"><span>Pass</span></button>
-                        <button class="btn btn-danger btn-xs btn-refuse" type="button" data-ticket-id="{{ticket.ticket_id}}" data-approve="false"><span>Fail</span></button>
+                        <button class="btn btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}" data-pass="true"><span>Pass</span></button>
+                        <button class="btn btn-danger btn-xs btn-refuse" type="button" data-ticket-id="{{ticket.ticket_id}}" data-pass="false"><span>Fail</span></button>
                    </div>
                    {% endif %}
                 </form>
