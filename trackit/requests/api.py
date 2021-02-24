@@ -65,10 +65,11 @@ class RequestFormViewSet(viewsets.ModelViewSet):
    def create(self, request):
       name = request.data['name']
       color = request.data['color']
+      prefix = request.data['prefix']
       is_active = request.data['is_active']
       fields = request.data['fields']
 
-      request_form = RequestForm.objects.create(name=name, color=color, is_active=is_active, fields=fields)
+      request_form = RequestForm.objects.create(name=name, prefix=prefix, color=color, is_active=is_active, fields=fields)
       request_form.group.add(*request.data['groups'])
       
       for stat in request.data['status']:
@@ -89,6 +90,7 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       # Instance
       request_form = RequestForm.objects.get(pk=pk)
       request_form.name = request.data['name']
+      request_form.prefix = request.data['prefix']
       request_form.color = request.data['color']
       request_form.fields = request.data['fields']
       request_form.is_active = request.data['is_active']

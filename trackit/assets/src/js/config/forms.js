@@ -60,6 +60,7 @@ $(document).ready(function () {
       },
       "columns": [
          { data: "name" }, // Name
+         { data: "prefix" }, // Name
          {
             data: "color",
             render: function (data, type, row) {
@@ -162,8 +163,10 @@ $(document).ready(function () {
 
       $("#formModal").modal();
       $(".modal-title").text('New Form');
-      $("#btn_delete").hide()
+
+      // Reset Form
       $('#txt_typename').val('');
+      $('#txt_prefix').val('');
       $('#txt_color').val('').css('background-color', 'unset').removeClass('text-light');
       $("#select2-groups").val([]).trigger('change');
       $('#txt_json').val(JSON.stringify(samp_json));
@@ -207,6 +210,7 @@ $(document).ready(function () {
 
       // Populate Fields
       $('#txt_typename').val(dt_data['name']);
+      $('#txt_prefix').val(dt_data['prefix']);
       $('#txt_color').val(dt_data['color']).css('background-color', dt_data['color']).addClass('text-light');
       $('#select2-groups').val(groups).trigger('change');
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
@@ -225,6 +229,7 @@ $(document).ready(function () {
       if (success == 1) {
          const data = new Object()
          data.name = $('#txt_typename').val();
+         data.prefix = $('#txt_prefix').val();
          data.color = $('#txt_color').val();
          data.groups = $('#select2-groups').val();
          data.status = getStatusRowValues();
@@ -253,6 +258,13 @@ $(document).ready(function () {
             } else {
                $('#txt_typename').removeClass('form-error');
                $('#name_error').html('')
+            }
+            if (error.response.data.prefix) {
+               $('#txt_prefix').addClass('form-error');
+               $('#prefix_error').html(`* ${error.response.data.name}`)
+            } else {
+               $('#txt_prefix').removeClass('form-error');
+               $('#prefix_error').html('')
             }
             if (error.response.data.color) {
                $('#txt_color').addClass('form-error');
@@ -427,6 +439,15 @@ function validateForms() {
       $('#name_error').html('');
    }
    
+   if ($('#txt_prefix').val() == '') {
+      $('#txt_prefix').addClass('form-error');
+      $('#prefix_error').html('*This field cannot be empty')
+      success--;
+   } else {
+      $('#txt_prefix').removeClass('form-error');
+      $('#prefix_error').html('');
+   }
+
    if ($('#txt_color').val() == '') {
       $('#txt_color').addClass('form-error');
       $('#color_error').html('*This field cannot be empty')
