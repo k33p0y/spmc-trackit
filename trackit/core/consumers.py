@@ -54,9 +54,10 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data) # convert string to JSON
 
         # NOTIFICATION
-        if text_data_json['type'] == 'notification':
-            ticket_id = text_data_json['data']['ticket_id']
-            self.obj = await self.send_notification(ticket_id)
+        if text_data_json['type'] == 'notification': 
+            # if text_data_json['notification_type'] == 'ticket': # notification for ticket CRUD
+            object_id = text_data_json['data']['object_id']
+            self.obj = await self.send_notification(object_id, text_data_json['data']['notification_type'])
 
             # send notification to a user
             await self.channel_layer.group_send(
@@ -79,9 +80,19 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                         'sender_channel_name': self.channel_name
                     }
                 )
+            if text_data_json['data']['notification_type'] == 'comment': # notification for comment create
+                # send notification to requestor
+                await self.channel_layer.group_send(
+                    'notif_room_for_user_' + str(self.obj['requestor_pk']),
+                    {
+                        'type': 'notification_message',
+                        'notification': self.obj,
+                        'sender_channel_name': self.channel_name
+                    }
+                )
         
         # COMMENT
-        if text_data_json['type'] == 'comment':
+        if text_data_json['type'] == 'comment': # send comment to group
             comment_obj = await self.get_comment(text_data_json['data']['comment_id'])
             await self.channel_layer.group_send(
                 'comment_group_for_ticket_' + str(comment_obj['ticket_no']),
@@ -110,26 +121,36 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         }))
     
     @database_sync_to_async
-    def send_notification(self, ticket_id):
-        ticket = Ticket.objects.get(ticket_id=ticket_id)
-        log = CRUDEvent.objects.filter(object_id=ticket_id).latest('datetime')        
-        notification_type = json.loads(log.object_json_repr)
-
+    def send_notification(self, object_id, notification_type):
         obj = dict()
-        obj['ticket_id'] = str(ticket.pk)
-        obj['ticket_no'] = ticket.ticket_no
-        obj['group_ids'] = list(ticket.request_form.group.values('id'))
-        obj['dept_head_id'] = ticket.department.department_head.pk
-        obj['actor'] = log.user.get_full_name()
-        obj['notification_type'] = notification_type
+        if notification_type == 'ticket':
+            ticket = Ticket.objects.get(ticket_id=object_id)
+            log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')        
 
-        choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model
-        obj['event_type'] = choices[log.event_type]
-        if log.changed_fields:
-            changed_fields = json.loads(log.changed_fields)
-            obj['status'] = changed_fields['status'][0]
-        else:
-            obj['status'] = ticket.status.name
+            obj['ticket_id'] = str(ticket.pk)
+            obj['ticket_no'] = ticket.ticket_no
+            obj['group_ids'] = list(ticket.request_form.group.values('id'))
+            obj['dept_head_id'] = ticket.department.department_head.pk
+            obj['actor'] = log.user.get_full_name()
+
+            choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model
+            obj['event_type'] = choices[log.event_type]
+            if log.changed_fields:
+                changed_fields = json.loads(log.changed_fields)
+                obj['status'] = changed_fields['status'][0]
+            else:
+                obj['status'] = ticket.status.name
+        if notification_type == 'comment':
+            comment = Comment.objects.get(pk=object_id)
+            log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')        
+            
+            obj['ticket_id'] = str(comment.ticket.pk)
+            obj['ticket_no'] = comment.ticket.ticket_no
+            obj['group_ids'] = list(comment.ticket.request_form.group.values('id'))
+            obj['dept_head_id'] = comment.ticket.department.department_head.pk
+            obj['actor'] = log.user.get_full_name()
+            obj['requestor'] = comment.ticket.requested_by.get_full_name()
+            obj['requestor_pk'] = comment.ticket.requested_by.pk
         return obj
 
     @database_sync_to_async
