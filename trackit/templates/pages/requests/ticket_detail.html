@@ -46,7 +46,7 @@
                      <div id="collapseInformation" class="collapse show">
                         <div class="card-body p-3">
                            <div class="row">
-                              <div class="col-12 col-sm-12 col-md-12 col-lg-12"> 
+                              <div class="col-12 col-sm-6 col-md-12 col-lg-12"> 
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context">{{ticket.ticket_no}}</p>
@@ -54,7 +54,15 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                       <p class="context text-truncate">{{ticket.date_created|date:"d F Y h:i A"}}</p>
+                                       <span class="label">Date Requested</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate" id="form_id" form_id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
@@ -62,27 +70,11 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">{{ticket.date_created|date:"d F Y h:i A"}}</p>
-                                       <span class="label">Date Created</span>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
-                                 <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">{{ticket.date_modified|date:"d F Y h:i A"}}</p>
-                                       <span class="label">Last Modified</span>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
-                                 <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context">{{ticket.requested_by}}</p>
-                                       <span class="label">Requestor</span>
+                                       <p class="context">{{ticket.department}} </p>
+                                       <span class="label">Department</span>
                                     </div>
                                  </div>
                               </div>
@@ -90,13 +82,38 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{remark.user}} </p>
+                                       <p class="context">{{remark.action_officer}} </p>
                                        <span class="label">Approved By</span>
                                     </div>
                                  </div>
                               </div>
-                              {% endif %}                   
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                              {% endif %}
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                       <p class="context">{{ticket.requested_by}} </p>
+                                       <span class="label">Requested By</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0 d-flex align-items-center">
+                                       <div class="mr-auto text-truncate">
+                                          <p class="context">
+                                             {% if ticket.reference_no %}
+                                                {{ticket.reference_no}}
+                                             {% else %}
+                                                AAA-0000-0000
+                                             {% endif %}      
+                                          </p>
+                                          <span class="label">Reference No</span>
+                                       </div>
+                                       <button type="button" class="btn btn-xs btn-light p-0 pl-2 pr-2" id="btn-generate"> <span>Generate</span> </button>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context">{{ticket.status}}</p>

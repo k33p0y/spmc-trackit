@@ -67,6 +67,14 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
+                                       <p class="context text-truncate">{{ticket.date_created|date:"d F Y h:i A"}}</p>
+                                       <span class="label">Date Requested</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
                                        <p class="context text-truncate" id="form_id" form_id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
                                        <span class="label">Request Form</span>
                                     </div>
@@ -75,24 +83,16 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">{{ticket.date_created|date:"d F Y h:i A"}}</p>
-                                       <span class="label">Date Created</span>
+                                       <p class="context text-truncate">{{ticket.category}} </p>
+                                       <span class="label">Category</span>
                                     </div>
                                  </div>
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">{{ticket.date_modified|date:"d F Y h:i A"}}</p>
-                                       <span class="label">Last Modified</span>
-                                    </div>
-                                 </div>
-                              </div> 
-                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                                 <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context">{{ticket.requested_by}} </p>
-                                       <span class="label">Requestor</span>
+                                       <p class="context">{{ticket.department}} </p>
+                                       <span class="label">Department</span>
                                     </div>
                                  </div>
                               </div>
@@ -109,6 +109,31 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
+                                       <p class="context">{{ticket.requested_by}} </p>
+                                       <span class="label">Requested By</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0 d-flex align-items-center">
+                                       <div class="mr-auto text-truncate">
+                                          <p class="context">
+                                             {% if ticket.reference_no %}
+                                                {{ticket.reference_no}}
+                                             {% else %}
+                                                AAA-0000-0000
+                                             {% endif %}      
+                                          </p>
+                                          <span class="label">Reference No</span>
+                                       </div>
+                                       <button type="button" class="btn btn-xs btn-light p-0 pl-2 pr-2" id="btn-generate"> <span>Generate</span> </button>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
                                        <p class="context">{{ticket.status}}</p>
                                        <span class="label">Status</span>
                                     </div>
@@ -117,7 +142,7 @@
                               {% if request.user.is_superuser %}
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0 d-flex align-items-center">
+                                    <div class="card-body p-0 m-0">
                                        <div class="mr-auto">
                                           <p class="context">{% if ticket.is_active == True %} Active {% else %} In Active {% endif %}</p>
                                           <span class="label">Is Active</span>
@@ -129,7 +154,7 @@
                            </div>
                         </div>
                      </div>
-                  </div>
+                  </div>   
                </div>
             </div>
             <div class="row" id="row-details">
@@ -143,31 +168,18 @@
                      <div id="collapseDetails" class="collapse show">
                         <div class="card-body pr-3 pl-3 pt-2 pb-2">
                            <ul class="list-group list-group-flush">
-                              <li class="list-group-item d-flex p-3">
-                                 <div class="mr-auto">Department </div>
-                                 <div class="font-weight-bold" style="width: 60% !important;">
-                                    <p class="p-0 m-0 text-right">{{ticket.department}}</p>
-                                 </div>
-                             </li>
-                             <li class="list-group-item d-flex p-3">
-                              <div class="mr-auto">Category (<i>{{ticket.category.category_type}}</i>)</div>
-                              <div class="font-weight-bold" style="width: 60% !important;">
-                                 <p class="p-0 m-0 text-right">{{ticket.category}}</p>
-                              </div>
-                          </li>
-                          </li>
-                           {% for form in ticket.request_form.fields %}
-                              {% if form.form_field|length < 5 %}
-                              <li class="list-group-item d-flex p-3">
-                                 <div class="mr-auto">{{form.title}} </div>
-                                 <div class="font-weight-bold" style="width: 60% !important;">
-                                    {% include '../../snippets/fragments/list2.html' %}
-                                 </div>
-                             </li>
-                              {% else %}
-                                 {% include '../../snippets/fragments/list.html' %}
-                              {% endif %}
-                           {% endfor %}
+                              {% for form in ticket.request_form.fields %}
+                                 {% if form.form_field|length < 5 %}
+                                 <li class="list-group-item d-flex p-3">
+                                    <div class="mr-auto">{{form.title}} </div>
+                                    <div class="font-weight-bold" style="width: 60% !important;">
+                                       {% include '../../snippets/fragments/list2.html' %}
+                                    </div>
+                                 </li>
+                                 {% else %}
+                                    {% include '../../snippets/fragments/list.html' %}
+                                 {% endif %}
+                              {% endfor %}
                            </ul>
                         </div>
                      </div>
