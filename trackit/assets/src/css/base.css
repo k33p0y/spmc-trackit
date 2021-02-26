@@ -500,3 +500,16 @@ table.dataTable tbody tr:hover {
    background-color: #fbfbfb !important;
    border-color: #ff8f34b6 !important;
 }
+
+/* Spinners */
+.spinner-border-sm {
+   width: 0.90rem !important;
+   height: 0.90rem !important;
+}
+
+/* Spinners */
+.spinner-border-xs {
+   width: 0.75rem !important;
+   height: 0.75rem !important;
+   border-width: .2em !important;
+}

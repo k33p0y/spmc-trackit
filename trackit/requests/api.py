@@ -1,4 +1,4 @@
-from rest_framework import generics, viewsets, permissions, serializers
+from rest_framework import generics, viewsets, permissions, serializers, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import Group
@@ -38,6 +38,21 @@ def create_remark(object_id, ticket):
       log=log
    )
    remark.save()
+
+def generate_reference(form):
+   year = datetime.datetime.now().year
+   ticket = Ticket.objects.filter(request_form=form, date_created__year=year).exclude(reference_no__exact='').order_by('-reference_no').first()
+   
+   if ticket:
+      ref_no = ticket.reference_no.split('-')
+      num_series = int(ref_no[2])+1
+      reference_no = (str(ticket.request_form.prefix)+"-"+str(year)+"-"+str(num_series).zfill(4))
+   else:
+      form = RequestForm.objects.get(id=request_form)
+      num_series = "0001"
+      reference_no = (str(ticket.request_form.prefix)+"-"+str(year)+"-"+num_series.zfill(4))
+
+   return reference_no
 
 class RequestFormViewSet(viewsets.ModelViewSet):    
    serializer_class = RequestFormSerializer
@@ -233,9 +248,20 @@ class TicketViewSet(viewsets.ModelViewSet):
 
    def partial_update(self, request, pk):
       ticket = Ticket.objects.get(pk=pk)
-      serializer = TicketSerializer(ticket, data=request.data, partial=True)
-      serializer.is_valid(raise_exception=True)
-      serializer.save()
+
+      if request.data['request_form']:
+         if not ticket.reference_no:
+            ticket.reference_no = generate_reference(request.data['request_form'])
+            ticket.save()
+         else:
+            return Response('Error: Reference number already created', status=status.HTTP_400_BAD_REQUEST)
+
+         serializer = TicketSerializer(ticket, partial=True)   
+      else:
+         serializer = TicketSerializer(ticket, data=request_data, partial=True)
+         serializer.is_valid(raise_exception=True)
+         serializer.save()
+
       create_notification(str(ticket.ticket_id), ticket) # create notification instance
       return Response(serializer.data)
 

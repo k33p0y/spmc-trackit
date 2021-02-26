@@ -75,7 +75,7 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate" id="form_id" form_id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
+                                       <p class="context text-truncate" id="form_id" data-form-id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
                                        <span class="label">Request Form</span>
                                     </div>
                                  </div>
@@ -118,16 +118,26 @@
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0 d-flex align-items-center">
                                        <div class="mr-auto text-truncate">
-                                          <p class="context">
+                                          <p class="context d-flex align-items-center">
+                                             <span class="spinner-border spinner-border-sm text-secondary ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                             <span id="ref_context">
                                              {% if ticket.reference_no %}
                                                 {{ticket.reference_no}}
                                              {% else %}
-                                                AAA-0000-0000
-                                             {% endif %}      
+                                                <span class="text-light"> XXX-0000-0000</span>
+                                             {% endif %}    
+                                             </span>
                                           </p>
                                           <span class="label">Reference No</span>
                                        </div>
-                                       <button type="button" class="btn btn-xs btn-light p-0 pl-2 pr-2" id="btn-generate"> <span>Generate</span> </button>
+                                       {% if not ticket.reference_no %}
+                                          {% if user.is_staff or user.is_superuser %}                                  
+                                          <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 
+                                             <span class="spinner-border spinner-border-xs text-secondary mr-1 ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                             <span>Generate</span> 
+                                          </button>
+                                          {% endif %}
+                                       {% endif %}
                                     </div>
                                  </div>
                               </div>

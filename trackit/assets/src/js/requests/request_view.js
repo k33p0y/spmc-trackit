@@ -122,6 +122,34 @@ $(document).ready(function () {
         });
     });
 
+    // Generate Reference No
+    $('#btn_generate').click(function() {
+        let id = $(this).data().ticketId;
+        let form = $('#form_id').data().formId;
+
+        axios({
+            url: `/api/requests/lists/${id}/`,
+            method: "PATCH",
+            data: {request_form: form},
+            headers: axiosConfig
+        }).then(function (response) {
+            // Show Spinners
+            $(".ref-spinner").removeClass('d-none');
+            $("#ref_context").html('');
+
+            setTimeout(function() { 
+                $(".ref-spinner").addClass('d-none');
+                $("#ref_context").removeClass('text-light').html(response.data.reference_no);
+                $("#btn_generate").remove()
+            }, 1200);
+        }).catch(function (error) {
+            Toast.fire({
+               icon: 'error',
+               title: error.response.data,
+            });
+        });
+    });
+
     // Post comment
     $('#btn-post-comment').click(function (e){
         e.preventDefault();

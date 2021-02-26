@@ -100,7 +100,8 @@
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0 d-flex align-items-center">
                                        <div class="mr-auto text-truncate">
-                                          <p class="context">
+                                          <p class="context d-flex align-items-center text-light" id="">
+                                             <span class="spinner-border spinner-border-sm text-orange d-none" role="status" aria-hidden="true"></span> 
                                              {% if ticket.reference_no %}
                                                 {{ticket.reference_no}}
                                              {% else %}
@@ -109,7 +110,14 @@
                                           </p>
                                           <span class="label">Reference No</span>
                                        </div>
-                                       <button type="button" class="btn btn-xs btn-light p-0 pl-2 pr-2" id="btn-generate"> <span>Generate</span> </button>
+                                       {% if ticket.reference_no %}
+                                          {% if user.is_staff or user.is_superuser %}
+                                          <button type="button" class="btn btn-xs btn-light p-0 pl-2 pr-2" id="btn-generate"> 
+                                             <span class="spinner-border spinner-border-sm text-orange d-none" role="status" aria-hidden="true"></span> 
+                                             <span>Generate</span> 
+                                          </button>
+                                          {% endif %}
+                                       {% endif %}
                                     </div>
                                  </div>
                               </div>
