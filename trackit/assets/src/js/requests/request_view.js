@@ -139,7 +139,7 @@ $(document).ready(function () {
 
             setTimeout(function() { 
                 $(".ref-spinner").addClass('d-none');
-                $("#ref_context").removeClass('text-light').html(response.data.reference_no);
+                $("#ref_context").removeClass('text-muted').html(response.data.reference_no);
                 $("#btn_generate").remove()
             }, 1200);
         }).catch(function (error) {

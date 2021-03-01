@@ -72,9 +72,36 @@
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0 d-flex align-items-center">
+                                       <div class="mr-auto text-truncate">
+                                          <p class="context d-flex align-items-center">
+                                             <span class="spinner-border spinner-border-sm text-secondary ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                             <span id="ref_context">
+                                             {% if ticket.reference_no %}
+                                                {{ticket.reference_no}}
+                                             {% else %}
+                                                <span class="text-muted"> XXX-0000-0000</span>
+                                             {% endif %}    
+                                             </span>
+                                          </p>
+                                          <span class="label">Reference No</span>
+                                       </div>
+                                       {% if not ticket.reference_no %}
+                                          {% if user.is_staff or user.is_superuser %}                                  
+                                          <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 
+                                             <span class="spinner-border spinner-border-xs text-secondary mr-1 ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                             <span>Generate</span> 
+                                          </button>
+                                          {% endif %}
+                                       {% endif %}
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{ticket.department}} </p>
-                                       <span class="label">Department</span>
+                                       <p class="context">{{ticket.requested_by}} </p>
+                                       <span class="label">Requested By</span>
                                     </div>
                                  </div>
                               </div>
@@ -91,46 +118,13 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{ticket.requested_by}} </p>
-                                       <span class="label">Requested By</span>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                                 <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0 d-flex align-items-center">
-                                       <div class="mr-auto text-truncate">
-                                          <p class="context d-flex align-items-center text-light" id="">
-                                             <span class="spinner-border spinner-border-sm text-orange d-none" role="status" aria-hidden="true"></span> 
-                                             {% if ticket.reference_no %}
-                                                {{ticket.reference_no}}
-                                             {% else %}
-                                                AAA-0000-0000
-                                             {% endif %}      
-                                          </p>
-                                          <span class="label">Reference No</span>
-                                       </div>
-                                       {% if ticket.reference_no %}
-                                          {% if user.is_staff or user.is_superuser %}
-                                          <button type="button" class="btn btn-xs btn-light p-0 pl-2 pr-2" id="btn-generate"> 
-                                             <span class="spinner-border spinner-border-sm text-orange d-none" role="status" aria-hidden="true"></span> 
-                                             <span>Generate</span> 
-                                          </button>
-                                          {% endif %}
-                                       {% endif %}
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                                 <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
                                        <p class="context">{{ticket.status}}</p>
                                        <span class="label">Status</span>
                                     </div>
                                  </div>
                               </div>
-                              {% if request.user.is_superuser %}
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                              {% if user.is_superuser %}
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0 d-flex align-items-center">
                                        <div class="mr-auto">
