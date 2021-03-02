@@ -31,7 +31,6 @@
 {% if perms.requests.view_ticket %}
 <section class="content">
    <div class="container-fluid">
-
       <!-- Content Filters, Search and Create Section -->
       <div class="d-flex mb-1">
          <div class="dropdown dropdown-filter mr-2">
@@ -41,13 +40,13 @@
             </button>
             <div class="dropdown-menu dropdown-menu-lg dropdown-filter-menu">
                <form id="form-filter">
-                  <div class="p-3">
+                  <div class="p-3 scrollable-menu">
                      <div class="form-group mb-1">
-                        <label for="department-filter">By Department </label>
-                        <select class="form-control form-control-sm select-filter" id="department-filter" name="department-filter">
+                        <label for="requestform-filter">By Request Form</label>
+                        <select class="form-control form-control-sm select-filter" id="requestform-filter" name="requestform-filter">
                            <option value="">All</option>
-                           {% for department in departments %}
-                           <option value={{department.id}}>{{department}}</option>
+                           {% for form in forms %}
+                           <option value={{form.id}}>{{form}}</option>
                            {% endfor %}
                         </select>
                      </div>
@@ -67,6 +66,15 @@
                         </select>
                      </div>
                      <div class="form-group mb-1">
+                        <label for="department-filter">By Department </label>
+                        <select class="form-control form-control-sm select-filter" id="department-filter" name="department-filter">
+                           <option value="">All</option>
+                           {% for department in departments %}
+                           <option value={{department.id}}>{{department}}</option>
+                           {% endfor %}
+                        </select>
+                     </div>
+                     <div class="form-group mb-1">
                         <label for="status-filter">By Status </label>
                         <select class="form-control form-control-sm select-filter" id="status-filter" name="status-filter">
                            <option value="">All</option>
@@ -80,8 +88,8 @@
                         <label for="active-filter">By Active </label>
                         <select class="form-control form-control-sm select-filter" id="active-filter" name="active-filter">
                            <option value="">All</option>
-                           <option value="1">Active</option>
-                           <option value="0">Inactive</option>
+                           <option value="0">Yes</option>
+                           <option value="1">No</option>
                         </select>
                      </div>
                      {% endif %}
@@ -126,15 +134,16 @@
                      <thead>
                         <tr>
                            <th>Ticket No</th>
-                           <th>Request Type</th>
+                           <th data-priority="1">Form</th>
                            <th>Category</th>
+                           <th data-priority="2">Reference No</th>
                            <th>Department</th>
                            <th>Date Requested</th>
                            <th>Date Modified</th>
                            <th>Requested By</th>
-                           <th>Status</th>
+                           <th data-priority="3">Status</th>
                            <th>Is active</th>
-                           <th>Action</th>
+                           <th data-priority="4">Action</th>
                         </tr>
                      </thead>
                   </table>

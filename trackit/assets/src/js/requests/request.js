@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
    var searchInput = function() { return $('#search-input').val(); }
+   var formFilter = function() { return $('#requestform-filter').val(); }
    var typeFilter = function() { return $('#type-filter').val(); }
    var categoryFilter = function() { return $('#category-filter').val(); }
    var departmentFilter = function() { return $('#department-filter').val(); }
@@ -24,6 +25,7 @@ $(document).ready(function () {
          type: "GET",
          data: {
             "search": searchInput,
+            "request_form": formFilter,
             "category_type": typeFilter,
             "category": categoryFilter,
             "department": departmentFilter,
@@ -40,7 +42,10 @@ $(document).ready(function () {
             data: "request_form",
             render: function (data, type, row) {
                if (type == 'display') {
-                  data = `<span class="td-badge text-light" style="background-color:${row.request_form.color}">${row.request_form.name}</span>`
+                  data = `<span class="td-badge text-light" style="background-color:${row.request_form.color}">
+                     <span class="d-inline d-md-none">${row.request_form.prefix} </span>
+                     <span class="d-none d-md-inline">${row.request_form.name}</span>   
+                  </span>`
                }
                return data
             }
@@ -57,6 +62,15 @@ $(document).ready(function () {
                return data
             }
          }, // Category
+         { 
+            data: "reference_no",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = (row.reference_no) ? row.reference_no : '<span style="color: #e3e5ed"> XXX-0000-0000</span>'
+               }
+               return data
+            }         
+         }, // Reference No
          {
             data: "department",
             render: function (data, type, row) {
@@ -192,7 +206,7 @@ $(document).ready(function () {
             .append('<option value="">All</option>')
             .removeAttr('disabled');
 
-         res.data.results.forEach(category => {
+         res.data.forEach(category => {
             $("#category-filter").append(`<option value='${category.id}'>${category.name}</option>`)
          });
        });

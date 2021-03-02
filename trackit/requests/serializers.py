@@ -32,7 +32,7 @@ class RequestFormSerializer(serializers.ModelSerializer):
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):
    class Meta:
       model = RequestForm
-      fields = ['id', 'name', 'color']
+      fields = ['id', 'name', 'color', 'prefix']
 
 class StatusReadOnlySerializer(serializers.ModelSerializer):
    class Meta:
