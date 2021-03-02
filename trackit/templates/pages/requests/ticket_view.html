@@ -67,32 +67,67 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate" id="form_id" form_id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
+                                       <p class="context text-truncate">{{ticket.date_created|date:"d F Y h:i A"}}</p>
+                                       <span class="label">Date Requested</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                       <p class="context text-truncate" id="form_id" data-form-id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
                                        <span class="label">Request Form</span>
                                     </div>
                                  </div>
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">{{ticket.date_created|date:"d F Y h:i A"}}</p>
-                                       <span class="label">Date Created</span>
+                                    <div class="card-body p-0 m-0 d-flex align-items-center">
+                                       <div class="mr-auto text-truncate">
+                                          <p class="context d-flex align-items-center">
+                                             <span class="spinner-border spinner-border-sm text-secondary ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                             <span id="ref_context">
+                                             {% if ticket.reference_no %}
+                                                {{ticket.reference_no}}
+                                             {% else %}
+                                                <span class="text-muted"> XXX-0000-0000</span>
+                                             {% endif %}    
+                                             </span>
+                                          </p>
+                                          <span class="label">Reference No</span>
+                                       </div>
+                                       {% if not ticket.reference_no %}
+                                          {% if user.is_staff or user.is_superuser %}                                  
+                                          <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 
+                                             <span class="spinner-border spinner-border-xs text-secondary mr-1 ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                             <span>Generate</span> 
+                                          </button>
+                                          {% endif %}
+                                       {% endif %}
                                     </div>
                                  </div>
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">{{ticket.date_modified|date:"d F Y h:i A"}}</p>
-                                       <span class="label">Last Modified</span>
+                                       <p class="context">{{ticket.requested_by}} </p>
+                                       <span class="label">Requested By</span>
                                     </div>
                                  </div>
-                              </div> 
+                              </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{ticket.requested_by}} </p>
-                                       <span class="label">Requestor</span>
+                                       <p class="context text-truncate">{{ticket.category}} </p>
+                                       <span class="label">Category</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                       <p class="context">{{ticket.department}} </p>
+                                       <span class="label">Department</span>
                                     </div>
                                  </div>
                               </div>
@@ -117,7 +152,7 @@
                               {% if request.user.is_superuser %}
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0 d-flex align-items-center">
+                                    <div class="card-body p-0 m-0">
                                        <div class="mr-auto">
                                           <p class="context">{% if ticket.is_active == True %} Active {% else %} In Active {% endif %}</p>
                                           <span class="label">Is Active</span>
@@ -129,7 +164,7 @@
                            </div>
                         </div>
                      </div>
-                  </div>
+                  </div>   
                </div>
             </div>
             <div class="row" id="row-details">
@@ -143,31 +178,18 @@
                      <div id="collapseDetails" class="collapse show">
                         <div class="card-body pr-3 pl-3 pt-2 pb-2">
                            <ul class="list-group list-group-flush">
-                              <li class="list-group-item d-flex p-3">
-                                 <div class="mr-auto">Department </div>
-                                 <div class="font-weight-bold" style="width: 60% !important;">
-                                    <p class="p-0 m-0 text-right">{{ticket.department}}</p>
-                                 </div>
-                             </li>
-                             <li class="list-group-item d-flex p-3">
-                              <div class="mr-auto">Category (<i>{{ticket.category.category_type}}</i>)</div>
-                              <div class="font-weight-bold" style="width: 60% !important;">
-                                 <p class="p-0 m-0 text-right">{{ticket.category}}</p>
-                              </div>
-                          </li>
-                          </li>
-                           {% for form in ticket.request_form.fields %}
-                              {% if form.form_field|length < 5 %}
-                              <li class="list-group-item d-flex p-3">
-                                 <div class="mr-auto">{{form.title}} </div>
-                                 <div class="font-weight-bold" style="width: 60% !important;">
-                                    {% include '../../snippets/fragments/list2.html' %}
-                                 </div>
-                             </li>
-                              {% else %}
-                                 {% include '../../snippets/fragments/list.html' %}
-                              {% endif %}
-                           {% endfor %}
+                              {% for form in ticket.request_form.fields %}
+                                 {% if form.form_field|length < 5 %}
+                                 <li class="list-group-item d-flex p-3">
+                                    <div class="mr-auto">{{form.title}} </div>
+                                    <div class="font-weight-bold" style="width: 60% !important;">
+                                       {% include '../../snippets/fragments/list2.html' %}
+                                    </div>
+                                 </li>
+                                 {% else %}
+                                    {% include '../../snippets/fragments/list.html' %}
+                                 {% endif %}
+                              {% endfor %}
                            </ul>
                         </div>
                      </div>

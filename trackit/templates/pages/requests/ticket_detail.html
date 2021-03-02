@@ -46,7 +46,7 @@
                      <div id="collapseInformation" class="collapse show">
                         <div class="card-body p-3">
                            <div class="row">
-                              <div class="col-12 col-sm-12 col-md-12 col-lg-12"> 
+                              <div class="col-12 col-sm-6 col-md-12 col-lg-12"> 
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context">{{ticket.ticket_no}}</p>
@@ -54,7 +54,15 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                 <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                       <p class="context text-truncate">{{ticket.date_created|date:"d F Y h:i A"}}</p>
+                                       <span class="label">Date Requested</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate" id="form_id" form_id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
@@ -62,27 +70,38 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">{{ticket.date_created|date:"d F Y h:i A"}}</p>
-                                       <span class="label">Date Created</span>
+                                    <div class="card-body p-0 m-0 d-flex align-items-center">
+                                       <div class="mr-auto text-truncate">
+                                          <p class="context d-flex align-items-center">
+                                             <span class="spinner-border spinner-border-sm text-secondary ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                             <span id="ref_context">
+                                             {% if ticket.reference_no %}
+                                                {{ticket.reference_no}}
+                                             {% else %}
+                                                <span class="text-muted"> XXX-0000-0000</span>
+                                             {% endif %}    
+                                             </span>
+                                          </p>
+                                          <span class="label">Reference No</span>
+                                       </div>
+                                       {% if not ticket.reference_no %}
+                                          {% if user.is_staff or user.is_superuser %}                                  
+                                          <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 
+                                             <span class="spinner-border spinner-border-xs text-secondary mr-1 ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                             <span>Generate</span> 
+                                          </button>
+                                          {% endif %}
+                                       {% endif %}
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">{{ticket.date_modified|date:"d F Y h:i A"}}</p>
-                                       <span class="label">Last Modified</span>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
-                                 <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context">{{ticket.requested_by}}</p>
-                                       <span class="label">Requestor</span>
+                                       <p class="context">{{ticket.requested_by}} </p>
+                                       <span class="label">Requested By</span>
                                     </div>
                                  </div>
                               </div>
@@ -90,13 +109,13 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context">{{remark.user}} </p>
+                                       <p class="context">{{remark.action_officer}} </p>
                                        <span class="label">Approved By</span>
                                     </div>
                                  </div>
                               </div>
-                              {% endif %}                   
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                              {% endif %}
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context">{{ticket.status}}</p>
@@ -104,8 +123,8 @@
                                     </div>
                                  </div>
                               </div>
-                              {% if request.user.is_superuser %}
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                              {% if user.is_superuser %}
+                              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0 d-flex align-items-center">
                                        <div class="mr-auto">

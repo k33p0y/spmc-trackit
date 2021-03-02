@@ -88,6 +88,7 @@
                         <thead>
                            <tr>
                               <th>Name</th>
+                              <th>Code</th>
                               <th>Color</th>
                               <th>Date Created</th>
                               <th>Date Modified</th>
@@ -133,16 +134,24 @@
                </nav>
 
                <div class="tab-content" id="nav-tabContent">
-                  <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="nav-home-tab">           
-                     <div class="form-group"> <!-- Name -->
-                        <label>Name</label>
-                        <input type="text" class="form-control form-control-sm" id="txt_typename"
-                           placeholder="Enter form name">
-                        <small class="error-info" id="name_error"></small>
+                  <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="nav-home-tab">
+                     <div class="form-row">
+                        <div class="form-group col-lg-9"> <!-- Name -->
+                           <label>Name</label>
+                           <input type="text" class="form-control form-control-sm" id="txt_typename"
+                              placeholder="Enter form name">
+                           <small class="error-info" id="name_error"></small>
+                        </div>
+                        <div class="form-group col-lg-3"> <!-- Prefix -->
+                           <label>Prefix Code</label>
+                           <input type="text" class="form-control form-control-sm" id="txt_prefix" placeholder="Enter prefix code name" maxlength="4">
+                           <small class="error-info" id="prefix_error"></small>
+                        </div>  
                      </div>          
                      <div class="form-group"> <!-- Color -->
                         <label>Color</label>
-                        <div class="d-flex mb-2">
+                        <input type="text" class="form-control form-control-sm" id="txt_color" placeholder="Choose color">
+                        <div class="d-flex mt-2">
                            <button type="button" class="btn color-palette pine mr-1"></button>
                            <button type="button" class="btn color-palette jungle mr-1"></button>
                            <button type="button" class="btn color-palette yale mr-1" ></button>
@@ -154,7 +163,6 @@
                            <button type="button" class="btn color-palette peanut mr-1"></button>
                            <button type="button" class="btn color-palette cider mr-1"></button>
                         </div>
-                        <input type="text" class="form-control form-control-sm" id="txt_color" placeholder="Choose color">
                         <small class="error-info" id="color_error"></small>
                      </div>
                      <div class="form-group"> <!-- Groups -->
@@ -181,7 +189,6 @@
                         <div class="col text-center"> <label>Is Head Step</label></div>
                         <div class="col text-center"> <label>Has Approving</label></div>
                         <div class="col text-center"> <label>Has Pass & Fail</label></div>
-
                         <div class="col-1"></div>
                      </div>
                      <div class="form-wrapper">

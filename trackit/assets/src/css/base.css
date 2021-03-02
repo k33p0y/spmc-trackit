@@ -40,7 +40,11 @@ h1, h2,  h3, h4, h5, h6, small  {
 
 .p-1 {
    padding: 5px !important
-};
+}
+
+.text-muted {
+   color: #e3e5ed !important;
+}
 
 .bt-primary {border-top: 4px solid #007bff;}
 .bt-secondary {border-top: 4px solid #6c757d;}
@@ -499,4 +503,17 @@ table.dataTable tbody tr:hover {
 .dropdown-filter .btn-light:visited {
    background-color: #fbfbfb !important;
    border-color: #ff8f34b6 !important;
+}
+
+/* Spinners */
+.spinner-border-sm {
+   width: 0.90rem !important;
+   height: 0.90rem !important;
+}
+
+/* Spinners */
+.spinner-border-xs {
+   width: 0.75rem !important;
+   height: 0.75rem !important;
+   border-width: .2em !important;
 }
