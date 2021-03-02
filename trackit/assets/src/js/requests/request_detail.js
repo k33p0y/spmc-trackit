@@ -142,10 +142,8 @@ $(document).ready(function () {
             data: file_data,
             headers: axiosConfig,
          }).then(function (response) { // success
-            socket.send(
-               JSON.stringify({ticket_id: response.data.ticket_id}) // send ticket_id to websocket
-            )
 
+            socket.send(JSON.stringify({type: 'notification', data: {object_id: response.data.ticket, notification_type: 'ticket'}}))
             // disable submit button
             $(this).attr('disabled', true)
             $.when(
@@ -215,7 +213,7 @@ $(document).ready(function () {
       }).then(function (response) { // success
           let comment_id = response.data.id
           socket.send(JSON.stringify({type: 'comment', data: {comment_id: comment_id}}))
-          socket.send(JSON.stringify({type: 'notification', data: {ticket_id: response.data.ticket, notification_type: 'comment'}}))
+          socket.send(JSON.stringify({type: 'notification', data: {object_id: comment_id, notification_type: 'comment'}}))
       }).catch(function (error) { // error
           Toast.fire({
               icon: 'error',

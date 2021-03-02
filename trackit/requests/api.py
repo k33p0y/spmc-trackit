@@ -16,6 +16,7 @@ import json, uuid, datetime
 def create_notification(object_id, ticket):
    log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
    groups = ticket.request_form.group.all()
+   requestor = ticket.requested_by
 
    for group in groups:
       users = group.user_set.all()
@@ -27,6 +28,9 @@ def create_notification(object_id, ticket):
    if ticket.department.department_head:
       if not log.user == ticket.department.department_head:
          Notification(log=log, user=ticket.department.department_head).save()
+   if not log.user == requestor:
+      Notification(log=log, user=requestor).save()
+
 
 # Remark Method
 def create_remark(object_id, ticket):

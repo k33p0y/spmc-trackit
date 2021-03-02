@@ -139,7 +139,7 @@ $(document).ready(function () {
         }).then(function (response) { // success
             let comment_id = response.data.id
             socket.send(JSON.stringify({type: 'comment', data: {comment_id: comment_id}}))
-            socket.send(JSON.stringify({type: 'notification', data: {ticket_id: response.data.ticket, notification_type: 'comment'}}))
+            socket.send(JSON.stringify({type: 'notification', data: {object_id: comment_id, notification_type: 'comment'}}))
         }).catch(function (error) { // error
             Toast.fire({
                 icon: 'error',
