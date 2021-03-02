@@ -108,8 +108,12 @@ const getComments = function(ticket, next_page){
          },
          headers: axiosConfig,
       }).then(function (response) { // success
-         // check if there is next page to comment list API
-         response.data.next ? $('#comment-nextpage-url').val(response.data.next) : $('#comment-nextpage-url').val(null);
+         let next_page_url = response.data.next
+         if (next_page_url) { // check if there is next page to comment list API
+            if (next_page_url.includes('socket')){ // check if host == socket
+               $('#comment-nextpage-url').val(next_page_url.replace('socket', window.location.host)); // change socket host to window.location.host
+            } else $('#comment-nextpage-url').val(next_page_url);
+         } else $('#comment-nextpage-url').val(null);
 
          if (!next_page) $('.comment-section').empty();
          let comments_array = response.data.results
@@ -135,10 +139,10 @@ const getComments = function(ticket, next_page){
          }
          
       }).catch(function (error) { // error
-         console.log(error)
+         console.log(error.response)
          Toast.fire({
             icon: 'error',
-            title: 'Error in loading comments.',
+            title: error.response,
          });
       });
    }
