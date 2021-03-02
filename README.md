@@ -76,6 +76,65 @@ $ python manage.py runserver
 | User | User | View & Change Request<br>View & Add Comments<br>View & Add Attachments<br>View Crud Event (Track Logs) |
 | User | Department Head | View Request<br>View & Add Comments<br>View & Add Attachments<br>View Crud Event (Track Logs) |
 
+
+## Daphne
+```sh
+### Create Daphne daemon in /etc/systemd/system/trackit-daphne.service
+[Unit]
+Description=daphne daemon for trackit
+After=network.target
+
+[Service]
+User=<user here>
+Group=www-data
+WorkingDirectory=/var/www/trackit/trackit
+ExecStart=/var/www/trackit/venv/bin/daphne -b 10.1.80.22 -p 8001 trackit.asgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+# start trackit-daphne.service daemon
+systemctl start trackit-daphne.service
+systemctl status trackit-daphne.service
+systemctl daemon-reload
+```
+## NGINX
+```sh
+### create Nginx config to /etc/nginx/sites-available/trackit
+upstream socket {
+    ip_hash;
+    server 10.1.80.22:8001 fail_timeout=0;
+}
+
+server {
+    listen 91;
+
+    server_name 10.1.80.22;
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location /static/ {
+            root /var/www/trackit/trackit;
+    }
+
+    location /media/ {
+            root /var/www/trackit/trackit;
+    }
+
+    location / {
+        proxy_pass http://socket;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+
+### copy config to /etc/nginx/sites-enabled
+sudo ln -s /etc/nginx/sites-available/trackit /etc/nginx/sites-enabled
+
+### reload Nginx
+service nginx reload
+```
+
 ## Developer
 > **© 2021 Integrated Hospital Operations and Management Program (IHOMP) Software and Systems Development Unit (SSD)**
 
