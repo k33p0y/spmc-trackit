@@ -8,7 +8,6 @@ beautifulsoup4==4.9.3
 cffi==1.14.4
 channels==3.0.2
 channels-redis==3.2.0
-click==7.1.2
 constantly==15.1.0
 cryptography==3.2.1
 daphne==3.0.1
@@ -19,10 +18,7 @@ django-mysql==3.8.1
 djangorestframework==3.11.0
 djangorestframework-datatables==0.5.2
 drf-writable-nested==0.6.0
-gunicorn==20.0.4
-h11==0.12.0
 hiredis==1.1.0
-httptools==0.1.1
 hyperlink==20.0.1
 idna==2.10
 incremental==17.5.0
@@ -42,7 +38,4 @@ soupsieve==2.0.1
 sqlparse==0.3.1
 Twisted==20.3.0
 txaio==20.4.1
-typing-extensions==3.7.4.3
-uvicorn==0.13.4
-uvloop==0.14.0
 zope.interface==5.2.0
