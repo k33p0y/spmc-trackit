@@ -251,8 +251,17 @@ $(document).ready(function () {
       });
    });
 
+   // Load more comments on scroll
+   $('.comment-section').scroll(function () {         
+      if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+          if ($('#comment-nextpage-url').val()){
+              getComments($('#btn-post-comment').data().ticketId, $('#comment-nextpage-url').val());
+          }
+      }
+  });
+
    // Load Comments
-   getComments(ticket);
+   getComments($('#btn-post-comment').data().ticketId, null);
 });
 
 function validateForms() {

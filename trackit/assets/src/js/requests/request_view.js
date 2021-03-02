@@ -175,6 +175,8 @@ $(document).ready(function () {
             });
         });
     });
+
+    // Load more comments on scroll
     $('.comment-section').scroll(function () {         
         if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
             if ($('#comment-nextpage-url').val()){
