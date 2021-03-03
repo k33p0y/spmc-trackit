@@ -224,7 +224,7 @@ $(document).ready(function () {
                `<div class="list-group-item border-0 d-flex p-1 mb-1">
                   <div class="file-icon"><i class="far fa-lg ${type}"></i></div>
                   <div style="line-height:15px; width:15%;">
-                     <p class="mb-0 font-weight-bold text-truncate">${file.name}</p>
+                     <p class="mb-0 font-weight-bold text-truncate text-xs">${file.name}</p>
                      <small class="mb-0">${size}</small>
                   </div>
                   <div class="flex-grow-1 m-0 ml-4 mr-2">
@@ -238,14 +238,14 @@ $(document).ready(function () {
                   </div>
                </div>`
             )
-
             file_arr.push({
                id : `file_${counter}`,
                file: file 
             });
             counter++;
-         }         
-      });  
+         }    
+      });
+      console.log(file_arr)
    });
 
    // Remove Attachment
@@ -294,8 +294,8 @@ $(document).ready(function () {
                file_data.append('file', value.file)
             });
          }
-         file_data.append("data", blob);
-
+         file_data.append("data", blob)
+         
          axios({
             method: 'POST',
             url: '/api/requests/lists/',

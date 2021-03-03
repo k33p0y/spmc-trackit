@@ -33,6 +33,7 @@ class RequestForm(models.Model):
 class Ticket(models.Model):
     ticket_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ticket_no = models.CharField(max_length=25, blank=True)
+    description = models.CharField(max_length=255)
     reference_no = models.CharField(max_length=15, blank=True)
     form_data = JSONField()
     
@@ -61,19 +62,14 @@ class RequestFormStatus(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
-    # def __str__(self):
-    #     return self.status
-
 class Attachment(models.Model):
     file = models.FileField(upload_to=upload_file_url)
     file_name = models.CharField(max_length=255, blank=True)
     file_type = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
     ticket = models.ForeignKey(Ticket, related_name='attachments_ticket', on_delete=models.CASCADE)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey('core.User', related_name='attachments_user', on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return self.name
 
 class Notification(models.Model):
     log = models.ForeignKey(CRUDEvent, on_delete=models.CASCADE)

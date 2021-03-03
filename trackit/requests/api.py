@@ -31,7 +31,6 @@ def create_notification(object_id, ticket):
    if not log.user == requestor:
       Notification(log=log, user=requestor).save()
 
-
 # Remark Method
 def create_remark(object_id, ticket):
    log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
@@ -43,6 +42,7 @@ def create_remark(object_id, ticket):
    )
    remark.save()
 
+# Generate reference no
 def generate_reference(form):
    year = datetime.datetime.now().year
    ticket = Ticket.objects.filter(request_form=form, date_created__year=year).exclude(reference_no__exact='').order_by('-reference_no').first()
@@ -218,7 +218,7 @@ class TicketViewSet(viewsets.ModelViewSet):
                ticket=ticket, 
                file=file, 
                file_name=file.name,
-               file_type=file.content_type, 
+               file_type=file.content_type,
                uploaded_by=self.request.user
             )
       

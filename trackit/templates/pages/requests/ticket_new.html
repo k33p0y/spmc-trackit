@@ -139,16 +139,17 @@
                <div id="collapseAttachment" class="collapse show">
                   <div class="card-body p-3">
                      <div class="d-flex">
-                        <div class="mr-auto">
-                           <label class="btn btn-sm btn-light">
-                              <span><i class="fas fa-sm fa-file-upload"></i> Browse Files</span> 
+                        <div>
+                           <label class="btn btn-sm btn-light m-0">
+                              <span><i class="fas fa-sm fa-folder-open"></i> Browse Files</span> 
                               <input type="file" name="file" id="file_upload" multiple hidden> 
-                          </label>
+                           </label>
                         </div>
-                        <div> <a class="btn btn-xs btn-link text-secondary d-none" id="btn_clear"><span>Clear All</span> </a> </div>
+                        <div class="ml-auto"> <a class="btn btn-xs btn-link text-secondary d-none" id="btn_clear"><span>Clear All</span> </a> </div>
                      </div> 
-                    
-                     <div class="list-group mt-3" id="file_lists"></div>
+                                         
+                     <div class="list-group mt-2" id="file_lists"></div>
+                     {% comment %} 
                      <!-- <div class="upload-wrapper d-flex justify-content-center">
                         <div class="d-flex align-items-center">
                            <div class="upload-content text-center">
@@ -157,7 +158,8 @@
                               <span class="upload-info">.docs, .docx, .xls, .csv, .jpeg</span>
                            </div>
                         </div>
-                     </div> -->
+                     </div> --> 
+                     {% endcomment %}
                   </div>
                </div>
             </div>
