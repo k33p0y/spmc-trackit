@@ -38,7 +38,7 @@ Used to populate the environment variables or will be used to fill instance sett
     DB_USER=<db user>
     DB_PASSWORD=<db password>
     
-    ALLOWED_HOSTS = .localhost, .10.1.80.22, .10.1.80.23, .10.1.25.54
+    ALLOWED_HOSTS = .localhost, .10.1.80.22, .10.1.80.23, .10.1.25.54, .socket
     
     REDIS_HOST = localhost
     REDIS_PORT = 6379
@@ -53,7 +53,7 @@ $ python manage.py migrate
 #### Collect Static Files
 Copy your assets files (JS, CSS, Vendors) to static folder:
 ```sh
-$ python manage.py collectstatic`
+$ python manage.py collectstatic
 ```
 
 #### Redis via Docker
@@ -96,6 +96,7 @@ WantedBy=multi-user.target
 # start trackit-daphne.service daemon
 systemctl start trackit-daphne.service
 systemctl status trackit-daphne.service
+systemctl enable trackit-daphne.service
 systemctl daemon-reload
 ```
 ## NGINX
@@ -126,6 +127,7 @@ server {
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
     }
+
     access_log /var/log/nginx/trackit.access.log;
     error_log /var/log/nginx/trackit.error.log;
 }
