@@ -148,6 +148,7 @@ class TicketViewSet(viewsets.ModelViewSet):
    def get_queryset(self):
       # Search & Filter Parameters
       search = self.request.query_params.get('search', None)
+      request_form = self.request.query_params.get('request_form', None)
       category_type = self.request.query_params.get('category_type', None)
       category = self.request.query_params.get('category', None)
       department = self.request.query_params.get('department', None)
@@ -170,7 +171,8 @@ class TicketViewSet(viewsets.ModelViewSet):
             qs = Ticket.objects.select_related('request_form', 'department', 'category', 'requested_by', 'status').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user))
          
          # Parameters
-         if search: qs = qs.filter(ticket_no__icontains=search)
+         if search: qs = qs.filter(Q(ticket_no__icontains=search) | Q(reference_no__icontains=search))
+         if request_form: qs = qs.filter(request_form_id__exact=request_form)
          if category_type: qs = qs.filter(category__category_type_id__exact=category_type)
          if category: qs = qs.filter(category_id__exact=category)
          if department: qs = qs.filter(department_id__exact=department)

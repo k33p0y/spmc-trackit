@@ -15,10 +15,11 @@ def ticket(request):
    departments =  Department.objects.filter(is_active=True, is_archive=False)
    types = CategoryType.objects.filter(is_active=True, is_archive=False)
    statuses = Status.objects.filter(is_active=True, is_archive=False)
+   forms = RequestForm.objects.filter(is_active=True, is_archive=False)
 
-   context = {'tickets': tickets, 'departments':departments, 'types':types, 'statuses': statuses}
+   context = {'tickets': tickets, 'departments':departments, 'types':types, 'statuses': statuses, 'forms': forms}
    return render(request, 'pages/requests/ticket_lists.html', context)
-
+   
 @login_required
 def create_ticket(request):
    forms= RequestForm.objects.filter(is_active=True, is_archive=False)

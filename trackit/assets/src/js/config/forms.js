@@ -214,6 +214,7 @@ $(document).ready(function () {
       $('#txt_color').val(dt_data['color']).css('background-color', dt_data['color']).addClass('text-light');
       $('#select2-groups').val(groups).trigger('change');
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
+      $('#chk_status').prop("checked", dt_data['is_active']);
       setStatusOrder(status)
 
       // Format Textarea value to JSON
