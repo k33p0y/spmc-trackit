@@ -138,7 +138,16 @@
                </a>
                <div id="collapseAttachment" class="collapse show">
                   <div class="card-body p-3">
-                     <input type="file" name="file" id="file_upload" multiple> 
+                     <div class="d-flex">
+                        <div class="mr-auto">
+                           <label class="btn btn-sm btn-light">
+                              <span><i class="fas fa-sm fa-file-upload"></i> Browse Files</span> 
+                              <input type="file" name="file" id="file_upload" multiple hidden> 
+                          </label>
+                        </div>
+                        <div> <a class="btn btn-xs btn-link text-secondary d-none" id="btn_clear"><span>Clear All</span> </a> </div>
+                     </div> 
+                    
                      <div class="list-group mt-3" id="file_lists"></div>
                      <!-- <div class="upload-wrapper d-flex justify-content-center">
                         <div class="d-flex align-items-center">
