@@ -126,6 +126,8 @@ server {
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
     }
+    access_log /var/log/nginx/trackit.access.log;
+    error_log /var/log/nginx/trackit.error.log;
 }
 
 ### copy config to /etc/nginx/sites-enabled
