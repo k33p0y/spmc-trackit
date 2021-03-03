@@ -197,8 +197,12 @@ $(document).ready(function () {
    // File Upload
    $('#file_upload').on('change', function() {
       const files = this.files;
-      const file_lists = $('#file_lists').empty()
+      const file_lists = $('#file_lists');
+      let counter = 0;
 
+      if(files) $('#btn_clear').removeClass('d-none');
+
+      // Appending Display
       Object.values(files).forEach(file => {
          let type = fileType(file.type, media_type);
          let size = fileSize(file.size);
@@ -219,20 +223,56 @@ $(document).ready(function () {
             file_lists.append(
                `<div class="list-group-item border-0 d-flex p-1 mb-1">
                   <div class="file-icon"><i class="far fa-lg ${type}"></i></div>
-                  <div class="w-100">
-                     <p class="mb-0 font-weight-bold">${file.name}</p>
+                  <div style="line-height:15px; width:15%;">
+                     <p class="mb-0 font-weight-bold text-truncate">${file.name}</p>
                      <small class="mb-0">${size}</small>
+                  </div>
+                  <div class="flex-grow-1 m-0 ml-4 mr-2">
+                     <input type="text" class="form-control form-control-sm m-0" id="desc_${counter}" placeholder="Add Description*">
+                     <small class="error-info" id="error-info-type"></small>
+                  </div>
+                  <div>
+                     <button type="button" class="btn btn-sm btn-block btn-remove" data-file-id="file_${counter}">
+                        <i class="fas fa-times text-orange"></i>
+                     </button>
                   </div>
                </div>`
             )
-            file_arr.push(file)
-         }
-      });
-   })
+
+            file_arr.push({
+               id : `file_${counter}`,
+               file: file 
+            });
+            counter++;
+         }         
+      });  
+   });
+
+   // Remove Attachment
+   $('#file_lists').on('click', '.btn-remove', function () {
+      let file_id = $(this).data().fileId;
+      
+      // loop through the files array and check if the file id of that file matches data-file-id
+      // and get the index of the match
+      for (var i = 0; i < file_arr.length; ++i) {
+         if (file_id == file_arr[i].id) file_arr.splice(i, 1);
+      };
+
+      // remove to appended div
+      $(this).parents("div.list-group-item").remove();
+   });
+
+   // Clear All Attachment
+   $('#btn_clear').click(function () {
+      $('#file_upload').val('');
+      $('#file_lists').empty();
+      $('#btn_clear').addClass('d-none');
+      file_arr = new Array();
+   });
 
    // Submit Form
    $("#btn_save").click(function (e) {
-      e.preventDefault();
+      e.preventDefault();      
 
       let success = validateForms();
       if (success == 1) {
@@ -249,8 +289,9 @@ $(document).ready(function () {
          const file_data = new FormData()
       
          if (file_arr.length > 0) {
-            Object.values(file_arr).forEach(file => {
-               file_data.append('file', file)
+            $.each(Object.values(file_arr), function(index, value) {
+               value.file.description = $(`#desc_${index}`).val()
+               file_data.append('file', value.file)
             });
          }
          file_data.append("data", blob);
