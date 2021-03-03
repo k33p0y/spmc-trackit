@@ -69,6 +69,17 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                     'sender_channel_name': self.channel_name
                 }
             )
+            # notification to requestor
+            if text_data_json['data']['notification_type'] == 'ticket': # notification for ticket update
+                # send notification to requestor
+                await self.channel_layer.group_send(
+                    'notif_room_for_user_' + str(self.obj['requestor_pk']),
+                    {
+                        'type': 'notification_message',
+                        'notification': self.obj,
+                        'sender_channel_name': self.channel_name
+                    }
+                )
 
             for group_id in self.obj['group_ids']:
                 # send notification to group
@@ -132,12 +143,14 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             obj['group_ids'] = list(ticket.request_form.group.values('id'))
             obj['dept_head_id'] = ticket.department.department_head.pk
             obj['actor'] = log.user.get_full_name()
+            obj['requestor_pk'] = ticket.requested_by.pk
 
             choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model
             obj['event_type'] = choices[log.event_type]
             if log.changed_fields:
                 changed_fields = json.loads(log.changed_fields)
-                obj['status'] = changed_fields['status'][0]
+                if 'status' in changed_fields:
+                    obj['status'] = changed_fields['status'][0]
             else:
                 obj['status'] = ticket.status.name
         if notification_type == 'comment':
