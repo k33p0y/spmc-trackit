@@ -176,6 +176,14 @@
                </a>
             </li>
             {% endif %}
+
+            <li class="nav-item">
+               <a href="{% url 'user_profile' pk=user.id %}"
+                  class="nav-link {% if url == 'user_profile' %} active {% endif %}">
+                  <i class="nav-icon fas fa-user-circle"></i>
+                  <p> My Profile</p>
+               </a>
+            </li>
          </ul>
          {% endwith %}
 
