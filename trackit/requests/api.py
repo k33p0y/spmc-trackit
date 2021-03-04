@@ -13,10 +13,12 @@ from config.models import Remark
 import json, uuid, datetime
 
 # Create notification method
-def create_notification(object_id, ticket):
+def create_notification(object_id, ticket, sender):
    log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
    groups = ticket.request_form.group.all()
    requestor = ticket.requested_by
+   date_created = ticket.date_created.replace(microsecond=0)
+   date_modified = ticket.date_modified.replace(microsecond=0)
 
    for group in groups:
       users = group.user_set.all()
@@ -25,9 +27,10 @@ def create_notification(object_id, ticket):
          if not log.user == user:
             Notification(log=log, user=user).save()
    # create notification for department head
-   if ticket.department.department_head:
-      if not log.user == ticket.department.department_head:
-         Notification(log=log, user=ticket.department.department_head).save()
+   if date_modified == date_created and sender == 'ticket':
+      if ticket.department.department_head:
+         if not log.user == ticket.department.department_head:
+            Notification(log=log, user=ticket.department.department_head).save()
    if not log.user == requestor:
       Notification(log=log, user=requestor).save()
 
@@ -209,7 +212,7 @@ class TicketViewSet(viewsets.ModelViewSet):
          ticket_no=ticket_no
       )
 
-      create_notification(str(ticket.ticket_id), ticket)  # Create notification instance
+      create_notification(str(ticket.ticket_id), ticket, 'ticket')  # Create notification instance
       create_remark(str(ticket.ticket_id), ticket) # Create initial remark
 
       if files:
@@ -247,7 +250,7 @@ class TicketViewSet(viewsets.ModelViewSet):
                uploaded_by=self.request.user
             )
 
-      create_notification(str(ticket.ticket_id), ticket) # create notification instance
+      create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
       
       serializer = TicketSerializer(ticket)
       return Response(serializer.data)
@@ -268,7 +271,7 @@ class TicketViewSet(viewsets.ModelViewSet):
          serializer.is_valid(raise_exception=True)
          serializer.save()
 
-      create_notification(str(ticket.ticket_id), ticket) # create notification instance
+      create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
       return Response(serializer.data)
 
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
@@ -353,6 +356,6 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
          raise serializers.ValidationError('You do not have permission to post a comment.')
       content = request.data['content']
       comment = Comment.objects.create(ticket_id=ticket_id, content=content, user=self.request.user)
-      create_notification(comment.id, comment.ticket) # create notification instance
+      create_notification(comment.id, comment.ticket, 'comment') # create notification instance
       serializer = CommentSerializer(comment)
       return Response(serializer.data)

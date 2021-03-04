@@ -59,16 +59,17 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             object_id = text_data_json['data']['object_id']
             self.obj = await self.send_notification(object_id, text_data_json['data']['notification_type'])
 
-            # send notification to a user
-            await self.channel_layer.group_send(
-                'notif_room_for_user_' + str(self.obj['dept_head_id']),
-                # ('notif_room_for_user_%s' % self.obj['dept_head_id']),
-                {
-                    'type': 'notification_message',
-                    'notification': self.obj,
-                    'sender_channel_name': self.channel_name
-                }
-            )
+            # send notification to a department head
+            if self.obj['date_modified'] == self.obj['date_created']:
+                await self.channel_layer.group_send(
+                    'notif_room_for_user_' + str(self.obj['dept_head_id']),
+                    # ('notif_room_for_user_%s' % self.obj['dept_head_id']),
+                    {
+                        'type': 'notification_message',
+                        'notification': self.obj,
+                        'sender_channel_name': self.channel_name
+                    }
+                )
             # notification to requestor
             if text_data_json['data']['notification_type'] == 'ticket': # notification for ticket update
                 # send notification to requestor
@@ -136,6 +137,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         obj = dict()
         if notification_type == 'ticket':
             ticket = Ticket.objects.get(ticket_id=object_id)
+            date_created = ticket.date_created.replace(microsecond=0)
+            date_modified = ticket.date_modified.replace(microsecond=0)
             log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')        
 
             obj['ticket_id'] = str(ticket.pk)
@@ -144,6 +147,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             obj['dept_head_id'] = ticket.department.department_head.pk
             obj['actor'] = log.user.get_full_name()
             obj['requestor_pk'] = ticket.requested_by.pk
+            obj['date_created'] = str(date_created)
+            obj['date_modified'] = str(date_modified)
 
             choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model
             obj['event_type'] = choices[log.event_type]
@@ -155,6 +160,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 obj['status'] = ticket.status.name
         if notification_type == 'comment':
             comment = Comment.objects.get(pk=object_id)
+            date_created = comment.ticket.date_created.replace(microsecond=0)
+            date_modified = comment.ticket.date_modified.replace(microsecond=0)
             log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')        
             
             obj['ticket_id'] = str(comment.ticket.pk)
@@ -164,6 +171,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             obj['actor'] = log.user.get_full_name()
             obj['requestor'] = comment.ticket.requested_by.get_full_name()
             obj['requestor_pk'] = comment.ticket.requested_by.pk
+            obj['date_created'] = str(date_created)
+            obj['date_modified'] = str(date_modified)
         return obj
 
     @database_sync_to_async
