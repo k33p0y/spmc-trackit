@@ -156,7 +156,6 @@ class TicketViewSet(viewsets.ModelViewSet):
       date_from = self.request.query_params.get('date_from', None)
       date_to = self.request.query_params.get('date_to', None)
       is_active = self.request.query_params.get('is_active', None)
-      is_archive = self.request.query_params.get('is_archive', None)
 
       if not self.request.user.has_perm('requests.view_ticket'):
          return Ticket.objects.none()
@@ -167,11 +166,11 @@ class TicketViewSet(viewsets.ModelViewSet):
          elif self.request.user.is_staff:
             groups = list(self.request.user.groups.all())
             qs = Ticket.objects.select_related('request_form', 'department', 'category', 'requested_by', 'status').filter(request_form__group__in=groups)
-         else:
-            qs = Ticket.objects.select_related('request_form', 'department', 'category', 'requested_by', 'status').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user))
+         else: 
+            qs = Ticket.objects.select_related('request_form', 'department', 'category', 'requested_by', 'status').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user), is_active=True)
          
          # Parameters
-         if search: qs = qs.filter(Q(ticket_no__icontains=search) | Q(reference_no__icontains=search))
+         if search: qs = qs.filter(Q(ticket_no__icontains=search) | Q(reference_no__icontains=search) | Q(description__icontains=search))
          if request_form: qs = qs.filter(request_form_id__exact=request_form)
          if category_type: qs = qs.filter(category__category_type_id__exact=category_type)
          if category: qs = qs.filter(category_id__exact=category)
@@ -181,7 +180,6 @@ class TicketViewSet(viewsets.ModelViewSet):
          if date_to: qs = qs.filter(date_created__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
          if status: qs = qs.filter(status_id__exact=status)
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
-         if is_archive: qs = qs.filter(is_archive=json.loads(is_archive))
 
          return qs
 
@@ -192,6 +190,7 @@ class TicketViewSet(viewsets.ModelViewSet):
       request_form = data['request_form']
       form_data = data['form_data']
       category = data['category']
+      description = data['description']
       department = data['department']
 
       rf = RequestForm.objects.get(pk=request_form)
@@ -200,7 +199,8 @@ class TicketViewSet(viewsets.ModelViewSet):
 
       # Create Ticket
       ticket = Ticket.objects.create(
-         request_form_id=request_form, 
+         request_form_id=request_form,
+         description=description, 
          form_data=form_data, 
          category_id=category, 
          department_id=department,
