@@ -63,6 +63,12 @@ $(document).ready(function () {
       cache: true,
    });
 
+   $('#dd_edit_types').select2({ // department select2
+      allowClear: true,
+      placeholder: 'Select Category Type',
+      cache: true,
+   });
+
    $('#dd_edit_categories').select2({ // categories select2
       allowClear: true,
       placeholder: 'Select Category',

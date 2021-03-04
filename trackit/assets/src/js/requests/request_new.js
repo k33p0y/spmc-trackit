@@ -281,9 +281,10 @@ $(document).ready(function () {
          data = new Object();
          data.ticket_no = '';
          data.request_form = request_form;
+         data.description = $('#txt_description').val();
          data.form_data = getFormValues(data_obj);
          data.category = category;
-         data.department = department;
+         data.department = 2;
 
          const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
          const file_data = new FormData()
@@ -330,6 +331,15 @@ function validateForms() {
    var success = 1;
 
    // Validate Request Details
+   if ($('#txt_description').val() == '') {
+      $('#txt_description').addClass('form-error');
+      $('#error-info-desc').html('*This field cannot be empty')
+      success--;
+   } else {
+      $('#txt_description').next().find('.select2-selection').removeClass('form-error');
+      $('#error-info-desc').html('');
+   }
+
    if ($('#dd_types').val() == '') {
       $('#dd_types').next().find('.select2-selection').addClass('form-error');
       $('#error-info-type').html('*This field cannot be empty')

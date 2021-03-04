@@ -19,7 +19,7 @@ $(document).ready(function () {
       "autoWidth": false,
       "serverside": true,
       "processing": true,
-      "pageLength": 8,
+      "pageLength": 10,
       "ajax": {
          url: '/api/requests/lists/?format=datatables',
          type: "GET",
@@ -32,12 +32,19 @@ $(document).ready(function () {
             "status": statusFilter,
             "date_from": dateFromFilter,
             "date_to": dateToFilter,
-            "is_active": activeFilter,
-            "is_archive":  false
+            "is_active": activeFilter
          },
       },
       "columns": [
-         { data: "ticket_no" }, // Ticket No
+         { 
+            data: "ticket_no",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = `<a href='/requests/${row.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket_no} </a>`
+               }
+               return data
+            }
+         }, // Ticket No
          {
             data: "request_form",
             render: function (data, type, row) {
@@ -48,19 +55,26 @@ $(document).ready(function () {
                   </span>`
                }
                return data
-            }
+            },
+            width: "20%"
          }, // Request Type
+         { 
+            data: "description",
+            render: $.fn.dataTable.render.ellipsis(60, true),
+            width: "25%"
+         }, // Description
          {
             data: "category",
             render: function (data, type, row) {
                if (type == 'display') {
                   let category = row.category.name
                   let category_type = row.category.category_type.name
-
-                  data = `<p class="title mb-1">${category}</p><span class="sub-title">${category_type}</span>`
+                  
+                  data = `<p class="title">${category}</p> <span class="sub-title">${category_type}</span>`
                }
                return data
-            }
+            },
+            width: "20%"
          }, // Category
          { 
             data: "reference_no",
@@ -87,7 +101,7 @@ $(document).ready(function () {
                   var date = moment(row.date_created).format('DD MMMM YYYY');
                   var time = moment(row.date_created).format('h:mm:ss a');
 
-                  data = `<p class="title mb-1">${date}</p><span class="sub-title">${time}</span>`
+                  data = `<p class="title mb-0">${date}</p><span class="sub-title">${time}</span>`
                }
                return data
             },
@@ -123,6 +137,7 @@ $(document).ready(function () {
                }
                return data
             },
+            width: "10%"
          }, // Status 
          {
             data: "is_active",
@@ -138,21 +153,18 @@ $(document).ready(function () {
                return data
             }
          }, // Is Active
-         {
-            data: "null",
-            render: function (data, type, row) {
-               var id = row.ticket_id;
-               data = '';
-               data = data + `<a href='/requests/${id}/view' class='text-info action-link btn_view'> <i class='fas fa-eye'></i> </a>`;
-               if($('#changeTicketHidden').val() == 'true') {
-                  data = data + `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>`;
-               }
-               if($('#deleteTicketHidden').val() == 'true') {
-                  data = data + `<a href='#' class='text-danger action-link btn_delete' data-id="${id}"> <i class='fas fa-trash'></i> </a>`;
-               }
-               return data;
-            },
-         } // Action
+         // {
+         //    data: "null",
+         //    render: function (data, type, row) {
+         //       var id = row.ticket_id;
+         //       data = '';
+         //       data = data + `<a href='/requests/${id}/view' class='text-info action-link btn_view'> <i class='fas fa-eye'></i> </a>`;
+         //       if($('#changeTicketHidden').val() == 'true') {
+         //          data = data + `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>`;
+         //       }
+         //       return data;
+         //    },
+         // } // Action
       ],
       "order": [[ 5, "desc" ]],
    });

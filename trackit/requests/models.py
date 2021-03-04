@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django_mysql.models import JSONField
 from django.contrib.auth.models import Group
 from easyaudit.models import CRUDEvent
-from config.models import Department, Category, Status
+from config.models import Department, Category, Status, CategoryType
 from core.models import User
 
 
@@ -21,6 +21,8 @@ class RequestForm(models.Model):
     status = models.ManyToManyField(Status, related_name='forms', blank=True, through='RequestFormStatus')
     fields = JSONField()
     group = models.ManyToManyField(Group, related_name='groups', blank=True)
+    category_types = models.ManyToManyField(CategoryType, related_name='form_types', blank=True)
+    guide = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
     is_archive = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)

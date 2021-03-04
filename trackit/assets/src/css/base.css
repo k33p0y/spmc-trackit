@@ -223,10 +223,11 @@ table.dataTable th {
    padding:8px 24px 8px 14px!important;
    border: none !important;
    color : #717c87 !important;
+   white-space:nowrap;
 }
 
 table.dataTable td  {
-   font-size: 12px;
+   font-size: 11px;
    font-weight: 600;
    padding:12px 14px !important;
    color: #59626b !important;
@@ -237,19 +238,21 @@ table.dataTable td  > a.action-link i {
    font-size: 14px !important;
    margin-right: 6px;
 }
-/* 
+
 table.dataTable td  > p.title {
-   
-} */
+   font-size: 11px !important;
+   margin: 0 !important;
+}
 
 table.dataTable td  > span.sub-title {
    font-weight: normal;
-   font-size: 11px;
+   font-size: 10px !important;
+   margin: 0 !important;
 }
 
 table.dataTable td span.td-badge {
    width: auto !important;
-   padding: 6px 14px !important;
+   padding: 4px 10px !important;
    border-radius: 5px;
    font-size: 11px;
 }

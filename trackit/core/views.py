@@ -30,3 +30,11 @@ def user_list(request):
       'groups': groups
    }
    return render(request, 'pages/core/user_list.html', context)
+
+@login_required
+def user_profile(request, pk):
+   user = User.objects.get(id=pk)
+   context = {
+      'user': user
+   }
+   return render(request, 'pages/core/user_profile.html', context)

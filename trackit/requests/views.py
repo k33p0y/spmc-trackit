@@ -37,6 +37,7 @@ def detail_ticket(request, ticket_id):
    types =  CategoryType.objects.filter(is_active=True, is_archive=False)
    departments =  Department.objects.filter(is_active=True, is_archive=False)
    categories = Category.objects.filter(category_type=ticket.category.category_type, is_active=True, is_archive=False)
+   types =  CategoryType.objects.filter(is_active=True, is_archive=False)
 
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
