@@ -33,10 +33,26 @@ $(document).ready(function () {
          }
       },
       "columns": [
-         { data: "first_name" },
-         { data: "last_name" },
-         { data: "email" },
-         { data: "username"},
+         { 
+            data: "username",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = ($('#changeUserHidden').val() == 'true') ? `<a href="#" class='btn-link-orange action-link btn_edit'>${row.username}</a>` : row.username
+               }
+               return data
+            },
+         },
+         { 
+            data: "last_name",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = `${row.last_name}, ${row.first_name} ${row.middle_name} ${row.suffix}`
+               }
+               return data
+            },
+
+         },
+         { data: "department" },
          { 
             data: "null",
             render: function (data, type, row) {

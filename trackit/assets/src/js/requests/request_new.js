@@ -43,16 +43,25 @@ $(document).ready(function () {
          method: 'GET',
          url: `/api/requests/forms/${request_form}`,
          headers: axiosConfig,
-      }).then(function (response) { // clear div elements
+      }).then(function (response) { // clear and setup elements
          $('.body-info').remove();
          $('.form-wrapper').empty();
          $(".form-admin-wrapper").empty();
 
+         $("#dd_types")
+            .empty()
+            .append('<option></option>')
+            .removeAttr('disabled');
+
+         // populate category type select
+         response.data.category_types.forEach(type => {
+            $("#dd_types").append(`<option value='${type.id}'>${type.name}</option>`)
+         });
          return response.data.fields
       }).then(function (response) { // Add to global object
          return data_obj = new Object(response)
       }).then(function (response) { // generate form fields
-         let has_admin;
+         let has_admin = 0;
          
          response.forEach(data => {
             const title = data.title;
@@ -60,10 +69,10 @@ $(document).ready(function () {
             const is_admin = data.is_admin;
 
             if (is_admin == true) {
-               form_wrapper = $(".form-admin-wrapper")
-               $('.separator').removeClass('d-none');
+               form_wrapper = $(".form-admin-wrapper");
+               has_admin++;
             } else {
-               form_wrapper = $(".form-wrapper")
+               form_wrapper = $(".form-wrapper");
             }
 
             if (form_field.length > 1) {
@@ -164,10 +173,11 @@ $(document).ready(function () {
                }
             }
          });
-      }).then(function (response) { // show admin row
-         $('#row-field-admin').removeAttr('hidden')
-      });
 
+         return has_admin
+      }).then(function (has_admin) { // show admin row
+         if (has_admin > 0 ) $('#row-field-admin').removeAttr('hidden'); else $('#row-field-admin').attr("hidden", true);
+      });
    });
  
    $('#dd_types').on('change', function () { // category type dropdown
