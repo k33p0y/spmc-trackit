@@ -22,6 +22,13 @@ $(document).ready(function () {
       // cache: true,
    });
 
+   // Status Select2 Config
+   $('#select2-types').select2({
+      allowClear: true,
+      placeholder: 'Select Status',
+      // cache: true,
+   });
+
    // Groups Select2 Config
    $('#select2-groups').select2({
       allowClear: true,
@@ -59,7 +66,15 @@ $(document).ready(function () {
          },
       },
       "columns": [
-         { data: "name" }, // Name
+         { 
+            data: "name",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = ($('#changeRequestFormHidden').val() == 'true') ? `<a href="#" class='btn-link-orange action-link btn_edit'>${row.name}</a>` : row.name
+               }
+               return data
+            },
+         }, // Name
          { data: "prefix" }, // Name
          {
             data: "color",
@@ -101,22 +116,6 @@ $(document).ready(function () {
                return data
             }
          }, // Is Active
-         {
-            data: null,
-            render: function (data, type, row) {
-               data = '';
-               if($('#changeRequestFormHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>";
-               }
-               if($('#deleteRequestFormHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
-               }
-               if($('#changeRequestFormHidden').val() != 'true' && $('#deleteRequestFormHidden').val() != 'true') {
-                  data = data + "<span class='text-secondary action-link' data-toggle='tooltip' data-placement='bottom' title='No Action Aavailable'> <i class='fas fa-eye-slash'></i> </span>";
-               }
-               return data
-            },
-         }
       ],
       "order": [[ 3, "desc" ]],
    });
@@ -169,6 +168,7 @@ $(document).ready(function () {
       $('#txt_prefix').val('');
       $('#txt_color').val('').css('background-color', 'unset').removeClass('text-light');
       $("#select2-groups").val([]).trigger('change');
+      $("#select2-types").val([]).trigger('change');
       $('#txt_json').val(JSON.stringify(samp_json));
 
       const form_wrapper = $('.form-row-extras').empty();
@@ -189,11 +189,15 @@ $(document).ready(function () {
 
    // UPDATE / PUT
    $('#dt_forms tbody').on('click', '.btn_edit', function () {
+      const groups = new Array();
+      const types = new Array();
+
       const dt_data = table.row($(this).parents('tr')).data();
       const id = dt_data['id'];
       const status = dt_data['status'];
-      const groups = new Array();
+      
       dt_data['group'].forEach( group => groups.push(group.id));
+      dt_data['category_types'].forEach( type => types.push(type.id));
       
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
@@ -213,6 +217,7 @@ $(document).ready(function () {
       $('#txt_prefix').val(dt_data['prefix']);
       $('#txt_color').val(dt_data['color']).css('background-color', dt_data['color']).addClass('text-light');
       $('#select2-groups').val(groups).trigger('change');
+      $('#select2-types').val(types).trigger('change');
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
       $('#chk_status').prop("checked", dt_data['is_active']);
       setStatusOrder(status)
@@ -233,6 +238,7 @@ $(document).ready(function () {
          data.prefix = $('#txt_prefix').val();
          data.color = $('#txt_color').val();
          data.groups = $('#select2-groups').val();
+         data.category_types = $('#select2-types').val();
          data.status = getStatusRowValues();
          data.fields = JSON.parse($('#txt_json').val());
          data.is_active = chk_status;

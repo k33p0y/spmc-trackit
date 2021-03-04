@@ -26,8 +26,9 @@ def types(request):
 @login_required
 def forms(request):
    statuses = Status.objects.filter(is_active=True, is_archive=False)
+   types = CategoryType.objects.filter(is_active=True, is_archive=False)
    groups = Group.objects.all()
-   context = {'statuses': statuses, 'groups': groups}
+   context = {'statuses': statuses, 'types':types, 'groups': groups}
    return render(request, 'pages/config/forms.html', context)
 
 @login_required

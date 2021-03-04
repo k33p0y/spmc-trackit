@@ -90,6 +90,7 @@ class RequestFormViewSet(viewsets.ModelViewSet):
 
       request_form = RequestForm.objects.create(name=name, prefix=prefix, color=color, is_active=is_active, fields=fields)
       request_form.group.add(*request.data['groups'])
+      request_form.category_types.add(*request.data['category_types'])
       
       for stat in request.data['status']:
          RequestFormStatus.objects.create(
@@ -117,6 +118,9 @@ class RequestFormViewSet(viewsets.ModelViewSet):
 
       request_form.group.clear()
       request_form.group.add(*request.data['groups'])
+
+      request_form.category_types.clear()
+      request_form.category_types.add(*request.data['category_types'])
 
       RequestFormStatus.objects.filter(form=pk).delete()
       
