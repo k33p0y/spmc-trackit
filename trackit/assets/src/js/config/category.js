@@ -26,12 +26,19 @@ $(document).ready(function () {
          data: {
             "search": searchInput,
             "category_type": typeFilter,
-            "is_active": activeFilter,
-            "is_archive": false
+            "is_active": activeFilter
          }
       },
       "columns": [
-         { data: "name" },
+         {
+            data: "name",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = ($('#changeCategoryHidden').val() == 'true') ? `<a href="#" class='btn-link-orange action-link btn_edit'>${row.name}</a>` : row.name
+               }
+               return data
+            },
+         },
          { data: "category_type.name" },
          {
             data: null,
@@ -46,22 +53,6 @@ $(document).ready(function () {
                }
                return data
             }
-         },
-         {
-            data: "null",
-            render: function (data, type, row) {
-               data = '';
-               if($('#changeCategoryHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>";
-               }
-               if($('#deleteCategoryHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-danger action-link btn_delete'> <i class='fas fa-trash'></i> </a>";
-               }
-               if($('#changeCategoryHidden').val() != 'true' && $('#deleteCategoryHidden').val() != 'true') {
-                  data = data + "<span class='text-secondary action-link' data-toggle='tooltip' data-placement='bottom' title='No Action Aavailable'> <i class='fas fa-eye-slash'></i> </span>";
-               }
-               return data
-            },
          }
       ],
    });
@@ -200,45 +191,6 @@ $(document).ready(function () {
       }
    });
 
-   // DELETE / PATCH
-   $('#dt_category tbody').on('click', '.btn_delete', function () {
-      let dt_data = table.row($(this).parents('tr')).data();
-      let id = dt_data['id'];
-
-      Swal.fire({
-         title: 'Are you sure?',
-         icon: 'error',
-         showCancelButton: true,
-         confirmButtonText: 'Delete',
-         confirmButtonColor: '#d9534f',
-      }).then((result) => {
-         if (result.value) {
-            $.ajax({
-               url: `/api/config/category/${id}/`,
-               type: 'PATCH',
-               data: {
-                  is_archive: true,
-               },
-               beforeSend: function (xhr, settings) {
-                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
-               },
-               success: function (result) {
-                  Toast.fire({
-                     icon: 'success',
-                     title: 'Delete Successfully',
-                  });
-                  table.ajax.reload();
-               },
-               error: function (a, b, error) {
-                  Toast.fire({
-                     icon: 'error',
-                     title: error,
-                  });
-               },
-            })
-         }
-      })
-   });
 
    //Modal Cancel
    $('#btn_cancel').click(function () {

@@ -61,8 +61,7 @@ $(document).ready(function () {
          type: "GET",
          data: {
             "search": searchInput,
-            "is_active": activeFilter,
-            "is_archive" : false
+            "is_active": activeFilter
          },
       },
       "columns": [
@@ -208,7 +207,7 @@ $(document).ready(function () {
       // Modal Config
       $("#formModal").modal();
       $(".modal-title").text('Update Form');
-      $("#btn_delete").show();
+      // $("#btn_delete").show();
       $(".form-wrapper").empty();
       updateStatusOrder(status)
 
@@ -286,42 +285,6 @@ $(document).ready(function () {
             });
          });
       } 
-   });
-
-   // DELETE / PATCH
-   $('#dt_forms tbody').on('click', '.btn_delete', function () {
-      let dt_data = table.row($(this).parents('tr')).data();
-      let id = dt_data['id'];
-
-      Swal.fire({
-         title: 'Are you sure?',
-         icon: 'error',
-         showCancelButton: true,
-         confirmButtonText: 'Delete',
-         confirmButtonColor: '#d9534f',
-      }).then((result) => {
-         if (result.value) {
-            axios({
-               headers: axiosConfig,
-               url: `/api/requests/forms/${id}/ `,
-               method: "PATCH",
-               data: {
-                  is_archive: true,
-               },
-            }).then(function (response) {
-               Toast.fire({
-                  icon: 'success',
-                  title: 'Deleted Successfully',
-               });
-               table.ajax.reload();
-            }).catch(function (error) {
-               Toast.fire({
-                  icon: 'error',
-                  title: error,
-               });
-            });
-         };
-      });
    });
 
    //Modal Cancel

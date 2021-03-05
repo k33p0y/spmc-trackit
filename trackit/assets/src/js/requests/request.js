@@ -168,41 +168,6 @@ $(document).ready(function () {
       ],
       "order": [[ 5, "desc" ]],
    });
-
-   // DELETE / PATCH
-   $('#dt_requests tbody').on('click', '.btn_delete', function () {
-      var id = $(this).data('id');
-
-      Swal.fire({
-         title: 'Are you sure?',
-         icon: 'error',
-         showCancelButton: true,
-         confirmButtonText: 'Delete',
-         confirmButtonColor: '#d9534f',
-      }).then((result) => {
-         if (result.value) {
-            axios({
-               headers: axiosConfig,
-               url: `/api/requests/lists/${id}/`,
-               method: "PATCH",
-               data: {
-                  is_archive: true,
-               },
-            }).then(function (response) {
-               Toast.fire({
-                  icon: 'success',
-                  title: 'Deleted Successfully',
-               });
-               table.ajax.reload();
-            }).catch(function (error) {
-               Toast.fire({
-                  icon: 'error',
-                  title: error,
-               });
-            });
-         }
-      })
-   });
    
    // // //  Filters
    // Select2 config

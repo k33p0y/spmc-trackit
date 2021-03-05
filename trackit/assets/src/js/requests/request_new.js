@@ -185,8 +185,7 @@ $(document).ready(function () {
 
       axios.get('/api/config/category', {
          params: {
-            "category_type" : category_type,
-            "is_archive:" : false
+            "category_type" : category_type
          }
       }, axiosConfig).then(res => {
          $("#dd_categories")

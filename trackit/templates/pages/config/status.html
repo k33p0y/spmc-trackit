@@ -88,7 +88,6 @@
                         <tr>
                            <th>Name</th>
                            <th>Is Active</th>
-                           <th>Action</th>
                         </tr>
                      </thead>
                   </table>
@@ -99,7 +98,6 @@
 
    </div>
    <input type="hidden" id="changeStatusHidden" value="{% if perms.config.change_status %}true{% else %}false{% endif %}">
-   <input type="hidden" id="deleteStatusHidden" value="{% if perms.config.delete_status %}true{% else %}false{% endif %}">
 
 </section>
    {% else %}
