@@ -10,10 +10,6 @@ socket_notification.onmessage = function(event) {
     //console.log(event)
     
     if ('notification' in JSON.parse(event.data)) getAllNotifications(); // Notifications
-
-    if ('comment' in JSON.parse(event.data)){ // Comments
-        displayComment(JSON.parse(event.data));
-    }
 }
 
 socket_notification.onclose = function(event) {
@@ -106,24 +102,4 @@ let displayCommentNotification = function(notification){
             <div class="notification-status align-self-center ${display_status}"><i class="fas fa-circle"></i></div>
             </a>`
     )
-};
-
-
-let displayComment = function(obj){
-    
-    if ($('#btn-post-comment').data().ticketId === obj.comment['ticket_id']) {
-        let logged_user_id = $('.user-link').data().userId;
-        
-        $('.comment-section').prepend(
-            `<div class="user-comment justify-content-start ${logged_user_id == obj.comment['user_id'] ? 'bg-comment-orange' : ''}">
-                <div class="d-inline justify-content-start ">
-                <span class="font-weight-bold text-orange name ">${obj.comment['user']}</span>
-                <span class="text-muted text-xs"> - ${moment(obj.comment['date_created']).format('MMM DD, YYYY hh:mm a')}</span>
-                </div>
-                <div class="mt-2">
-                <p class="comment-text m-0">${obj.comment['content']}</p>
-                </div>
-            </div>`
-        )
-    }
 };

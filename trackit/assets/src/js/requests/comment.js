@@ -15,7 +15,7 @@ $(function(){
             headers: axiosConfig,
         }).then(function (response) { // success
             let comment_id = response.data.id
-            socket_notification.send(JSON.stringify({type: 'comment', data: {comment_id: comment_id}}))
+            socket_comment.send(JSON.stringify({comment_id: comment_id}))
             socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: comment_id, notification_type: 'comment'}}))
         }).catch(function (error) { // error
             Toast.fire({
