@@ -24,7 +24,6 @@ class RequestForm(models.Model):
     category_types = models.ManyToManyField(CategoryType, related_name='form_types', blank=True)
     guide = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
-    is_archive = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
@@ -48,7 +47,6 @@ class Ticket(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
-    is_archive = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.ticket_id)

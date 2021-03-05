@@ -19,7 +19,6 @@ class DepartmentViewSet(viewsets.ModelViewSet):
       # Search & Filter Parameter
       search = self.request.query_params.get('search', None)
       is_active = self.request.query_params.get('is_active', None)
-      is_archive = self.request.query_params.get('is_archive', None)
 
       if not self.request.user.has_perm('config.view_department'):
          return Department.objects.none()
@@ -30,7 +29,6 @@ class DepartmentViewSet(viewsets.ModelViewSet):
          # Parameters
          if search: qs = qs.filter(Q(name__icontains=search) | Q(department_head__first_name__icontains=search) | Q(department_head__last_name__icontains=search))
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
-         if is_archive: qs = qs.filter(is_archive=json.loads(is_archive))
          
          return qs
 
@@ -50,7 +48,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
       search = self.request.query_params.get('search', None)
       category_type = self.request.query_params.get('category_type', None)
       is_active = self.request.query_params.get('is_active', None)
-      is_archive = self.request.query_params.get('is_archive', None)
 
       if not self.request.user.has_perm('config.view_category') and not self.request.user.has_perm('requests.add_ticket'):
          return Category.objects.none()
@@ -62,7 +59,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
          if search: qs = qs.filter(name__icontains=search)
          if category_type: qs = qs.filter(category_type_id__exact=category_type)
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
-         if is_archive: qs = qs.filter(is_archive=json.loads(is_archive))
 
          return qs
 
@@ -87,10 +83,9 @@ class CategoryTypeViewSet(viewsets.ModelViewSet):
       # Search & Filter Parameters
       search = self.request.query_params.get('search', None)
       is_active = self.request.query_params.get('is_active', None)
-      is_archive = self.request.query_params.get('is_archive', None)
 
       if not self.request.user.has_perm('config.view_categorytype'):
-         return CategoryType.objects.filter(is_archive=True)
+         return CategoryType.objects.all()
       else:
          # Queryset
          qs = CategoryType.objects.all().order_by('-id')
@@ -98,7 +93,6 @@ class CategoryTypeViewSet(viewsets.ModelViewSet):
          # Parameters
          if search: qs = qs.filter(name__icontains=search)
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
-         if is_archive: qs = qs.filter(is_archive=json.loads(is_archive))
 
          return qs
 
@@ -117,7 +111,6 @@ class StatusViewSet(viewsets.ModelViewSet):
       # Search & Filter Parameters
       search = self.request.query_params.get('search', None)
       is_active = self.request.query_params.get('is_active', None)
-      is_archive = self.request.query_params.get('is_archive', None)
 
       if not self.request.user.has_perm('config.view_status'):
          return Status.objects.none()
@@ -128,8 +121,6 @@ class StatusViewSet(viewsets.ModelViewSet):
          # Parameters
          if search: qs = qs.filter(name__icontains=search)
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
-         if is_archive: qs = qs.filter(is_archive=json.loads(is_archive))
-
          return qs
 
    def partial_update(self, request, pk):

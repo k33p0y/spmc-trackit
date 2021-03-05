@@ -69,7 +69,6 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       # Search & Filter Parameters
       search = self.request.query_params.get('search', None)
       is_active = self.request.query_params.get('is_active', None)
-      is_archive = self.request.query_params.get('is_archive', None)
 
       if not self.request.user.has_perm('requests.view_requestform') and not self.request.user.has_perm('requests.add_ticket'):
          return RequestForm.objects.none()
@@ -80,7 +79,6 @@ class RequestFormViewSet(viewsets.ModelViewSet):
          # Parameters
          if search: qs = qs.filter(name__icontains=search)
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
-         if is_archive: qs = qs.filter(is_archive=json.loads(is_archive))
 
          return qs
 
