@@ -312,7 +312,7 @@ $(document).ready(function () {
             data: file_data,
             headers: axiosConfig
          }).then(function (response) { // success
-            socket.send(JSON.stringify({type: 'notification', data: {object_id: response.data.ticket_id, notification_type: 'ticket'}}))
+            socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: response.data.ticket_id, notification_type: 'ticket'}}))
 
             // disable submit button
             $(this).attr('disabled', true)

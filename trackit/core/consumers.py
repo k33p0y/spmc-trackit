@@ -11,7 +11,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         self.joined_groups = await self.get_groups()
         self.user = self.scope["user"]
         self.user_room_name = "notif_room_for_user_"+str(self.user.id) # notification for a single user
-        self.tickets = await self.get_tickets_related_to_user()
 
         # join room group
         for group in self.joined_groups:
@@ -25,13 +24,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             self.user_room_name,
             self.channel_name
         )
-
-        # join comment group
-        for ticket in self.tickets:
-            await self.channel_layer.group_add(
-                'comment_group_for_ticket_' + str(ticket['ticket_no']),
-                self.channel_name
-            )
 
         await self.accept()
 
@@ -102,17 +94,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                         'sender_channel_name': self.channel_name
                     }
                 )
-        
-        # COMMENT
-        if text_data_json['type'] == 'comment': # send comment to group
-            comment_obj = await self.get_comment(text_data_json['data']['comment_id'])
-            await self.channel_layer.group_send(
-                'comment_group_for_ticket_' + str(comment_obj['ticket_no']),
-                {
-                    'type': 'comment_message',
-                    'comment': comment_obj,
-                }
-            )
 
     # send notification
     async def notification_message(self, event):
@@ -179,6 +160,41 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     def get_groups(self):
         return list(self.scope['user'].groups.all())
     
+class CommentConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.associated_tickets = await self.get_tickets_related_to_user()
+
+        # join comment group
+        for ticket in self.associated_tickets:
+            await self.channel_layer.group_add(
+                'comment_for_ticket_' + str(ticket['ticket_no']),
+                self.channel_name
+            )
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.close()
+    
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+
+        comment_obj = await self.get_comment(text_data_json['comment_id'])
+        await self.channel_layer.group_send(
+            'comment_for_ticket_' + str(comment_obj['ticket_no']),
+            {
+                'type': 'comment_message',
+                'comment': comment_obj,
+            }
+        )
+
+    async def comment_message(self, event):
+        comment = event['comment']
+        # send comment to websocket
+        await self.send(text_data=json.dumps({
+            'comment': comment
+        }));
+
     @database_sync_to_async
     def get_tickets_related_to_user(self):
         groups = list(self.scope['user'].groups.all())
@@ -186,7 +202,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             Q(requested_by=self.scope['user']) | Q(department__department_head=self.scope['user']) | Q(request_form__group__in=groups)
         ).values('ticket_no')
         return list(tickets)
-    
+
     @database_sync_to_async
     def get_comment(self, comment_id):
         comment = Comment.objects.get(id=comment_id)

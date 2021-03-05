@@ -150,3 +150,6 @@ const getComments = function(ticket, next_page){
 
 // Dropdown Filter Config
 const toggleFilter = function() {return $(".dropdown-filter-toggle").dropdown('hide')}
+
+const loc = window.location;
+const wsStart = loc.protocol == "https:" ? "wss://" : "ws://";
