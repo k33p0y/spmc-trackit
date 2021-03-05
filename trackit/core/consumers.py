@@ -200,3 +200,41 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             'date_created': str(comment.date_created),
         }
         return comment_obj
+
+class CommentConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.channel_layer.group_add(
+            'sample_comment_1',
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(            
+            'sample_comment_1',
+            self.channel_name
+        )
+        # await self.close()
+    
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        print(text_data_json)
+        
+        await self.channel_layer.group_send(
+            'sample_comment_1',
+            {
+                'type': 'comment_message',
+                'comment': {
+                    'a': 1,
+                    'b': 'The quick brown fox.',
+                    'c': True
+                },
+            }
+        )
+
+    async def comment_message(self, event):
+        comment = event['comment']
+        # send comment to websocket
+        await self.send(text_data=json.dumps({
+            'comment': comment
+        }));

@@ -1,7 +1,5 @@
-let loc = window.location
-let wsStart = loc.protocol == "https:" ? "wss://" : "ws://";
-let url = wsStart + loc.host + '/ws/notifications/';
-const socket_notification = new WebSocket(url)
+let url_ws_notification = wsStart + loc.host + '/ws/notifications/';
+const socket_notification = new WebSocket(url_ws_notification)
 
 socket_notification.onopen = function(event) {
     $('.online-status').addClass('text-success')
