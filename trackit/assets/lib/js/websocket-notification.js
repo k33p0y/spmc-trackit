@@ -1,14 +1,14 @@
 let loc = window.location
 let wsStart = loc.protocol == "https:" ? "wss://" : "ws://";
 let url = wsStart + loc.host + '/ws/notifications/';
-const socket = new WebSocket(url)
+const socket_notification = new WebSocket(url)
 
-socket.onopen = function(event) {
+socket_notification.onopen = function(event) {
     $('.online-status').addClass('text-success')
     getAllNotifications();
 }
 
-socket.onmessage = function(event) {
+socket_notification.onmessage = function(event) {
     //console.log(event)
     
     if ('notification' in JSON.parse(event.data)) getAllNotifications(); // Notifications
@@ -18,11 +18,11 @@ socket.onmessage = function(event) {
     }
 }
 
-socket.onclose = function(event) {
+socket_notification.onclose = function(event) {
     $('.online-status').removeClass('text-success');
 }
 
-socket.onerror = function(event) {
+socket_notification.onerror = function(event) {
     console.log(event)
     console.log('something went wrong')
 }
