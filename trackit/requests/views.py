@@ -12,19 +12,19 @@ import json
 @login_required
 def ticket(request):
    tickets = Ticket.objects.all()
-   departments =  Department.objects.filter(is_active=True, is_archive=False)
-   types = CategoryType.objects.filter(is_active=True, is_archive=False)
-   statuses = Status.objects.filter(is_active=True, is_archive=False)
-   forms = RequestForm.objects.filter(is_active=True, is_archive=False)
+   departments =  Department.objects.filter(is_active=True)
+   types = CategoryType.objects.filter(is_active=True)
+   statuses = Status.objects.filter(is_active=True)
+   forms = RequestForm.objects.filter(is_active=True)
 
    context = {'tickets': tickets, 'departments':departments, 'types':types, 'statuses': statuses, 'forms': forms}
    return render(request, 'pages/requests/ticket_lists.html', context)
    
 @login_required
 def create_ticket(request):
-   forms= RequestForm.objects.filter(is_active=True, is_archive=False)
-   types =  CategoryType.objects.filter(is_active=True, is_archive=False)
-   departments =  Department.objects.filter(is_active=True, is_archive=False)
+   forms= RequestForm.objects.filter(is_active=True)
+   types =  CategoryType.objects.filter(is_active=True)
+   departments =  Department.objects.filter(is_active=True)
 
    context = {'forms': forms, 'types': types, 'departments':departments}
    return render(request, 'pages/requests/ticket_new.html', context)   # if request.user has_perm('requests_change_')   # if request.user has_perm('requests_change_')
@@ -33,11 +33,11 @@ def create_ticket(request):
 def detail_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
    
-   forms= RequestForm.objects.filter(is_active=True, is_archive=False)
-   types =  CategoryType.objects.filter(is_active=True, is_archive=False)
-   departments =  Department.objects.filter(is_active=True, is_archive=False)
-   categories = Category.objects.filter(category_type=ticket.category.category_type, is_active=True, is_archive=False)
-   types =  CategoryType.objects.filter(is_active=True, is_archive=False)
+   forms= RequestForm.objects.filter(is_active=True)
+   types =  CategoryType.objects.filter(is_active=True)
+   departments =  Department.objects.filter(is_active=True)
+   categories = Category.objects.filter(category_type=ticket.category.category_type, is_active=True)
+   types =  CategoryType.objects.filter(is_active=True)
 
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')

@@ -15,7 +15,7 @@ def department(request):
 
 @login_required
 def category(request):
-   types = CategoryType.objects.filter(is_active=True, is_archive=False)
+   types = CategoryType.objects.filter(is_active=True)
    context = {'types': types}
    return render(request, 'pages/config/category.html', context)
 
@@ -25,8 +25,8 @@ def types(request):
 
 @login_required
 def forms(request):
-   statuses = Status.objects.filter(is_active=True, is_archive=False)
-   types = CategoryType.objects.filter(is_active=True, is_archive=False)
+   statuses = Status.objects.filter(is_active=True)
+   types = CategoryType.objects.filter(is_active=True)
    groups = Group.objects.all()
    context = {'statuses': statuses, 'types':types, 'groups': groups}
    return render(request, 'pages/config/forms.html', context)
@@ -34,7 +34,3 @@ def forms(request):
 @login_required
 def status_list(request):
    return render(request, 'pages/config/status.html')
-
-@login_required
-def archive(request):
-   return render(request, 'pages/config/archives.html')

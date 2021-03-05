@@ -14,7 +14,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Department
-        fields = ['id', 'name', 'is_active', 'department_head', 'is_archive',]
+        fields = ['id', 'name', 'is_active', 'department_head']
         datatables_always_serialize = ('id',)
         
     def to_representation(self, instance):
@@ -25,14 +25,14 @@ class CategoryTypeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CategoryType
-        fields = ['id', 'name', 'is_active', 'is_archive',]
+        fields = ['id', 'name', 'is_active']
         datatables_always_serialize = ('id',)
 
 class CategorySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Category
-        fields = ['id', 'name', 'is_active', 'category_type', 'is_archive',]
+        fields = ['id', 'name', 'is_active', 'category_type']
         datatables_always_serialize = ('id',)
 
 
@@ -44,7 +44,7 @@ class StatusSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Status
-        fields = ['id', 'name', 'is_active', 'is_archive', 'forms']
+        fields = ['id', 'name', 'is_active', 'forms']
 
 class RemarkSerializer(serializers.ModelSerializer):
     

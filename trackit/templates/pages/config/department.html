@@ -86,7 +86,6 @@
                            <th>Name</th>
                            <th>Department Head</th>
                            <th>Is Active</th>
-                           <th>Action</th>
                         </tr>
                      </thead>
                   </table>
@@ -97,7 +96,6 @@
 
    </div>
    <input type="hidden" id="changeDepartmentHidden" value="{% if perms.config.change_department %}true{% else %}false{% endif %}">
-   <input type="hidden" id="deleteDepartmentHidden" value="{% if perms.config.delete_department %}true{% else %}false{% endif %}">
 
 </section>
    {% else %}

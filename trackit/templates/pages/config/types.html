@@ -85,7 +85,6 @@
                         <tr>
                            <th>Name</th>
                            <th>Is Active</th>
-                           <th>Action</th>
                         </tr>
                      </thead>
                   </table>
@@ -96,7 +95,6 @@
 
    </div>
    <input type="hidden" id="changeTypeHidden" value="{% if perms.config.change_categorytype %}true{% else %}false{% endif %}">
-   <input type="hidden" id="deleteTypeHidden" value="{% if perms.config.delete_categorytype %}true{% else %}false{% endif %}">
 </section>
    {% else %}
       <section class="content">

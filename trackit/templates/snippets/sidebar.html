@@ -167,15 +167,15 @@
                </a>
             </li>
 
-            {% if request.user.is_superuser %}
-            <li class="nav-item">
+            {% comment %}
+            <!-- <li class="nav-item">
                <a href="{% url 'archive' %}"
                   class="nav-link {% if url == 'archive' %} active {% endif %}">
                   <i class="nav-icon fas fa-trash"></i>
                   <p> Archive</p>
                </a>
-            </li>
-            {% endif %}
+            </li> -->
+            {% endcomment %}
 
             <li class="nav-item">
                <a href="{% url 'user_profile' pk=user.id %}"
