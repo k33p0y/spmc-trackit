@@ -3,6 +3,10 @@
 
 {% block title %} User {% endblock %}
 
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'src/css/core.css' %}">
+{% endblock %}
+
 {% block content %}
 {% if request.user.is_superuser or request.user.is_staff %}
 <!-- Content Header -->
@@ -118,7 +122,6 @@
                            <th>Role</th>
                            <th>Date Created</th>
                            <th>is Active</th>
-                           <th>Action</th>
                         </tr>
                      </thead>
                   </table>
@@ -150,87 +153,199 @@
          </div>
          <div class="modal-body">
             <form id="form">
-               <!-- USERNAME -->
-               <div class="form-group name-group">
-                  <label for="usernameHelp">Username</label> 
-                  <input type="text" class="form-control form-control-sm" id="txt-username" aria-describedby="usernameHelp"
-                     placeholder="Enter Username">
-                  <small class="error-info" id="username-error"></small>
-               </div>
+               <nav> <!-- Navigation -->
+                  <div class="nav nav-tabs mb-2" id="nav-tab" role="tablist">
+                     <a class="nav-item nav-link active" id="nav-personal-tab" data-toggle="tab" href="#personal" role="tab"
+                        aria-controls="nav-personal" aria-selected="true">Personal Informaton</a>
+                     <a class="nav-item nav-link" id="nav-account-tab" data-toggle="tab" href="#account" role="tab"
+                        aria-controls="nav-account" aria-selected="false">Account Credentials </a>
+                     <a class="nav-item nav-link" id="nav-perms-tab" data-toggle="tab" href="#perms" role="tab"
+                        aria-controls="nav-perms" aria-selected="false">Permissions</a>
+                  </div>
+               </nav>
+               
+               <div class="tab-content" id="nav-tabContent">
+                  <!-- Personal Informaton Tab -->
+                  <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="nav-personal-tab">
+                     <!-- FIRST NAME -->
+                     <div class="form-group name-group">
+                        <label for="firstnameHelp">First Name*</label>
+                        <input type="text" class="form-control form-control-sm" id="txt-firstname" aria-describedby="firstnameHelp"
+                           placeholder="Enter First Name">
+                        <small class="error-info" id="firstname-error"></small>
+                     </div>
 
-               <!-- FIRST NAME -->
-               <div class="form-group name-group">
-                  <label for="firstnameHelp">First Name</label>
-                  <input type="text" class="form-control form-control-sm" id="txt-firstname" aria-describedby="firstnameHelp"
-                     placeholder="Enter First Name">
-                  <small class="error-info" id="firstname-error"></small>
-               </div>
+                     <!-- MIDDLE NAME -->
+                     <div class="form-group name-group">
+                        <label for="middlenameHelp">Middle Name</label>
+                        <input type="text" class="form-control form-control-sm" id="txt-middlename" aria-describedby="middlenameHelp"
+                           placeholder="Enter Middle Name">
+                        <small class="error-info" id="middlename-error"></small>
+                     </div>
 
-               <!-- LAST NAME -->
-               <div class="form-group name-group">
-                  <label for="lastnameHelp">Last Name</label>
-                  <input type="text" class="form-control form-control-sm" id="txt-lastname" aria-describedby="lastnameHelp"
-                     placeholder="Enter Last Name">
-                  <small class="error-info" id="lastname-error"></small>
-               </div>
+                     <!-- LAST NAME -->
+                     <div class="form-group name-group">
+                        <label for="lastnameHelp">Last Name*</label>
+                        <input type="text" class="form-control form-control-sm" id="txt-lastname" aria-describedby="lastnameHelp"
+                           placeholder="Enter Last Name">
+                        <small class="error-info" id="lastname-error"></small>
+                     </div>
 
-               <!-- PASSWORD -->
-               <div class="form-group password-group">
-                  <label for="password1Help">Password</label>
-                  <input type="password" class="form-control form-control-sm" id="txt-password1" aria-describedby="password1Help"
-                     placeholder="Enter Password">
-               </div>
-               <div class="form-group password-group">
-                  <label for="password2Help">Confirm Password</label>
-                  <input type="password" class="form-control form-control-sm" id="txt-password2" aria-describedby="password2Help"
-                     placeholder="Confirm Password">
-                  <small class="error-info" id="password-error"></small>
-               </div>
+                     <!-- SUFFIX -->
+                     <div class="form-group name-group">
+                        <label for="suffixHelp">Name Suffix</label>
+                        <input type="text" class="form-control form-control-sm" id="txt-suffix" aria-describedby="suffixHelp"
+                           placeholder="Enter Extension Name">
+                        <small class="text-muted d-block help-text">i.e. Jr., Sr., I, II etc.</small>
+                        <small class="error-info" id="suffix-error"></small>
+                     </div>
 
-               <div class="icheck-material-green status-group">
-                  <input type="checkbox" id="chk-active-status" checked />
-                  <label for="chk-active-status">Active</label>
-               </div>
-               <div class="icheck-material-green status-group">
-                  <input type="checkbox" id="chk-staff-status" />
-                  <label for="chk-staff-status">Staff Status</label>
-               </div>
-               <div class="icheck-material-green status-group">
-                  <input type="checkbox" id="chk-superuser-status" />
-                  <label for="chk-superuser-status">Superuser Status</label>
-               </div>
+                      <!-- DEPARTMENT -->
+                     <div class="form-group name-group">
+                        <label for="departmentHelp">Department</label>
+                        <select class="form-control form-control-sm" id="select2-department" name="departmentHelp">
+                           <option></option>
+                           {% for department in departments %}
+                           <option value={{department.id}}>{{department}}</option>
+                           {% endfor %}
+                        </select>
+                        <small class="error-info" id="department-error"></small>
+                     </div>
+                  </div>
 
-               <!-- GROUPS -->
-               <div class="form-group m2m-group">
-                  <label>Groups</label>
-                  <select class="form-control form-control-sm" id="select2-groups" style="width: 100%" multiple>
-                     <option></option>
-                     {% for group in groups %}
-                     <option value={{group.id}}>{{group}}</option>
-                     {% endfor %}
-                  </select>
-                  <small class="error-info"></small>
-               </div>
+                  <!-- Account Info Tab -->
+                  <div class="tab-pane fade show" id="account" role="tabpanel" aria-labelledby="nav-account-tab">
+                     <!-- USERNAME -->
+                     <div class="form-group name-group">
+                        <label for="usernameHelp">Username*</label> 
+                        <input type="text" class="form-control form-control-sm" id="txt-username" aria-describedby="usernameHelp"
+                           placeholder="Enter Username">
+                        <small class="text-muted d-block help-text">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small>
+                        <small class="error-info" id="username-error"></small>
+                     </div>
+                     <!-- PASSWORD -->
+                     <div class="form-group password-group">
+                        <label for="password1Help">Password*</label>
+                        <input type="password" class="form-control form-control-sm" id="txt-password1" aria-describedby="password1Help"
+                           placeholder="Enter Password">
+                        <small class="text-muted d-block help-text">
+                           Your password can’t be too similar to your other personal information. <br>
+                           Your password must contain at least 8 characters. <br>
+                           Your password can’t be a commonly used password. <br>
+                           Your password can’t be entirely numeric. 
+                        </small>
+                     </div>
+                     <div class="form-group password-group">
+                        <label for="password2Help">Confirm Password*</label>
+                        <input type="password" class="form-control form-control-sm" id="txt-password2" aria-describedby="password2Help"
+                           placeholder="Confirm Password">
+                        <small class="text-muted d-block help-text">Enter the same password as before, for verification.</small>
+                        <small class="error-info" id="password-error"></small>
+                     </div>
+                     
+                     {% if perms.core.change_user_password %}
+                     <!-- CHANGE PASSWORD LINK -->
+                     <button type="button" class="btn btn-sm btn-link-orange p-0" id="btn-change-password">
+                        <i class="fas fa-xs fa-key"></i>
+                        <span>Change Password</span>
+                     </button>
+                     {% endif %}
+                  </div>
 
-               <!-- PERMISSIONS -->
-               <div class="form-group m2m-group">
-                  <label>Permissions</label>
-                  <select class="form-control form-control-sm" id="select2-permissions" style="width: 100%" multiple>
-                     <option></option>
-                     {% for permission in permissions %}
-                     <option value={{permission.id}}>{{permission}}</option>
-                     {% endfor %}
-                  </select>
-                  <small class="error-info"></small>
+                  <!-- Roles & Permission Tab -->
+                  <div class="tab-pane fade" id="perms" role="tabpanel" aria-labelledby="nav-perms-tab">
+                     <div class="icheck-material-green status-group">
+                        <input type="checkbox" id="chk-active-status" checked />
+                        <label for="chk-active-status">Active</label>
+                        <small class="text-muted d-block">Designates whether this user should be treated as active.</small>
+                     </div>
+                     <div class="icheck-material-green status-group">
+                        <input type="checkbox" id="chk-staff-status" />
+                        <label for="chk-staff-status">Staff Status</label>
+                        <small class="text-muted d-block">Designates whether the user has staff privileges.</small>
+                     </div>
+                     <div class="icheck-material-green status-group">
+                        <input type="checkbox" id="chk-superuser-status" />
+                        <label for="chk-superuser-status">Superuser Status</label>
+                        <small class="text-muted d-block">Designates that this user has all permissions without explicitly assigning them.</small>
+                     </div>
+      
+                     <!-- GROUPS -->
+                     <div class="form-group m2m-group">
+                        <label>Groups</label>
+                        <select class="form-control form-control-sm" id="select2-groups" style="width: 100%" multiple>
+                           <option></option>
+                           {% for group in groups %}
+                           <option value={{group.id}}>{{group}}</option>
+                           {% endfor %}
+                        </select>
+                        <small class="text-muted d-block">The groups this user belongs to. A user will get all permissions granted to each of their groups.</small>
+                     </div>
+      
+                     <!-- PERMISSIONS -->
+                     <div class="form-group m2m-group">
+                        <label>Permissions</label>
+                        <select class="form-control form-control-sm" id="select2-permissions" style="width: 100%" multiple>
+                           <option></option>
+                           {% for permission in permissions %}
+                           <option value={{permission.id}}>{{permission}}</option>
+                           {% endfor %}
+                        </select>
+                        <small class="text-muted d-block">Specific permissions for this user.</small>
+                     </div>
+                  </div>
                </div>
             </form>
          </div>
 
          <div class="modal-footer">
-            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
+            <!-- <a class="text-danger mr-auto btn_delete" id="btn_delete"> Delete </a> -->
+            <button type="button" class="btn btn-sm btn-light" id="btn_cancel" data-dismiss="modal">
                <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-sm btn-outline-orange" id="btn_save"><span>Save</span></button>
+            <button type="submit" class="btn btn-sm btn-orange" id="btn_save"><span>Save</span></button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="modal-change-password" tabindex="-1" role="dialog" aria-labelledby="changepasswordModal" aria-hidden="true">
+   <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content text-sm">
+         <div class="modal-header">
+            <h6 class="modal-title">Change Password</h6>
+         </div>
+         <div class="modal-body">
+            <p> Enter a new password for the user <b id="info-user"></b>.</p>
+            <form id="change-password-form">               
+               <!-- PASSWORD -->
+               <div class="form-group">
+                  <label for="password1Help">Password</label>
+                  <input type="password" class="form-control form-control-sm" id="txt-changepassword1" aria-describedby="password1Help"
+                     placeholder="Enter Password">
+                  <small class="text-muted d-block help-text">
+                     Your password can’t be too similar to your other personal information. <br>
+                     Your password must contain at least 8 characters. <br>
+                     Your password can’t be a commonly used password. <br>
+                     Your password can’t be entirely numeric. 
+                  </small>
+               </div>
+               <div class="form-group">
+                  <label for="password2Help">Confirm Password</label>
+                  <input type="password" class="form-control form-control-sm" id="txt-changepassword2" aria-describedby="password2Help"
+                     placeholder="Confirm Password">
+                  <small class="text-muted d-block help-text">Enter the same password as before, for verification.</small>
+                  <small class="error-info" id="changepassword-error"></small>
+               </div>
+            </form>
+         </div>
+
+         <div class="modal-footer">
+            <!-- <a class="text-danger mr-auto btn_delete" id="btn_delete"> Delete </a> -->
+            <button type="button" class="btn btn-sm btn-light" id="btn_cancel" data-dismiss="modal">
+               <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-sm btn-orange" id="btn_submit_password"><span>Change Password</span></button>
          </div>
       </div>
    </div>

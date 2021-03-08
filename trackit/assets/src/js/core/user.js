@@ -1,5 +1,6 @@
 $(document).ready(function () {
    let method, url, action;
+   let department;
    let alert_msg = '';
 
    var searchInput = function() { return $('#search-input').val(); }
@@ -52,7 +53,15 @@ $(document).ready(function () {
             },
 
          },
-         { data: "department" },
+         { 
+            data: "department",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = (row.department) ? `${row.department.name}` : ''
+               }
+               return data
+            },
+         },
          { 
             data: "null",
             render: function (data, type, row) {
@@ -78,19 +87,6 @@ $(document).ready(function () {
                else data = "<i class='fas fa-times-circle text-secondary'></i>";
                return data
             },
-         },
-         {
-            data: "null",
-            render: function (data, type, row) {
-               data = '';
-               if($('#changeUserHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-warning action-link btn_edit' data-toggle='tooltip' data-placement='bottom' title='Edit'> <i class='fas fa-pen'></i> </a>";
-               }
-               if($('#changePasswordHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-secondary action-link btn_change_password' data-toggle='tooltip' data-placement='bottom' title='Change Password'> <i class='fas fa-key'></i> </a>";
-               }
-               return data
-            },
          }
       ],
    }); // table end
@@ -110,10 +106,15 @@ $(document).ready(function () {
    });
 
    // Deparments Select2 Config
-   $('#select2-departments').select2({
+   $('#select2-department').select2({
       allowClear: true,
-      placeholder: 'Select Departments',
+      placeholder: 'Select department',
       cache: true,
+   });
+
+   // SElECT ON CHANGE EVENT
+   $('#select2-department').on('change', function () { // department dropdown
+      department = $("#select2-department option:selected").val();
    });
 
    // Create
@@ -125,10 +126,12 @@ $(document).ready(function () {
       alert_msg = 'Saved Successfully';
       $('.name-group').show() // username, firstname, lastname
       $('.password-group').show() // password1, password2
+      $('#btn-change-password').hide () // change passwordlink
       $('.status-group').show() // is-active, is-superuser, is-staff
       $('.m2m-group').show() // groups, user permissions
 
       resetForm(); // reset form
+      $("#select2-department").val('').trigger('change'); // reset department select2 before loading modal
       $("#select2-permissions").val([]).trigger('change'); // reset permissions select2 before loading modal
       $("#select2-groups").val([]).trigger('change'); // reset groups select2 before loading modal
       $("#modal-add-user").modal();
@@ -147,49 +150,30 @@ $(document).ready(function () {
       alert_msg = 'Update Successfully';
       $('.name-group').show()
       $('.password-group').hide()
+      $('#btn-change-password').show()
       $('.status-group').show()
       $('.m2m-group').show()
 
       // // // Open Modal
       // // // Rename Modal Title
       $("#modal-add-user").modal();
-      $(".modal-title").text('Update User');
+      $("#modal-add-user .modal-title").text('Update User');
 
       // // // Populate Fields
       resetForm(); // reset form
       $('#txt-username').val(dt_data['username']); // USERNAME
       $('#txt-firstname').val(dt_data['first_name']); // FIRST NAME
+      $('#txt-middlename').val(dt_data['middle_name']); // MIDDLE NAME
       $('#txt-lastname').val(dt_data['last_name']); // LAST NAME
+      $('#txt-suffix').val(dt_data['suffix']); // LAST NAME
+      if (dt_data['department']) $('#select2-department').val(dt_data['department'].id).trigger('change'); else $('#select2-department').val('').trigger('change'); // DEPARTMENT
       if (dt_data['is_superuser']) $('#chk-superuser-status').prop('checked', true); else $('#chk-superuser-status').prop('checked', false); // IS SUPERUSER
       if (dt_data['is_staff']) $('#chk-staff-status').prop('checked', true); else $('#chk-staff-status').prop('checked', false); // IS STAFF
       if (dt_data['is_active']) $('#chk-active-status').prop('checked', true); else $('#chk-active-status').prop('checked', false); // IS ACTIVE
       $('#select2-groups').val(dt_data['groups']).trigger('change'); // GROUPS
       $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
-   });
-
-   // CHANGE PASSWORD / PUT
-   $('#dt_user tbody').on('click', '.btn_change_password', function () {
-      let dt_data = table.row($(this).parents('tr')).data();
-      let id = dt_data['id'];
-
-      // Assign AJAX Action Type/Method and URL
-      method = 'PUT';
-      action = 'CHANGE-PASSWORD';
-      url = `/api/core/user/${id}/`;
-      alert_msg = 'Password Changed';
-      $('.name-group').hide()
-      $('.password-group').show()
-      $('.status-group').hide()
-      $('.m2m-group').hide()
-
-      // // // Open Modal
-      // // // Rename Modal Title
-      $("#modal-add-user").modal();
-      $(".modal-title").text(`Change password for ${dt_data['first_name']} ${dt_data['last_name']}`);
-
-      // // // // Populate Fields
-      resetForm(); // reset form
-      $('#txt-username').val(dt_data['username']); // USERNAME
+      
+      $('#btn-change-password').data('user', dt_data)
    });
 
    // Submit Form
@@ -198,19 +182,19 @@ $(document).ready(function () {
 
       // Variables
       let data = {}
-      let success = 1;
-
-      // Data
-      if ($('#txt-username').val()) data.username = $('#txt-username').val();
-      if ($('#txt-password1').val()) data.password = $('#txt-password1').val();
-      if ($('#txt-password2').val()) data.password2 = $('#txt-password2').val();
-      if ($('#txt-firstname').val()) data.first_name = $('#txt-firstname').val();
-      if ($('#txt-lastname').val()) data.last_name = $('#txt-lastname').val();
-      if ($('#chk-superuser-status').val()) data.is_superuser = $('#chk-superuser-status').is(':checked')
-      if ($('#chk-staff-status').val()) data.is_staff = $('#chk-staff-status').is(':checked')
-      if ($('#chk-active-status').val()) data.is_active = $('#chk-active-status').is(':checked')
-      if ($('#select2-groups').val()) data.groups = $('#select2-groups').val();
-      if ($('#select2-permissions').val()) data.user_permissions = $('#select2-permissions').val();
+      data.username = $('#txt-username').val();
+      data.password = $('#txt-password1').val();
+      data.password2 = $('#txt-password2').val();
+      data.first_name = $('#txt-firstname').val();
+      data.middle_name = $('#txt-middlename').val();
+      data.last_name = $('#txt-lastname').val();
+      data.suffix = $('#txt-suffix').val();
+      data.department = department
+      data.is_superuser = $('#chk-superuser-status').is(':checked')
+      data.is_staff = $('#chk-staff-status').is(':checked')
+      data.is_active = $('#chk-active-status').is(':checked')
+      data.groups = $('#select2-groups').val();
+      data.user_permissions = $('#select2-permissions').val();
       
       axios({
          method: method,
@@ -224,6 +208,7 @@ $(document).ready(function () {
          });
          
          $("#form").trigger("reset"); // reset form
+         $("#select2-department").val('').trigger('change'); // reset permissions select2
          $("#select2-permissions").val([]).trigger('change'); // reset permissions select2
          $("#select2-groups").val([]).trigger('change'); // reset groups select2
          $('#modal-add-user').modal('toggle');
@@ -233,14 +218,57 @@ $(document).ready(function () {
          if (error.response.data.first_name) showFieldErrors(error.response.data.first_name, 'firstname'); else removeFieldErrors('firstname');
          if (error.response.data.last_name) showFieldErrors(error.response.data.last_name, 'lastname'); else removeFieldErrors('lastname');
          if (error.response.data.password) showFieldErrors(error.response.data.password, 'password'); else removeFieldErrors('password');
-
-         Toast.fire({
-            icon: 'error',
-            title: error,
-         });
+         if (error.response.data.suffix) showFieldErrors(error.response.data.suffix, 'suffix'); else removeFieldErrors('suffix');
+         if (error.response.data.department) showFieldErrors(error.response.data.department, 'department'); else removeFieldErrors('department');
       });
    }); // submit form end
 
+
+   // CHANGE PASSWORD / PUT
+   $('#btn-change-password').click(function () {
+      let data = $(this).data('user');
+      
+      // // // Open Modal
+      $('#modal-add-user').modal('hide')
+      $('#modal-change-password').modal();
+
+      // // // // Populate Fields
+      $("#info-user").text(`${data.first_name} ${data.last_name}`)
+      $('#txt-username').val(data.username); // USERNAME
+      $('#btn_submit_password').data('id', data.id)
+   });
+
+   // Sumbit Change Password
+   $('#btn_submit_password').click(function(e) {
+      e.preventDefault();
+
+      // Variables
+      let id = $(this).data('id')
+
+      let data = new Object();
+      data.username = $('#txt-username').val();
+      data.password = $('#txt-changepassword1').val();
+      data.password2 = $('#txt-changepassword2').val();
+      
+      axios({
+         method: 'PUT',
+         url: `/api/core/user/${id}/`,
+         data: data,
+         headers: axiosConfig,
+      }).then(function (response) { // success
+         Toast.fire({
+            icon: 'success',
+            title: 'Password Changed',
+         });
+         
+         $("#change-password-form").trigger("reset"); // reset form
+         $('#modal-change-password').modal('toggle');
+         table.ajax.reload();
+         
+      }).catch(function (error) { // error
+         if (error.response.data.password) showFieldErrors(error.response.data.password, 'changepassword'); else removeFieldErrors('changepassword');
+      });
+   });
 
    // // //  Filters
    // Select2 config
@@ -286,7 +314,12 @@ $(document).ready(function () {
       if (field === 'password') {
          $(`#txt-${field}1`).addClass('form-error')
          $(`#txt-${field}2`).addClass('form-error')
-      } else $(`#txt-${field}`).addClass('form-error');
+      }  else if (field === 'changepassword') {
+         $(`#txt-${field}1`).addClass('form-error')
+         $(`#txt-${field}2`).addClass('form-error')
+      }  else if (field === 'department') {
+         $(`#select2-${field}`).next().find('.select2-selection').addClass('form-error')
+      }  else $(`#txt-${field}`).addClass('form-error');
       let errors = ''
       for (i=0; i<obj.length; i++) errors += `${obj[i]} `;
       $(`#${field}-error`).html(`*${errors}`)
@@ -296,7 +329,12 @@ $(document).ready(function () {
       if (field === 'password') {
          $(`#txt-${field}1`).removeClass('form-error')
          $(`#txt-${field}2`).removeClass('form-error')
-      } else $(`#txt-${field}`).removeClass('form-error');
+      } else if (field === 'changepassword') {
+         $(`#txt-${field}1`).removeClass('form-error')
+         $(`#txt-${field}2`).removeClass('form-error')
+      }  else if (field === 'department') {
+         $(`#select2-${field}`).next().find('.select2-selection').removeClass('form-error')
+      }  else $(`#txt-${field}`).removeClass('form-error');
       $(`#${field}-error`).html(``)
    };
 
@@ -306,5 +344,7 @@ $(document).ready(function () {
       removeFieldErrors('firstname');
       removeFieldErrors('lastname');
       removeFieldErrors('password');
+      removeFieldErrors('suffix');
+      removeFieldErrors('department');
    }
 });

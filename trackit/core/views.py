@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission, Group
 from core.models import User
+from config.models import Department
 from requests.models import Ticket, RequestForm
 
 import datetime
@@ -24,17 +25,17 @@ def group_list(request):
 def user_list(request):
    permissions = Permission.objects.all()
    groups = Group.objects.all()
+   departments = Department.objects.filter(is_active=True)
 
    context = {
       'permissions': permissions,
-      'groups': groups
+      'groups': groups,
+      'departments' : departments
    }
    return render(request, 'pages/core/user_list.html', context)
 
 @login_required
 def user_profile(request, pk):
    user = User.objects.get(id=pk)
-   context = {
-      'user': user
-   }
+   context = {'user': user}
    return render(request, 'pages/core/user_profile.html', context)

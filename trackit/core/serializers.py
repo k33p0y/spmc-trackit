@@ -3,6 +3,14 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from django.contrib.auth.models import Group, Permission
 from .models import User
+from config.models import Department
+
+class DepartmentReadOnlySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Department
+        fields = ['id', 'name']
+        
         
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -10,7 +18,10 @@ class UserSerializer(serializers.ModelSerializer):
             username = validated_data['username'],
             password = make_password(validated_data['password']), # hash password
             first_name = validated_data['first_name'],
+            middle_name = validated_data['middle_name'],
             last_name = validated_data['last_name'],
+            suffix = validated_data['suffix'],
+            department = validated_data['department'],
             is_superuser = validated_data['is_superuser'],
             is_staff = validated_data['is_staff'],
             is_active = validated_data['is_active'],
@@ -23,7 +34,10 @@ class UserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.username = instance.username
         instance.first_name = instance.first_name
+        instance.middle_name = instance.middle_name
         instance.last_name = instance.last_name
+        instance.suffix = instance.suffix
+        instance.department = instance.department
         instance.is_superuser = instance.is_superuser
         instance.is_staff = instance.is_staff
         instance.is_active = instance.is_active
@@ -51,6 +65,15 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('This field may not be blank.')
         return lastname
 
+    def validate_department(self, department):
+        if not department:
+            raise serializers.ValidationError('This field may not be blank.')
+        return department
+
+    def to_representation(self, instance):
+        self.fields['department'] =  DepartmentReadOnlySerializer(read_only=True)
+        return super(UserSerializer, self).to_representation(instance)
+
     class Meta:
         model = User
         fields = '__all__'
@@ -58,12 +81,15 @@ class UserSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
+        fields = ['username', 'first_name', 'middle_name', 'last_name', 'suffix', 'department', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
 
     def update(self, instance, validated_data):
         instance.username = validated_data.get('username', instance.username)
         instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.middle_name = validated_data.get('middle_name', instance.middle_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.suffix = validated_data.get('suffix', instance.suffix)
+        instance.department = validated_data.get('department', instance.department)
         instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
         instance.is_staff = validated_data.get('is_staff', instance.is_staff)
         instance.is_active = validated_data.get('is_active', instance.is_active)
@@ -76,6 +102,21 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             instance.user_permissions.add(*validated_data.get('user_permissions', instance.user_permissions)) # add selected permissions to user
         instance.save() 
         return instance
+
+    def validate_first_name(self, firstname):
+        if not firstname:
+            raise serializers.ValidationError('This field may not be blank.')
+        return firstname
+
+    def validate_last_name(self, lastname):
+        if not lastname:
+            raise serializers.ValidationError('This field may not be blank.')
+        return lastname
+
+    def validate_department(self, department):
+        if not department:
+            raise serializers.ValidationError('This field may not be blank.')
+        return department
 
 class GroupSerializer(serializers.ModelSerializer):
    user_count = serializers.SerializerMethodField()
