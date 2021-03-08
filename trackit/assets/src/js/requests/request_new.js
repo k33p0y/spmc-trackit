@@ -254,7 +254,6 @@ $(document).ready(function () {
             counter++;
          }    
       });
-      console.log(file_arr)
    });
 
    // Remove Attachment
@@ -293,26 +292,40 @@ $(document).ready(function () {
          data.description = $('#txt_description').val();
          data.form_data = getFormValues(data_obj);
          data.category = category;
-         data.department = 2;
-
-         const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-         const file_data = new FormData()
-      
-         if (file_arr.length > 0) {
-            $.each(Object.values(file_arr), function(index, value) {
-               value.file.description = $(`#desc_${index}`).val()
-               file_data.append('file', value.file)
-            });
-         }
-         file_data.append("data", blob)
          
          axios({
             method: 'POST',
             url: '/api/requests/lists/',
-            data: file_data,
+            data: data,
             headers: axiosConfig
+         }).then(function (response) { // upload attachments         
+            if (file_arr.length > 0) {               
+               // loop through file attached
+               $.each(Object.values(file_arr), function(index, value) {
+                  let file_data = new FormData();
+
+                  // extra fields convert to blob
+                  let blob = new Blob([JSON.stringify({
+                     description : $(`#desc_${index}`).val(),
+                     ticket : response.data.ticket_id
+                  })], {type: 'application/json'});
+
+                  // append to formData
+                  file_data.append('file', value.file)
+                  file_data.append('data', blob)
+
+                  axios({
+                     method: 'POST',
+                     url: '/api/requests/attachments/',
+                     data: file_data,
+                     headers: uploadConfig 
+                  });                
+               });
+            };
+
+            return response.data
          }).then(function (response) { // success
-            socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: response.data.ticket_id, notification_type: 'ticket'}}))
+            socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: response.ticket_id, notification_type: 'ticket'}}))
 
             // disable submit button
             $(this).attr('disabled', true)

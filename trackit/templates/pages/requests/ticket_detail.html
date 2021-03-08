@@ -261,21 +261,35 @@
                      </a>
                      <div id="collapseAttachment" class="collapse show">
                         <div class="card-body p-0">
+                        {% if perms.requests.add_attachment %}
+                           <div class="p-3">
+                              <div class="d-flex">
+                                 <div>
+                                    <label class="btn btn-sm btn-light m-0">
+                                       <span><i class="fas fa-sm fa-folder-open"></i> Browse Files</span> 
+                                       <input type="file" name="file" id="file_upload" multiple hidden> 
+                                    </label>
+                                 </div>
+                                 <div class="ml-auto"> <a class="btn btn-xs btn-link text-secondary d-none" id="btn_clear"><span>Clear All</span> </a> </div>
+                              </div>           
+                              <div class="list-group mt-2" id="file_lists"></div>
+                           </div>
+                        {% endif %}
+
                         {% if perms.requests.view_attachment %}
-                           {% if perms.requests.add_attachment %}<input type="file" class="p-3" name="file" id="file_upload" multiple> {% endif %}
                            <table id="dt_attachments" class="table table-hover" width="100%">
                               <thead>
                                  <tr>
                                     <th>Name</th>
+                                    <th>Description</th>
                                     <th>Date Uploaded</th>
                                     <th>Uploaded By</th>
-                                    <th>File Size</th>
-                                    <th>Action</th>
+                                    <th>Size</th>
                                  </tr>
                               </thead>
                               <tbody id="file_table"></tbody>                              
                            </table>
-                           {% else %}
+                        {% else %}
                            <span class="body-info">You do not have permission in this part.</span>
                         {% endif %}
                         </div>

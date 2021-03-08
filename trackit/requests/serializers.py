@@ -71,7 +71,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
    
    class Meta:
       model = Attachment
-      fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'ticket', 'uploaded_at', 'uploaded_by']
+      fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'description', 'ticket', 'uploaded_at', 'uploaded_by']
 
 # serializer choice field
 class ChoiceField(serializers.ChoiceField):

@@ -36,6 +36,11 @@ $(document).ready(function () {
               }
            }, 
            { 
+                data: "description",
+                render: $.fn.dataTable.render.ellipsis(60, true),
+                width: "25%"
+            }, 
+           { 
               data: 'uploaded_at',
               render: function (data, type, row) {
                  return data = `${moment(row.uploaded_at).format('DD MMM YYYY')} ${moment(row.uploaded_at).format('h:mm:ss a')}`
@@ -54,15 +59,7 @@ $(document).ready(function () {
                  let file_size = fileSize(row.file_size);
                  return data = file_size
               },
-           }, 
-           { 
-              data: "null",
-              render: function (data, type, row) {
-                 data = `<a href="${row.file}" class='text-secondary action-link'> <i class='fas fa-download'></i> </a>
-                    <a class='text-danger action-link btn-delete' data-attachment-id="${row.id}"> <i class='fas fa-trash'></i> </a>`;
-                 return data
-              },
-           }, 
+           }
         ],
         "order": [[ 1, "desc" ]]
     });
@@ -70,7 +67,8 @@ $(document).ready(function () {
     // File Upload
     $('#file_upload').on('change', function() {
         const files = this.files;
-        const file_table = $("#file_table");
+        const file_lists = $('#file_lists');
+        let counter = 0;
 
         Object.values(files).forEach(file => {
             let type = fileType(file.type, media_type);
@@ -89,35 +87,29 @@ $(document).ready(function () {
                 title: 'File is too big!',
                 })
             } else {
-                const blob = new Blob([JSON.stringify(ticket)], {type: 'application/json'});
-                const file_data = new FormData();
-                file_data.append('file', file)
-                file_data.append('ticket', blob)
-
-                file_table.prepend(
-                    `<tr>
-                       <td><span class="far fa-lg ${type} mr-2"></span>${file.name}</td>
-                       <td> - </td>
-                       <td> - </td>
-                       <td> ${size} </td>
-                       <td> <div class="progress mt-1"> <div class="progress-bar progress-bar-animated bg-orange" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div></div></td>
-                    </tr>`
-                );
-
-                axios({
-                    method: 'POST',
-                    url: '/api/requests/attachments/',
-                    data: file_data,
-                    headers: axiosConfig,
-                    onUploadProgress: (progress => {
-                        let percentCompleted = Math.round((progress.loaded * 100) / progress.total)
-                        let str_progress = `${percentCompleted}%`
-                        $(".progress-bar").css("width", str_progress).attr("aria-valuenow", percentCompleted);
-                        $(".progress-bar").text(str_progress);
-                    })
-                }).then(response => {
-                    // table_attachment.ajax.reload();
+                file_lists.append(
+                    `<div class="list-group-item border-0 d-flex p-1 mb-1">
+                       <div class="file-icon"><i class="far fa-lg ${type}"></i></div>
+                       <div style="line-height:15px; width:15%;">
+                          <p class="mb-0 font-weight-bold text-truncate text-xs">${file.name}</p>
+                          <small class="mb-0">${size}</small>
+                       </div>
+                       <div class="flex-grow-1 m-0 ml-4 mr-2">
+                          <input type="text" class="form-control form-control-sm m-0" id="desc_${counter}" placeholder="Add Description*">
+                          <small class="error-info" id="error-info-type"></small>
+                       </div>
+                       <div>
+                          <button type="button" class="btn btn-sm btn-block btn-remove" data-file-id="file_${counter}">
+                             <i class="fas fa-times text-orange"></i>
+                          </button>
+                       </div>
+                    </div>`
+                )
+                file_arr.push({
+                    id : `file_${counter}`,
+                    file: file 
                 });
+                counter++;
             }
         });
     });

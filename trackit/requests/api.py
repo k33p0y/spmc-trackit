@@ -189,14 +189,10 @@ class TicketViewSet(viewsets.ModelViewSet):
          return qs
 
    def create(self, request):
-      files = request.FILES.getlist('file', None)
-      data = json.loads(request.FILES['data'].read())
-
-      request_form = data['request_form']
-      form_data = data['form_data']
-      category = data['category']
-      description = data['description']
-      department = data['department']
+      request_form = request.data['request_form']
+      form_data = request.data['form_data']
+      category = request.data['category']
+      description = request.data['description']
 
       rf = RequestForm.objects.get(pk=request_form)
       status = rf.status.get(requestformstatus__order=1)
@@ -208,7 +204,7 @@ class TicketViewSet(viewsets.ModelViewSet):
          description=description, 
          form_data=form_data, 
          category_id=category, 
-         department_id=department,
+         department=self.request.user.department,
          requested_by=self.request.user,
          status=status, 
          ticket_no=ticket_no
@@ -216,16 +212,6 @@ class TicketViewSet(viewsets.ModelViewSet):
 
       create_notification(str(ticket.ticket_id), ticket, 'ticket')  # Create notification instance
       create_remark(str(ticket.ticket_id), ticket) # Create initial remark
-
-      if files:
-         for file in files:
-            Attachment.objects.create(
-               ticket=ticket, 
-               file=file, 
-               file_name=file.name,
-               file_type=file.content_type,
-               uploaded_by=self.request.user
-            )
       
       serializer = TicketSerializer(ticket)
       return Response(serializer.data)
@@ -303,10 +289,16 @@ class AttachmentViewSet(viewsets.ModelViewSet):
 
    def create(self, request):
       file = request.FILES['file']
-      ticket = json.loads(request.FILES['ticket'].read())
+      data = json.loads(request.FILES['data'].read())
 
-      attachment = Attachment.objects.create(ticket_id=ticket, file=file, file_name=file.name, file_type=file.content_type, uploaded_by=self.request.user)
-      attachment.save()
+      attachment = Attachment.objects.create(
+         ticket_id=data['ticket'],
+         description=data['description'],
+         file=file, 
+         file_name=file.name, 
+         file_type=file.content_type, 
+         uploaded_by=self.request.user
+      )
 
       serializer = AttachmentSerializer(attachment)
       return Response(serializer.data)

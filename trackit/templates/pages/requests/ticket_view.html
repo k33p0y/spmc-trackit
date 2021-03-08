@@ -215,24 +215,19 @@
                      <div id="collapseAttachment" class="collapse show">
                         <div class="card-body p-0">
                         {% if perms.requests.view_attachment %}
-                           {% if perms.requests.add_attachment %}
-                           <div class="pb-2 pt-3 pl-3 pr-3">
-                              <input type="file" name="file" id="file_upload" multiple> 
-                           </div>
-                           {% endif %}
                            <table id="dt_attachments" class="table table-hover" width="100%">
                               <thead>
                                  <tr>
                                     <th>Name</th>
+                                    <th>Description</th>
                                     <th>Date Uploaded</th>
                                     <th>Uploaded By</th>
-                                    <th>File Size</th>
-                                    <th>Action</th>
+                                    <th>Size</th>
                                  </tr>
                               </thead>
-                              <tbody id="file_table"></tbody>                              
+                              <tbody id="file_table"></tbody>
                            </table>
-                           {% else %}
+                        {% else %}
                            <span class="body-info">You do not have permission in this part.</span>
                         {% endif %}
                         </div>

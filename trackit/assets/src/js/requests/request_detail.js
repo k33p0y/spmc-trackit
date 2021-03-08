@@ -19,6 +19,11 @@ $(document).ready(function () {
                let file_type = fileType(row.file_type, media_type);
                return data = `<span class="fas fa-lg mr-2 ${file_type}"></span> <a href="${row.file}" class="text-secondary"><b>${row.file_name}</b></a>`
             }
+         },
+         { 
+            data: "description",
+            render: $.fn.dataTable.render.ellipsis(60, true),
+            width: "25%"
          }, 
          { 
             data: 'uploaded_at',
@@ -39,15 +44,7 @@ $(document).ready(function () {
                let file_size = fileSize(row.file_size);
                return data = file_size
             },
-         }, 
-         { 
-            data: "null",
-            render: function (data, type, row) {
-               data = `<a href="${row.file}" class='text-secondary action-link'> <i class='fas fa-download'></i> </a>
-                  <a class='text-danger action-link btn-delete' data-attachment-id="${row.id}"> <i class='fas fa-trash'></i> </a>`;
-               return data
-            },
-         }, 
+         }
       ]
    });
 
@@ -90,7 +87,10 @@ $(document).ready(function () {
    var file_arr = new Array();
    $('#file_upload').on('change', function() {
       const files = this.files;
-      const file_table = $("#file_table");
+      const file_lists = $('#file_lists');
+      let counter = 0;
+
+       if(files) $('#btn_clear').removeClass('d-none');
 
       Object.values(files).forEach(file => {
          let type = fileType(file.type, media_type);
@@ -109,19 +109,55 @@ $(document).ready(function () {
                title: 'File is too big!',
             })
          } else {
-            file_table.prepend(
-               `<tr>
-                  <td><span class="far fa-lg ${type} mr-2"></span>${file.name}</td>
-                  <td> - </td>
-                  <td> - </td>
-                  <td> ${size} </td>
-                  <td> - </td>
-               </tr>`
-            );
-            file_arr.push(file);
+            file_lists.append(
+               `<div class="list-group-item border-0 d-flex p-1 mb-1">
+                  <div class="file-icon"><i class="far fa-lg ${type}"></i></div>
+                  <div style="line-height:15px; width:15%;">
+                     <p class="mb-0 font-weight-bold text-truncate text-xs">${file.name}</p>
+                     <small class="mb-0">${size}</small>
+                  </div>
+                  <div class="flex-grow-1 m-0 ml-4 mr-2">
+                     <input type="text" class="form-control form-control-sm m-0" id="desc_${counter}" placeholder="Add Description*">
+                     <small class="error-info" id="error-info-type"></small>
+                  </div>
+                  <div>
+                     <button type="button" class="btn btn-sm btn-block btn-remove" data-file-id="file_${counter}">
+                        <i class="fas fa-times text-orange"></i>
+                     </button>
+                  </div>
+               </div>`
+            )
+            file_arr.push({
+               id : `file_${counter}`,
+               file: file 
+            });
+            counter++;
          }
       });
-   })
+   });
+
+   // Remove Attachment
+   $('#file_lists').on('click', '.btn-remove', function () {
+      let file_id = $(this).data().fileId;
+      
+      // loop through the files array and check if the file id of that file matches data-file-id
+      // and get the index of the match
+      for (var i = 0; i < file_arr.length; ++i) {
+         if (file_id == file_arr[i].id) file_arr.splice(i, 1);
+      };
+
+      // remove to appended div
+      $(this).parents("div.list-group-item").remove();
+   });
+
+   // Clear All Attachment
+   $('#btn_clear').click(function () {
+      $('#file_upload').val('');
+      $('#file_lists').empty();
+      $('#btn_clear').addClass('d-none');
+      file_arr = new Array();
+   });
+   
 
    $("#btn_update").click(function (e) {
       e.preventDefault();
@@ -135,12 +171,6 @@ $(document).ready(function () {
          data.category = category;
          data.department = department;
          data.is_active = ($('#is_active_switch').is(":checked")) ? true : false;
-
-         const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-         const file_data = new FormData();
-
-         if (file_arr.length > 0) Object.values(file_arr).forEach(file => {file_data.append('file', file)});
-         file_data.append("data", blob);
 
          axios({
             method: 'PUT',

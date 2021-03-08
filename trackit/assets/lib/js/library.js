@@ -23,6 +23,12 @@ const axiosConfig = {
    "X-CSRFToken": csrftoken,
 };
 
+const uploadConfig = {
+   "Content-Type": "multipart/form-data",
+   "Access-Control-Allow-Origin": "*",
+   "X-CSRFToken": csrftoken,
+};
+
 const actor = $('.user-link').data().userId;
 
 // Sweet Alert Toast

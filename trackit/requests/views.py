@@ -66,7 +66,6 @@ def detail_ticket(request, ticket_id):
    }
    return render(request, 'pages/requests/ticket_detail.html', context)
 
-
 @login_required
 def view_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
