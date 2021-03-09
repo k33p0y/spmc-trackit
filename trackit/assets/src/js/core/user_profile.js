@@ -1,4 +1,18 @@
 $(document).ready(function () {
+
+   let table = $('#dt_requests').DataTable({
+      "searching": false,
+      "responsive": true,
+      "autoWidth": false,
+      "paging": false,
+      "info": false,
+      "columnDefs": [{
+         "targets": [2],
+         "render": $.fn.dataTable.render.ellipsis(60, true),
+         "width": "30%"
+      }]
+   });
+
    let alert_msg = '';
    // Submit Form
    $("#btn-change-password").click(function (e) {

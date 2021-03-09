@@ -3,99 +3,130 @@
 
 {% block title %} User Profile {% endblock %}
 
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'src/css/user-profile.css' %}">
+{% endblock %}
+
 {% block content %}
-{% if request.user.is_superuser or request.user.is_staff %}
-<!-- Content Header -->
-<section class="content-header">
-   <div class="container-fluid">
-      <div class="row mb-2">
-         <div class="col-sm-6">
-            <h5 class="font-weight-bolder">Users </h5>
-         </div>
-         <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right text-xs">
-               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-orange"><i class="fas fa-home"></i></a></li>
-               <li class="breadcrumb-item">Authentication and Authorization</li>
-               <li class="breadcrumb-item">User</li>
-               <li class="breadcrumb-item active">Profile</li>
-            </ol>
-         </div>
-      </div>
+<section class="content p-0">
+   <div class="container-fluid p-0">
 
-</section>
-
-<!-- /.content -->
-{% if perms.core.view_user %}
-<section class="content">
-   <div class="container-fluid">
-      
-      <!-- Content Filters, Search and Create Section -->
-      <div class="row">
-         <div class="card mx-auto" style="width: 22rem;">
-            <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
-            <div style="height: 300px; background-color: gray;"></div>
-            <div class="card-body">
-              <h5 class="card-title">Louie</h5>
-              <br/>
-              <table class="mt-3">
-                 <tr>
-                    <td style="width: 80px;">Department</td>
-                    <td>:</td>
-                    <td style="font-weight: bold; padding-left: 10px;">{{ user.department }}</td>
-                 </tr>
-                 <tr>
-                    <td>Last Name</td>
-                    <td>:</td>
-                    <td style="font-weight: bold; padding-left: 10px;">{{ user.last_name }}</td>
-                 </tr>
-                 <tr>
-                    <td>First Name</td>
-                    <td>:</td>
-                    <td style="font-weight: bold; padding-left: 10px;">{{ user.first_name }}</td>
-                 </tr>
-                 <tr>
-                    <td>Middle Name</td>
-                    <td>:</td>
-                  <td style="font-weight: bold; padding-left: 10px;">{{ user.middle_name }}</td>
-                 </tr>
-                 <tr>
-                  <td colspan="3"><hr /></td>
-                 </tr>
-                 <tr>
-                    <td>Password</td>
-                    <td>:</td>
-                    <td style="font-weight: bold; padding-left: 10px;">
-                        <input id="txt-password" type="password"><br />
-                        <small class="error-info" id="password-error"></small>
-                    </td>
-                 </tr>
-                 <tr>
-                    <td>Confirm Password</td>
-                    <td>:</td>
-                    <td style="font-weight: bold; padding-left: 10px;">
-                      <input id="txt-password2" type="password"><br />
-                      <small class="error-info" id="password2-error"></small>
-                    </td>
-                 </tr>
-              </table>
-
-              <div class="btn btn-primary mt-2" id="btn-change-password">Change Password</div>
+      <!-- Profile Headings  -->
+      <div class="card profile-card shadow-sm">
+         <div class="card-header profile-head d-flex align-items-end">
+            <div class="profile-photo">
+               {{user.first_name|make_list|first}}{{user.last_name|make_list|first}}
             </div>
-          </div>
+         </div>
+         <div class="card-body p-3 mt-3 mb-1">
+            <div class="profile-info">
+               <h5 class="profile-name m-0">{{user.first_name}} {{user.last_name}}</h5>
+            </div>
+         </div>
       </div>
-   </div>
-   <input type="hidden" id="txt-id" value="{{ user.id }}">
-   <input type="hidden" id="txt-username" value="{{ user.username }}">
-   <input type="hidden" id="txt-department" value="{{ user.department.id }}">
-   </div>
 
+      <!-- Profile Content -->
+      <div class="container-fluid pl-3 pr-3">
+         <div class="row">
+            <div class="col-12 col-lg-4 col-xl-4">
+               <div class="row">
+                  <div class="col-12">
+                     <div class="card shadow-sm">
+                        <div class="card-header p-3 d-flex">
+                           <div class="card-title m-0"> About</div> 
+                           <div class="ml-auto"> <a class="btn btn-sm btn-link p-0 text-dark"> <i class="fas fa-pencil-alt"></i></a></div> 
+                        </div>
+                        <div class="card-body p-2">
+                           <ul class="list-group list-group-flush">
+                              <li class="list-group-item d-flex p-2 pt-3 pb-3"> 
+                                 <div class="mr-auto">Fullname</div>
+                                 <div class="font-weight-bold" style="width: 60% !important;">
+                                     <p class="p-0 m-0 text-right">
+                                       {{user.first_name}}
+                                       {% if user.middle_name %} {{user.middle_name}} {% endif %}
+                                       {{user.last_name}}
+                                       {% if user.suffix %} {{user.suffix}} {% endif %}
+                                    </p>
+                                 </div>
+                             </li>
+                             <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                                 <div class="mr-auto">Department</div>
+                                 <div class="font-weight-bold" style="width: 60% !important;">
+                                    <p class="p-0 m-0 text-right">{{user.department}}</p>
+                                 </div>
+                              </li>
+                              <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                                 <div class="mr-auto">Username</div>
+                                 <div class="font-weight-bold" style="width: 60% !important;">
+                                    <p class="p-0 m-0 text-right">{{user.username}}</p>
+                                 </div>
+                              </li>
+                              <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                                 <div class="mr-auto">Email</div>
+                                 <div class="font-weight-bold" style="width: 60% !important;">
+                                    <p class="p-0 m-0 text-right">{{user.email}}</p>
+                                 </div>
+                              </li>
+                              <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                                 <div class="mr-auto">Date Joined</div>
+                                 <div class="font-weight-bold" style="width: 60% !important;">
+                                    <p class="p-0 m-0 text-right">Since {{user.date_joined|date:"d F Y"}}</p>
+                                 </div>
+                              </li>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <div class="col-12 col-lg-8 col-xl-8">
+               <div class="row">
+                  <!-- Request Column -->
+                  <div class="col-12">
+                     <div class="card shadow-sm">
+                        <div class="card-header p-3 d-flex">
+                           <div class="card-title m-0"> My Requests</div> 
+                           <div class="card-title ml-auto"> <a href="{% url 'create_ticket' %}" class="btn btn-sm btn-light p-0 pl-2 pr-2"> <i class="fas fa-sm fa-plus"></i> <span>Create request </span></a></div> 
+                        </div>
+                        <div class="card-body p-0">
+                           <table id="dt_requests" class="table" width="100%">
+                              <thead>
+                                 <tr>
+                                    <th>Ticket No</th>
+                                    <th>Request Type</th>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 {% for ticket in tickets %}
+                                 <tr>
+                                    <td> <a href="{% url 'view_ticket'  ticket_id=ticket.ticket_id %}" class="btn-link-orange">{{ticket.ticket_no}}</a> </td>
+                                    <td><h6 class="m-0"><span class="badge text-light p-1"  style="background-color:{{ticket.request_form.color}}">{{ticket.request_form}}</span></h6></td>
+                                    <td>{{ticket.description}}</td>
+                                    <td>{{ticket.category}}</td>
+                                    <td>{{ticket.status}}</td>
+                                 </tr>
+                                 {% endfor %}
+                              </tbody>
+                           </table>
+                        </div>
+                        <div class="card-footer d-flex justify-content-end pt-2 pb-2 bg-white">
+                           <a href="{% url 'ticket' %}" class="text-xs text-secondary align-self-center"> View All <i class="fas fa-caret-right"></i></a>
+                        </div>
+                     </div>
+                  </div>   
+               </div>
+               
+            </div>
+         </div>  <!-- End of Row -->
+      </div> <!-- End of Container -->
+      
+
+   </div>
 </section>
-{% else %}
-   <section class="content">
-      You don't have permission to view this page
-   </section>
-   {% endif %}
-{% endif %}
 {% endblock %}
 
 {% block extrascript %}

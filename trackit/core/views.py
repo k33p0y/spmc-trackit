@@ -37,5 +37,7 @@ def user_list(request):
 @login_required
 def user_profile(request, pk):
    user = User.objects.get(id=pk)
-   context = {'user': user}
+   tickets = Ticket.objects.filter(requested_by=user.id, is_active=True)[:5]
+
+   context = {'user': user, 'tickets': tickets}
    return render(request, 'pages/core/user_profile.html', context)
