@@ -3,21 +3,32 @@
 <!-- Sidebar -->
 <aside class="main-sidebar elevation-4 sidebar-dark-orange">
    <!-- Brand Logo -->
-   <a href="#" class="brand-link text-center">
-      <span class="brand-text font-weight-light">TrackIt</span>
+   <a href="{% url 'home' %}" class="brand-link text-center">
+      <span class="brand-text font-weight-light">Track-It</span>
    </a>
 
    <!-- Sidebar -->
    <div class="sidebar">
-
+      {% with request.resolver_match.url_name as url %}
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
+         <div class="ml-2">
+            <div class="img-circle elevation-2">{{user.first_name|make_list|first}}{{user.last_name|make_list|first}}</div>
+         </div>
+         <div class="info">
+            <a href="{% url 'user_profile' pk=user.id %}" class="d-block align-self-center {% if url == 'user_profile' %} active {% endif %}">
+               {{user.first_name}} {{user.last_name}}
+               <span class="online-status"><i class="fas fa-circle"></i></span> 
+            </a>
+           
+         </div>
+      </div>
+      
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-
-         {% with request.resolver_match.url_name as url %}
          <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent text-sm" data-widget="treeview" role="menu"
             data-accordion="false">
 
-            <li class="nav-header text-muted">NAVIGATION</li>
+            {% comment %} <li class="nav-header text-muted">NAVIGATION</li> {% endcomment %}
             <li class="nav-item">
                <a href="{% url 'home' %}" class="nav-link {% if url == 'home' %} active {% endif %}">
                   <i class="nav-icon fas fa-rocket"></i>
@@ -25,14 +36,6 @@
                </a>
             </li>
 
-            {% comment %}
-            <li class="nav-item">
-               <a href="{% url 'users' %}" class="nav-link {% if url == 'users' %} active {% endif %}">
-                  <i class="nav-icon fas fa-user-cog"></i>
-                  <p> Users </p>
-               </a>
-            </li>
-            {% endcomment %}
             {% if request.user.is_superuser or request.user.is_staff %}
                {% if perms.auth.view_group or perms.core.view_user %}
                <li
@@ -177,17 +180,9 @@
             </li> -->
             {% endcomment %}
 
-            <li class="nav-item">
-               <a href="{% url 'user_profile' pk=user.id %}"
-                  class="nav-link {% if url == 'user_profile' %} active {% endif %}">
-                  <i class="nav-icon fas fa-user-circle"></i>
-                  <p> My Profile</p>
-               </a>
-            </li>
          </ul>
-         {% endwith %}
-
       </nav>
+      {% endwith %}
       <!-- /.sidebar-menu -->
    </div>
    <!-- /.sidebar -->
