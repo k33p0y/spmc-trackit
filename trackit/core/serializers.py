@@ -37,6 +37,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.middle_name = instance.middle_name
         instance.last_name = instance.last_name
         instance.suffix = instance.suffix
+        instance.email = instance.email
         instance.department = instance.department
         instance.is_superuser = instance.is_superuser
         instance.is_staff = instance.is_staff
@@ -61,9 +62,14 @@ class UserSerializer(serializers.ModelSerializer):
         return firstname
 
     def validate_last_name(self, lastname):
-        if not lastname:
+        if not email:
             raise serializers.ValidationError('This field may not be blank.')
         return lastname
+
+    def validate_email(self, email):
+        if not email:
+            raise serializers.ValidationError('This field may not be blank.')
+        return email
 
     def validate_department(self, department):
         if not department:
@@ -81,13 +87,14 @@ class UserSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'middle_name', 'last_name', 'suffix', 'department', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
+        fields = ['username', 'first_name', 'middle_name', 'last_name', 'email', 'suffix', 'department', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
 
     def update(self, instance, validated_data):
         instance.username = validated_data.get('username', instance.username)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.middle_name = validated_data.get('middle_name', instance.middle_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
         instance.suffix = validated_data.get('suffix', instance.suffix)
         instance.department = validated_data.get('department', instance.department)
         instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
@@ -112,6 +119,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         if not lastname:
             raise serializers.ValidationError('This field may not be blank.')
         return lastname
+
+    def validate_email(self, email):
+        if not email:
+            raise serializers.ValidationError('This field may not be blank.')
+        return email
 
     def validate_department(self, department):
         if not department:

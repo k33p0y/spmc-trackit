@@ -38,6 +38,7 @@ def user_list(request):
 def user_profile(request, pk):
    user = User.objects.get(id=pk)
    tickets = Ticket.objects.filter(requested_by=user.id, is_active=True)[:5]
+   departments = Department.objects.filter(is_active=True)
 
-   context = {'user': user, 'tickets': tickets}
+   context = {'user': user, 'tickets': tickets, 'departments': departments}
    return render(request, 'pages/core/user_profile.html', context)

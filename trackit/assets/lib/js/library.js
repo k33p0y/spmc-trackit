@@ -29,7 +29,7 @@ const uploadConfig = {
    "X-CSRFToken": csrftoken,
 };
 
-const actor = $('.user-link').data().userId;
+const actor = $('.nav-user').data().userId;
 
 // Sweet Alert Toast
 const Toast = Swal.mixin({

@@ -218,7 +218,6 @@ $(document).ready(function () {
          if (error.response.data.first_name) showFieldErrors(error.response.data.first_name, 'firstname'); else removeFieldErrors('firstname');
          if (error.response.data.last_name) showFieldErrors(error.response.data.last_name, 'lastname'); else removeFieldErrors('lastname');
          if (error.response.data.password) showFieldErrors(error.response.data.password, 'password'); else removeFieldErrors('password');
-         if (error.response.data.suffix) showFieldErrors(error.response.data.suffix, 'suffix'); else removeFieldErrors('suffix');
          if (error.response.data.department) showFieldErrors(error.response.data.department, 'department'); else removeFieldErrors('department');
       });
    }); // submit form end
@@ -344,7 +343,6 @@ $(document).ready(function () {
       removeFieldErrors('firstname');
       removeFieldErrors('lastname');
       removeFieldErrors('password');
-      removeFieldErrors('suffix');
       removeFieldErrors('department');
    }
 });

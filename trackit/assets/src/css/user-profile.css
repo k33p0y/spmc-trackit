@@ -67,3 +67,32 @@
 .list-group-flush .list-group-item {
    border-style: dashed;
 }
+
+/* Modal */
+.modal-md {
+   max-width: 600px !important;
+}
+
+#modal-profile .modal-body .nav.nav-tabs {
+   border-bottom: 2px solid #dee2e6;
+}
+
+#modal-profile .modal-body .nav .nav-item {
+   margin-bottom: -2px;
+   padding: 6px 16px;
+   font-size: 10px;
+   font-weight: bold;
+   text-transform: uppercase;
+   color: #95a4b5;
+   border:none;   
+   transition: ease-in-out;
+}
+
+#modal-profile .modal-body .nav .nav-item.active {
+   border-bottom: 2px solid #FD7E14;
+   color: #5f6b77;
+}
+
+.modal-body .text-muted {
+   color: #95a4b5 !important;
+}

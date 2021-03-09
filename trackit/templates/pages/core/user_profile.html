@@ -34,7 +34,7 @@
                      <div class="card shadow-sm">
                         <div class="card-header p-3 d-flex">
                            <div class="card-title m-0"> About</div> 
-                           <div class="ml-auto"> <a class="btn btn-sm btn-link p-0 text-dark"> <i class="fas fa-pencil-alt"></i></a></div> 
+                           <div class="ml-auto"> <button class="btn btn-sm btn-link-orange p-0" id="btn-edit-profile" data-user-id="{{user.id}}"> <i class="fas fa-pencil-alt"></i></button></div> 
                         </div>
                         <div class="card-body p-2">
                            <ul class="list-group list-group-flush">
@@ -49,12 +49,6 @@
                                     </p>
                                  </div>
                              </li>
-                             <li class="list-group-item d-flex p-2 pt-3 pb-3">
-                                 <div class="mr-auto">Department</div>
-                                 <div class="font-weight-bold" style="width: 60% !important;">
-                                    <p class="p-0 m-0 text-right">{{user.department}}</p>
-                                 </div>
-                              </li>
                               <li class="list-group-item d-flex p-2 pt-3 pb-3">
                                  <div class="mr-auto">Username</div>
                                  <div class="font-weight-bold" style="width: 60% !important;">
@@ -65,6 +59,12 @@
                                  <div class="mr-auto">Email</div>
                                  <div class="font-weight-bold" style="width: 60% !important;">
                                     <p class="p-0 m-0 text-right">{{user.email}}</p>
+                                 </div>
+                              </li>
+                               <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                                 <div class="mr-auto">Department</div>
+                                 <div class="font-weight-bold" style="width: 60% !important;">
+                                    <p class="p-0 m-0 text-right">{{user.department}}</p>
                                  </div>
                               </li>
                               <li class="list-group-item d-flex p-2 pt-3 pb-3">
@@ -123,10 +123,180 @@
             </div>
          </div>  <!-- End of Row -->
       </div> <!-- End of Container -->
-      
-
    </div>
 </section>
+{% endblock %}
+
+{% block modal %}
+<!-- Create -->
+<div class="modal fade" id="modal-profile" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
+   <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content text-sm">
+         <div class="modal-header">
+            <h6 class="modal-title"> Edit Profile</h6>
+         </div>
+         <div class="modal-body">
+            <form id="form">
+               <nav> <!-- Navigation -->
+                  <div class="nav nav-tabs mb-2" id="nav-tab" role="tablist">
+                     <a class="nav-item nav-link active" id="nav-personal-tab" data-toggle="tab" href="#personal" role="tab"
+                        aria-controls="nav-personal" aria-selected="true">Personal Informaton</a>
+                     <a class="nav-item nav-link" id="nav-account-tab" data-toggle="tab" href="#account" role="tab"
+                        aria-controls="nav-account" aria-selected="false">Account Credentials </a>
+                  </div>
+               </nav>
+               
+               <div class="tab-content" id="nav-tabContent">
+                  <!-- Personal Informaton Tab -->
+                  <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="nav-personal-tab">
+                     <!-- FIRST NAME -->
+                     <div class="form-group name-group">
+                        <label for="firstnameHelp">First Name<span class="text-danger">*</span> </label>
+                        <input type="text" class="form-control form-control-sm" id="txt-firstname" aria-describedby="firstnameHelp"
+                           placeholder="Enter first name">
+                        <small class="error-info" id="firstname-error"></small>
+                     </div>
+
+                     <!-- MIDDLE NAME -->
+                     <div class="form-group name-group">
+                        <label for="middlenameHelp">Middle Name</label>
+                        <input type="text" class="form-control form-control-sm" id="txt-middlename" aria-describedby="middlenameHelp"
+                           placeholder="Enter middle name">
+                        <small class="error-info" id="middlename-error"></small>
+                     </div>
+
+                     <!-- LAST NAME -->
+                     <div class="form-group name-group">
+                        <label for="lastnameHelp">Last Name<span class="text-danger">*</span> </label>
+                        <input type="text" class="form-control form-control-sm" id="txt-lastname" aria-describedby="lastnameHelp"
+                           placeholder="Enter last name">
+                        <small class="error-info" id="lastname-error"></small>
+                     </div>
+
+                     <!-- SUFFIX -->
+                     <div class="form-group name-group">
+                        <label for="suffixHelp">Name Suffix</label>
+                        <input type="text" class="form-control form-control-sm" id="txt-suffix" aria-describedby="suffixHelp"
+                           placeholder="Enter extension name">
+                        <small class="text-muted d-block help-text">i.e. Jr., Sr., I, II etc.</small>
+                        <small class="error-info" id="suffix-error"></small>
+                     </div>
+
+                     <!-- EMAIL ADDRESS -->
+                     <div class="form-group name-group">
+                        <label for="emailHelp">Email Address<span class="text-danger">*</span> </label>
+                        <input type="email" class="form-control form-control-sm" id="txt-email" aria-describedby="emailHelp"
+                           placeholder="Enter email address">
+                        <small class="error-info" id="email-error"></small>
+                     </div>
+
+
+                     <!-- DEPARTMENT -->
+                     <div class="form-group name-group">
+                        <label for="departmentHelp">Department<span class="text-danger">*</span> </label>
+                        <select class="form-control form-control-sm" id="select2-department" name="departmentHelp">
+                           <option></option>
+                           {% for department in departments %}
+                           <option value={{department.id}}>{{department}}</option>
+                           {% endfor %}
+                        </select>
+                        <small class="error-info" id="department-error"></small>
+                     </div>
+                  </div>
+
+                  <!-- Account Info Tab -->
+                  <div class="tab-pane fade show" id="account" role="tabpanel" aria-labelledby="nav-account-tab">
+                     <!-- USERNAME -->
+                     <div class="form-group name-group">
+                        <label for="usernameHelp">Username<span class="text-danger">*</span>  </label> 
+                        <input type="text" class="form-control form-control-sm" id="txt-username" aria-describedby="usernameHelp"
+                           placeholder="Enter username">
+                        <small class="text-muted d-block help-text">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small>
+                        <small class="error-info" id="username-error"></small>
+                     </div>
+                     <!-- PASSWORD -->
+                     <div class="form-group password-group">
+                        <label for="password1Help">Password*</label>
+                        <input type="password" class="form-control form-control-sm" id="txt-password1" aria-describedby="password1Help"
+                           placeholder="Enter Password">
+                        <small class="text-muted d-block help-text">
+                           Your password can’t be too similar to your other personal information. <br>
+                           Your password must contain at least 8 characters. <br>
+                           Your password can’t be a commonly used password. <br>
+                           Your password can’t be entirely numeric. 
+                        </small>
+                     </div>
+                     <div class="form-group password-group">
+                        <label for="password2Help">Confirm Password*</label>
+                        <input type="password" class="form-control form-control-sm" id="txt-password2" aria-describedby="password2Help"
+                           placeholder="Confirm Password">
+                        <small class="text-muted d-block help-text">Enter the same password as before, for verification.</small>
+                        <small class="error-info" id="password-error"></small>
+                     </div>
+                     
+                     {% if perms.core.change_user_password %}
+                     <!-- CHANGE PASSWORD LINK -->
+                     <button type="button" class="btn btn-sm btn-link-orange p-0" id="btn-change-password">
+                        <i class="fas fa-xs fa-key"></i>
+                        <span>Change Password</span>
+                     </button>
+                     {% endif %}
+                  </div>
+               </div>
+            </form>
+         </div>
+
+         <div class="modal-footer">
+            <!-- <a class="text-danger mr-auto btn_delete" id="btn_delete"> Delete </a> -->
+            <button type="button" class="btn btn-sm btn-light" id="btn_cancel" data-dismiss="modal">
+               <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-sm btn-orange" id="btn_save"><span>Save</span></button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="modal-change-password" tabindex="-1" role="dialog" aria-labelledby="changepasswordModal" aria-hidden="true">
+   <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content text-sm">
+         <div class="modal-header">
+            <h6 class="modal-title">Change Password</h6>
+         </div>
+         <div class="modal-body">
+            <form id="change-password-form">               
+               <!-- PASSWORD -->
+               <div class="form-group">
+                  <label for="password1Help">Password</label>
+                  <input type="password" class="form-control form-control-sm" id="txt-changepassword1" aria-describedby="password1Help"
+                     placeholder="Enter Password">
+                  <small class="text-muted d-block help-text">
+                     Your password can’t be too similar to your other personal information. <br>
+                     Your password must contain at least 8 characters. <br>
+                     Your password can’t be a commonly used password. <br>
+                     Your password can’t be entirely numeric. 
+                  </small>
+               </div>
+               <div class="form-group">
+                  <label for="password2Help">Confirm Password</label>
+                  <input type="password" class="form-control form-control-sm" id="txt-changepassword2" aria-describedby="password2Help"
+                     placeholder="Confirm Password">
+                  <small class="text-muted d-block help-text">Enter the same password as before, for verification.</small>
+                  <small class="error-info" id="changepassword-error"></small>
+               </div>
+            </form>
+         </div>
+
+         <div class="modal-footer">
+            <!-- <a class="text-danger mr-auto btn_delete" id="btn_delete"> Delete </a> -->
+            <button type="button" class="btn btn-sm btn-light" id="btn_cancel" data-dismiss="modal">
+               <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-sm btn-orange" id="btn_submit_password"><span>Change Password</span></button>
+         </div>
+      </div>
+   </div>
+</div>  
 {% endblock %}
 
 {% block extrascript %}
