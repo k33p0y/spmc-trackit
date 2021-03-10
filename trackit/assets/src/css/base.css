@@ -204,12 +204,11 @@ h1, h2,  h3, h4, h5, h6, small  {
 }
 
 .sidebar .user-panel .online-status > i  {
-   font-size: 6px !important;
+   font-size: 5px !important;
    margin-left: 3px;
    display: inline;
    vertical-align: middle;
    justify-content: center;
-   color: #717c87;
 }
 
 .sidebar .nav .nav-header {
