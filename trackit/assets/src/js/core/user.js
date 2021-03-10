@@ -7,6 +7,7 @@ $(document).ready(function () {
    var staffFilter = function() { return $('#staff-filter').val(); }
    var superuserFilter = function() { return $('#superuser-filter').val(); }
    var activeFilter = function() { return $('#active-filter').val(); }
+   var departmentFilter = function() { return $('#department-filter').val(); }
    var groupFilter = function() { return $('#group-filter').val(); }
    var dateFromFilter = function() { return $('#date-from-filter').val(); }
    var dateToFilter = function() { return $('#date-to-filter').val(); }
@@ -28,6 +29,7 @@ $(document).ready(function () {
             "is_staff": staffFilter,
             "is_superuser": superuserFilter,
             "is_active": activeFilter,
+            "department" : departmentFilter,
             "group": groupFilter,
             "date_from": dateFromFilter,
             "date_to" : dateToFilter

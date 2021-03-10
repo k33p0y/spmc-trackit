@@ -68,6 +68,15 @@
                         </select>
                      </div>
                      <div class="form-group">
+                        <label for="group-filter">By Department </label>
+                        <select class="form-control form-control-sm select-filter" id="department-filter">
+                           <option value="">All</option>
+                           {% for department in departments %}
+                           <option value={{department.id}}>{{department}}</option>
+                           {% endfor %}
+                        </select>
+                     </div>
+                     <div class="form-group">
                         <label for="group-filter">By Group </label>
                         <select class="form-control form-control-sm select-filter" id="group-filter">
                            <option value="">All</option>
