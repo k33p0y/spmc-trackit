@@ -9,8 +9,7 @@ class DepartmentReadOnlySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Department
-        fields = ['id', 'name']
-        
+        fields = ['id', 'name']      
         
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -37,7 +36,6 @@ class UserSerializer(serializers.ModelSerializer):
         instance.middle_name = instance.middle_name
         instance.last_name = instance.last_name
         instance.suffix = instance.suffix
-        instance.email = instance.email
         instance.department = instance.department
         instance.is_superuser = instance.is_superuser
         instance.is_staff = instance.is_staff
@@ -62,14 +60,9 @@ class UserSerializer(serializers.ModelSerializer):
         return firstname
 
     def validate_last_name(self, lastname):
-        if not email:
+        if not lastname:
             raise serializers.ValidationError('This field may not be blank.')
         return lastname
-
-    def validate_email(self, email):
-        if not email:
-            raise serializers.ValidationError('This field may not be blank.')
-        return email
 
     def validate_department(self, department):
         if not department:
@@ -130,6 +123,62 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('This field may not be blank.')
         return department
 
+class UserProfileSerializer(serializers.ModelSerializer):
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.middle_name = validated_data.get('middle_name', instance.middle_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.suffix = validated_data.get('suffix', instance.suffix)
+        instance.department = validated_data.get('department', instance.department)
+        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
+        instance.is_staff = validated_data.get('is_staff', instance.is_staff)
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.save() 
+        return instance
+
+    def validate_first_name(self, firstname):
+        if not firstname:
+            raise serializers.ValidationError('This field may not be blank.')
+        return firstname
+
+    def validate_last_name(self, lastname):
+        if not lastname:
+            raise serializers.ValidationError('This field may not be blank.')
+        return lastname
+
+    def validate_email(self, email):
+        if not email:
+            raise serializers.ValidationError('This field may not be blank.')
+        return email
+
+    def validate_department(self, department):
+        if not department:
+            raise serializers.ValidationError('This field may not be blank.')
+        return department
+
+    def to_representation(self, instance):
+        self.fields['department'] =  DepartmentReadOnlySerializer(read_only=True)
+        return super(UserProfileSerializer, self).to_representation(instance)
+
+    class Meta:
+        model = User
+        exclude =  ('password', 'groups', 'user_permissions')
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+
+    def update(self, instance, validated_data):
+        instance.username = instance.username
+        instance.password = make_password(validated_data.get('password', instance.password)) # hash password
+        instance.save() 
+        return instance
+
+    class Meta:
+        model = User
+        fields =  ('id', 'username', 'password')    
+
 class GroupSerializer(serializers.ModelSerializer):
    user_count = serializers.SerializerMethodField()
 
@@ -139,10 +188,9 @@ class GroupSerializer(serializers.ModelSerializer):
    class Meta:
       model = Group
       fields = ['id', 'name', 'permissions', 'user_count']
-      
 
 class GroupReadOnlySerializer(serializers.ModelSerializer):
 
-   class Meta:
-      model = Group
-      fields = ['id', 'name']
+    class Meta:
+        model = Group
+        fields = ['id', 'name']

@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+   var url;
+
    let table = $('#dt_requests').DataTable({
       "searching": false,
       "responsive": true,
@@ -28,9 +30,10 @@ $(document).ready(function () {
    // Edit Profile Modal
    $('#btn-edit-profile').click(function () {
       id = $(this).data().userId;
+      url = `/api/core/user-profile/${id}/`;
 
       // User API
-      axios.get(`/api/core/user/${id}`, {headers: axiosConfig}).then(res => {
+      axios.get(url, {headers: axiosConfig}).then(res => {
          // Configure Modal
          $('#modal-profile').modal();
          $('.password-group').hide();
@@ -59,9 +62,9 @@ $(document).ready(function () {
    });
 
    // Submit Edit Profile Form
-   $('#btn_save').click(function (e) {
+   $('#btn-save-profile').click(function (e) {
       e.preventDefault();
-
+      
       // new object
       let data = new Object();
       data.username = $('#txt-username').val();
@@ -75,7 +78,7 @@ $(document).ready(function () {
       // axios put
       axios({
          method: 'PUT',
-         url: `/core/user/${id}/update`,
+         url: url,
          data: data,
          headers: axiosConfig,
       }).then(res => { // success
@@ -128,7 +131,7 @@ $(document).ready(function () {
 
             axios({
                method: 'PUT',
-               url: `/api/core/user/${id}/`,
+               url: `/api/core/user/${user.id}/change-password/`,
                data: data,
                headers: axiosConfig,
             }).then(res => { // success

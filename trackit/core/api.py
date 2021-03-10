@@ -2,7 +2,7 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import Group
 from django.db.models import Q
-from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer
+from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer, UserProfileSerializer, ChangePasswordSerializer
 from .models import User
 
 import datetime
@@ -42,6 +42,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class UserUpdateAPIView(generics.RetrieveUpdateAPIView):
    serializer_class = UserUpdateSerializer
+   queryset = User.objects.all()
+   permission_classes = [permissions.IsAuthenticated]
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+   serializer_class = UserProfileSerializer
+   queryset = User.objects.all()
+   permission_classes = [permissions.IsAuthenticated]
+
+class ChangePasswordAPIView(generics.RetrieveUpdateAPIView):
+   serializer_class = ChangePasswordSerializer
    queryset = User.objects.all()
    permission_classes = [permissions.IsAuthenticated]
     
