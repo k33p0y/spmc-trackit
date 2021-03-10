@@ -12,7 +12,7 @@
       {% with request.resolver_match.url_name as url %}
       <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
          <div class="ml-2">
-            <div class="img-circle elevation-2">{{user.first_name|make_list|first}}{{user.last_name|make_list|first}}</div>
+            <div class="img-circle">{{user.first_name|make_list|first}}{{user.last_name|make_list|first}}</div>
          </div>
          <div class="info">
             <a href="{% url 'user_profile' pk=user.id %}" class="d-block align-self-center {% if url == 'user_profile' %} active {% endif %}">

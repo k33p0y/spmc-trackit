@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title> {% block title %} {% endblock%}</title>
+
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS Dependencies -->
+    {% include "snippets/styles.html" %}
+    <style>
+        .display-1 {
+            font-size: 16em;
+            font-weight: bolder;
+            color: #fa9f63 !important;
+            display: inline-flex;
+            align-items: center;
+        }
+        .lead {font-size: 14px !important;}
+    </style>
+</head>
+
+<body>
+    <div class="wrapper text-sm">
+        <div class="content-wrapper m-0 d-flex">
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+    <!-- Scripts Dependencies -->
+    {% include "snippets/scripts.html" %}
+</body>
+</html>

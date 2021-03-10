@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission, Group
 from core.models import User
@@ -36,9 +36,22 @@ def user_list(request):
 
 @login_required
 def user_profile(request, pk):
-   user = User.objects.get(id=pk)
-   tickets = Ticket.objects.filter(requested_by=user.id, is_active=True)[:5]
-   departments = Department.objects.filter(is_active=True)
+   if request.user.id == pk:
+      user = User.objects.get(id=pk)
+      tickets = Ticket.objects.filter(requested_by=user.id, is_active=True)[:5]
+      departments = Department.objects.filter(is_active=True)
 
-   context = {'user': user, 'tickets': tickets, 'departments': departments}
-   return render(request, 'pages/core/user_profile.html', context)
+      context = {'user': user, 'tickets': tickets, 'departments': departments}
+      return render(request, 'pages/core/user_profile.html', context)
+   else:
+      return redirect('page_not_found')
+
+# Error Template 403, 404 & 500
+def forbidden(request):
+   return render(request, 'pages/403.html')
+
+def page_not_found(request):
+   return render(request, 'pages/404.html')
+
+def unexpected_error(request):
+   return render(request, 'pages/500.html')

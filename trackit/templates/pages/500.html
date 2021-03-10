@@ -1,0 +1,24 @@
+{% extends '../error.html' %}
+{% load static %}
+
+{% block title %} 500 Unexpected Error {% endblock %}
+
+{% block extrastyle %} 
+<style>
+    .display-1 {
+        font-size: 16em;
+        font-weight: bolder;
+        color: #fa9f63 !important;
+    }
+    .lead {font-size: 14px !important;}
+</style>
+{% endblock%}
+
+{% block content %}
+    <div class="m-auto text-center">
+        <h4 class="m-1">Error: 500 Unexpected Error</h4>
+        <h1 class="display-1 m-0"> 5<i class="far fa-sm fa-window-close ml-2 mr-2"></i>0</h1>
+        <p class="lead mb-1"> An error occured and your request could'nt be completed. </p>
+        <p class="lead"> Either check the url, <a class="btn-link-orange" href="{% url 'home' %}">go home </a> or feel free to report this issue.</p>
+    </div>
+{% endblock %}
