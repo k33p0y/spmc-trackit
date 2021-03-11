@@ -17,53 +17,6 @@ $(document).ready(function () {
         $(element).addClass(file_type);
     });
 
-    let table_attachment = $('#dt_attachments').DataTable({
-        "searching": false,
-        "responsive": true,
-        "lengthChange": false,
-        "pageLength": 10,
-        "ajax": {
-           url: '/api/requests/attachments/?format=datatables',
-           type: "GET",
-           data: {"ticket_id": ticket},
-        },
-        "columns": [
-           { 
-              data: "file_name",
-              render: function (data, type, row) {
-                 let file_type = fileType(row.file_type, media_type);
-                 return data = `<span class="fas fa-lg mr-2 ${file_type}"></span> <a href="${row.file}" class="text-secondary"><b>${row.file_name}</b></a>`
-              }
-           }, 
-           { 
-                data: "description",
-                render: $.fn.dataTable.render.ellipsis(60, true),
-                width: "25%"
-            }, 
-           { 
-              data: 'uploaded_at',
-              render: function (data, type, row) {
-                 return data = `${moment(row.uploaded_at).format('DD MMM YYYY')} ${moment(row.uploaded_at).format('h:mm:ss a')}`
-              },
-           }, 
-           { 
-              data: 'uploaded_by',
-              render: function (data, type, row) {
-                 let name = (row.uploaded_by.id == actor) ? 'Me' : `${row.uploaded_by.first_name} ${row.uploaded_by.last_name}`
-                 return data = name
-              },
-           }, 
-           { 
-              data: "file_size",
-              render: function (data, type, row) {
-                 let file_size = fileSize(row.file_size);
-                 return data = file_size
-              },
-           }
-        ],
-        "order": [[ 1, "desc" ]]
-    });
-
     // File Upload
     $('#file_upload').on('change', function() {
         const files = this.files;

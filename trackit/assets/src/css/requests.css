@@ -1,6 +1,11 @@
-.container-fluid {
+.container-fluid,
+.modal-attachment .modal-body {
    color: #59626b;
    font-size: 12px;
+}
+
+.modal-attachment .modal-md {
+   max-width: 600px !important;
 }
 
 .card-form .card-header {

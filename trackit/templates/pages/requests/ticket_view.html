@@ -303,8 +303,67 @@
 {% endif %}
 {% endblock %}
 
+{% block modal %}
+<div class="modal modal-attachment fade" id="attachmentViewModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModal" aria-hidden="true">
+   <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content text-sm">
+         <div class="modal-header">
+            <h6 class="modal-title">Attachment</h6>
+         </div>
+         <div class="modal-body">
+            <form id="form">
+               <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3"> 
+                     <div class="mr-auto">File Name</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                         <p class="p-0 m-0 text-right" id="txt-file"></p>
+                     </div>
+                 </li>
+                 <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto">Description</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right" id="txt-description"></p>
+                     </div>
+                  </li>
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto">Type</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right" id="txt-type"></p>
+                     </div>
+                  </li>
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto">Size</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right" id="txt-size"></p>
+                     </div>
+                  </li>
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto">Upload Date</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right" id="txt-upload-date"></p>
+                     </div>
+                  </li>
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto">Owner</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right" id="txt-owner"></p>
+                     </div>
+                  </li>
+               </ul>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-light" id="btn_close" data-dismiss="modal"><span>Close</span> </button>
+            <a class="btn btn-sm btn-orange" id="btn_download"><span>Download</span></a>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
+
 {% block extrascript %}
 <script type="text/javascript" src="{% static 'src/js/requests/request_view.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/requests/attachments.js' %}"></script>
 <script type="text/javascript" src="{% static 'src/js/requests/actions.js' %}"></script>
 <script type="text/javascript" src="{% static 'src/js/requests/comment.js' %}"></script>
 {% endblock %}

@@ -4,7 +4,7 @@
 var file_arr = new Array();
 
 // upload function
-function uploadAttachment(ticket_id) {
+function uploadAttachment(ticket) {
    if (file_arr.length > 0) {               
       // loop through file attached
       $.each(Object.values(file_arr), function(index, value) {
@@ -13,8 +13,8 @@ function uploadAttachment(ticket_id) {
          // new objcet for file extra data
          let file_obj = new Object();
          file_obj.description = $(`#desc_${index}`).val();
-         file_arr.ticket = ticket_id
-
+         file_obj.ticket = ticket
+      
          // extra data convert to blob
          let blob = new Blob([JSON.stringify(file_obj)], {type: 'application/json'});
 
@@ -33,10 +33,58 @@ function uploadAttachment(ticket_id) {
 }
 
 $(document).ready(function () {
+   
+   // Attachments Table
+   let table = $('#dt_attachments').DataTable({
+      "searching": false,
+      "responsive": true,
+      "lengthChange": false,
+      "pageLength": 10,
+      "ajax": {
+         url: '/api/requests/attachments/?format=datatables',
+         type: "GET",
+         data: {"ticket_id": $(".ticket-no").data().ticketId},
+      },
+      "columns": [
+         { 
+            data: "file_name",
+            render: function (data, type, row) {
+               let file_type = fileType(row.file_type, media_type);
+               return data = `<div class="d-flex align-items-center"><span class="fas fa-lg mr-2 ${file_type}"></span> <button class="btn btn-sm btn-link p-0 btn-file btn-link-orange"> <span><b>${row.file_name}</b></span>  </button></div> `
+            }
+         },
+         { 
+            data: "description",
+            render: $.fn.dataTable.render.ellipsis(60, true),
+            width: "25%"
+         }, 
+         { 
+            data: 'uploaded_at',
+            render: function (data, type, row) {
+               return data = `${moment(row.uploaded_at).format('DD MMM YYYY')} ${moment(row.uploaded_at).format('h:mm:ss a')}`
+            },
+         }, 
+         { 
+            data: 'uploaded_by',
+            render: function (data, type, row) {
+               let name = (row.uploaded_by.id == actor) ? 'Me' : `${row.uploaded_by.first_name} ${row.uploaded_by.last_name}`
+               return data = name
+            },
+         }, 
+         { 
+            data: "file_size",
+            render: function (data, type, row) {
+               let file_size = fileSize(row.file_size);
+               return data = file_size
+            },
+         }
+      ]
+   });
+
    // File Upload
    $('#file_upload').on('change', function() {
       const files = this.files;
-      const file_lists = $('#file_lists');
+      const file_lists = $('.file_lists');
       let counter = 0;
 
       if(files) $('#btn_clear').removeClass('d-none');
@@ -87,7 +135,7 @@ $(document).ready(function () {
    });
 
    // Remove Attachment
-   $('#file_lists').on('click', '.btn-remove', function () {
+   $('.file_lists').on('click', '.btn-remove', function () {
       let file_id = $(this).data().fileId;
       
       // loop through the files array and check if the file id of that file matches data-file-id
@@ -103,8 +151,63 @@ $(document).ready(function () {
    // Clear All Attachment
    $('#btn_clear').click(function () {
       $('#file_upload').val('');
-      $('#file_lists').empty();
+      $('.file_lists').empty();
       $('#btn_clear').addClass('d-none');
       file_arr = new Array();
-   });   
+   });
+   
+   // Attachment row click
+   $('#dt_attachments').on('click', '.btn-file', function () {
+      let dt_data = table.row($(this).parents('tr')).data();
+
+      // Open modal
+      $('.modal-attachment').modal()
+
+      $('#txt-file').text(dt_data.file_name);
+      $('#txt-type').text(dt_data.file_type);
+      $('#txt-size').text(fileSize(dt_data.file_size));
+      $('#txt-upload-date').text((moment(dt_data.uploaded_at).format('DD MMMM YYYY h:mm:ss a')));
+      $('#txt-owner').text(`${dt_data.uploaded_by.first_name} ${dt_data.uploaded_by.last_name}`);
+      $('#btn_download').attr('href', dt_data.file)
+
+      // View attachment modal shown fn   
+      $('#attachmentViewModal').on('shown.bs.modal', function (e) {
+         $('#txt-description').text(dt_data.description);
+      });
+
+      // Update attachment modal shown fn
+      $('#attachmentUpdateModal').on('shown.bs.modal', function (e) {
+         $('#txt-description').val(dt_data.description);
+         $('#btn_save').data('id', dt_data.id)
+      });
+   });
+
+   // Update attachment
+   $('#btn_save').click(function () {
+      let id = $(this).data('id');
+
+      axios({
+         method: 'PATCH',
+         url: `/api/requests/attachments/${id}/`,
+         data: {
+            description : $('#txt-description').val()
+         },
+         headers: axiosConfig
+      }).then(function (response) {
+         $.when(
+            Toast.fire({
+               icon: 'success',
+               title: 'Update Successfully',
+            }),
+         ).then(function () {
+            $('.modal-attachment').modal('hide');
+            table.ajax.reload();
+         });
+      }).catch(function (error) {
+         Toast.fire({
+            icon: 'error',
+            title: error
+         });
+      });
+   });
 });

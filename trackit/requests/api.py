@@ -217,26 +217,12 @@ class TicketViewSet(viewsets.ModelViewSet):
       return Response(serializer.data)
 
    def update(self, request, pk):
-      files = request.FILES.getlist('file', None)
-      data = json.loads(request.FILES['data'].read())
-
-      # Instance
       ticket = Ticket.objects.get(ticket_id=pk)
-      ticket.form_data = data['form_data']
-      ticket.category_id = data['category']
-      ticket.department_id = data['department']
-      ticket.is_active = data['is_active']
+      ticket.form_data = request.data['form_data']
+      ticket.description = request.data['description']
+      ticket.category_id = request.data['category']
+      ticket.is_active = request.data['is_active']
       ticket.save()
-
-      if files: 
-         for file in files:
-            Attachment.objects.create(
-               ticket_id=pk, 
-               file=file, 
-               file_name=file.name, 
-               file_type=file.content_type, 
-               uploaded_by=self.request.user
-            )
 
       create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
       
@@ -301,6 +287,13 @@ class AttachmentViewSet(viewsets.ModelViewSet):
       )
 
       serializer = AttachmentSerializer(attachment)
+      return Response(serializer.data)
+
+   def partial_update(self, request, pk):
+      attachment = Attachment.objects.get(pk=pk)
+      serializer = AttachmentSerializer(attachment, data=request.data, partial=True)
+      serializer.is_valid(raise_exception=True)
+      serializer.save()
       return Response(serializer.data)
 
 class CRUDEventList(generics.ListAPIView):
