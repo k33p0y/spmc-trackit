@@ -162,6 +162,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     
 class CommentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        self.user = self.scope["user"]
         self.associated_tickets = await self.get_tickets_related_to_user()
 
         # join comment group
@@ -180,6 +181,13 @@ class CommentConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
 
         comment_obj = await self.get_comment(text_data_json['comment_id'])
+        if self.user.is_superuser and (self.user.pk == comment_obj['user_id']): # if superuser made the comment
+            # join superuser to comment websocket group
+            await self.channel_layer.group_add(
+                'comment_for_ticket_' + str(comment_obj['ticket_no']),
+                self.channel_name
+            )
+            
         await self.channel_layer.group_send(
             'comment_for_ticket_' + str(comment_obj['ticket_no']),
             {
