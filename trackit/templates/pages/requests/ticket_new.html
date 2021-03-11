@@ -35,7 +35,7 @@
       <div class="overlay d-none"></div>
       <div class="row" id="row-detail">
          <div class="col-12 col-sm-12">
-            <div class="card card-form mt-2 mb-1">
+            <div class="card card-form shadow-sm mt-2 mb-1">
                <a href="#collapseDetail" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetail">
                   <div class="card-header p-2">
                      <div class="card-title">Request Details</div>
@@ -43,6 +43,26 @@
                </a>
                <div id="collapseDetail" class="collapse show">
                   <div class="card-body p-3">
+                     <div class="row mb-3">
+                        <div class="col">
+                           <div class="card card-detail">
+                              <div class="card-body p-0 m-0">
+                                 <p class="context">{{user.department}}</p>
+                                 <span class="label">Department</span>
+                              </div>
+                           </div>
+                        </div>
+                        {% if user.department.department_head %} 
+                        <div class="col">
+                           <div class="card card-detail">
+                              <div class="card-body p-0 m-0">
+                                 <p class="context">{{user.department.department_head}}</p>
+                                 <span class="label">Approving Head</span>
+                              </div>
+                           </div>
+                        </div>
+                        {% endif %}
+                     </div>
                      <form>
                         <div class="form-row">
                            <div class="form-group col-md-12">
@@ -83,7 +103,7 @@
       </div>
       <div class="row" id="row-fields">
          <div class="col-12 col-sm-12">
-            <div class="card card-form mt-2 mb-1">
+            <div class="card card-form shadow-sm mt-2 mb-1">
                <a href="#collapseFields" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFields">
                   <div class="card-header p-2">
                      <div class="card-title">Form Fields</div>
@@ -103,7 +123,7 @@
       {% if user.is_staff %}
       <div class="row" id="row-field-admin" hidden>
          <div class="col-12 col-sm-12">
-            <div class="card card-form mt-2 mb-1">
+            <div class="card card-form shadow-sm mt-2 mb-1">
                <a href="#collapseFieldsAdmin" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFieldsAdmin">
                   <div class="card-header p-2">
                      <div class="card-title">Form Fields (To be filled by Staff)</div>
@@ -121,8 +141,8 @@
       {% endif %}
       <div class="row" id="row-attachment">
          <div class="col-12 col-sm-12">
-            <div class="card card-form mt-2 mb-1">
-               <a href="#collapseAttachment" data-toggle="collapse show" aria-expanded="false" aria-controls="collapseAttachment">
+            <div class="card card-form shadow-sm mt-2 mb-1">
+               <a href="#collapseAttachment" data-toggle="collapse" aria-expanded="false" aria-controls="collapseAttachment">
                   <div class="card-header p-2">
                      <div class="card-title">Attachments</div>
                   </div>
@@ -176,4 +196,5 @@
 
 {% block extrascript %}
 <script type="text/javascript" src="{% static 'src/js/requests/request_new.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/requests/attachments.js' %}"></script>
 {% endblock %}
