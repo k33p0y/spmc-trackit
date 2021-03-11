@@ -20,7 +20,7 @@ socket_comment.onerror = function(event) {
 let displayComment = function(obj){
     
     if ($('#btn-post-comment').data().ticketId === obj.comment['ticket_id']) {
-        let logged_user_id = $('.user-link').data().userId;
+        let logged_user_id = actor
         
         $('.comment-section').prepend(
             `<div class="user-comment justify-content-start ${logged_user_id == obj.comment['user_id'] ? 'bg-comment-orange' : ''}">
