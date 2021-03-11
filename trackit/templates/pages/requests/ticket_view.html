@@ -39,7 +39,7 @@
             <i class="fas fa-pencil-alt"></i> <span>Update Request</span> 
          </a>
          {% endif %}
-         <a class="btn btn-xs btn-link text-secondary">
+         <a href="{% url 'ticket_log_list' %}" class="btn btn-xs btn-link text-secondary btn-view-logs" data-ticket-number="{{ticket.ticket_no}}">
             <i class="fas fa-history"></i> <span>View Logs</span> 
          </a>
       </div>

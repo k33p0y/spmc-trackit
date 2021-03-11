@@ -141,4 +141,9 @@ $(document).ready(function () {
             });
         });
     });
+
+    $('.btn-view-logs').click(function(){
+        // set ticket number in localStorage
+        localStorage.setItem('ticket-number', $(this).data('ticket-number'));
+    });
 });
