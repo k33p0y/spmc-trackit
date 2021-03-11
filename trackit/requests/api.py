@@ -339,7 +339,7 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
          Q(ticket_id=ticket_id) & (Q(requested_by=self.request.user) | Q(department__department_head=self.request.user) | Q(request_form__group__in=groups))
       )
       # check if ticket is associated to the user
-      if not ticket:
+      if not ticket and not self.request.user.is_superuser:
          raise serializers.ValidationError('You do not have permission to post a comment.')
       content = request.data['content']
       comment = Comment.objects.create(ticket_id=ticket_id, content=content, user=self.request.user)

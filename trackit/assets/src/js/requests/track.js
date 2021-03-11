@@ -1,6 +1,9 @@
 $(document).ready(function () {
 
    var getTrackingNum = function() {
+      let ticket_number = localStorage.getItem('ticket-number')
+      if (ticket_number) $('#search-input').val(ticket_number);
+      localStorage.removeItem('ticket-number');
       let tracking_num = $('#search-input').val();
       if (!tracking_num) tracking_num = "None";
       return tracking_num

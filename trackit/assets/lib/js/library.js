@@ -128,7 +128,7 @@ const getComments = function(ticket, next_page){
                let fullname = `${comments_array[i].user.first_name} ${comments_array[i].user.last_name}`
                let comment = `${comments_array[i].content}`
                let date_created = `${moment(comments_array[i].date_created).format('MMM DD, YYYY hh:mm a')}`
-               let logged_user_id = $('.user-link').data().userId;
+               let logged_user_id = actor;
 
                $('.comment-section').append(
                   `<div class="user-comment justify-content-start ${comments_array[i].user.id == logged_user_id ? 'bg-comment-orange' : ''}" data-comment-id="${comments_array[i].id}">
