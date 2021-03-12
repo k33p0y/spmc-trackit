@@ -86,7 +86,7 @@ $(document).ready(function () {
                }),
                $('.overlay').removeClass('d-none')
             ).then(function () {
-               $(location).attr('href', '/requests/lists')
+               $('#btn_view')[0].click();
             });
 
          }).catch(function (error) { // error

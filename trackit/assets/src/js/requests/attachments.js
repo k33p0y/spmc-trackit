@@ -177,8 +177,12 @@ $(document).ready(function () {
 
       // Update attachment modal shown fn
       $('#attachmentUpdateModal').on('shown.bs.modal', function (e) {
+         $('#btn_save').attr('disabled', false)
+         $('#btn_delete').attr('disabled', false)
+
          $('#txt-description').val(dt_data.description);
          $('#btn_save').data('id', dt_data.id)
+         $('#btn_delete').data('id', dt_data.id)
       });
    });
 
@@ -194,6 +198,8 @@ $(document).ready(function () {
          },
          headers: axiosConfig
       }).then(function (response) {
+         $(this).attr('disabled', true);
+
          $.when(
             Toast.fire({
                icon: 'success',
@@ -201,7 +207,7 @@ $(document).ready(function () {
             }),
          ).then(function () {
             $('.modal-attachment').modal('hide');
-            table.ajax.reload();
+            $('#btn_view')[0].click();
          });
       }).catch(function (error) {
          Toast.fire({
@@ -209,5 +215,46 @@ $(document).ready(function () {
             title: error
          });
       });
+   });
+
+   // Delete attachment
+   $('#btn_delete').click(function () {
+      let id = $(this).data('id');
+
+      Swal.fire({
+         title: 'Delete Attachment',
+         html: '<p class="m-0">This will remove from the lists. Continue?</p>',
+         icon: 'question',
+         showCancelButton: true,
+         cancelButtonText: 'No',
+         confirmButtonText: 'Yes',
+         confirmButtonColor: '#17a2b8',
+      }).then((result) => {
+         if (result.value) {
+            $(this).attr('disabled', true);
+
+            axios({
+               method: 'DELETE',
+               url: `/api/requests/attachments/${id}/`,
+               headers: axiosConfig
+            }).then(function (response) {
+               $.when(
+                  Toast.fire({
+                     icon: 'success',
+                     title: 'Delete Successfully',
+                  }),
+               ).then(function () {
+                  $('.modal-attachment').modal('hide');
+                  $('#btn_view')[0].click();
+                  table.ajax.reload();
+               });
+            }).catch(function (error) {
+               Toast.fire({
+                  icon: 'error',
+                  title: error
+               });
+            });
+         }
+      });      
    });
 });
