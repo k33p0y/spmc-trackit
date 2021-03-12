@@ -18,21 +18,21 @@ $(document).ready(function () {
    // Status Select2 Config
    $('.select2_status').select2({
       allowClear: true,
-      placeholder: 'Select Status',
+      placeholder: 'Select status',
       // cache: true,
    });
 
    // Status Select2 Config
    $('#select2-types').select2({
       allowClear: true,
-      placeholder: 'Select Status',
+      placeholder: 'Select category type',
       // cache: true,
    });
 
    // Groups Select2 Config
    $('#select2-groups').select2({
       allowClear: true,
-      placeholder: 'Select Groups',
+      placeholder: 'Select groups',
       cache: true,
    });
 
@@ -133,7 +133,7 @@ $(document).ready(function () {
       // Select2 Config
       $('.select2_status').select2({
          allowClear: true,
-         placeholder: 'Select Status',
+         placeholder: 'Select status',
          // cache: true,
       });
    });
@@ -160,7 +160,7 @@ $(document).ready(function () {
       }]
 
       $("#formModal").modal();
-      $(".modal-title").text('New Form');
+      $(".modal-title").text('Add Form');
 
       // Reset Form
       $('#txt_typename').val('');
@@ -178,7 +178,7 @@ $(document).ready(function () {
          // Select2 Config
          $('.select2_status').select2({
             allowClear: true,
-            placeholder: 'Select Status',
+            placeholder: 'Select status',
             // cache: true,
          });
       }
@@ -375,7 +375,7 @@ function getStatusRowValues() {
       } else {
          $(this).find('div.form-group').addClass('has-error');
          $(this).find('.txt_order').addClass('form-error');
-         $(this).find('div.form-group').find('.status-error').html('*This field row cannot be empty');
+         $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank');
       }
    });
    
@@ -402,7 +402,7 @@ function validateForms() {
    // Validate Request Details
    if ($('#txt_typename').val() == '') {
       $('#txt_typename').addClass('form-error');
-      $('#name_error').html('*This field cannot be empty')
+      $('#name_error').html('*This field may not be blank')
       success--;
    } else {
       $('#txt_typename').removeClass('form-error');
@@ -411,7 +411,7 @@ function validateForms() {
    
    if ($('#txt_prefix').val() == '') {
       $('#txt_prefix').addClass('form-error');
-      $('#prefix_error').html('*This field cannot be empty')
+      $('#prefix_error').html('*This field may not be blank')
       success--;
    } else {
       $('#txt_prefix').removeClass('form-error');
@@ -420,7 +420,7 @@ function validateForms() {
 
    if ($('#txt_color').val() == '') {
       $('#txt_color').addClass('form-error');
-      $('#color_error').html('*This field cannot be empty')
+      $('#color_error').html('*This field may not be blank')
       success--;
    } else {
       $('#txt_color').removeClass('form-error');
@@ -439,7 +439,7 @@ function validateForms() {
       } else {
          $(this).find('div.form-group').addClass('has-error');
          $(this).find('.txt_order').addClass('form-error');
-         $(this).find('div.form-group').find('.status-error').html('*This field row cannot be empty');
+         $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank');
          success--;
       }
    });

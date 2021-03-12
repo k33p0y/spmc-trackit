@@ -60,7 +60,7 @@ $(document).ready(function () {
    // Select2 Config
    $('#dd_types').select2({
       allowClear: true,
-      placeholder: 'Select Category Type',
+      placeholder: 'Select category type',
       cache: true,
    });
 
@@ -87,7 +87,7 @@ $(document).ready(function () {
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
-      $(".modal-title").text('New Category Type');
+      $(".modal-title").text('Add Category');
       $('#txt_categoryname').val('');
    });
 
@@ -130,7 +130,7 @@ $(document).ready(function () {
       // Validation
       if ($('#txt_categoryname').val() == '') {
          $('#txt_categoryname').addClass('form-error');
-         $('#error-info-name').html('*This field cannot be empty');
+         $('#error-info-name').html('*This field may not be blank');
          success--;
       } else {
          $('#txt_categoryname').removeClass('form-error');
@@ -139,7 +139,7 @@ $(document).ready(function () {
 
       if ($("#dd_types option:selected").val() == "") {
          $('.select2-selection--single').css('border-color', '#dc3546a2');
-         $('#error-info-type').html('*This field cannot be empty');
+         $('#error-info-type').html('*This field  may not be blank');
          success--;
       } else {
          $('#dd_types').removeClass('form-error');

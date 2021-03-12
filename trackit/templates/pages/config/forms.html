@@ -135,31 +135,38 @@
                   <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="nav-home-tab">
                      <div class="form-row">
                         <div class="form-group col-lg-9"> <!-- Name -->
-                           <label>Name</label>
+                           <label>Name <span class="text-danger">*</span></label>
                            <input type="text" class="form-control form-control-sm" id="txt_typename"
                               placeholder="Enter form name">
                            <small class="error-info" id="name_error"></small>
                         </div>
                         <div class="form-group col-lg-3"> <!-- Prefix -->
-                           <label>Prefix Code</label>
+                           <label>Prefix Code <span class="text-danger">*</span></label>
                            <input type="text" class="form-control form-control-sm" id="txt_prefix" placeholder="Enter prefix code name" maxlength="4">
                            <small class="error-info" id="prefix_error"></small>
                         </div>  
                      </div>          
                      <div class="form-group"> <!-- Color -->
-                        <label>Color</label>
-                        <input type="text" class="form-control form-control-sm" id="txt_color" placeholder="Choose color">
-                        <div class="d-flex mt-2">
-                           <button type="button" class="btn color-palette pine mr-1"></button>
-                           <button type="button" class="btn color-palette jungle mr-1"></button>
-                           <button type="button" class="btn color-palette yale mr-1" ></button>
-                           <button type="button" class="btn color-palette sapphire mr-1"></button>
-                           <button type="button" class="btn color-palette grape mr-1"></button>
-                           <button type="button" class="btn color-palette royal mr-1"></button>
-                           <button type="button" class="btn color-palette redwood mr-1"></button>
-                           <button type="button" class="btn color-palette persian mr-1"></button>
-                           <button type="button" class="btn color-palette peanut mr-1"></button>
-                           <button type="button" class="btn color-palette cider mr-1"></button>
+                        <label>Color <span class="text-danger">*</span></label>
+                        <div class="row d-flex align-items-center"> 
+                           <div class="col-12 col-lg order-1 order-lg-0"> <input type="text" class="form-control form-control-sm" id="txt_color" placeholder="Choose color"> </div>
+                           <div class="col-12 col-lg order-0 order-lg-1">
+                              <div class="d-flex mb-2 mb-lg-0">
+                                 <button type="button" class="btn color-palette pine mr-1"></button>
+                                 <button type="button" class="btn color-palette jungle mr-1"></button>
+                                 <button type="button" class="btn color-palette yale mr-1" ></button>
+                                 <button type="button" class="btn color-palette sky mr-1"></button>
+                                 <button type="button" class="btn color-palette grape mr-1"></button>
+                                 <button type="button" class="btn color-palette royal mr-1"></button>
+                                 <button type="button" class="btn color-palette redwood mr-1"></button>
+                                 <button type="button" class="btn color-palette persian mr-1"></button>
+                                 <button type="button" class="btn color-palette peanut mr-1"></button>
+                                 <button type="button" class="btn color-palette cider mr-1"></button>
+                                 <button type="button" class="btn color-palette sunflower mr-1"></button>
+                                 <button type="button" class="btn color-palette dark mr-1"></button>
+                                 <button type="button" class="btn color-palette stone mr-1"></button>
+                              </div>
+                           </div>
                         </div>
                         <small class="error-info" id="color_error"></small>
                      </div>
@@ -192,8 +199,8 @@
                   <!-- Status Tab -->
                   <div class="tab-pane fade" id="status" role="tabpanel" aria-labelledby="nav-profile-tab">
                      <div class="form-row">
-                        <div class="col-4"><label>Status / Step Name</label></div>
-                        <div class="col"> <label>Order</label></div>
+                        <div class="col-4"><label>Status / Step Name <span class="text-danger">*</span></label></div>
+                        <div class="col"> <label>Order <span class="text-danger">*</span></label></div>
                         <div class="col text-center"> <label>Is Client Step</label></div>
                         <div class="col text-center"> <label>Is Head Step</label></div>
                         <div class="col text-center"> <label>Has Approving</label></div>
@@ -214,7 +221,7 @@
                            </div>
                            <div class="form-group col">
                               <input type="number" class="form-control form-control-sm txt_order"
-                                 placeholder="Enter No">
+                                 placeholder="Enter no">
                               <small class="error-info name-error"></small>
                            </div>
                            <div class="form-group col">
@@ -266,10 +273,8 @@
          </div>
 
          <div class="modal-footer">
-            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
-               <span>Cancel</span>
-            </button>
-            <button type="submit" class="btn btn-sm btn-outline-orange" id="btn_save"><span>Save</span></button>
+            <button type="button" class="btn btn-sm btn-light m-0 mr-2" id="btn_cancel" data-dismiss="modal"><span>Cancel</span></button>
+            <button type="submit" class="btn btn-sm btn-orange m-0" id="btn_save"><span>Save</span></button>
          </div>
       </div>
    </div>
@@ -384,7 +389,7 @@
          // Select2 Config
          $('.select2_status').select2({
             allowClear: true,
-            placeholder: 'Select Status',
+            placeholder: 'Select status',
          })
       });
    }

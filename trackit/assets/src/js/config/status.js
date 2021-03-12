@@ -70,7 +70,7 @@ $(document).ready(function () {
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
-      $(".modal-title").text('New Status');
+      $(".modal-title").text('Add Status');
       $('#txt_typename').val('');
    });
  
@@ -109,12 +109,10 @@ $(document).ready(function () {
       // Validation
       if ($('#txt_typename').val() == '') {
          $('#txt_typename').addClass('form-error');
-         // $('.error-info').html('*This field cannot be empty');
-         $('#txt_typename').siblings('.error-info').html('*This field cannot be empty');
-         success--;
+         $('#error-info-status').html('*This field may not be blank');
       } else {
          $('#txt_typename').removeClass('form-error');
-         $('#error-password').html('');
+         $('#error-info-status').html('');
       }
 
       // Form is Valid
@@ -140,10 +138,6 @@ $(document).ready(function () {
                $('#txt_typename').removeClass('form-error');
                $('.name-error').html('')
             }
-            Toast.fire({
-               icon: 'error',
-               title: error,
-            });
          });
       };
    });

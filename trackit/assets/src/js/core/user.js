@@ -137,7 +137,7 @@ $(document).ready(function () {
       $("#select2-permissions").val([]).trigger('change'); // reset permissions select2 before loading modal
       $("#select2-groups").val([]).trigger('change'); // reset groups select2 before loading modal
       $("#modal-add-user").modal();
-      $(".modal-title").text('New User');
+      $(".modal-title").text('Add User');
    }); // create new group button end
  
    // UPDATE / PUT

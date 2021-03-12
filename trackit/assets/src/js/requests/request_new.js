@@ -4,28 +4,22 @@ $(document).ready(function () {
    var data_obj;
    var file_arr = new Array();
    
-   // SELECT2 CONFIGURATION
-   $('#dd_departments').select2({ // department select2
-      allowClear: true,
-      placeholder: 'Select Department',
-      cache: true,
-   });
 
    $('#dd_forms').select2({ // request form select2
       allowClear: true,
-      placeholder: 'Select Form',
+      placeholder: 'Select form',
       cache: true,
    });
 
    $('#dd_types').select2({ // category type select2
       allowClear: true,
-      placeholder: 'Select Category Type',
+      placeholder: 'Select category type',
       cache: true,
    });
 
    $('#dd_categories').select2({ // categories select2
       allowClear: true,
-      placeholder: 'Select Category',
+      placeholder: 'Select category',
       cache: true,
    });
  

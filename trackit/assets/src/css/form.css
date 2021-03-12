@@ -53,7 +53,7 @@
 }
 
 .has-error .select2-selection {
-   border-color: rgb(185, 74, 72) !important;
+   border-color: #dc3546a2 !important;
 }
 
 .color-palette {
@@ -67,14 +67,18 @@
    transform: rotate(-10deg);
 }
 
-.yale {background-color: #104C92;}
+.yale {background-color: #225da0;}
 .sapphire {background-color: #0B54BC;}
+.sky {background-color: #2b84bf;}
 .maya {background-color: #73C2FB;}
 .jungle {background-color: #29AB89;}
-.pine {background-color: #01796F;}
+.pine {background-color: #0e8076;}
 .cider {background-color: #B4652A;}
 .peanut {background-color: #946e38;}
+.sunflower {background-color: #f2a500;}
+.dark {background-color: #595959;}
+.stone {background-color: #7e7e7e;}
 .persian {background-color: #cf4949;}
 .redwood {background-color: #bd5f5f;}
-.grape {background-color: #6F2DA9;}
-.royal {background-color: #845baf;}
+.grape {background-color: #6b5892;}
+.royal {background-color: #9067bb;}

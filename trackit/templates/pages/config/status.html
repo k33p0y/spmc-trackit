@@ -120,10 +120,10 @@
             <form id="form">
                <div class="form-group">
                   <!-- Name-->
-                  <label>Name</label>
+                  <label>Name <span class="text-danger">*</span></label>
                   <input type="text" class="form-control form-control-sm" id="txt_typename"
                      placeholder="Enter status name">
-                  <small class="error-info name-error"></small>
+                  <small class="error-info" id="error-info-status"></small>
                </div>
                <div class="icheck-material-green m-0">
                   <!-- Is Active-->
@@ -134,10 +134,8 @@
             </form>
          </div>
          <div class=" modal-footer">
-            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_cancel" data-dismiss="modal">
-               <span>Cancel</span>
-            </button>
-            <button type="submit" class="btn btn-sm btn-outline-orange" id="btn_save"><span>Save</span></button>
+            <button type="button" class="btn btn-sm btn-light m-0 mr-2" id="btn_cancel" data-dismiss="modal"><span>Cancel</span></button>
+            <button type="submit" class="btn btn-sm btn-orange m-0" id="btn_save"><span>Save</span></button>
          </div>
       </div>
    </div>

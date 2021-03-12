@@ -12,13 +12,13 @@ $(document).ready(function () {
 
    $('#select2_types').select2({ // department select2
       allowClear: true,
-      placeholder: 'Select Category Type',
+      placeholder: 'Select category Type',
       cache: true,
    });
 
    $('#select2_categories').select2({ // categories select2
       allowClear: true,
-      placeholder: 'Select Category',
+      placeholder: 'Select category',
       cache: true,
    });
 

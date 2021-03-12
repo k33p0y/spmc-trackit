@@ -71,7 +71,7 @@ $(document).ready(function () {
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
-      $(".modal-title").text('New Category Type');
+      $(".modal-title").text('Add Category Type');
       $('#txt_typename').val('');
    });
 
@@ -110,7 +110,7 @@ $(document).ready(function () {
       // Validation
       if ($('#txt_typename').val() == '') {
          $('#txt_typename').addClass('form-error');
-         $('.error-info').html('*This field cannot be empty');
+         $('.error-info').html('*This field may not be blank');
          success--;
       } else {
          $('#txt_typename').removeClass('form-error');

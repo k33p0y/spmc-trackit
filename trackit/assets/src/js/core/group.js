@@ -7,7 +7,7 @@ $(document).ready(function () {
    // Select2 Config
    $('#select2-permissions').select2({
       allowClear: true,
-      placeholder: 'Select Permissions',
+      placeholder: 'Select permissions',
       cache: true,
    });
  
@@ -28,20 +28,16 @@ $(document).ready(function () {
          }
       },
       "columns": [
-         { data: "name" },
-         { data: "user_count" },
-         {
-            data: "null",
+         { 
+            data: "name",
             render: function (data, type, row) {
-               data = '';
-               if($('#changeGroupHidden').val() == 'true') {
-                  data = data + "<a href='#' class='text-secondary action-link btn_edit'> <i class='fas fa-pen'></i> </a>";
-               } else {
-                  data = data + "<span class='text-secondary action-link btn_edit' data-toggle='tooltip' data-placement='bottom' title='No Action Aavailable'> <i class='fas fa-eye-slash'></i> </span>";
+               if (type == 'display') {
+                  data = ($('#changeGroupHidden').val() == 'true') ? `<a href="#" class='btn-link-orange action-link btn_edit'>${row.name}</a>` : row.name
                }
                return data
             },
-         }
+         },
+         { data: "user_count" },
       ],
    });
    
@@ -55,7 +51,7 @@ $(document).ready(function () {
       $("#select2-permissions").val([]).trigger('change'); // reset select2 before loading modal
 
       $("#modal-add-group").modal();
-      $(".modal-title").text('New Group');
+      $(".modal-title").text('Add Group');
       $('#txt-group-name').val('');
    });
 

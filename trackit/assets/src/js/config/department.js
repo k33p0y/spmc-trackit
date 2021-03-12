@@ -70,7 +70,7 @@ $(document).ready(function () {
    // Select2 Config
    $('#dd_depthead').select2({
       allowClear: true,
-      placeholder: 'Select Head of Department',
+      placeholder:'Select head of department',
       cache: true,
    });
 
@@ -97,7 +97,7 @@ $(document).ready(function () {
       alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
-      $(".modal-title").text('New Department');
+      $(".modal-title").text('Add Department');
       $('#txt_deptname').val('');
       $('#dd_depthead').val('');
    });
@@ -139,12 +139,11 @@ $(document).ready(function () {
       // Validation
       if ($('#txt_deptname').val() == '') {
          $('#txt_deptname').addClass('form-error');
-         // $('.error-info').html('*This field cannot be empty');
-         $('#txt_deptname').siblings('.error-info').html('*This field cannot be empty');
+         $('#error-department-info').html('*This field may not be blank');
          success--;
       } else {
          $('#txt_deptname').removeClass('form-error');
-         $('#error-password').html('');
+         $('#error-department-info').html('');
       }
 
       // Form is Valid
