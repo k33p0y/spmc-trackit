@@ -44,6 +44,7 @@
 .card-dash .card-title {
    text-transform: capitalize !important;
    color: #3e454d !important;   
+   font-weight: bold;
 }
 
 .card-dash .item-col .item-image {

@@ -87,7 +87,7 @@
                      <div class="card shadow-sm">
                         <div class="card-header p-3 d-flex">
                            <div class="card-title m-0"> My Requests</div> 
-                           <div class="card-title ml-auto"> <a href="{% url 'create_ticket' %}" class="btn btn-sm btn-light"> <i class="fas fa-sm fa-plus"></i> <span>Create request </span></a></div> 
+                           <div class="card-title ml-auto"> <a href="{% url 'create_ticket' %}" class="btn btn-sm btn-light"> <i class="fas fa-sm fa-plus"></i> <span>Create Request </span></a></div> 
                         </div>
                         <div class="card-body p-0">
                            <table id="dt_requests" class="table" width="100%">
@@ -113,7 +113,7 @@
                               </tbody>
                            </table>
                         </div>
-                        <div class="card-footer d-flex justify-content-end pt-2 pb-2 bg-white">
+                        <div class="card-footer d-flex justify-content-end">
                            <a href="{% url 'ticket' %}" class="text-xs text-secondary align-self-center"> View All <i class="fas fa-caret-right"></i></a>
                         </div>
                      </div>
@@ -133,7 +133,7 @@
    <div class="modal-dialog modal-md" role="document">
       <div class="modal-content text-sm">
          <div class="modal-header">
-            <h6 class="modal-title"> Edit Profile</h6>
+            <h6 class="modal-title"> Update Profile</h6>
          </div>
          <div class="modal-body">
             <form id="form">
@@ -151,7 +151,7 @@
                   <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="nav-personal-tab">
                      <!-- FIRST NAME -->
                      <div class="form-group name-group">
-                        <label for="firstnameHelp">First Name<span class="text-danger">*</span> </label>
+                        <label for="firstnameHelp">First Name <span class="text-danger">*</span> </label>
                         <input type="text" class="form-control form-control-sm" id="txt-firstname" aria-describedby="firstnameHelp"
                            placeholder="Enter first name">
                         <small class="error-info" id="firstname-error"></small>
@@ -167,7 +167,7 @@
 
                      <!-- LAST NAME -->
                      <div class="form-group name-group">
-                        <label for="lastnameHelp">Last Name<span class="text-danger">*</span> </label>
+                        <label for="lastnameHelp">Last Name <span class="text-danger">*</span> </label>
                         <input type="text" class="form-control form-control-sm" id="txt-lastname" aria-describedby="lastnameHelp"
                            placeholder="Enter last name">
                         <small class="error-info" id="lastname-error"></small>
@@ -187,14 +187,14 @@
                         <label for="emailHelp">Email Address</label>
                         <input type="email" class="form-control form-control-sm" id="txt-email" aria-describedby="emailHelp"
                            placeholder="Enter email address">
-                        <small class="text-muted d-block help-text">Optional but recommended. Must be a valid and active email address</small>
+                        <small class="text-muted d-block help-text">Optional. Must be a valid and active email address</small>
                         <small class="error-info" id="email-error"></small>
                      </div>
 
 
                      <!-- DEPARTMENT -->
                      <div class="form-group name-group">
-                        <label for="departmentHelp">Department<span class="text-danger">*</span> </label>
+                        <label for="departmentHelp">Department <span class="text-danger">*</span> </label>
                         <select class="form-control form-control-sm" id="select2-department" name="departmentHelp">
                            <option></option>
                            {% for department in departments %}
@@ -209,7 +209,7 @@
                   <div class="tab-pane fade show" id="account" role="tabpanel" aria-labelledby="nav-account-tab">
                      <!-- USERNAME -->
                      <div class="form-group name-group">
-                        <label for="usernameHelp">Username<span class="text-danger">*</span>  </label> 
+                        <label for="usernameHelp">Username <span class="text-danger">*</span>  </label> 
                         <input type="text" class="form-control form-control-sm" id="txt-username" aria-describedby="usernameHelp"
                            placeholder="Enter username">
                         <small class="text-muted d-block help-text">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small>
@@ -244,7 +244,7 @@
             <form id="change-password-form">               
                <!-- PASSWORD -->
                <div class="form-group">
-                  <label for="password1Help">Password<span class="text-danger">*</span> </label>
+                  <label for="password1Help">Password <span class="text-danger">*</span> </label>
                   <input type="password" class="form-control form-control-sm" id="txt-changepassword1" aria-describedby="password1Help"
                      placeholder="Enter password">
                   <small class="text-muted d-block help-text">
@@ -255,7 +255,7 @@
                   </small>
                </div>
                <div class="form-group">
-                  <label for="password2Help">Confirm Password<span class="text-danger">*</span> </label>
+                  <label for="password2Help">Confirm Password <span class="text-danger">*</span> </label>
                   <input type="password" class="form-control form-control-sm" id="txt-changepassword2" aria-describedby="password2Help"
                      placeholder="Confirm password">
                   <small class="text-muted d-block help-text">Enter the same password as before, for verification.</small>

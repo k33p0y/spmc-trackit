@@ -360,6 +360,11 @@ table.dataTable tbody tr:hover {
    box-shadow: none;
 }
 
+.card-footer {
+   background-color: transparent;
+   border-top: 1px solid #f2f4fa;
+}
+
 .hide {
    display: none !important;
 }
