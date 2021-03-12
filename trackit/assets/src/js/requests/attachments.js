@@ -33,6 +33,8 @@ function uploadAttachment(ticket) {
 }
 
 $(document).ready(function () {
+
+   var ticketId = function() { return $(".ticket-no").data().ticketId; }
    
    // Attachments Table
    let table = $('#dt_attachments').DataTable({
@@ -43,7 +45,7 @@ $(document).ready(function () {
       "ajax": {
          url: '/api/requests/attachments/?format=datatables',
          type: "GET",
-         data: {"ticket_id": $(".ticket-no").data().ticketId},
+         data: {"ticket_id": ticketId},
       },
       "columns": [
          { 
@@ -115,7 +117,7 @@ $(document).ready(function () {
                      <small class="mb-0">${size}</small>
                   </div>
                   <div class="flex-grow-1 m-0 ml-4 mr-2">
-                     <input type="text" class="form-control form-control-sm m-0" id="desc_${counter}" placeholder="Add Description*">
+                     <input type="text" class="form-control form-control-sm m-0" id="desc_${counter}" placeholder="Add description">
                      <small class="error-info" id="error-info-type"></small>
                   </div>
                   <div>
