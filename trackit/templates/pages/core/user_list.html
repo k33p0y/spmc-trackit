@@ -178,9 +178,9 @@
                   <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="nav-personal-tab">
                      <!-- FIRST NAME -->
                      <div class="form-group name-group">
-                        <label for="firstnameHelp">First Name*</label>
+                        <label for="firstnameHelp">First Name<span class="text-danger">*</span> </label>
                         <input type="text" class="form-control form-control-sm" id="txt-firstname" aria-describedby="firstnameHelp"
-                           placeholder="Enter First Name">
+                           placeholder="Enter first name">
                         <small class="error-info" id="firstname-error"></small>
                      </div>
 
@@ -188,30 +188,39 @@
                      <div class="form-group name-group">
                         <label for="middlenameHelp">Middle Name</label>
                         <input type="text" class="form-control form-control-sm" id="txt-middlename" aria-describedby="middlenameHelp"
-                           placeholder="Enter Middle Name">
+                           placeholder="Enter middle name">
                         <small class="error-info" id="middlename-error"></small>
                      </div>
 
                      <!-- LAST NAME -->
                      <div class="form-group name-group">
-                        <label for="lastnameHelp">Last Name*</label>
+                        <label for="lastnameHelp">Last Name<span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-sm" id="txt-lastname" aria-describedby="lastnameHelp"
-                           placeholder="Enter Last Name">
+                           placeholder="Enter last name">
                         <small class="error-info" id="lastname-error"></small>
                      </div>
 
                      <!-- SUFFIX -->
                      <div class="form-group name-group">
-                        <label for="suffixHelp">Name Suffix</label>
+                        <label for="suffixHelp">Suffix</label>
                         <input type="text" class="form-control form-control-sm" id="txt-suffix" aria-describedby="suffixHelp"
-                           placeholder="Enter Extension Name">
+                           placeholder="Enter extension name">
                         <small class="text-muted d-block help-text">i.e. Jr., Sr., I, II etc.</small>
                         <small class="error-info" id="suffix-error"></small>
                      </div>
 
+                     <!-- EMAIL -->
+                     <div class="form-group name-group">
+                        <label for="emailHelp">Email Address</label>
+                        <input type="email" class="form-control form-control-sm" id="txt-email" aria-describedby="emailHelp"
+                           placeholder="Enter email address">
+                        <small class="text-muted d-block help-text">Optional but recommended. Must be a valid and active email address</small>
+                        <small class="error-info" id="email-error"></small>
+                     </div>
+
                       <!-- DEPARTMENT -->
                      <div class="form-group name-group">
-                        <label for="departmentHelp">Department</label>
+                        <label for="departmentHelp">Department<span class="text-danger">*</span> </label>
                         <select class="form-control form-control-sm" id="select2-department" name="departmentHelp">
                            <option></option>
                            {% for department in departments %}
@@ -226,17 +235,17 @@
                   <div class="tab-pane fade show" id="account" role="tabpanel" aria-labelledby="nav-account-tab">
                      <!-- USERNAME -->
                      <div class="form-group name-group">
-                        <label for="usernameHelp">Username*</label> 
+                        <label for="usernameHelp">Username<span class="text-danger">*</span> </label> 
                         <input type="text" class="form-control form-control-sm" id="txt-username" aria-describedby="usernameHelp"
-                           placeholder="Enter Username">
+                           placeholder="Enter username">
                         <small class="text-muted d-block help-text">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small>
                         <small class="error-info" id="username-error"></small>
                      </div>
                      <!-- PASSWORD -->
                      <div class="form-group password-group">
-                        <label for="password1Help">Password*</label>
+                        <label for="password1Help">Password<span class="text-danger">*</span> </label>
                         <input type="password" class="form-control form-control-sm" id="txt-password1" aria-describedby="password1Help"
-                           placeholder="Enter Password">
+                           placeholder="Enter password">
                         <small class="text-muted d-block help-text">
                            Your password can’t be too similar to your other personal information. <br>
                            Your password must contain at least 8 characters. <br>
@@ -245,9 +254,9 @@
                         </small>
                      </div>
                      <div class="form-group password-group">
-                        <label for="password2Help">Confirm Password*</label>
+                        <label for="password2Help">Confirm Password<span class="text-danger">*</span> </label>
                         <input type="password" class="form-control form-control-sm" id="txt-password2" aria-describedby="password2Help"
-                           placeholder="Confirm Password">
+                           placeholder="Confirm password">
                         <small class="text-muted d-block help-text">Enter the same password as before, for verification.</small>
                         <small class="error-info" id="password-error"></small>
                      </div>
@@ -308,11 +317,10 @@
          </div>
 
          <div class="modal-footer">
-            <!-- <a class="text-danger mr-auto btn_delete" id="btn_delete"> Delete </a> -->
-            <button type="button" class="btn btn-sm btn-light" id="btn_cancel" data-dismiss="modal">
+            <button type="button" class="btn btn-sm btn-light m-0 mr-2" id="btn_cancel" data-dismiss="modal">
                <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-sm btn-orange" id="btn_save"><span>Save</span></button>
+            <button type="submit" class="btn btn-sm btn-orange m-0" id="btn_save"><span>Save</span></button>
          </div>
       </div>
    </div>
@@ -329,7 +337,7 @@
             <form id="change-password-form">               
                <!-- PASSWORD -->
                <div class="form-group">
-                  <label for="password1Help">Password</label>
+                  <label for="password1Help">Password<span class="text-danger">*</span> </label>
                   <input type="password" class="form-control form-control-sm" id="txt-changepassword1" aria-describedby="password1Help"
                      placeholder="Enter Password">
                   <small class="text-muted d-block help-text">
@@ -340,7 +348,7 @@
                   </small>
                </div>
                <div class="form-group">
-                  <label for="password2Help">Confirm Password</label>
+                  <label for="password2Help">Confirm Password<span class="text-danger">*</span> </label>
                   <input type="password" class="form-control form-control-sm" id="txt-changepassword2" aria-describedby="password2Help"
                      placeholder="Confirm Password">
                   <small class="text-muted d-block help-text">Enter the same password as before, for verification.</small>

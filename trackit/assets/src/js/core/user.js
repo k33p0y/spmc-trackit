@@ -96,14 +96,14 @@ $(document).ready(function () {
    // Permissions Select2 Config
    $('#select2-permissions').select2({
       allowClear: true,
-      placeholder: 'Select Permissions',
+      placeholder: 'Select permissions',
       cache: true,
    });
 
    // Groups Select2 Config
    $('#select2-groups').select2({
       allowClear: true,
-      placeholder: 'Select Groups',
+      placeholder: 'Select groups',
       cache: true,
    });
 
@@ -191,6 +191,7 @@ $(document).ready(function () {
       data.middle_name = $('#txt-middlename').val();
       data.last_name = $('#txt-lastname').val();
       data.suffix = $('#txt-suffix').val();
+      data.email = $('#txt-email').val();
       data.department = department
       data.is_superuser = $('#chk-superuser-status').is(':checked')
       data.is_staff = $('#chk-staff-status').is(':checked')
@@ -220,6 +221,7 @@ $(document).ready(function () {
          if (error.response.data.first_name) showFieldErrors(error.response.data.first_name, 'firstname'); else removeFieldErrors('firstname');
          if (error.response.data.last_name) showFieldErrors(error.response.data.last_name, 'lastname'); else removeFieldErrors('lastname');
          if (error.response.data.password) showFieldErrors(error.response.data.password, 'password'); else removeFieldErrors('password');
+         if (error.response.data.email) showFieldErrors(error.response.data.email, 'email'); else removeFieldErrors('email');
          if (error.response.data.department) showFieldErrors(error.response.data.department, 'department'); else removeFieldErrors('department');
       });
    }); // submit form end

@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             middle_name = validated_data['middle_name'],
             last_name = validated_data['last_name'],
             suffix = validated_data['suffix'],
+            email = validated_data['email'],
             department = validated_data['department'],
             is_superuser = validated_data['is_superuser'],
             is_staff = validated_data['is_staff'],
@@ -113,11 +114,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('This field may not be blank.')
         return lastname
 
-    def validate_email(self, email):
-        if not email:
-            raise serializers.ValidationError('This field may not be blank.')
-        return email
-
     def validate_department(self, department):
         if not department:
             raise serializers.ValidationError('This field may not be blank.')
@@ -148,11 +144,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if not lastname:
             raise serializers.ValidationError('This field may not be blank.')
         return lastname
-
-    def validate_email(self, email):
-        if not email:
-            raise serializers.ValidationError('This field may not be blank.')
-        return email
 
     def validate_department(self, department):
         if not department:
