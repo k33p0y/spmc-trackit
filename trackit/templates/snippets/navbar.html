@@ -40,7 +40,7 @@
 
       <li class="nav-item">
          <a href="{% url 'logout' %}" class="nav-link nav-user" data-user-id="{{request.user.id}}" data-user-fullname="{{request.user.get_full_name}}">
-            Logout <i class="fas fa-sign-out-alt"></i>
+            <span class="d-none d-sm-inline ml-1">Logout</span> <i class="fas fa-sign-out-alt"></i>
          </a>
       </li>
    </ul>

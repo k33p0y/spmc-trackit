@@ -34,10 +34,12 @@
       <div class="overlay d-none"></div>
       
       <div class="d-flex flex-row-reverse mb-1">
-         {% if perms.requests.change_ticket %}
-         <a href="{% url 'detail_ticket' ticket.ticket_id %}" class="btn btn-light text-secondary ml-2">
-            <i class="fas fa-sm fa-pencil-alt"></i> <span>Update Request</span> 
-         </a>
+         {% if perms.requests.add_ticket and perms.requests.change_ticket %}
+            {% if curr_step.status != last_step.status or user.is_superuser %}
+            <a href="{% url 'detail_ticket' ticket.ticket_id %}" class="btn btn-light text-secondary ml-2">
+               <i class="fas fa-sm fa-pencil-alt"></i> <span>Update Request</span> 
+            </a>
+            {% endif %}
          {% endif %}
          <a href="{% url 'ticket_log_list' %}" class="btn btn-light text-secondary btn-view-logs" data-ticket-number="{{ticket.ticket_no}}">
             <i class="fas fa-sm fa-history"></i> <span class="d-none d-sm-inline">View Logs</span> 
@@ -105,11 +107,13 @@
                                           <span class="label">Reference No</span>
                                        </div>
                                        {% if not ticket.reference_no %}
-                                          {% if user.is_staff or user.is_superuser %}                                  
-                                          <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 
-                                             <span class="spinner-border spinner-border-xs text-secondary mr-1 ref-spinner d-none" role="status" aria-hidden="true"></span> 
-                                             <span>Generate</span> 
-                                          </button>
+                                          {% if user.is_staff or user.is_superuser %}
+                                             {% if curr_step.status != last_step.status or user.is_superuser %}                              
+                                             <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 
+                                                <span class="spinner-border spinner-border-xs text-secondary mr-1 ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                                <span>Generate</span> 
+                                             </button>
+                                             {% endif %}
                                           {% endif %}
                                        {% endif %}
                                     </div>
@@ -236,7 +240,6 @@
                </div>
             </div>
          </div>
-
          <div class="col-12 col-sm-12 col-md-12 col-lg-3">
             {% if curr_step.status != last_step.status or user.is_superuser %}
                {% if curr_step.has_approving %}

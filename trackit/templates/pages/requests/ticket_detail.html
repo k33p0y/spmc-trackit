@@ -95,11 +95,13 @@
                                           <span class="label">Reference No</span>
                                        </div>
                                        {% if not ticket.reference_no %}
-                                          {% if user.is_staff or user.is_superuser %}                                  
-                                          <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 
-                                             <span class="spinner-border spinner-border-xs text-secondary mr-1 ref-spinner d-none" role="status" aria-hidden="true"></span> 
-                                             <span>Generate</span> 
-                                          </button>
+                                          {% if user.is_staff or user.is_superuser %}
+                                             {% if curr_step.status != last_step.status or user.is_superuser %}                                              
+                                             <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 
+                                                <span class="spinner-border spinner-border-xs text-secondary mr-1 ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                                <span>Generate</span> 
+                                             </button>
+                                             {% endif %}
                                           {% endif %}
                                        {% endif %}
                                     </div>
