@@ -232,18 +232,13 @@ class TicketViewSet(viewsets.ModelViewSet):
    def partial_update(self, request, pk):
       ticket = Ticket.objects.get(pk=pk)
 
-      if request.data['request_form']:
-         if not ticket.reference_no:
-            ticket.reference_no = generate_reference(request.data['request_form'])
-            ticket.save()
-         else:
-            return Response('Error: Reference number already created', status=status.HTTP_400_BAD_REQUEST)
+      if not ticket.reference_no:
+         ticket.reference_no = generate_reference(ticket.request_form.id)
+         ticket.save()
 
-         serializer = TicketSerializer(ticket, partial=True)   
-      else:
-         serializer = TicketSerializer(ticket, data=request.data, partial=True)
-         serializer.is_valid(raise_exception=True)
-         serializer.save()
+      serializer = TicketSerializer(ticket, data=request.data, partial=True)
+      serializer.is_valid(raise_exception=True)
+      serializer.save()
 
       create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
       return Response(serializer.data)
