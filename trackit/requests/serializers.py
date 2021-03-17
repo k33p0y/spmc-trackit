@@ -42,14 +42,6 @@ class StatusReadOnlySerializer(serializers.ModelSerializer):
 class TicketSerializer(serializers.ModelSerializer):
    requested_by = UserSerializer(read_only=True)
 
-   # def validate(self, data):
-   #    if(data['form_data']):
-   #       for x in data['form_data']:
-   #          if (x['required'] == True and x['value'] != ''):
-   #             raise serializers.ValidationError("validate error")
-
-   #    return data
-
    class Meta:
       model = Ticket
       fields = '__all__'

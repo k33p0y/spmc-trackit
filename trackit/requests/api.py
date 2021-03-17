@@ -241,7 +241,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
          serializer = TicketSerializer(ticket, partial=True)   
       else:
-         serializer = TicketSerializer(ticket, data=request_data, partial=True)
+         serializer = TicketSerializer(ticket, data=request.data, partial=True)
          serializer.is_valid(raise_exception=True)
          serializer.save()
 

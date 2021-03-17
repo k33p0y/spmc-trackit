@@ -196,7 +196,7 @@ $(document).ready(function () {
    });
 
    // Submit Form
-   $("#btn_save").click(function (e) {
+   $("#btn_submit").click(function (e) {
       e.preventDefault();      
 
       let success = validateForms();
@@ -266,15 +266,6 @@ $(document).ready(function () {
          $('#dd_types').next().find('.select2-selection').removeClass('form-error');
          $('#error-info-type').html('');
       }
-      
-      if ($('#dd_departments').val() == '') {
-         $('#dd_departments').next().find('.select2-selection').addClass('form-error');
-         $('#error-info-department').html('*This field cannot be empty')
-         success--;
-      } else {
-         $('#dd_departments').next().find('.select2-selection').removeClass('form-error');
-         $('#error-info-department').html('');
-      }
    
       if ($('#dd_categories').val() == '') {
          $('#dd_categories').next().find('.select2-selection').addClass('form-error');
@@ -292,8 +283,7 @@ $(document).ready(function () {
       } else {
          $('#dd_forms').next().find('.select2-selection').removeClass('form-error');
          $('#error-info-form').html('');
-      }
-   
+      }   
       return success;
    }   
 
@@ -301,85 +291,59 @@ $(document).ready(function () {
    var getFormValues = function(data_obj) {
       let form_fields_obj = new Array();
 
-      if(data_obj == null || data_obj == undefined) {
-         $('.body-info').css('color', '#dc3545')
-      } else {
-         data_obj.forEach(data => {
-            const form_field = data.form_field;
-            let answer;
-            
-            if (form_field.length > 1) {
-               form_field.forEach(field => {
-                  let optionBool = 0;
-                  let trigger = false;
-      
-                  if(field.required == true) {
-                     trigger = true;
-                  }
-      
-                  if (field.type == "text" || field.type == "textarea") { // textfield
+      data_obj.forEach(data => {
+         const form_field = data.form_field;
+         let answer;
+         
+         if (form_field.length > 1) {
+            form_field.forEach(field => {
+   
+               if (field.type == "text" || field.type == "textarea") { // textfield
+                  answer = $(`#${field.id}`).val();            
                      answer = $(`#${field.id}`).val();            
-                     if(field.required == true && (answer == null || answer == '' || answer == undefined)) {
-                        $(`#${field.id}`).addClass('form-error').parent().next().html('This field cannot be empty');
-                        optionBool += 1;
-                     }
-                  }
-                  if (field.type == "radio" || field.type == "checkbox") { // radio button
-                     answer = new Array();
-                     field.option.forEach(opt => {
-                        answer.push({
-                           "option_id": opt.id,
-                           "option_name" : opt.name,
-                           "option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
-                        })
-                        optionBool += ($(`#${opt.id}`).is(":checked")) ? 1 : 0;
-                     });
-                     if(optionBool > 0 && trigger == true) $(`#error-${form_field.id}`).html('This field cannot be empty')
-                  }
-      
-                  form_fields_obj.push({
-                     "id":  field.id,
-                     "type": field.type,
-                     "value" : answer,
-                     "required" : field.required
-                  });
-               });
-            } else {
-               if (form_field.type == "text" || form_field.type == "textarea") { // textfield
-                  answer = $(`#${form_field.id}`).val();
-                  if(form_field.required == true && (answer == null || answer == '')) {
-                     $(`#${form_field.id}`).addClass('form-error').next().html('This field cannot be empty');
-                  }
+                  answer = $(`#${field.id}`).val();            
                }
-               if (form_field.type == "radio" || form_field.type == "checkbox") { // radio button
-                  let optionBool = 0;
-                  let trigger = false;
-      
-                  if(form_field.required == true) {
-                     trigger = true;
-                  }
-      
+               if (field.type == "radio" || field.type == "checkbox") { // radio button
                   answer = new Array();
-                  form_field.option.forEach(opt => {
+                  field.option.forEach(opt => {
                      answer.push({
                         "option_id": opt.id,
                         "option_name" : opt.name,
                         "option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
-                     })
-                     optionBool += ($(`#${opt.id}`).is(":checked")) ? 1 : 0;
+                     });
                   });
-                  if(optionBool == 0 && trigger == true) $(`#error-${form_field.id}`).html('This field cannot be empty')
                }
-      
+   
                form_fields_obj.push({
-                  "id":  form_field.id,
-                  "type": form_field.type,
+                  "id":  field.id,
+                  "type": field.type,
                   "value" : answer,
-                  "required": form_field.required
+                  "required" : field.required
+               });
+            });
+         } else {
+            if (form_field.type == "text" || form_field.type == "textarea") { // textfield
+               answer = $(`#${form_field.id}`).val();
+            }
+            if (form_field.type == "radio" || form_field.type == "checkbox") { // radio button
+               answer = new Array();
+               form_field.option.forEach(opt => {
+                  answer.push({
+                     "option_id": opt.id,
+                     "option_name" : opt.name,
+                     "option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
+                  });
                });
             }
-         });
-      }
+   
+            form_fields_obj.push({
+               "id":  form_field.id,
+               "type": form_field.type,
+               "value" : answer,
+               "required": form_field.required
+            });
+         }
+      });
 
       return form_fields_obj;
    }
