@@ -59,7 +59,7 @@ $ python manage.py collectstatic
 #### Redis via Docker
 Use a channel layer that uses Redis as its backing store. To start a Redis server on port 6379, run the following command:
 ```sh
-$ sudo docker run -p 6379:6379 -d redis:5
+$ sudo docker run -p 6379:6379 --restart unless-stopped -d redis:5
 ```
 
 #### Run Django Development Server
