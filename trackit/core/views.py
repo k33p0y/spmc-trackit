@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission, Group
+from django.http import Http404
+from django.template.response import SimpleTemplateResponse
 from core.models import User
 from config.models import Department
 from requests.models import Ticket, RequestForm
@@ -44,14 +46,14 @@ def user_profile(request, pk):
       context = {'user': user, 'tickets': tickets, 'departments': departments}
       return render(request, 'pages/core/user_profile.html', context)
    else:
-      return redirect('page_not_found')
+      raise Http404()
 
 # Error Template 403, 404 & 500
-def forbidden(request):
-   return render(request, 'pages/403.html')
+def forbidden(request, exception=None):
+   return SimpleTemplateResponse('pages/403.html', status=403)
 
-def page_not_found(request):
-   return render(request, 'pages/404.html')
+def page_not_found(request, exception=None):
+   return SimpleTemplateResponse('pages/404.html', status=404)
 
-def unexpected_error(request):
-   return render(request, 'pages/500.html')
+def unexpected_error(request, exception=None):
+  return SimpleTemplateResponse('pages/500.html', status=500)
