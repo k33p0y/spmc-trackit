@@ -66,7 +66,10 @@ class UserSerializer(serializers.ModelSerializer):
         return lastname
 
     def validate_department(self, department):
-        if not department:
+        request = self.context['request']
+        is_superuser = request.data.get('is_superuser')
+
+        if not department and not is_superuser:
             raise serializers.ValidationError('This field may not be blank.')
         return department
 
@@ -115,7 +118,10 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return lastname
 
     def validate_department(self, department):
-        if not department:
+        request = self.context['request']
+        is_superuser = request.data.get('is_superuser')
+
+        if not department and not is_superuser:
             raise serializers.ValidationError('This field may not be blank.')
         return department
 
