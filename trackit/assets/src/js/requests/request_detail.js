@@ -130,19 +130,27 @@ $(document).ready(function () {
       let success = 1;
    
       // Validate Request Details
+      if ($('#txt_description').val() == '') {
+         $('#txt_description').addClass('form-error');
+         $('#error-info-desc').html('*This field may not be blank')
+         success--;
+      } else {
+         $('#txt_description').next().find('.select2-selection').removeClass('form-error');
+         $('#error-info-desc').html('');
+      }
+
       if ($('#select2_categories').val() == '') {
          $('#select2_categories').next().find('.select2-selection').addClass('form-error');
-         $('#error-info-category').html('*This field cannot be empty')
+         $('#error-info-category').html('*This field may not be blank')
          success--;
       } else {
          $('#select2_categories').next().find('.select2-selection').removeClass('form-error');
          $('#error-info-category').html('');
       }
       
-      // Validate Request Details
       if ($('#select2_types').val() == '') {
          $('#select2_types').next().find('.select2-selection').addClass('form-error');
-         $('#error-info-type').html('*This field cannot be empty')
+         $('#error-info-type').html('*This field may not be blank')
          success--;
       } else {
          $('#select2_types').next().find('.select2-selection').removeClass('form-error');
@@ -150,26 +158,26 @@ $(document).ready(function () {
       }
       
       // Validate Request Form Fields
-      const form_fields = $('.form_field_detail');
+      // const form_fields = $('.form_field_detail');
       
-      form_fields.each(function(index, val) {      
-         if(val.required == true) {
-            if ($(this).val() == '') {
-               $(this).addClass('form-error').next().html('*This field cannot be empty');
-               success--;
-            } else {
-               $(this).removeClass('form-error').next().html('');
-            }
-         }
+      // form_fields.each(function(index, val) {      
+      //    if(val.required == true) {
+      //       if ($(this).val() == '') {
+      //          $(this).addClass('form-error').next().html('*This field cannot be empty');
+      //          success--;
+      //       } else {
+      //          $(this).removeClass('form-error').next().html('');
+      //       }
+      //    }
    
-         // if($(this).children().length > 0 && $(this).data().requiredId == 'False') {
-         //    let check_count = $(this).find('input:checkbox:checked').length;
+      //    // if($(this).children().length > 0 && $(this).data().requiredId == 'False') {
+      //    //    let check_count = $(this).find('input:checkbox:checked').length;
             
-         //    if (check_count == 0 ) {
-         //       $(this).next().html('*Please select at least one')
-         //    }
-         // }
-      });
+      //    //    if (check_count == 0 ) {
+      //    //       $(this).next().html('*Please select at least one')
+      //    //    }
+      //    // }
+      // });
    
       return success;
    }

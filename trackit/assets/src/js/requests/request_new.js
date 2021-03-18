@@ -251,7 +251,7 @@ $(document).ready(function () {
       // Validate Request Details
       if ($('#txt_description').val() == '') {
          $('#txt_description').addClass('form-error');
-         $('#error-info-desc').html('*This field cannot be empty')
+         $('#error-info-desc').html('*This field may not be blank')
          success--;
       } else {
          $('#txt_description').next().find('.select2-selection').removeClass('form-error');
@@ -260,7 +260,7 @@ $(document).ready(function () {
    
       if ($('#dd_types').val() == '') {
          $('#dd_types').next().find('.select2-selection').addClass('form-error');
-         $('#error-info-type').html('*This field cannot be empty')
+         $('#error-info-type').html('*This field may not be blank')
          success--;
       } else {
          $('#dd_types').next().find('.select2-selection').removeClass('form-error');
@@ -269,7 +269,7 @@ $(document).ready(function () {
    
       if ($('#dd_categories').val() == '') {
          $('#dd_categories').next().find('.select2-selection').addClass('form-error');
-         $('#error-info-category').html('*This field cannot be empty')
+         $('#error-info-category').html('*This field may not be blank')
          success--;
       } else {
          $('#dd_categories').next().find('.select2-selection').removeClass('form-error');
@@ -278,7 +278,7 @@ $(document).ready(function () {
    
       if ($('#dd_forms').val() == '') {
          $('#dd_forms').next().find('.select2-selection').addClass('form-error');
-         $('#error-info-form').html('*This field cannot be empty')
+         $('#error-info-form').html('*This field may not be blank')
          success--;
       } else {
          $('#dd_forms').next().find('.select2-selection').removeClass('form-error');
