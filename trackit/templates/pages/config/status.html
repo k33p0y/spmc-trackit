@@ -8,7 +8,6 @@
 
 {% block content %}
 <!-- Content Header -->
-{% if request.user.is_superuser or request.user.is_staff %}
 <section class="content-header">
    <div class="container-fluid">
       <div class="row mb-2">
@@ -29,7 +28,6 @@
 </section>
 
 <!-- /.content -->
-{% if perms.config.view_status %}
 <section class="content">
    <div class="container-fluid">
 
@@ -100,12 +98,6 @@
    <input type="hidden" id="changeStatusHidden" value="{% if perms.config.change_status %}true{% else %}false{% endif %}">
 
 </section>
-   {% else %}
-      <section class="content">
-         You don't have permission to view this page
-      </section>
-   {% endif %}
-{% endif %}
 {% endblock %}
 
 {% block modal %}

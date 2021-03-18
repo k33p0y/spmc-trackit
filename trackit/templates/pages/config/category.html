@@ -4,7 +4,6 @@
 {% block title %} Categories | {% endblock %}
 
 {% block content %}
-{% if request.user.is_superuser or request.user.is_staff %}
 <!-- Content Header -->
 <section class="content-header">
    <div class="container-fluid">
@@ -26,7 +25,6 @@
 </section>
 
 <!-- /.content -->
-{% if perms.config.view_category %}
 <section class="content">
    <div class="container-fluid">
 
@@ -107,12 +105,6 @@
    <input type="hidden" id="changeCategoryHidden" value="{% if perms.config.change_category %}true{% else %}false{% endif %}">
 
 </section>
-   {% else %}
-      <section class="content">
-         You don't have permission to view this page
-      </section>
-   {% endif %}
-{% endif %}
 {% endblock %}
 
 {% block modal %}

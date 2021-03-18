@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission, Group
 from django.http import Http404
 from django.template.response import SimpleTemplateResponse
@@ -19,11 +19,13 @@ def home(request):
    return render(request, 'pages/index.html', context)
 
 @login_required
+@permission_required('core.view_group', raise_exception=True)
 def group_list(request):
    permissions = Permission.objects.all()
    return render(request, 'pages/core/group_list.html', {'permissions': permissions})
 
 @login_required
+@permission_required('core.view_user', raise_exception=True)
 def user_list(request):
    permissions = Permission.objects.all()
    groups = Group.objects.all()

@@ -28,7 +28,6 @@
 </section>
 
 <!-- /.content -->
-{% if perms.requests.view_ticket %}
 <section class="content pb-4">
    <div class="container-fluid">
       <div class="overlay d-none"></div>
@@ -299,11 +298,6 @@
       </div>
    </div>
 </section>
-{% else %}
-<section class="content">
-   You don't have permission to view this page
-</section>
-{% endif %}
 {% endblock %}
 
 {% block modal %}

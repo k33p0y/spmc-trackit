@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
@@ -10,6 +10,7 @@ import json
 
 # Create your views here.
 @login_required
+@permission_required('requests.view_ticket', raise_exception=True)
 def ticket(request):
    tickets = Ticket.objects.all()
    departments =  Department.objects.filter(is_active=True)
@@ -21,6 +22,7 @@ def ticket(request):
    return render(request, 'pages/requests/ticket_lists.html', context)
    
 @login_required
+@permission_required('requests.add_ticket', raise_exception=True)
 def create_ticket(request):
    forms= RequestForm.objects.filter(is_active=True)
    types =  CategoryType.objects.filter(is_active=True)
@@ -30,6 +32,7 @@ def create_ticket(request):
    return render(request, 'pages/requests/ticket_new.html', context)   # if request.user has_perm('requests_change_')   # if request.user has_perm('requests_change_')
 
 @login_required
+@permission_required('requests.change_ticket', raise_exception=True)
 def detail_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
    
@@ -67,6 +70,7 @@ def detail_ticket(request, ticket_id):
    return render(request, 'pages/requests/ticket_detail.html', context)
 
 @login_required
+@permission_required('requests.view_ticket', raise_exception=True)
 def view_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   

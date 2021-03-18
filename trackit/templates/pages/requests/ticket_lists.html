@@ -28,7 +28,6 @@
 </section>
 
 <!-- /.content -->
-{% if perms.requests.view_ticket %}
 <section class="content">
    <div class="container-fluid">
       <!-- Content Filters, Search and Create Section -->
@@ -154,11 +153,6 @@
    </div>
    <input type="hidden" id="changeTicketHidden" value="{% if perms.requests.change_ticket %}true{% else %}false{% endif %}">
 </section>
-{% else %}
-<section class="content">
-   You don't have permission to view this page
-</section>
-{% endif %}
 {% endblock %}
 
 {% block extrascript %}
