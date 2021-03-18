@@ -73,7 +73,7 @@ $(document).ready(function () {
             data: data,
             headers: axiosConfig,
          }).then(function (res) {
-            // socket_notification.send(JSON.stringify({type: 'step_action', data: {ticket_id: ticket}}))
+            socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: res.data.ticket, notification_type: 'ticket'}}))
             $.when(
                Toast.fire({
                   icon: 'success',

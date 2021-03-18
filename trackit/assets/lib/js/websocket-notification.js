@@ -48,13 +48,21 @@ let getAllNotifications = function(){
 };
 
 let displayTicketNotification = function(notification){
+    let object_json_repr = JSON.parse(notification.log.object_json_repr)
+    let ticket_no = object_json_repr[0].fields.ticket_no
     created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     user = `${notification.user.first_name} ${notification.user.last_name}`
     if (created_by === user) created_by = 'You'; // if the authenticated user is the requestor of the ticket
     action = `${notification.log.event_type}`
     time_from_now = moment(notification.log.datetime).fromNow()
-    if (action === 'Create') action = 'created a new request, Ticket no.';
-    else if (action === 'Update') action = 'updated request';
+    if (action === 'Create') action = `created a new request, Ticket no. <b>${ticket_no}</b>`;
+    else if (action === 'Update') {
+        if (notification.log.remarks){
+            if (notification.log.remarks.is_approve) action = `approved request <b>${ticket_no}</b>`
+            else if (notification.log.remarks.is_approve == false) action = `disapproved request <b>${ticket_no}</b>`
+            else action = `updated <b>${ticket_no}</b> status from ${notification.log.changed_fields.status[0]} to ${notification.log.changed_fields.status[1]}`
+        } else action = `updated request <b>${ticket_no}</b>`
+    }
     if (notification.unread) {
         bg_color = 'bg-notification'; 
         display_status = '';
@@ -63,12 +71,10 @@ let displayTicketNotification = function(notification){
         display_status = 'd-none'
     }
 
-    let object_json_repr = JSON.parse(notification.log.object_json_repr)
-    let ticket_no = object_json_repr[0].fields.ticket_no
     $('.dropdown-notifications-div').append(
         `<a href="/requests/${notification.log.object_id}/view" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
             <div class="notification-content flex-grow-1">
-                <p><b>${created_by}</b> ${action} <b>${ticket_no}</b></p>
+                <p><b>${created_by} </b> ${action} </p>
                 <span class="text-muted notification-time">${time_from_now}</span>    
             </div>
             <div class="notification-status align-self-center ${display_status}"><i class="fas fa-circle"></i></div>
