@@ -20,6 +20,7 @@ $(document).ready(function () {
       allowClear: true,
       placeholder: 'Select category',
       cache: true,
+      sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
    });
 
    // SElECT ON CHANGE EVENT
@@ -28,7 +29,8 @@ $(document).ready(function () {
 
       axios.get('/api/config/category', {
          params: {
-            "category_type" : category_type
+            "category_type" : category_type,
+            "is_active": 0
          }
       }, axiosConfig).then(res => {
          $("#select2_categories")

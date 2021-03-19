@@ -215,7 +215,7 @@
                         <label for="departmentHelp">Department <span class="text-danger">*</span> </label>
                         <select class="form-control form-control-sm" id="select2-department" name="departmentHelp">
                            <option></option>
-                           {% for department in departments %}
+                           {% for department in select_departments %}
                            <option value={{department.id}}>{{department}}</option>
                            {% endfor %}
                         </select>

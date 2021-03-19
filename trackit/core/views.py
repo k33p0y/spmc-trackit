@@ -28,13 +28,16 @@ def group_list(request):
 @permission_required('core.view_user', raise_exception=True)
 def user_list(request):
    permissions = Permission.objects.all()
-   groups = Group.objects.all()
-   departments = Department.objects.filter(is_active=True)
+   groups = Group.objects.all().order_by('name')
+   departments = Department.objects.all().order_by('name')
+
+   select_departments = departments.filter(is_active=True)
 
    context = {
       'permissions': permissions,
       'groups': groups,
-      'departments' : departments
+      'departments' : departments,
+      'select_departments' : select_departments
    }
    return render(request, 'pages/core/user_list.html', context)
 
@@ -43,7 +46,7 @@ def user_profile(request, pk):
    if request.user.id == pk:
       user = User.objects.get(id=pk)
       tickets = Ticket.objects.filter(requested_by=user.id, is_active=True)[:5]
-      departments = Department.objects.filter(is_active=True)
+      departments = Department.objects.filter(is_active=True).order_by('name')
 
       context = {'user': user, 'tickets': tickets, 'departments': departments}
       return render(request, 'pages/core/user_profile.html', context)

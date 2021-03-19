@@ -98,6 +98,7 @@ $(document).ready(function () {
       allowClear: true,
       placeholder: 'Select permissions',
       cache: true,
+      sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
    });
 
    // Groups Select2 Config
@@ -105,6 +106,7 @@ $(document).ready(function () {
       allowClear: true,
       placeholder: 'Select groups',
       cache: true,
+      sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
    });
 
    // Deparments Select2 Config
@@ -112,6 +114,7 @@ $(document).ready(function () {
       allowClear: true,
       placeholder: 'Select department',
       cache: true,
+      sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
    });
 
    // SElECT ON CHANGE EVENT

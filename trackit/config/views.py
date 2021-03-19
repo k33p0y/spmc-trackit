@@ -10,15 +10,16 @@ from requests.models import RequestForm
 @login_required
 @permission_required('config.view_department', raise_exception=True)
 def department(request):
-   users = User.objects.filter(is_active=True)
+   users = User.objects.filter(is_active=True).order_by('first_name')
    context = {'users': users}
    return render(request, 'pages/config/department.html', context)
 
 @login_required
 @permission_required('config.view_category', raise_exception=True)
 def category(request):
-   types = CategoryType.objects.filter(is_active=True)
-   context = {'types': types}
+   types = CategoryType.objects.all().order_by('name')
+   select_types = types.filter(is_active=True)
+   context = {'types': types, 'select_types': select_types}
    return render(request, 'pages/config/category.html', context)
 
 @login_required
@@ -29,9 +30,9 @@ def types(request):
 @login_required
 @permission_required('requests.view_requestform', raise_exception=True)
 def forms(request):
-   statuses = Status.objects.filter(is_active=True)
-   types = CategoryType.objects.filter(is_active=True)
-   groups = Group.objects.all()
+   statuses = Status.objects.filter(is_active=True).order_by('name')
+   types = CategoryType.objects.filter(is_active=True).order_by('name')
+   groups = Group.objects.all().order_by('name')
    context = {'statuses': statuses, 'types':types, 'groups': groups}
    return render(request, 'pages/config/forms.html', context)
 

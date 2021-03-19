@@ -13,10 +13,10 @@ import json
 @permission_required('requests.view_ticket', raise_exception=True)
 def ticket(request):
    tickets = Ticket.objects.all()
-   departments =  Department.objects.filter(is_active=True)
-   types = CategoryType.objects.filter(is_active=True)
-   statuses = Status.objects.filter(is_active=True)
-   forms = RequestForm.objects.filter(is_active=True)
+   departments =  Department.objects.all().order_by('name')
+   types = CategoryType.objects.all().order_by('name')
+   statuses = Status.objects.all().order_by('name')
+   forms = RequestForm.objects.all().order_by('name')
 
    context = {'tickets': tickets, 'departments':departments, 'types':types, 'statuses': statuses, 'forms': forms}
    return render(request, 'pages/requests/ticket_lists.html', context)
@@ -24,23 +24,20 @@ def ticket(request):
 @login_required
 @permission_required('requests.add_ticket', raise_exception=True)
 def create_ticket(request):
-   forms= RequestForm.objects.filter(is_active=True)
-   types =  CategoryType.objects.filter(is_active=True)
-   departments =  Department.objects.filter(is_active=True)
+   forms= RequestForm.objects.filter(is_active=True).order_by('name')
+   types =  CategoryType.objects.filter(is_active=True).order_by('name')
 
-   context = {'forms': forms, 'types': types, 'departments':departments}
-   return render(request, 'pages/requests/ticket_new.html', context)   # if request.user has_perm('requests_change_')   # if request.user has_perm('requests_change_')
+   context = {'forms': forms, 'types': types}
+   return render(request, 'pages/requests/ticket_new.html', context)
 
 @login_required
 @permission_required('requests.change_ticket', raise_exception=True)
 def detail_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
    
-   forms= RequestForm.objects.filter(is_active=True)
-   types =  CategoryType.objects.filter(is_active=True)
-   departments =  Department.objects.filter(is_active=True)
-   categories = Category.objects.filter(category_type=ticket.category.category_type, is_active=True)
-   types = ticket.request_form.category_types.filter(is_active=True)
+   forms= RequestForm.objects.filter(is_active=True).order_by('name')
+   categories = Category.objects.filter(category_type=ticket.category.category_type, is_active=True).order_by('name')
+   types = ticket.request_form.category_types.filter(is_active=True).order_by('name')
 
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
@@ -59,7 +56,6 @@ def detail_ticket(request, ticket_id):
       'ticket': ticket, 
       'forms': forms, 
       'types': types, 
-      'departments':departments, 
       'categories':categories, 
       'attachments':attachments, 
       'steps':steps, 
