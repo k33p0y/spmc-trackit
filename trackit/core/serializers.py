@@ -1,4 +1,4 @@
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from django.contrib.auth.models import Group, Permission
@@ -165,16 +165,32 @@ class UserProfileSerializer(serializers.ModelSerializer):
         exclude =  ('password', 'groups', 'user_permissions')
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
+    current_password = serializers.CharField(max_length=128, write_only=True, required=True)
+    new_password = serializers.CharField(max_length=128, write_only=True, required=True)
 
     def update(self, instance, validated_data):
         instance.username = instance.username
-        instance.password = make_password(validated_data.get('password', instance.password)) # hash password
+        instance.password = make_password(validated_data.get('new_password', instance.password)) # hash password
         instance.save() 
         return instance
 
     class Meta:
         model = User
-        fields =  ('id', 'username', 'password')    
+        fields =  ('id', 'username', 'current_password', 'new_password',)
+
+    def validate_current_password(self, current_password):   
+        if not self.context['request'].user.check_password(current_password):
+            raise serializers.ValidationError('Incorrect password.',)
+        return current_password
+
+    def validate_new_password(self, new_password):
+        request = self.context['request']
+        confirm_password = request.data.get('confirm_password')
+        
+        if not new_password == confirm_password:
+            raise serializers.ValidationError('Password does not match.')
+        validate_password(password=new_password, user=request.user)
+        return new_password
 
 class GroupSerializer(serializers.ModelSerializer):
    user_count = serializers.SerializerMethodField()

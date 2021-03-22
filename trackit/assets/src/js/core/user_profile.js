@@ -123,18 +123,20 @@ $(document).ready(function () {
       let user = $(this).data('data')
       
       Swal.fire({
-         title: 'This will log you out of TrackIt from every devices you currently logged on.',
-         icon: 'info',
+         title: 'Change Password',
+         html: '<p class="m-0">This will log you out of TrackIt from every devices you currently logged on. Continue?</p>',
+         icon: 'warning',
          showCancelButton: true,
          confirmButtonText: 'OK',
-         confirmButtonColor: '#17a2b8',
+         confirmButtonColor: '#f8bb86',
       }).then((result) => {
          if (result.value) {
             
             let data = new Object();
             data.username = user.username
-            data.password = $('#txt-changepassword1').val();
-            data.password2 = $('#txt-changepassword2').val();
+            data.current_password = $('#txt-current_password').val();
+            data.new_password = $('#txt-new_password1').val();
+            data.confirm_password = $('#txt-new_password2').val();
 
             axios({
                method: 'PUT',
@@ -156,7 +158,9 @@ $(document).ready(function () {
                });
                
             }).catch(err => { // error
-               if (err.response.data.password) showFieldErrors(err.response.data.password, 'changepassword'); else removeFieldErrors('changepassword');
+               console.log(err.response.data);
+               if (err.response.data.current_password) showFieldErrors(err.response.data.current_password, 'current_password'); else removeFieldErrors('current_password');
+               if (err.response.data.new_password) showFieldErrors(err.response.data.new_password, 'new_password'); else removeFieldErrors('new_password');
             });
          }
       });
@@ -164,12 +168,13 @@ $(document).ready(function () {
    
 
    let showFieldErrors = function(obj, field){
-      if (field === 'password') {
-         $(`#txt-${field}1`).addClass('form-error')
-         $(`#txt-${field}2`).addClass('form-error')
-      }  else if (field === 'changepassword') {
-         $(`#txt-${field}1`).addClass('form-error')
-         $(`#txt-${field}2`).addClass('form-error')
+      if (field === 'current_password') {
+         $(`#txt-${field}`).addClass('form-error').val('')
+         $(`#txt-new_password1`).val('')
+         $(`#txt-new_password2`).val('')
+      }  else if (field === 'new_password') {
+         $(`#txt-${field}1`).addClass('form-error').val('')
+         $(`#txt-${field}2`).addClass('form-error').val('')
       }  else if (field === 'department') {
          $(`#select2-${field}`).next().find('.select2-selection').addClass('form-error')
       }  else $(`#txt-${field}`).addClass('form-error');
@@ -179,10 +184,9 @@ $(document).ready(function () {
    };
 
    let removeFieldErrors = function(field){
-      if (field === 'password') {
-         $(`#txt-${field}1`).removeClass('form-error')
-         $(`#txt-${field}2`).removeClass('form-error')
-      } else if (field === 'changepassword') {
+      if (field === 'current_password') {
+         $(`#txt-${field}`).removeClass('form-error')
+      } else if (field === 'new_password') {
          $(`#txt-${field}1`).removeClass('form-error')
          $(`#txt-${field}2`).removeClass('form-error')
       }  else if (field === 'department') {
@@ -198,8 +202,8 @@ $(document).ready(function () {
       removeFieldErrors('email');
       removeFieldErrors('firstname');
       removeFieldErrors('lastname');
-      removeFieldErrors('password');
-      removeFieldErrors('changepassword');
+      removeFieldErrors('current_password');
+      removeFieldErrors('new_password');
       removeFieldErrors('department');
    }
 });
