@@ -245,7 +245,6 @@
                            
                            <div class="form-group col-1"></div>
                         </div>
-                        <div class="form-row-extras"></div>
                      </div>
                      <button type="button" class="btn btn-link" id="btn_add">
                         <i class="fas fa-xs fa-plus"></i>
@@ -277,7 +276,7 @@
 
 {% block extrascript %}
 <script>
-   function addStatusRow(count) {
+   function formStatusRow(count) {
       const form_row = `<div class="form-row">
          <div class="form-group col-4">
             <select class="form-control form-control-sm select2_status" style="width: 100%">

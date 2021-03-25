@@ -124,18 +124,9 @@ $(document).ready(function () {
       chk_status = ($(this).prop("checked") == true) ? true : false;
    });
 
-   var counter = 4;
    $('#btn_add').click(function () {
-      let row = addStatusRow(counter);
-      $(".form-wrapper").append(row)
-      counter++;
-
-      // Select2 Config
-      $('.select2_status').select2({
-         allowClear: true,
-         placeholder: 'Select status',
-         // cache: true,
-      });
+      let counter = $('.form-wrapper .form-row').length + 1;
+      addStatusRow(counter);
    });
 
    // CREATE / POST
@@ -145,44 +136,12 @@ $(document).ready(function () {
       url = '/api/requests/forms/';
       alert_msg = 'Saved Successfully';
 
-      let samp_json = [{
-         "title": "",
-         "form_field": [
-            {
-               "id": "",
-               "type": "",
-               "value" : null,
-               "option": null,
-               "required" : false
-            }
-         ],
-         "is_admin": true
-      }]
-
       $("#formModal").modal();
       $(".modal-title").text('Add Form');
+      $('.form-wrapper').empty();
+      for (let i = 1; i <= 4; i++) addStatusRow(i);
 
-      // Reset Form
-      $('#txt_typename').val('');
-      $('#txt_prefix').val('');
-      $('#txt_color').val('').css('background-color', 'unset').removeClass('text-light');
-      $("#select2-groups").val([]).trigger('change');
-      $("#select2-types").val([]).trigger('change');
-      $('#txt_json').val(JSON.stringify(samp_json));
-
-      const form_wrapper = $('.form-row-extras').empty();
-      for (let i = 1; i <= 3; i++) {
-         let row = addStatusRow(i);
-         form_wrapper.append(row)
-
-         // Select2 Config
-         $('.select2_status').select2({
-            allowClear: true,
-            placeholder: 'Select status',
-            // cache: true,
-         });
-      }
-
+      resetForm();
       prettyPrint();
    });
 
@@ -207,11 +166,11 @@ $(document).ready(function () {
       // Modal Config
       $("#formModal").modal();
       $(".modal-title").text('Update Form');
-      // $("#btn_delete").show();
-      $(".form-wrapper").empty();
-      updateStatusOrder(status)
+      $('.form-wrapper').empty();
+      updateStatusOrder(status);
 
       // Populate Fields
+      resetForm();
       $('#txt_typename').val(dt_data['name']);
       $('#txt_prefix').val(dt_data['prefix']);
       $('#txt_color').val(dt_data['color']).css('background-color', dt_data['color']).addClass('text-light');
@@ -289,12 +248,7 @@ $(document).ready(function () {
 
    //Modal Cancel
    $('#btn_cancel').click(function () {
-      // Reset Fields to Defaults
-      $('#txt_typename').removeClass('form-error');
-      $('#txt_color').removeClass('form-error');
-      $('.error-info').html('');
-      $('#chk_status').prop("checked", true);
-      $('#select2_status').val([]).trigger('change');
+      resetForm()
    });
 
    // // //  Filters
@@ -337,120 +291,163 @@ $(document).ready(function () {
    $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
       if (e.clickEvent) e.preventDefault();      
    });
-
-});
-
-
-function prettyPrint() {
-   let obj = JSON.parse($('#txt_json').val());
-   let pretty = JSON.stringify(obj, undefined, 4);
-   $('#txt_json').val(pretty);
-}
-
-function getStatusRowValues() {
-   const arr = new Array();
-   const form_row = $(".form-wrapper div.form-row");
-
-   form_row.each(function () {
-      const status = $(this).find('div.form-group select');
-      const order = $(this).find('div.form-group input.txt_order');
-      const is_client = $(this).find('div.form-group input.client-box');
-      const is_head = $(this).find('div.form-group input.head-box');
-      const has_approving = $(this).find('div.form-group input.approving-box');
-      const has_pass_fail = $(this).find('div.form-group input.pass-fail-box');
-
-      if (status.val() != '' && order.val() != '') {
-         arr.push({
-            'status': status.val(),
-            'order': order.val(),
-            'is_client' : (is_client.is(":checked")) ? true : false,
-            'is_head' : (is_head.is(":checked")) ? true : false,
-            'has_approving' : (has_approving.is(":checked")) ? true : false,
-            'has_pass_fail' : (has_pass_fail.is(":checked")) ? true : false,
-         });
-
-         $(this).find('div.form-group').removeClass('has-error');;
-         $(this).find('.txt_order').removeClass('form-error');
-         $(this).find('div.form-group').find('.status-error').html('');
-      } else {
-         $(this).find('div.form-group').addClass('has-error');
-         $(this).find('.txt_order').addClass('form-error');
-         $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank');
-      }
-   });
    
-   return arr
-}
+   var prettyPrint = function () {
+      // prettify textarea to JSON format Fn
+      let obj = JSON.parse($('#txt_json').val());
+      let pretty = JSON.stringify(obj, undefined, 4);
+      $('#txt_json').val(pretty);
+   };
 
-function setStatusOrder(status) {
-   let counter = 1;
-   status.forEach(stat => {
-      $(`#status_${counter}`).val(stat.id).trigger('change');
-      $(`#order_${counter}`).val(stat.order);
-      $(`#chk_is_client_${counter}`).prop("checked", stat.is_client_step);
-      $(`#chk_is_head_${counter}`).prop("checked", stat.is_head_step);
-      $(`#chk_has_approving_${counter}`).prop("checked", stat.has_approving);
-      $(`#chk_has_pass_fail_${counter}`).prop("checked", stat.has_pass_fail);
-
-      counter++;
-   });
-}
-
-function validateForms() {
-   var success = 1;
-
-   // Validate Request Details
-   if ($('#txt_typename').val() == '') {
-      $('#txt_typename').addClass('form-error');
-      $('#name_error').html('*This field may not be blank')
-      success--;
-   } else {
-      $('#txt_typename').removeClass('form-error');
-      $('#name_error').html('');
-   }
+   var getStatusRowValues = function() {
+      const arr = new Array();
+      const form_row = $(".form-wrapper div.form-row");
    
-   if ($('#txt_prefix').val() == '') {
-      $('#txt_prefix').addClass('form-error');
-      $('#prefix_error').html('*This field may not be blank')
-      success--;
-   } else {
-      $('#txt_prefix').removeClass('form-error');
-      $('#prefix_error').html('');
-   }
+      form_row.each(function () {
+         const status = $(this).find('div.form-group select');
+         const order = $(this).find('div.form-group input.txt_order');
+         const is_client = $(this).find('div.form-group input.client-box');
+         const is_head = $(this).find('div.form-group input.head-box');
+         const has_approving = $(this).find('div.form-group input.approving-box');
+         const has_pass_fail = $(this).find('div.form-group input.pass-fail-box');
+   
+         if (status.val() != '' && order.val() != '') {
+            arr.push({
+               'status': status.val(),
+               'order': order.val(),
+               'is_client' : (is_client.is(":checked")) ? true : false,
+               'is_head' : (is_head.is(":checked")) ? true : false,
+               'has_approving' : (has_approving.is(":checked")) ? true : false,
+               'has_pass_fail' : (has_pass_fail.is(":checked")) ? true : false,
+            });
+   
+            $(this).find('div.form-group').removeClass('has-error');;
+            $(this).find('.txt_order').removeClass('form-error');
+            $(this).find('div.form-group').find('.status-error').html('');
+         } else {
+            $(this).find('div.form-group').addClass('has-error');
+            $(this).find('.txt_order').addClass('form-error');
+            $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank');
+         }
+      });
+      
+      return arr
+   };
 
-   if ($('#txt_color').val() == '') {
-      $('#txt_color').addClass('form-error');
-      $('#color_error').html('*This field may not be blank')
-      success--;
-   } else {
-      $('#txt_color').removeClass('form-error');
-      $('#color_error').html('');
-   }
+   var setStatusOrder = function(status) {
+      let counter = 1;
+      status.forEach(stat => {
+         $(`#status_${counter}`).val(stat.id).trigger('change');
+         $(`#order_${counter}`).val(stat.order);
+         $(`#chk_is_client_${counter}`).prop("checked", stat.is_client_step);
+         $(`#chk_is_head_${counter}`).prop("checked", stat.is_head_step);
+         $(`#chk_has_approving_${counter}`).prop("checked", stat.has_approving);
+         $(`#chk_has_pass_fail_${counter}`).prop("checked", stat.has_pass_fail);
+   
+         counter++;
+      });
+   };
 
-   const form_row = $(".form-wrapper div.form-row");
-   form_row.each(function () {
-      const status = $(this).find('div.form-group select');
-      const order = $(this).find('div.form-group input');
+   var validateForms = function() {
+      var success = 1;
 
-      if (status.val() != '' && order.val() != '') {
-         $(this).find('div.form-group').removeClass('has-error');;
-         $(this).find('.txt_order').removeClass('form-error');
-         $(this).find('div.form-group').find('.status-error').html('');
-      } else {
-         $(this).find('div.form-group').addClass('has-error');
-         $(this).find('.txt_order').addClass('form-error');
-         $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank');
+      // Validate Request Details
+      if ($('#txt_typename').val() == '') {
+         $('#txt_typename').addClass('form-error');
+         $('#name_error').html('*This field may not be blank')
          success--;
+      } else {
+         $('#txt_typename').removeClass('form-error');
+         $('#name_error').html('');
       }
-   });
+      
+      if ($('#txt_prefix').val() == '') {
+         $('#txt_prefix').addClass('form-error');
+         $('#prefix_error').html('*This field may not be blank')
+         success--;
+      } else {
+         $('#txt_prefix').removeClass('form-error');
+         $('#prefix_error').html('');
+      }
+   
+      if ($('#txt_color').val() == '') {
+         $('#txt_color').addClass('form-error');
+         $('#color_error').html('*This field may not be blank')
+         success--;
+      } else {
+         $('#txt_color').removeClass('form-error');
+         $('#color_error').html('');
+      }
+   
+      const form_row = $(".form-wrapper div.form-row");
+      form_row.each(function () {
+         const status = $(this).find('div.form-group select');
+         const order = $(this).find('div.form-group input');
+   
+         if (status.val() != '' && order.val() != '') {
+            $(this).find('div.form-group').removeClass('has-error');;
+            $(this).find('.txt_order').removeClass('form-error');
+            $(this).find('div.form-group').find('.status-error').html('');
+         } else {
+            $(this).find('div.form-group').addClass('has-error');
+            $(this).find('.txt_order').addClass('form-error');
+            $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank');
+            success--;
+         }
+      });
+   
+      return success;
+   };
 
-   return success;
-}
+   var rgb2hex = function(bg_color) {
+      var rgb = bg_color.replace(/\s/g,'').match(/^rgba?\((\d+),(\d+),(\d+)/i);
+      return (rgb && rgb.length === 4) ? "#" +
+         ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+         ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+         ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : bg_color;   
+   };
 
-function rgb2hex(bg_color){
-   var rgb = bg_color.replace(/\s/g,'').match(/^rgba?\((\d+),(\d+),(\d+)/i);
-   return (rgb && rgb.length === 4) ? "#" +
-    ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-    ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-    ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : bg_color;
-}
+   var resetForm = function() {
+      let samp_json = [{
+         "title": "",
+         "form_field": [
+            {
+               "id": "",
+               "type": "",
+               "value" : null,
+               "option": null,
+               "required" : false
+            }
+         ],
+         "is_admin": true
+      }]
+
+      $('#txt_typename').removeClass('form-error').val('');
+      $('#txt_prefix').removeClass('form-error').val('');
+      $('#txt_color').removeClass('form-error').val('').css('background-color', 'unset').removeClass('text-light');
+      $("#select2-groups").val([]).trigger('change');
+      $("#select2-types").val([]).trigger('change');
+      $('#chk_status').prop("checked", true);
+      
+      $(".select2_status").val([]).trigger('change');
+      $(".txt_order").val('');
+      $('.client-box').prop("checked", false);
+      $('.head-box').prop("checked", false);
+      $('.approving-box').prop("checked", false);
+      $('.pass-fail-box').prop("checked", false);
+
+      $('#txt_json').val(JSON.stringify(samp_json));
+   };
+
+   var addStatusRow = function(count) {
+      let row = formStatusRow(count);
+      $(".form-wrapper").append(row)
+
+      // Select2 Config
+      $('.select2_status').select2({
+         allowClear: true,
+         placeholder: 'Select status',
+         // cache: true,
+      });
+   };
+});
