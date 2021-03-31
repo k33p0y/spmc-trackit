@@ -1,40 +1,10 @@
-// // // // Global Scope
-
 // Store files to array
+// Global Variable
 var file_arr = new Array();
 
-// upload function
-function uploadAttachment(ticket) {
-   if (file_arr.length > 0) {               
-      // loop through file attached
-      $.each(Object.values(file_arr), function(index, value) {
-         let form_data = new FormData();
-
-         // new objcet for file extra data
-         let file_obj = new Object();
-         file_obj.description = $(`#desc_${index}`).val();
-         file_obj.ticket = ticket
-      
-         // extra data convert to blob
-         let blob = new Blob([JSON.stringify(file_obj)], {type: 'application/json'});
-
-         // append to formData
-         form_data.append('file', value.file)
-         form_data.append('data', blob)
-
-         axios({
-            method: 'POST',
-            url: '/api/requests/attachments/',
-            data: form_data,
-            headers: uploadConfig 
-         });                
-      });
-   };
-}
-
 $(document).ready(function () {
-
    var ticketId = function() { return $(".ticket-no").data().ticketId; }
+   var counter = ($('.file_lists .file-row').length == 0) ? 1 : $('.file_lists .file-row').length + 1;
    
    // Attachments Table
    let table = $('#dt_attachments').DataTable({
@@ -87,7 +57,7 @@ $(document).ready(function () {
    $('#file_upload').on('change', function() {
       const files = this.files;
       const file_lists = $('.file_lists');
-      let counter = 0;
+      const file_item = $('.file_lists .file-row');
 
       if(files) $('#btn_clear').removeClass('d-none');
 
@@ -98,19 +68,13 @@ $(document).ready(function () {
          
          if (type == 'invalid') { // If file is not registered
             this.value = "";
-            Toast.fire({
-               icon: 'error',
-               title: 'File type is not supported!',
-            })
+            Toast.fire({icon: 'error', title: 'File type is not supported!'})
          } else if (size == 'invalid') { // If file is more than 25MB
             this.value = "";
-            Toast.fire({
-               icon: 'error',
-               title: 'File is too big!',
-            })
+            Toast.fire({icon: 'error', title: 'File is too big!'})
          } else {
             file_lists.append(
-               `<div class="list-group-item border-0 d-flex p-1 mb-1">
+               `<div class="list-group-item file-row border-0 d-flex p-1 mb-1">
                   <div class="file-icon"><i class="far fa-lg ${type}"></i></div>
                   <div style="line-height:15px; width:15%;">
                      <p class="mb-0 font-weight-bold text-truncate text-xs">${file.name}</p>
@@ -129,6 +93,7 @@ $(document).ready(function () {
             )
             file_arr.push({
                id : `file_${counter}`,
+               desc : `#desc_${counter}`,
                file: file 
             });
             counter++;
@@ -157,7 +122,7 @@ $(document).ready(function () {
       $('#btn_clear').addClass('d-none');
       file_arr = new Array();
    });
-   
+
    // Attachment row click
    $('#dt_attachments').on('click', '.btn-file', function () {
       let dt_data = table.row($(this).parents('tr')).data();
@@ -170,7 +135,8 @@ $(document).ready(function () {
       $('#txt-size').text(fileSize(dt_data.file_size));
       $('#txt-upload-date').text((moment(dt_data.uploaded_at).format('DD MMMM YYYY h:mm:ss a')));
       $('#txt-owner').text(`${dt_data.uploaded_by.first_name} ${dt_data.uploaded_by.last_name}`);
-      $('#btn_download').attr('href', dt_data.file)
+      let file_url = (dt_data.file.includes('socket')) ? dt_data.file.replace('socket', window.location.host) : dt_data.file
+      $('#btn_download').attr('href', file_url)
 
       // View attachment modal shown fn   
       $('#attachmentViewModal').on('shown.bs.modal', function (e) {

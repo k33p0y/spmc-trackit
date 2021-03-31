@@ -159,3 +159,71 @@ const toggleFilter = function() {return $(".dropdown-filter-toggle").dropdown('h
 
 const loc = window.location;
 const wsStart = loc.protocol == "https:" ? "wss://" : "ws://";
+
+const makeProgress = function(percent, progressbar) {
+   if (percent <= 100) {
+      $(progressbar).animate(
+         { "width": `${percent}%`}, 0, function() {$('#percent').html(`${percent}%`)}
+      );
+   }
+}
+
+// Upload Attachment
+const uploadAttachment = async function(ticket, array) {
+   let files = new Object(array);
+   let percent = 0;
+   let num = 1;
+
+   $('#uploadModal').modal('show'); // Open Modal
+
+   for (const file of files) {
+      console.log(file)
+      // new objcet for file extra data
+      let file_obj = new Object();
+      file_obj.description = $(file.desc).val();
+      file_obj.ticket = ticket
+
+      console.log(file_obj)
+
+      // extra data convert to blob
+      let blob = new Blob([JSON.stringify(file_obj)], {type: 'application/json'});
+      
+      // append to formData
+      let form_data = new FormData();
+      form_data.append('file', file.file)
+      form_data.append('data', blob)
+               
+      // post api
+      await axios({
+         method: 'POST',
+         url: '/api/requests/attachments/',
+         data: form_data,
+         headers: uploadConfig         
+      }).then (function (result) {
+         percent = Math.round(( (num) / files.length) * 100);
+         $('#upload-progress').animate(
+            { "width": `${percent}%`}, 0, function() {
+               $('#percent').html(`${percent}%`);
+               if (percent == 100) $(this).addClass('bg-success');
+            }
+         );
+         num++;
+      });
+   }  
+}
+
+const toastSuccess = async function (title) {
+   $('.overlay').removeClass('d-none');
+
+   await Toast.fire({
+      icon: 'success',
+      title: title,
+   });   
+}
+
+const toastError = async function (title) {
+   await Toast.fire({
+      icon: 'error',
+      title: title,
+   });   
+}

@@ -69,33 +69,20 @@ $(document).ready(function () {
             url: `/api/requests/lists/${ticket}/`,
             data: data,
             headers: axiosConfig,
-         }).then(function (response) { // upload attachments         
-            // call upload attachment
-            uploadAttachment(ticket)
-
-            return response.data
-         }).then(function (response) { // success
-            socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: ticket, notification_type: 'ticket'}}))
-
+         }).then(async function (response) {    
             // disable submit button
-            $(this).attr('disabled', true)
+            $(this).attr('disabled', true);
 
-            // Reload Page
-            $.when(
-               Toast.fire({
-                  icon: 'success',
-                  title: 'Submit Successfully',
-               }),
-               $('.overlay').removeClass('d-none')
-            ).then(function () {
-               $('#btn_view')[0].click();
-            });
+            // Call upload Fn
+            if (file_arr.length > 0) await uploadAttachment(ticket, file_arr) 
 
+            // Alert
+            $.when(toastSuccess('Success')).then(function () {$('#btn_view')[0].click()})
+            
+            // send notif
+            socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: ticket, notification_type: 'ticket'}}))          
          }).catch(function (error) { // error
-            Toast.fire({
-               icon: 'error',
-               title: error,
-            });
+            toastError(error);
          });
       }
    });

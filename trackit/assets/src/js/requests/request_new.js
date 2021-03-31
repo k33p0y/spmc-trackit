@@ -2,8 +2,6 @@ $(document).ready(function () {
 
    var request_form, department, category, category_type;
    var data_obj;
-   var file_arr = new Array();
-   
 
    $('#dd_forms').select2({ // request form select2
       allowClear: true,
@@ -218,31 +216,20 @@ $(document).ready(function () {
             url: '/api/requests/lists/',
             data: data,
             headers: axiosConfig
-         }).then(function (response) { // upload attachments         
-            // call upload attachment
-            uploadAttachment(response.data.ticket_id)
-
-            return response.data
-         }).then(function (response) { // success
-            socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: response.ticket_id, notification_type: 'ticket'}}))
-
+         }).then(async function (response) { // upload attachments         
             // disable submit button
-            $(this).attr('disabled', true)
-            $.when(
-               Toast.fire({
-                  icon: 'success',
-                  title: 'Submit Successfully',
-               }),
-               $('.overlay').removeClass('d-none')
-            ).then(function () {
-               $(location).attr('href', '/requests/lists')
-            });
+            $(this).attr('disabled', true);
 
+             // Call upload Fn
+             if (file_arr.length > 0) await uploadAttachment(response.data.ticket_id, file_arr) 
+
+             // Alert
+             $.when(toastSuccess('Success')).then(function () {$(location).attr('href', '/requests/lists')})
+
+            // send notif
+            socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: response.data.ticket_id, notification_type: 'ticket'}}))
          }).catch(function (error) { // error
-            Toast.fire({
-               icon: 'error',
-               title: error,
-            });
+            toastError(error)
          });
       };
    });   
