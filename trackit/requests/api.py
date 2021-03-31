@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
+from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, TicketReferenceSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment, Status
 from easyaudit.models import CRUDEvent
 from config.models import Remark
@@ -231,12 +231,26 @@ class TicketViewSet(viewsets.ModelViewSet):
 
    def partial_update(self, request, pk):
       ticket = Ticket.objects.get(pk=pk)
+      serializer = TicketSerializer(ticket, data=request.data, partial=True)
+      serializer.is_valid(raise_exception=True)
+      serializer.save()
+
+      create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
+      return Response(serializer.data)
+
+class TicketReferenceAPIView(generics.RetrieveUpdateAPIView):
+   serializer_class = TicketReferenceSerializer
+   permission_classes = [permissions.IsAuthenticated]
+   queryset = Ticket.objects.all()
+
+   def partial_update(self, request, pk):
+      ticket = Ticket.objects.get(pk=pk)
 
       if not ticket.reference_no:
          ticket.reference_no = generate_reference(ticket.request_form.id)
          ticket.save()
-
-      serializer = TicketSerializer(ticket, data=request.data, partial=True)
+         
+      serializer = TicketReferenceSerializer(ticket, data=request.data, partial=True)
       serializer.is_valid(raise_exception=True)
       serializer.save()
 

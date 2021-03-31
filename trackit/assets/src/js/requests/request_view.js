@@ -17,7 +17,7 @@ $(document).ready(function () {
         let id = $(this).data().ticketId;
 
         axios({
-            url: `/api/requests/lists/${id}/`,
+            url: `/api/requests/${id}/generate-reference/`,
             method: "PATCH",
             headers: axiosConfig
         }).then(function (response) {

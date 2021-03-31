@@ -54,6 +54,12 @@ class TicketSerializer(serializers.ModelSerializer):
       self.fields['category'] = CategorySerializer(read_only=True)
       return super(TicketSerializer, self).to_representation(instance)
 
+class TicketReferenceSerializer(serializers.ModelSerializer):
+
+   class Meta:
+      model = Ticket
+      fields = ['ticket_id', 'reference_no']
+
 class AttachmentSerializer(serializers.ModelSerializer):
    uploaded_by = UserSerializer(read_only=True)
    file_size = serializers.SerializerMethodField('get_file_size')
