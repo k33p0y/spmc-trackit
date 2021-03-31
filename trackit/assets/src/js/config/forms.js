@@ -134,7 +134,6 @@ $(document).ready(function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
       url = '/api/requests/forms/';
-      alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
       $(".modal-title").text('Add Form');
@@ -160,7 +159,6 @@ $(document).ready(function () {
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
       url = `/api/requests/forms/${id}/`;
-      alert_msg = 'Update Successfully';
 
       // Open Modal
       // Modal Config
@@ -207,10 +205,7 @@ $(document).ready(function () {
             data: data,
             headers: axiosConfig,
          }).then(function (response) { // success
-            Toast.fire({
-               icon: 'success',
-               title: alert_msg,
-            });
+            toastSuccess('Success');
             $('#formModal').modal('toggle');
             $("#form").trigger("reset");
             $('#select2_groups').val([]).trigger('change');
@@ -238,10 +233,7 @@ $(document).ready(function () {
                $('#txt_color').removeClass('form-error');
                $('#color_error').html('')
             }
-            Toast.fire({
-               icon: 'error',
-               title: error,
-            });
+            toastError(error);
          });
       } 
    });

@@ -94,7 +94,6 @@ $(document).ready(function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
       url = '/api/config/department/';
-      alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
       $(".modal-title").text('Add Department');
@@ -110,7 +109,6 @@ $(document).ready(function () {
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
       url = `/api/config/department/${id}/`;
-      alert_msg = 'Update Successfully';
 
       // Open Modal
       // Rename Modal Title
@@ -156,10 +154,7 @@ $(document).ready(function () {
                xhr.setRequestHeader("X-CSRFToken", csrftoken);
             },
             success: function (result) {
-               Toast.fire({
-                  icon: 'success',
-                  title: alert_msg,
-               });
+               toastSuccess('Success');
                table.ajax.reload();
             },
             error: function (xhr, status, error) {
@@ -177,10 +172,7 @@ $(document).ready(function () {
                   $('.select2-selection--single').css('border-color', '#ced4da'); // change border color to light gray
                   $('.dept-head-error').html('')
                }
-               Toast.fire({
-                  icon: 'error',
-                  title: error,
-               });
+               toastError(error);
             },
          }).done(function () {
             $('#formModal').modal('toggle');

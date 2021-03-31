@@ -145,11 +145,7 @@ const getComments = function(ticket, next_page){
          }
          
       }).catch(function (error) { // error
-         console.log(error.response)
-         Toast.fire({
-            icon: 'error',
-            title: error.response,
-         });
+         toastError(error.response)
       });
    }
 };

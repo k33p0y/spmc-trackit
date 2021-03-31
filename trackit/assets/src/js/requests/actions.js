@@ -74,22 +74,13 @@ $(document).ready(function () {
             headers: axiosConfig,
          }).then(function (res) {
             socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: res.data.ticket, notification_type: 'ticket'}}))
-            $.when(
-               Toast.fire({
-                  icon: 'success',
-                  title: 'Success',
-               }),
-               $('.overlay').removeClass('d-none')
-            ).then(function () {
+            $.when(toastSuccess('Success')).then(function () {
                $(location).attr('href', '/requests/lists')
             });
          });
    
       }).catch(function (error) { // error
-         Toast.fire({
-            icon: 'error',
-            title: error,
-         });
+         toastError(error);
       });
    }; 
 });

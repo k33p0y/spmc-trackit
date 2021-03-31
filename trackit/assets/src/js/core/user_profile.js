@@ -54,10 +54,7 @@ $(document).ready(function () {
          // Pass data to save button
          $('#btn_save').data('user-id', res.data.id);
       }).catch(err => {
-         Toast.fire({
-            icon: 'error',
-            title: error,
-         });
+         toastError(error);
       });
    });
 
@@ -83,12 +80,7 @@ $(document).ready(function () {
          headers: axiosConfig,
       }).then(res => { // success
 
-         $.when(
-            Toast.fire({
-               icon: 'success',
-               title: 'Update Successfully',
-            }),
-         ).then(function () {
+         $.when( toastSuccess('Success')).then(function () {
             $('#modal-profile').modal('hide');
             location.reload();
          });
@@ -147,12 +139,7 @@ $(document).ready(function () {
                $("#change-password-form").trigger("reset"); // reset form
                $('#modal-change-password').modal('toggle');
 
-               $.when(
-                  Toast.fire({
-                     icon: 'success',
-                     title: 'Password Changed',
-                  })
-               ).then(function () {
+               $.when(toastSuccess('Password Change')).then(function () {
                   $('#modal-change-password').modal('hide');
                   location.reload();
                });

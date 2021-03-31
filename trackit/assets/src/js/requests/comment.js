@@ -18,10 +18,7 @@ $(function(){
             socket_comment.send(JSON.stringify({comment_id: comment_id}))
             socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: comment_id, notification_type: 'comment'}}))
         }).catch(function (error) { // error
-            Toast.fire({
-                icon: 'error',
-                title: 'Error in creating comment.',
-            });
+            toastError('Error in creating comment.');
         });
     });
 

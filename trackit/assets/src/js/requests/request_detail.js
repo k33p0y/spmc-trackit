@@ -108,10 +108,7 @@ $(document).ready(function () {
             $("#btn_generate").remove()
          }, 1200);
       }).catch(function (error) {
-         Toast.fire({
-            icon: 'error',
-            title: error.response.data,
-         });
+         toastError(error.response.data)
       });
    });
 

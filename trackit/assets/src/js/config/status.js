@@ -67,7 +67,6 @@ $(document).ready(function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
       url = '/api/config/status/';
-      alert_msg = 'Saved Successfully';
 
       $("#formModal").modal();
       $(".modal-title").text('Add Status');
@@ -82,7 +81,6 @@ $(document).ready(function () {
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
       url = `/api/config/status/${id}/`;
-      alert_msg = 'Update Successfully';
 
       // Open Modal
       // Rename Modal Title
@@ -123,10 +121,7 @@ $(document).ready(function () {
             data: data,
             headers: axiosConfig,
          }).then(function (response) { // success
-            Toast.fire({
-               icon: 'success',
-               title: alert_msg,
-            });
+            toastSuccess('Success');
             $('#formModal').modal('toggle');
             $("#form").trigger("reset");
             table.ajax.reload();

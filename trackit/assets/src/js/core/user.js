@@ -128,7 +128,6 @@ $(document).ready(function () {
       method = 'POST';
       action = 'CREATE';
       url = '/api/core/user/';
-      alert_msg = 'Saved Successfully';
       $('.name-group').show() // username, firstname, lastname
       $('.password-group').show() // password1, password2
       $('#btn-change-password').hide () // change passwordlink
@@ -152,7 +151,6 @@ $(document).ready(function () {
       method = 'PUT';
       action = 'UPDATE';
       url = `/core/user/${id}/update`;
-      alert_msg = 'Update Successfully';
       $('.name-group').show()
       $('.password-group').hide()
       $('#btn-change-password').show()
@@ -208,10 +206,7 @@ $(document).ready(function () {
          data: data,
          headers: axiosConfig,
       }).then(function (response) { // success
-         Toast.fire({
-            icon: 'success',
-            title: alert_msg,
-         });
+         toastSuccess('Success');
          
          $("#form").trigger("reset"); // reset form
          $("#select2-department").val('').trigger('change'); // reset permissions select2
@@ -262,10 +257,7 @@ $(document).ready(function () {
          data: data,
          headers: axiosConfig,
       }).then(function (response) { // success
-         Toast.fire({
-            icon: 'success',
-            title: 'Password Changed',
-         });
+         toastSuccess('Password Change');
          
          $("#change-password-form").trigger("reset"); // reset form
          $('#modal-change-password').modal('toggle');

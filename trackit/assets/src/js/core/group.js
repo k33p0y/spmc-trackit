@@ -46,7 +46,6 @@ $(document).ready(function () {
       // Assign Axios Action Type and URL
       action_type = 'POST';
       url = '/api/core/group/';
-      alert_msg = 'Saved Successfully';
 
       $("#select2-permissions").val([]).trigger('change'); // reset select2 before loading modal
 
@@ -63,7 +62,6 @@ $(document).ready(function () {
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
       url = `/api/core/group/${id}/`;
-      alert_msg = 'Update Successfully';
 
       // // Open Modal
       // // Rename Modal Title
@@ -104,11 +102,7 @@ $(document).ready(function () {
             data: data,
             headers: axiosConfig,
          }).then(function (response) { // success
-            Toast.fire({
-                icon: 'success',
-                title: alert_msg,
-            });
-            
+            toastSuccess('Success');            
             $("#form").trigger("reset"); // reset form
             $("#select2-permissions").val([]).trigger('change'); // reset select2
             $('#modal-add-group').modal('toggle');
@@ -121,10 +115,7 @@ $(document).ready(function () {
                 $('#txt-group-name').removeClass('form-error');
                 $('#group-name-error').html('')
             }
-            Toast.fire({
-                icon: 'error',
-                title: error,
-            });
+            toastError(error);
          });
       }
    });

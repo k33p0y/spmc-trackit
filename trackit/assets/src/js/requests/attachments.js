@@ -68,10 +68,10 @@ $(document).ready(function () {
          
          if (type == 'invalid') { // If file is not registered
             this.value = "";
-            Toast.fire({icon: 'error', title: 'File type is not supported!'})
+            toastError('File type is not supported!');
          } else if (size == 'invalid') { // If file is more than 25MB
             this.value = "";
-            Toast.fire({icon: 'error', title: 'File is too big!'})
+            toastError('File is too big!');
          } else {
             file_lists.append(
                `<div class="list-group-item file-row border-0 d-flex p-1 mb-1">
@@ -168,20 +168,12 @@ $(document).ready(function () {
       }).then(function (response) {
          $(this).attr('disabled', true);
 
-         $.when(
-            Toast.fire({
-               icon: 'success',
-               title: 'Update Successfully',
-            }),
-         ).then(function () {
+         $.when(toastSuccess('Success')).then(function () {
             $('.modal-attachment').modal('hide');
             $('#btn_view')[0].click();
          });
       }).catch(function (error) {
-         Toast.fire({
-            icon: 'error',
-            title: error
-         });
+         toastError(error)
       });
    });
 
@@ -206,21 +198,13 @@ $(document).ready(function () {
                url: `/api/requests/attachments/${id}/`,
                headers: axiosConfig
             }).then(function (response) {
-               $.when(
-                  Toast.fire({
-                     icon: 'success',
-                     title: 'Delete Successfully',
-                  }),
-               ).then(function () {
+               $.when(toastSuccess('Success')).then(function () {
                   $('.modal-attachment').modal('hide');
                   $('#btn_view')[0].click();
                   table.ajax.reload();
                });
             }).catch(function (error) {
-               Toast.fire({
-                  icon: 'error',
-                  title: error
-               });
+               toastError(error);
             });
          }
       });      
