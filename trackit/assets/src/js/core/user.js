@@ -168,7 +168,8 @@ $(document).ready(function () {
       $('#txt-firstname').val(dt_data['first_name']); // FIRST NAME
       $('#txt-middlename').val(dt_data['middle_name']); // MIDDLE NAME
       $('#txt-lastname').val(dt_data['last_name']); // LAST NAME
-      $('#txt-suffix').val(dt_data['suffix']); // LAST NAME
+      $('#txt-suffix').val(dt_data['suffix']); // SUFFIX
+      $('#txt-email').val(dt_data['email']); // EMAIL ADDRESS
       if (dt_data['department']) $('#select2-department').val(dt_data['department'].id).trigger('change'); else $('#select2-department').val('').trigger('change'); // DEPARTMENT
       if (dt_data['is_superuser']) $('#chk-superuser-status').prop('checked', true); else $('#chk-superuser-status').prop('checked', false); // IS SUPERUSER
       if (dt_data['is_staff']) $('#chk-staff-status').prop('checked', true); else $('#chk-staff-status').prop('checked', false); // IS STAFF
@@ -179,7 +180,7 @@ $(document).ready(function () {
       $('#btn-change-password').data('user', dt_data)
    });
 
-   // Submit Form
+   // Submit Form 
    $("#btn_save").click(function (e) {
       e.preventDefault();
 
