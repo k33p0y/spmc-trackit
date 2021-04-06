@@ -3,8 +3,9 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 
-from config.models import Category, CategoryType, Department, Status
-from .models import Ticket, RequestForm, Attachment, RequestFormStatus
+from config.models import Category, CategoryType, Department, Status, Remark
+from .models import Ticket, RequestForm, Attachment, RequestFormStatus, Notification, Comment
+from easyaudit.models import CRUDEvent
 
 import json
 
@@ -96,3 +97,74 @@ def view_ticket(request, ticket_id):
       
 def ticket_log_list(request):
    return render(request, 'pages/requests/track.html', {})
+
+# Create notification method
+def create_notification(object_id, ticket, sender):
+   log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
+   groups = ticket.request_form.group.all()
+   requestor = ticket.requested_by
+   date_created = ticket.date_created.replace(microsecond=0)
+   date_modified = ticket.date_modified.replace(microsecond=0)
+
+   for group in groups:
+      users = group.user_set.all()
+      # create notifications for users in selected group
+      for user in users:
+         if not log.user == user:
+            Notification(log=log, user=user).save()
+   # create notification for department head
+   if date_modified == date_created and sender == 'ticket':
+      if ticket.department.department_head:
+         if not log.user == ticket.department.department_head:
+            Notification(log=log, user=ticket.department.department_head).save()
+   if not log.user == requestor:
+      Notification(log=log, user=requestor).save()
+
+# Create notification method
+def create_notification(object_id, ticket, sender):
+   log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
+   groups = ticket.request_form.group.all()
+   requestor = ticket.requested_by
+   date_created = ticket.date_created.replace(microsecond=0)
+   date_modified = ticket.date_modified.replace(microsecond=0)
+
+   for group in groups:
+      users = group.user_set.all()
+      # create notifications for users in selected group
+      for user in users:
+         if not log.user == user:
+            Notification(log=log, user=user).save()
+   # create notification for department head
+   if date_modified == date_created and sender == 'ticket':
+      if ticket.department.department_head:
+         if not log.user == ticket.department.department_head:
+            Notification(log=log, user=ticket.department.department_head).save()
+   if not log.user == requestor:
+      Notification(log=log, user=requestor).save()
+
+# Remark Method
+def create_remark(object_id, ticket):
+   log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
+   remark = Remark(
+      ticket=ticket,
+      status=ticket.status,
+      action_officer=ticket.requested_by,
+      log=log
+   )
+   remark.save()
+
+# Generate reference no
+def generate_reference(form):
+   year = datetime.datetime.now().year
+   ticket = Ticket.objects.filter(request_form=form, date_created__year=year).exclude(reference_no__exact='').order_by('-reference_no').first()
+   
+   if ticket:
+      ref_no = ticket.reference_no.split('-')
+      num_series = int(ref_no[2])+1
+      reference_no = (str(ticket.request_form.prefix)+"-"+str(year)+"-"+str(num_series).zfill(4))
+   else:
+      form = RequestForm.objects.get(id=form)
+      num_series = "0001"
+      reference_no = (str(form.prefix)+"-"+str(year)+"-"+num_series.zfill(4))
+
+   return reference_no

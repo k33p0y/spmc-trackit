@@ -169,6 +169,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Easy Audit configs
 DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS = False # disable URL request (GET, POST, PUT, PATCH) logs
+DJANGO_EASY_AUDIT_CRUD_EVENT_NO_CHANGED_FIELDS_SKIP = True
 DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = [ # list of models that Easy Audit will ignore ('appname.model_name')
     # auth app
     'auth.group',

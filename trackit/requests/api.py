@@ -6,60 +6,12 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, TicketReferenceSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
-from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment, Status
+from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
+from .views import create_notification, create_remark, generate_reference
 from easyaudit.models import CRUDEvent
 from config.models import Remark
 
 import json, uuid, datetime
-
-# Create notification method
-def create_notification(object_id, ticket, sender):
-   log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
-   groups = ticket.request_form.group.all()
-   requestor = ticket.requested_by
-   date_created = ticket.date_created.replace(microsecond=0)
-   date_modified = ticket.date_modified.replace(microsecond=0)
-
-   for group in groups:
-      users = group.user_set.all()
-      # create notifications for users in selected group
-      for user in users:
-         if not log.user == user:
-            Notification(log=log, user=user).save()
-   # create notification for department head
-   if date_modified == date_created and sender == 'ticket':
-      if ticket.department.department_head:
-         if not log.user == ticket.department.department_head:
-            Notification(log=log, user=ticket.department.department_head).save()
-   if not log.user == requestor:
-      Notification(log=log, user=requestor).save()
-
-# Remark Method
-def create_remark(object_id, ticket):
-   log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
-   remark = Remark(
-      ticket=ticket,
-      status=ticket.status,
-      action_officer=ticket.requested_by,
-      log=log
-   )
-   remark.save()
-
-# Generate reference no
-def generate_reference(form):
-   year = datetime.datetime.now().year
-   ticket = Ticket.objects.filter(request_form=form, date_created__year=year).exclude(reference_no__exact='').order_by('-reference_no').first()
-   
-   if ticket:
-      ref_no = ticket.reference_no.split('-')
-      num_series = int(ref_no[2])+1
-      reference_no = (str(ticket.request_form.prefix)+"-"+str(year)+"-"+str(num_series).zfill(4))
-   else:
-      form = RequestForm.objects.get(id=form)
-      num_series = "0001"
-      reference_no = (str(form.prefix)+"-"+str(year)+"-"+num_series.zfill(4))
-
-   return reference_no
 
 class RequestFormViewSet(viewsets.ModelViewSet):    
    serializer_class = RequestFormSerializer
@@ -314,6 +266,8 @@ class CRUDEventList(generics.ListAPIView):
       if ticket_num:
          try:
             ticket = Ticket.objects.get(ticket_no__iexact=ticket_num)
+            # attachments = ticket.attachments_ticket.all().values_list('id', flat=True)
+            # return CRUDEvent.objects.filter(Q(object_id__endswith=str(ticket.ticket_id)[-12:]) | Q(object_id__in=attachments))
             return CRUDEvent.objects.filter(object_id__endswith=str(ticket.ticket_id)[-12:])
          except Ticket.DoesNotExist:
             pass
