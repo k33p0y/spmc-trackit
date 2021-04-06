@@ -10,7 +10,7 @@ from core.models import User
 
 
 def upload_file_url(instance, filename):
-    ticket_no = str(instance.ticket.ticket_id)[-10:].upper()
+    ticket_no = str(instance.ticket.ticket_no)
     return "attachments/{0}/{1}/".format(ticket_no, filename) 
 
 # Create your models here.
