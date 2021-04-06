@@ -7,7 +7,7 @@ from config.models import Category, CategoryType, Department, Status, Remark
 from .models import Ticket, RequestForm, Attachment, RequestFormStatus, Notification, Comment
 from easyaudit.models import CRUDEvent
 
-import json
+import json, uuid, datetime
 
 # Create your views here.
 @login_required

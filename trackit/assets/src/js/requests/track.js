@@ -25,11 +25,6 @@ $(document).ready(function () {
          data: {
             "tracking_num": getTrackingNum,
          },
-         dataSrc: function (json) {
-            return json.data.filter(function (item) {
-               return (item.event_type === "Create") || (item.event_type === "Update" && item.changed_fields.status);
-            });
-         }
       },
       "columns": [
          { 
@@ -59,7 +54,9 @@ $(document).ready(function () {
                   if (row.event_type === "Create") {
                         data = `${row.event_type}`
                   } else if (row.event_type === "Update") {
-                        data = `${row.changed_fields.status[0]}` // index 0 for the current status, 1 for the previous status
+                        if (row.changed_fields.reference_no) data = 'Generate Reference No';
+                        else if (row.changed_fields.status) data = `${row.changed_fields.status[0]}`; // index 0 for the current status, 1 for the previous status
+                        else if (row.changed_fields.form_data) data = 'Update';
                   }
                }
                return data
@@ -68,29 +65,38 @@ $(document).ready(function () {
          {  
             data: null,
             render: function (data, type, row) {
-               let is_approve = JSON.parse(`${row.remarks.is_approve}`);
-               let is_pass = JSON.parse(`${row.remarks.is_pass}`);
+               data = ''
+               if (row.event_type === "Update" && row.changed_fields.status) {
+                  let is_approve = JSON.parse(`${row.remarks.is_approve}`);
+                  let is_pass = JSON.parse(`${row.remarks.is_pass}`);
                
-               if (is_approve != null) { // Has Approve
-                  if (is_approve) {
-                     data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Approved </span>";
-                  } else {
-                     data = "<span class='text-danger'> <i class='fas fa-sm fa-times-circle'></i> Disapproved </span>";
-                  }
-               } else if (is_pass != null) { // Has Pass
-                  if (is_pass) {
-                     data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Passed </span>";
-                  } else {
-                     data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Failed </span>";
-                  }
-               } else {
-                  data = ''
+                  if (is_approve != null) { // Has Approve
+                     if (is_approve) {
+                        data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Approved </span>";
+                     } else {
+                        data = "<span class='text-danger'> <i class='fas fa-sm fa-times-circle'></i> Disapproved </span>";
+                     }
+                  } else if (is_pass != null) { // Has Pass
+                     if (is_pass) {
+                        data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Passed </span>";
+                     } else {
+                        data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Failed </span>";
+                     }
+                  } else data = ''
                }
-
                return data
             },
          }, // APPROVE_PASS
-         { data: "remarks.remark" }, // REMARK
+         { 
+            data: "remarks",
+            render: function (data, type, row) {
+               if (row.event_type === "Update" && row.changed_fields.reference_no) data = `Ref# ${row.changed_fields.reference_no[1]}`
+               else if (row.event_type === "Update" && row.changed_fields.status) data = `${row.remarks.remark}`
+               else if (row.event_type === "Update" && row.changed_fields.form_data) data = 'Change form details'
+               else data = ''
+               return data 
+            }
+         }, // REMARK
          { 
             data: "user",
             render: function (data, type, row) {
