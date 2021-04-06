@@ -93,7 +93,7 @@
                                           </p>
                                           <span class="label">Reference No</span>
                                        </div>
-                                       {% if not ticket.reference_no %}
+                                       {% if not ticket.reference_no and remark.is_approve or user.is_superuser%}
                                           {% if user.is_staff or user.is_superuser %}
                                              {% if curr_step.status != last_step.status or user.is_superuser %}                                              
                                              <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 

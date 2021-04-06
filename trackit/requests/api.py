@@ -192,7 +192,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
 class TicketReferenceAPIView(generics.RetrieveUpdateAPIView):
    serializer_class = TicketReferenceSerializer
-   permission_classes = [permissions.IsAuthenticated]
+   permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
    queryset = Ticket.objects.all()
 
    def partial_update(self, request, pk):
