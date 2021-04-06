@@ -37,7 +37,7 @@ $(document).ready(function () {
             },
          },
          {
-            data: null,
+            data: "is_active",
             render: function (data, type, row) {
                if (type == 'display') {
                   if (row.is_active == true) {
@@ -50,6 +50,7 @@ $(document).ready(function () {
             }
          }
       ],
+      "order": [[0, "asc"]],
    });
  
    // Get Checkbox State

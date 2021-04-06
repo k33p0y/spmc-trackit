@@ -91,6 +91,7 @@ $(document).ready(function () {
             },
          }
       ],
+      "order": [[ 4, "desc" ]],
    }); // table end
 
    // Permissions Select2 Config
