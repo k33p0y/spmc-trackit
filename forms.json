@@ -3,67 +3,56 @@
       "name" : "System Service Request",
       "form_field_json": [
          {
-            "title": "Reference No",
-            "is_admin": true,
-            "form_field": {
-            "id": "txt_referencenoId",
-            "type": "text",
-            "value": null,
-            "option": null,
-            "required": false
-            }
-         },
-         {
             "title": "Request Type",
             "is_admin": false,
             "form_field": {
-            "id": "rad_requesttypeId",
-            "type": "radio",
-            "value": null,
-            "option": [
-               {
-                  "id": "new",
-                  "name": "New"
-               },
-               {
-                  "id": "enhancement",
-                  "name": "Enhancement"
-               }
-            ],
-            "required": true
+               "id": "rad_requesttypeId",
+               "type": "radio",
+               "value": null,
+               "option": [
+                  {
+                     "id": "new",
+                     "name": "New"
+                  },
+                  {
+                     "id": "enhancement",
+                     "name": "Enhancement"
+                  }
+               ],
+               "required": false
             }
          },
          {
             "title": "Module/Menu",
             "is_admin": false,
             "form_field": {
-            "id": "txt_moduleId",
-            "type": "textarea",
-            "value": null,
-            "option": null,
-            "required": true
+               "id": "txt_moduleId",
+               "type": "textarea",
+               "value": null,
+               "option": null,
+               "required": true
             }
          },
          {
             "title": "Summary Of User's Request",
             "is_admin": false,
             "form_field": {
-            "id": "txt_summaryrequestId",
-            "type": "textarea",
-            "value": null,
-            "option": null,
-            "required": true
+               "id": "txt_summaryrequestId",
+               "type": "textarea",
+               "value": null,
+               "option": null,
+               "required": true
             }
          },
          {
             "title": "User Action/Description/Process Flow",
             "is_admin": false,
             "form_field": {
-            "id": "txt_useractionId",
-            "type": "textarea",
-            "value": null,
-            "option": null,
-            "required": true
+               "id": "txt_useractionId",
+               "type": "textarea",
+               "value": null,
+               "option": null,
+               "required": false
             }
          }
       ]
@@ -72,118 +61,120 @@
       "name" : "24/7 System Maintenance & Support",
       "form_field_json": [
          {
-            "title": "Reference No",
-            "is_admin": true,
-            "form_field": {
-            "id": "txt_referencenoId",
-            "type": "text",
-            "value": null,
-            "option": null,
-            "required": false
-            }
-         },
-         {
-            "title": "Technical Findings/Impact",
-            "is_admin": true,
-            "form_field": {
-            "id": "txt_technicalfindingsId",
-            "type": "textarea",
-            "value": null,
-            "option": null,
-            "required": false
-            }
-         },
-         {
-            "title": "Corrective Actions",
-            "is_admin": true,
-            "form_field": [
-            {
-               "id": "chk_correctiveactionsId",
-               "type": "checkbox",
-               "value": null,
-               "option": [
-                  {
-                  "id": "datafixed",
-                  "name": "Data Fixed"
-                  },
-                  {
-                  "id": "programfixed",
-                  "name": "Program Fixed"
-                  }
-               ],
-               "required": false
-            },
-            {
-               "id": "txt_correctiveactionsId",
-               "type": "textarea",
-               "value": null,
-               "option": null,
-               "required" : false
-            }
-            ]
-         },
-         {
-            "title": "Preventive Actions/Recommendations",
-            "is_admin": true,
-            "form_field": {
-            "id": "txt_preventiveActionId",
-            "type": "textarea",
-            "value": null,
-            "option": null,
-            "required": false
-            }
-         },
-         {
             "title": "Type of Error",
             "is_admin": false,
-            "form_field": {
-            "id": "rad_typeoferrorId",
-            "type": "radio",
-            "value": null,
-            "option": [
+            "form_field": [
                {
-                  "id": "usererror",
-                  "name": "User Error"
+                  "id": "rad_typeoferrorId",
+                  "type": "radio",
+                  "value": null,
+                  "option": [
+                     {
+                        "id": "usererror",
+                        "name": "User Error"
+                     },
+                     {
+                        "id": "systemerror",
+                        "name": "System Error"
+                     }
+                  ],
+                  "required": true
                },
                {
-                  "id": "systemerror",
-                  "name": "System Error"
+                  "id": "txt_typeoferrorId",
+                  "type": "text",
+                  "value": null,
+                  "option": null,
+                  "required": true
                }
-            ],
-            "req    uired": true
-            }
+            ]
          },
          {
             "title": "Summary of Incident",
             "is_admin": false,
             "form_field": {
-            "id": "txt_summaryofincidentId",
-            "type": "textarea",
-            "value": null,
-            "option": null,
-            "required": true
+               "id": "txt_summaryofincidentId",
+               "type": "textarea",
+               "value": null,
+               "option": null,
+               "required": true
             }
          },
          {
             "title": "User Action/Process Flow",
             "is_admin": false,
             "form_field": {
-            "id": "txt_useractionId",
-            "type": "textarea",
-            "value": null,
-            "option": null,
-            "required": true
+               "id": "txt_useractionId",
+               "type": "textarea",
+               "value": null,
+               "option": null,
+               "required": true
             }
          },
          {
             "title": "User Findings/Impact",
             "is_admin": false,
             "form_field": {
-            "id": "txt_userfindingsId",
-            "type": "textarea",
-            "value": null,
-            "option": null,
-            "required": true
+               "id": "txt_userfindingsId",
+               "type": "textarea",
+               "value": null,
+               "option": null,
+               "required": false
+            }
+         },
+         {
+            "title": "Technical Findings/Impact",
+            "is_admin": true,
+            "form_field": {
+               "id": "txt_technicalfindingsId",
+               "type": "textarea",
+               "value": null,
+               "option": null,
+               "required": false
+            }
+         },
+         {
+            "title": "Corrective Actions",
+            "is_admin": true,
+            "form_field": [
+               {
+                  "id": "chk_correctiveactionsId",
+                  "type": "checkbox",
+                  "value": null,
+                  "option": [
+                     {
+                        "id": "datafixed",
+                        "name": "Data Fixed"
+                     },
+                     {
+                        "id": "programfixed",
+                        "name": "Program Fixed"
+                     },
+                     {
+                        "id": "others",
+                        "name": "Others"
+                     }
+                  ],
+                  "required": false
+               },
+               {
+                  "id": "txt_correctiveactionsId",
+                  "type": "textarea",
+                  "value": null,
+                  "option": null,
+                  "required": false
+               }
+            ]
+         },
+         {
+            "title": "Preventive Actions/Recommendations",
+            "is_admin": true,
+            "form_field": {
+               "id": "txt_preventiveActionId",
+               "type": "textarea",
+               "value": null,
+               "option": null,
+               "required": false
             }
          }
       ]
