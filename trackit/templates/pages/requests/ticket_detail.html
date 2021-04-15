@@ -209,11 +209,11 @@
                         <div class="card-body p-3">
                            <div class="form-wrapper">
                            {% for form in ticket.request_form.fields %}
-                              {% if form.is_admin != True %}
-                                 {% if form.form_field|length < 4 %}
+                              {% if form.is_admin == False %}
+                                 {% if form.is_multi_field %}
                                     <div class="form-group">
-                                       <label> {{form.title}}  </label>
-                                       <div class="type-group">{% include '../../snippets/fragments/form2.html' %}</div>
+                                       <label> {{form.title}} {% if form.is_required %}<span class="text-danger">*</span>{% endif %} </label>
+                                       <div class="field-wrap {% if form.is_required %} form-field-required {% endif %}">{% include '../../snippets/fragments/form2.html' %}</div>
                                        <small class="error-info" id="error-info-type"></small>
                                     </div>
                                  {% else %}
@@ -242,11 +242,11 @@
                         <div class="card-body p-3">
                            <div class="form-admin-wrapper">
                               {% for form in ticket.request_form.fields %}
-                                 {% if form.is_admin == True %}
-                                    {% if form.form_field|length < 4 %}
+                                 {% if form.is_admin %}
+                                    {% if form.is_multi_field %}
                                        <div class="form-group">
-                                          <label> {{form.title}}  </label>
-                                          <div class="type-group">{% include '../../snippets/fragments/form2.html' %}</div>
+                                          <label> {{form.title}} {% if form.is_required %}<span class="text-danger">*</span>{% endif %} </label>
+                                          <div class="field-wrap {% if form.is_required %} form-field-required {% endif %}">{% include '../../snippets/fragments/form2.html' %}</div>
                                           <small class="error-info" id="error-info-type"></small>
                                        </div>
                                     {% else %}

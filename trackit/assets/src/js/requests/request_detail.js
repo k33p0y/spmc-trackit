@@ -155,6 +155,36 @@ $(document).ready(function () {
             }
          });
       });
+
+      // Validate multiple form field
+      $('.form-field-required').each(function() {
+         let parent = $(this);
+         let field = parent.children('input');
+         let options = parent.children().find('input');
+         
+         // radio or checkbox
+         options.each(function (i, item) {
+            // option name
+            if (item.type === "radio") var option = `input[name='${item.name}']`; // get input name for radio button
+            if (item.type === "checkbox") var option = `.${$(this).prop('class')}`; // get class for checkbox
+              
+            // validate 
+            if ($(`${option}:checked`).length === 0) {
+               parent.next().html('*Please select an option')
+               is_valid = false;
+            } else {
+               field.removeClass('form-error')
+               parent.next().html('');
+            }
+            
+            // textfield
+            if (field.val() == '') {
+               field.addClass('form-error')
+               parent.next().html('*This field may not be blank')
+               is_valid = false;
+            } 
+         });
+      });
       
       return is_valid;
    }
@@ -199,4 +229,5 @@ $(document).ready(function () {
    
       return form_data;
    }
+   
 });

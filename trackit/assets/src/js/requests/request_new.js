@@ -55,52 +55,50 @@
             return data_obj = new Object(response)
          }).then(function (response) { // generate form fields
             let has_admin = 0;
+            let counter = 0;
             
             response.forEach(data => {
                const title = data.title;
                const form_field = data.form_field;
                const is_admin = data.is_admin;
+               const is_required = data.is_required;
+               const is_multi_field = data.is_multi_field;
 
-               if (is_admin === false) {
-                  var form_wrapper = $(".form-wrapper");
-                  console.log(data)
-               }
+               if (is_admin === false) var form_wrapper = $(".form-wrapper");
                if (is_admin === true) {
-                  
                   var form_wrapper = $(".form-admin-wrapper");
                   has_admin++;
                } 
 
-               if (form_field.length > 1) {
-                 
+               // for multiple form fields on each field
+               if (is_multi_field) {  
                   form_wrapper.append(
-                     `<div class="form-group">
-                           <label>${title} </label>
-                           <div class="type-group ${form_field.required ? 'form-option-required' : ''}"></div>
-                           <small class="error-info" id="error-${form_field.id}"></small>
-                        </div>`
-                  );
+                     `<div class="form-group" id="form-group-${counter}">
+                        <label>${title} ${is_required ? '<span class="text-danger">*</span>' : ''}</label>
+                        <div class="field-wrap ${is_required ? 'form-field-required' : ''}"></div>
+                        <small class="error-info" id="error-${form_field.id}"></small>
+                     </div>`
+                  ); 
 
                   form_field.forEach(field => {
-                     if (field.type == "text") {
-                        $(".type-group").append(`<input type="text" class="form-control form-control-sm ${field.required ? 'form-text-required' : ''}" id="${field.id}" placeholder="Enter ${title}">`);
-                     }
+                     if (field.type == "text") 
+                        $(`#form-group-${counter} .field-wrap`).append(`<input type="text" class="form-control form-control-sm" id="${field.id}" placeholder="Enter ${title}">`);
                      if (field.type == "textarea") {
-                        $(".type-group").append(`<textarea class="form-control form-control-sm ${field.required ? 'form-text-required' : ''}" id="${field.id}" placeholder="Enter ${title}" rows="2"></textarea>`);
+                        $(`#form-group-${counter} .field-wrap`).append(`<textarea class="form-control form-control-sm" id="${field.id}" placeholder="Enter ${title}" rows="2"></textarea>`);
                      }
                      if (field.type == "radio") {
                         field.option.forEach(opt => {
-                           $(".type-group").append(
+                           $(`#form-group-${counter} .field-wrap`).append(
                               `<div class="icheck-material-orange icheck-inline m-0 mr-3">
-                              <input type="radio" id="${opt.id}" name="${field.id}" />
-                              <label for="${opt.id}">${opt.name}</label>
-                           </div>`
+                                 <input type="radio" id="${opt.id}" name="${field.id}" />
+                                 <label for="${opt.id}">${opt.name}</label>
+                              </div>`
                            );
                         });
                      }
                      if (field.type == "checkbox") {
                         field.option.forEach(opt => {
-                           $(".type-group").append(
+                           $(`#form-group-${counter} .field-wrap`).append(
                               `<div class="icheck-material-orange icheck-inline m-0 mr-3">
                                  <input type="checkbox" id="${opt.id}" class="${field.id}"/>
                                  <label for="${opt.id}">${opt.name}</label>
@@ -109,58 +107,59 @@
                         });
                      }
                   });
+                  counter++;
 
                } else {
                   if (form_field.type == "text") {
                      form_wrapper.append(
                         `<div class=" form-group">
-                              <label> ${title} ${form_field.required ? '<span class="text-danger">*</span>' : ''}</label>
-                              <input type="text" class="form-control form-control-sm ${form_field.required ? 'form-text-required' : ''}" id="${form_field.id}" placeholder="Enter ${title}">
-                              <small class="error-info" id="error-${form_field.id}"></small>
-                           </div>`
+                           <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''}</label>
+                           <input type="text" class="form-control form-control-sm ${is_required ? 'form-text-required' : ''}" id="${form_field.id}" placeholder="Enter ${title}">
+                           <small class="error-info" id="error-${form_field.id}"></small>
+                        </div>`
                      );
                   }
                   if (form_field.type == "textarea") {
                      form_wrapper.append(
                         `<div class=" form-group">
-                              <label> ${title} ${form_field.required ? '<span class="text-danger">*</span>' : ''} </label>
-                              <textarea class="form-control form-control-sm ${form_field.required ? 'form-text-required' : ''}" id="${form_field.id}" placeholder="Enter ${title}" rows="2"></textarea>
-                              <small class="error-info" id="error-${form_field.id}"></small>
-                           </div>`
+                           <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''} </label>
+                           <textarea class="form-control form-control-sm ${is_required ? 'form-text-required' : ''}" id="${form_field.id}" placeholder="Enter ${title}" rows="2"></textarea>
+                           <small class="error-info" id="error-${form_field.id}"></small>
+                        </div>`
                      );
                   }
                   if (form_field.type == "radio") {
                      form_wrapper.append(
                         `<div class="form-group">
-                              <label> ${title} ${form_field.required ? '<span class="text-danger">*</span>' : ''}</label>
-                              <div class="radio-group ${form_field.required ? 'form-option-required' : ''}"></div>
-                              <small class="error-info" id="error-${form_field.id}"></small>
-                           </div>`
+                           <label> ${title} ${is_required? '<span class="text-danger">*</span>' : ''}</label>
+                           <div class="radio-group ${is_required ? 'form-option-required' : ''}"></div>
+                           <small class="error-info" id="error-${form_field.id}"></small>
+                        </div>`
                      );
                      form_field.option.forEach(opt => {
                         $(".radio-group").append(
                            `<div class="icheck-material-orange icheck-inline m-0 mr-3">
-                                 <input type="radio" id="${opt.id}" name="${form_field.id}"/>
-                                 <label for="${opt.id}">${opt.name}</label>
-                              </div>`
+                              <input type="radio" id="${opt.id}" name="${form_field.id}"/>
+                              <label for="${opt.id}">${opt.name}</label>
+                           </div>`
                         );
                      });
                   }
                   if (form_field.type == "checkbox") {
                      form_wrapper.append(
                         `<div class=" form-group">
-                              <label> ${title} ${form_field.required ? '<span class="text-danger">*</span>' : ''}</label>
-                              <div class="check-group ${form_field.required ? 'form-option-required' : ''}"></div>
-                              <small class="error-info" id="error-${form_field.id}"></small>
-                           </div>`
+                           <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''}</label>
+                           <div class="check-group ${is_required ? 'form-option-required' : ''}"></div>
+                           <small class="error-info" id="error-${form_field.id}"></small>
+                        </div>`
                      );
 
                      form_field.option.forEach(opt => {
                         $(".check-group").append(
                            `<div class="icheck-material-orange icheck-inline m-0 mr-3">
-                                 <input type="checkbox" id="${opt.id}" class="${form_field.id}"/>
-                                 <label for="${opt.id}">${opt.name}</label>
-                              </div>`
+                              <input type="checkbox" id="${opt.id}" class="${form_field.id}"/>
+                              <label for="${opt.id}">${opt.name}</label>
+                           </div>`
                         );
                      });
                   }
@@ -278,6 +277,37 @@
                   parent.next().html('');
                }
             });
+         });
+
+         // Validate multiple form field
+         $('.form-field-required').each(function() {
+            let parent = $(this);
+            let field = parent.children('input');
+            let options = parent.children().find('input');
+            
+            // radio or checkbox
+            options.each(function (i, item) {
+               // option name
+               if (item.type === "radio") var option = `input[name='${item.name}']`; // get input name for radio button
+               if (item.type === "checkbox") var option = `.${$(this).prop('class')}`; // get class for checkbox
+                 
+               // validate 
+               if ($(`${option}:checked`).length === 0) {
+                  parent.next().html('*Please select an option')
+                  is_valid = false;
+               } else {
+                  field.removeClass('form-error')
+                  parent.next().html('');
+               }
+               
+               // textfield
+               if (field.val() == '') {
+                  field.addClass('form-error')
+                  parent.next().html('*This field may not be blank')
+                  is_valid = false;
+               } 
+            });
+
          });
          
          return is_valid;
