@@ -66,12 +66,12 @@
                         <div class="form-row">
                            <div class="form-group col-md-12">
                               <label>Title / Description <span class="text-danger">*</span></label>
-                              <input type="text" class="form-control form-control-sm" placeholder="Enter request title or description" id="txt_description">
+                              <input type="text" class="form-control form-control-sm form-text-required" placeholder="Enter request title or description" id="txt_description">
                               <small class="error-info" id="error-info-desc"></small>
                            </div>
                            <div class="form-group col-md-4">
                               <label>Request Form <span class="text-danger">*</span></label>
-                              <select class="form-control form-control-sm" id="dd_forms" style="width: 100%">
+                              <select class="form-control form-control-sm form-select-required" id="dd_forms" style="width: 100%">
                                  <option></option>
                                  {% for form in forms %}
                                  <option value={{form.id}}>{{form.name}}</option>
@@ -81,14 +81,14 @@
                            </div>
                            <div class="form-group col-md-4">
                               <label>Category Type <span class="text-danger">*</span></label>
-                              <select class="form-control form-control-sm" id="dd_types" style="width: 100%" disabled>
+                              <select class="form-control form-control-sm form-select-required" id="dd_types" style="width: 100%" disabled>
                                  <option></option>
                               </select>
                               <small class="error-info" id="error-info-type"></small>
                            </div>
                            <div class="form-group col-md-4">
                               <label>Category <span class="text-danger">*</span></label>
-                              <select class="form-control form-control-sm" id="dd_categories" style="width: 100%" disabled>
+                              <select class="form-control form-control-sm form-select-required" id="dd_categories" style="width: 100%" disabled>
                                  <option></option>
                               </select>
                               <small class="error-info" id="error-info-category"></small>

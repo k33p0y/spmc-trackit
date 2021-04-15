@@ -1,20 +1,20 @@
 {% for field in form.form_field %}
     {% for data in ticket.form_data %}
         {% if field.type == 'text' and field.id == data.id  %}
-        <input type="text" class="form-control form-control-sm form_field_detail" id="{{field.id}}" value="{{data.value}}" placeholder="Enter {{field.name}}" {% if field.required == True %} required {% endif %}>
+        <input type="text" class="form-control form-control-sm form_field_detail" id="{{field.id}}" value="{{data.value}}" placeholder="Enter {{form.title}}">
         {% elif field.type == 'textarea' and field.id == data.id  %}
-        <textarea class="form-control form-control-sm form_field_detail" id="{{field.id}}" placeholder="Enter {{field.name}}" rows="2" {% if field.required == True %} required {% endif %}>{{data.value}}</textarea>
+        <textarea class="form-control form-control-sm form_field_detail" id="{{field.id}}" placeholder="Enter {{form.title}}" rows="2">{{data.value}}</textarea>
         {% elif field.type == 'radio' and field.id == data.id  %}
-        <div class="radio-group form_field_detail" id="{{field.id}}" data-required-id="{{field.required}}">
+        <div class="radio-group form_field_detail" id="{{field.id}}">
             {% for opt in data.value %}
             <div class="icheck-material-orange icheck-inline m-0 mr-3 form_field_detail">
                 <input type="radio" id="{{opt.id}}" name="{{field.id}}" {% if opt.option_value == True %} checked {% endif %} />
-                <label for="{{opt.id}}">{{opt.name}}</label>
+                <label for="{{opt.option_id}}">{{opt.option_name}}</label>
                 </div>
             {% endfor %}
         </div>
         {% elif field.type == 'checkbox' and field.id == data.id  %}
-        <div class="check-group form_field_detail" id="{{field.id}}" data-required-id="{{field.required}}">
+        <div class="check-group form_field_detail" id="{{field.id}}">
             {% for opt in data.value %}
             <div class="icheck-material-orange icheck-inline m-0 mr-3">
                 <input type="checkbox" id="{{opt.option_id}}" {% if opt.option_value == True %} checked {% endif %} />

@@ -411,7 +411,9 @@ $(document).ready(function () {
                "required" : false
             }
          ],
-         "is_admin": true
+         "is_admin": true,
+         "is_required": true,
+         "is_multi_field": false,
       }]
 
       $('#txt_typename').removeClass('form-error').val('');
