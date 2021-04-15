@@ -7,8 +7,8 @@
         {% elif field.type == 'radio' and field.id == data.id  %}
         <div class="radio-group form_field_detail" id="{{field.id}}">
             {% for opt in data.value %}
-            <div class="icheck-material-orange icheck-inline m-0 mr-3 form_field_detail">
-                <input type="radio" id="{{opt.id}}" name="{{field.id}}" {% if opt.option_value == True %} checked {% endif %} />
+            <div class="icheck-material-orange icheck-inline m-0 mr-3">
+                <input type="radio" id="{{opt.option_id}}" name="{{field.id}}" {% if opt.option_value == True %} checked {% endif %} />
                 <label for="{{opt.option_id}}">{{opt.option_name}}</label>
                 </div>
             {% endfor %}

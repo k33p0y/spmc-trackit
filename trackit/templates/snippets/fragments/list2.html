@@ -7,13 +7,10 @@
             <p class="p-0 m-0 text-right">
                 {% for opt in data.value %}
                     {% if opt.option_value == True %} 
-                        {% if not forloop.first %}
-                            {% if forloop.last %} & {% else %}, {% endif %}
-                        {% endif %}
                         {{opt.option_name}}
                     {% endif %}
                 {% endfor %}
-            </p>    
+            </p>
             {% endif %}                
         {% endif %}
     {% endfor %}
