@@ -567,3 +567,7 @@ table.dataTable tbody tr:hover {
    height: 0.75rem !important;
    border-width: .2em !important;
 }
+
+.alert-debug {
+   border-radius: 0 !important;
+}

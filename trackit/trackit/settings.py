@@ -28,6 +28,7 @@ DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
+INTERNAL_IPS = config('INTERNAL_IPS')
 
 # Application definition
 
