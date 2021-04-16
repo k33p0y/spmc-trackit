@@ -20,7 +20,7 @@
                   <div class="form-group">
                      <label>Remarks</label>
                      <textarea class="form-control" id="txtarea-remark" rows="2" placeholder="Write your remarks here"></textarea>
-                     <small class="error-info" id="error-info-form"></small>
+                     <small class="text-muted d-block" id="error-info-remark">Optional. Maximum of 100 characters only.</small>
                   </div>
                   {{is_head_approval}}
                   {% if curr_step.status != last_step.status or user.is_superuser %}
