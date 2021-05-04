@@ -19,7 +19,6 @@
                {{user.first_name}} {{user.last_name}}
                <span class="online-status"><i class="fas fa-circle"></i></span> 
             </a>
-           
          </div>
       </div>
       
@@ -170,15 +169,13 @@
                </a>
             </li>
 
-            {% comment %}
-            <!-- <li class="nav-item">
-               <a href="{% url 'archive' %}"
-                  class="nav-link {% if url == 'archive' %} active {% endif %}">
-                  <i class="nav-icon fas fa-trash"></i>
-                  <p> Archive</p>
+            <li class="nav-item">
+               <a href="{% static 'user_guide.pdf' %}"
+                  class="nav-link" target="_blank">
+                  <i class="nav-icon fas fa-book"></i>
+                  <p> User Guide</p>
                </a>
-            </li> -->
-            {% endcomment %}
+            </li>
 
          </ul>
       </nav>
