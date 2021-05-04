@@ -18,8 +18,8 @@ $(document).ready(function () {
       let remark = $('#txtarea-remark').val();
       let is_approve = ($(this).data().approve) ? true : '';
       let is_pass = ($(this).data().pass) ? true : '';
-
-      postAction(ticket_id, status, remark, is_approve, is_pass);
+      
+      if (validateRemark()) postAction(ticket_id, status, remark, is_approve, is_pass);
    });
 
    // Refuse action
@@ -39,17 +39,19 @@ $(document).ready(function () {
          status = $('#dd_steps option:last-child').val();
       }
 
-      Swal.fire({
-         title: 'Are you sure?',
-         icon: 'question',
-         showCancelButton: true,
-         confirmButtonText: 'OK',
-         confirmButtonColor: '#17a2b8',
-      }).then((result) => {
-         if (result.value) {
-            postAction(ticket_id, status, remark, is_approve, is_pass);
-         }
-      })
+      if (validateRemark()){
+         Swal.fire({
+            title: 'Are you sure?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#17a2b8',
+         }).then((result) => {
+            if (result.value) {
+               postAction(ticket_id, status, remark, is_approve, is_pass);
+            }
+         })
+      }
    });
 
     // Post Action
@@ -83,4 +85,22 @@ $(document).ready(function () {
          toastError(error);
       });
    }; 
+
+   const validateRemark = function() {
+      is_valid = true;
+
+      if ($('#txtarea-remark').val()) {
+         if ($('#txtarea-remark').val().length > 100) {
+            $('#txtarea-remark').addClass('form-error')
+            $('#error-info-remark').addClass('error-info').html('*This text is too long, Maximum of 100 characters only')
+            is_valid = false
+         } else {
+            $('#txtarea-remark').removeClass('form-error')
+            $('#error-info-remark').removeClass('error-info').html('Optional, Maximum of 100 characters only')
+         }
+      } 
+
+      return is_valid
+   }
 });
+

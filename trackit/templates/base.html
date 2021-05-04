@@ -5,7 +5,7 @@
    <meta charset="utf-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-   <title> {% block title %} {% endblock %} Trackit</title>
+   <title> {% block title %} {% endblock %} TrackIt</title>
 
    <!-- Tell the browser to be responsive to screen width -->
    <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,7 +29,15 @@
 
       <!-- Main Content -->
       <div class="content-wrapper">
+               
+         {% if debug %} 
+         <div class="alert alert-danger alert-debug p-1 m-0 text-center text-small" role="alert">
+            This web app is hosted on <strong>test server!</strong> 
+         </div>
+         {% endif %}
+
          {% block content %} {% endblock %}
+         
       </div>
 
    </div>

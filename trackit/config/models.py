@@ -36,7 +36,7 @@ class Status(models.Model):
         return self.name
 
 class Remark(models.Model):
-    remark = models.CharField(max_length=50)
+    remark = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)
     ticket = models.ForeignKey('requests.Ticket', related_name='remarks', on_delete=models.CASCADE)
     action_officer = models.ForeignKey(User, related_name='all_remarks', on_delete=models.CASCADE)
