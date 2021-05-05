@@ -173,11 +173,9 @@
       });
    
       $('#dd_types').on('change', function () { // category type dropdown
-         category_type = $("#dd_types option:selected").val();
-
          axios.get('/api/config/category', {
             params: {
-               "category_type" : category_type,
+               "category_type" : $("#dd_types").val(),
                "is_active" : 0
             }
          }, axiosConfig).then(res => {
@@ -192,10 +190,6 @@
          });
       });
    
-      $('#dd_categories').on('change', function () { // categories dropdown
-         category = $("#dd_categories option:selected").val();
-      });
-
       // Submit Form
       $("#btn_submit").click(function (e) {
          e.preventDefault();      
@@ -208,7 +202,7 @@
             data.request_form = request_form;
             data.description = $('#txt_description').val();
             data.form_data = getFormValues(data_obj);
-            data.category = category;
+            data.category = $("#dd_categories").val();
             
             axios({
                method: 'POST',

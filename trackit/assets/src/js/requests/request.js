@@ -61,16 +61,15 @@ $(document).ready(function () {
          { 
             data: "description",
             render: $.fn.dataTable.render.ellipsis(60, true),
-            width: "25%"
+            width: "20%"
          }, // Description
          {
             data: "category",
             render: function (data, type, row) {
                if (type == 'display') {
-                  let category = row.category.name
-                  let category_type = row.category.category_type.name
-                  
-                  data = `<p class="title">${category}</p> <span class="sub-title">${category_type}</span>`
+                  const categories = row.category.map((category) => {return category.name});
+                  const type = row.category.map((category) => {return category.category_type_name});                     
+                  data = `<p class="title">${categories.join(', ')}</p> <span class="sub-title">${type[0]}</span>`
                }
                return data
             },

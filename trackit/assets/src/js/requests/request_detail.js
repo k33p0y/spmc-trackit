@@ -1,4 +1,20 @@
 $(document).ready(function () {
+   $('#select2_types').select2();
+   $('#select2_categories').select2({});
+
+   // Load Dropdown Category Type
+   axios.get( `/api/requests/lists/${$(".ticket-no").data().ticketId}/`).then(result => {
+      const type = result.data.category.map((category) => {return category.category_type_id});
+      const categories = result.data.category.map((category) => {return category.id});
+
+      $('#select2_types').val(type[0]).select2();
+      $('#select2_categories').val(categories).select2({
+         allowClear: true,
+         placeholder: 'Select category',
+         sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
+      });
+   });
+   
    // show admin field wrapper 
    if ($('#row-field-admin .form-admin-wrapper').children().length > 0) {
       $('#row-field-admin').removeClass("d-none");
@@ -8,19 +24,6 @@ $(document).ready(function () {
    $('.file-type').each((index, element) => {
       let file_type = fileType($(element).data().mimetype, media_type);
       $(element).addClass(file_type);
-   });
-
-   $('#select2_types').select2({ // department select2
-      allowClear: true,
-      placeholder: 'Select category Type',
-      cache: true,
-   });
-
-   $('#select2_categories').select2({ // categories select2
-      allowClear: true,
-      placeholder: 'Select category',
-      cache: true,
-      sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
    });
 
    // SElECT ON CHANGE EVENT
@@ -44,12 +47,6 @@ $(document).ready(function () {
       });
    });
 
-   var category = $("#select2_categories option:selected").val();
-   $('#select2_categories').on('change', function () { // categories dropdown
-      category = $($(this), "option:selected").val();
-   });
-   
-
    $("#btn_update").click(function (e) {
       e.preventDefault();
 
@@ -61,7 +58,7 @@ $(document).ready(function () {
          data = new Object();
          data.form_data = getFormDetailValues();
          data.description = $('#txt_description').val();
-         data.category = category;
+         data.category = $('#select2_categories').val();
          data.is_active = ($('#is_active_switch').is(":checked")) ? true : false;
 
          axios({

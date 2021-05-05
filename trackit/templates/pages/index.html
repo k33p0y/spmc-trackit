@@ -69,7 +69,7 @@
                         <tr>
                            <th>Ticket No</th>
                            <th>Request Type</th>
-                           <th>Category</th>
+                           <th>Description</th>
                            <th>Status</th>
                            <th>Requested By</th>
                         </tr>
@@ -77,9 +77,9 @@
                      <tbody>
                         {% for ticket in tickets %}
                         <tr>
-                           <td>{{ticket.ticket_no}}</td>
+                           <td> <a href="{% url 'view_ticket' ticket.ticket_id %}" class='btn-link-orange action-link btn_view'>{{ticket.ticket_no}}</a></td>
                            <td><h6 class="m-0"><span class="badge text-light p-1" style="background-color:{{ticket.request_form.color}}">{{ticket.request_form}}</span></h6></td>
-                           <td>{{ticket.category}}</td>
+                           <td>{{ticket.description}}</td>
                            <td>{{ticket.status}}</td>
                            <td>{{ticket.requested_by}}</td>
                         </tr>

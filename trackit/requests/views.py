@@ -35,11 +35,12 @@ def create_ticket(request):
 @permission_required('requests.change_ticket', raise_exception=True)
 def detail_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
+   ticket_categories = ticket.category.all()
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') 
    
    if steps.latest('order').status.id != ticket.status.id or request.user.is_superuser:
-      forms= RequestForm.objects.filter(is_active=True).order_by('name')
-      categories = Category.objects.filter(category_type=ticket.category.category_type, is_active=True).order_by('name')
+      forms= RequestForm.objects.prefetch_related('status', 'group', 'category_types').filter(is_active=True).order_by('name')
+      categories = Category.objects.filter(category_type=ticket_categories[0].category_type, is_active=True).order_by('name')
       types = ticket.request_form.category_types.filter(is_active=True).order_by('name')
       attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
 
@@ -73,6 +74,7 @@ def detail_ticket(request, ticket_id):
 @permission_required('requests.view_ticket', raise_exception=True)
 def view_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
+   categories = ticket.category.all()
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
 
@@ -90,6 +92,7 @@ def view_ticket(request, ticket_id):
 
    context = {
       'ticket': ticket, 
+      'categories' : categories,
       'attachments':attachments, 
       'steps':steps, 
       'curr_step':curr_step, 
