@@ -107,7 +107,6 @@ class TicketViewSet(viewsets.ModelViewSet):
       search = self.request.query_params.get('search', None)
       request_form = self.request.query_params.get('request_form', None)
       category_type = self.request.query_params.get('category_type', None)
-      category = self.request.query_params.get('category', None)
       department = self.request.query_params.get('department', None)
       status = self.request.query_params.get('status', None)
       date_from = self.request.query_params.get('date_from', None)
@@ -119,18 +118,17 @@ class TicketViewSet(viewsets.ModelViewSet):
       else:        
          # Queryset
          if self.request.user.is_superuser:
-            qs = Ticket.objects.select_related('request_form', 'department', 'category', 'requested_by', 'status')
+            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status')
          elif self.request.user.is_staff:
             groups = list(self.request.user.groups.all())
-            qs = Ticket.objects.select_related('request_form', 'department', 'category', 'requested_by', 'status').filter(request_form__group__in=groups)
+            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(request_form__group__in=groups)
          else: 
-            qs = Ticket.objects.select_related('request_form', 'department', 'category', 'requested_by', 'status').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user), is_active=True)
+            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user), is_active=True)
          
          # Parameters
          if search: qs = qs.filter(Q(ticket_no__icontains=search) | Q(reference_no__icontains=search) | Q(description__icontains=search))
          if request_form: qs = qs.filter(request_form_id__exact=request_form)
          if category_type: qs = qs.filter(category__category_type_id__exact=category_type)
-         if category: qs = qs.filter(category_id__exact=category)
          if department: qs = qs.filter(department_id__exact=department)
          if status: qs = qs.filter(status_id__exact=status)
          if date_from: qs = qs.filter(date_created__gte=date_from)
@@ -155,12 +153,12 @@ class TicketViewSet(viewsets.ModelViewSet):
          request_form_id=request_form,
          description=description, 
          form_data=form_data, 
-         category_id=category, 
          department=self.request.user.department,
          requested_by=self.request.user,
          status=status, 
          ticket_no=ticket_no
       )
+      ticket.category.add(*request.data['category'])
 
       create_notification(str(ticket.ticket_id), ticket, 'ticket')  # Create notification instance
       create_remark(str(ticket.ticket_id), ticket) # Create initial remark
@@ -175,6 +173,9 @@ class TicketViewSet(viewsets.ModelViewSet):
       ticket.category_id = request.data['category']
       ticket.is_active = request.data['is_active']
       ticket.save()
+
+      ticket.category.clear()
+      ticket.category.add(*request.data['category'])
 
       create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
       

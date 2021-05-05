@@ -39,7 +39,7 @@ class Ticket(models.Model):
     form_data = JSONField()
     
     request_form = models.ForeignKey(RequestForm, related_name='formtype_tickets', on_delete=models.PROTECT)
-    category = models.ForeignKey(Category, related_name='category_tickets', on_delete=models.CASCADE, null=True)
+    category = models.ManyToManyField(Category, related_name='category_tickets', blank=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     requested_by = models.ForeignKey(User, related_name='user_tickets', on_delete=models.PROTECT)
     status = models.ForeignKey(Status, related_name='status_tickets', on_delete=models.SET_NULL, null=True, blank=True)

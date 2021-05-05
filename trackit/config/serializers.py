@@ -35,10 +35,23 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'is_active', 'category_type']
         datatables_always_serialize = ('id',)
 
-
     def to_representation(self, instance):
         self.fields['category_type'] =  CategoryTypeSerializer(read_only=True)
         return super(CategorySerializer, self).to_representation(instance)
+
+class CategoryReadOnlySerializer(serializers.BaseSerializer):
+
+    class Meta:
+        model = Category
+        fields = ['name', 'category_type']
+
+    def to_representation(self, instance):
+        return {
+            'id': instance.id,
+            'name': instance.name,
+            'category_type_id': instance.category_type.id,
+            'category_type_name': instance.category_type.name
+        }
 
 class StatusSerializer(serializers.ModelSerializer):
     

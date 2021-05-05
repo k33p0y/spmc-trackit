@@ -4,7 +4,7 @@ from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attach
 from config.models import Department, Status, Remark
 from core.models import User
 from core.serializers import GroupReadOnlySerializer
-from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer
+from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer
 from django.db import transaction
 from easyaudit.models import CRUDEvent
 
@@ -41,6 +41,7 @@ class StatusReadOnlySerializer(serializers.ModelSerializer):
 
 class TicketSerializer(serializers.ModelSerializer):
    requested_by = UserSerializer(read_only=True)
+   category = CategoryReadOnlySerializer(many=True, read_only=True)
 
    class Meta:
       model = Ticket
@@ -51,7 +52,6 @@ class TicketSerializer(serializers.ModelSerializer):
       self.fields['status'] = StatusReadOnlySerializer(read_only=True)
       self.fields['department'] = DepartmentSerializer(read_only=True)
       self.fields['request_form'] = RequestFormReadOnlySerializer(read_only=True)
-      self.fields['category'] = CategorySerializer(read_only=True)
       return super(TicketSerializer, self).to_representation(instance)
 
 class TicketReferenceSerializer(serializers.ModelSerializer):
