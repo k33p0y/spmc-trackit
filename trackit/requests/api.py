@@ -178,7 +178,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
       ticket.category.clear()
       ticket.category.add(*request.data['category'])
-
+         
       create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
       
       serializer = TicketSerializer(ticket)
@@ -269,9 +269,21 @@ class CRUDEventList(generics.ListAPIView):
       if ticket_num:
          try:
             ticket = Ticket.objects.get(ticket_no__iexact=ticket_num)
+         
+            # CREATE = 1
+            # UPDATE = 2
+            # DELETE = 3
+            # M2M_CHANGE = 4
+            # M2M_CHANGE_REV = 5
+            # M2M_ADD = 6
+            # M2M_ADD_REV = 7
+            # M2M_REMOVE = 8
+            # M2M_REMOVE_REV = 9
+            event_types = list([1, 2, 3])
+
             # attachments = ticket.attachments_ticket.all().values_list('id', flat=True)
             # return CRUDEvent.objects.filter(Q(object_id__endswith=str(ticket.ticket_id)[-12:]) | Q(object_id__in=attachments))
-            return CRUDEvent.objects.filter(object_id__endswith=str(ticket.ticket_id)[-12:])
+            return CRUDEvent.objects.filter(object_id__endswith=str(ticket.ticket_id)[-12:], event_type__in=event_types)
          except Ticket.DoesNotExist:
             pass
       return CRUDEvent.objects.none()
