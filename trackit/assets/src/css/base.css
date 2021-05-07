@@ -390,11 +390,19 @@ table.dataTable tbody tr:hover {
 .select2-container--default.select2-container--focus .select2-selection--multiple {
    border-color: #ff8f34b6 !important;
 }
-/* 
-.select2-container--default .select2-selection--single,
-.select2-container--default .select2-selection--multiple  {
-   border-color: #dc3546a2 !important;
-} */
+.select2-container--default .select2-results__option--highlighted[aria-selected], 
+.select2-container--default .select2-results__option--highlighted[aria-selected]:hover {
+   background-color: #FD7E14;
+   color: #fff;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+   background-color: #FD7E14;
+   border-color: #e77619;
+   color: #fff;
+   padding: 0 10px;
+   margin-top: .31rem;
+   font-size: 12px;
+}
 
 .select2-container--default .select2-selection--single {
    font-size: 12px !important;
