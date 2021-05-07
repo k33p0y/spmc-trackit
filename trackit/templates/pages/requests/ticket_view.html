@@ -200,20 +200,7 @@
                            </ul>
                         </div>
                      </div>
-                     <li class="list-group-item d-flex p-3">
-                        <div class="mr-auto">Category</div>
-                        <div style="width: 60% !important;">
-                           <p class="p-0 m-0 text-right font-weight-bold">
-                           {% for category in ticket.category.all %}
-                              {% if not forloop.first %}
-                                 {% if forloop.last %} & {% else %}, {% endif %}
-                              {% endif %}
-                              {{ category }}
-                           {% endfor %}
-                           </p>
-                           <p class="p-0 m-0 text-right"> {% for category in ticket.category.all %}{% if forloop.first %} {{category.category_type}} {% endif %}{% endfor %}</p>
-                        </div>
-                     </li>            </div>
+                  </div>
                </div>
             </div>
             <div class="row" id="row-attachment">

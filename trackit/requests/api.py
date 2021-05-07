@@ -107,6 +107,7 @@ class TicketViewSet(viewsets.ModelViewSet):
       search = self.request.query_params.get('search', None)
       request_form = self.request.query_params.get('request_form', None)
       category_type = self.request.query_params.get('category_type', None)
+      category = self.request.query_params.get('category', None)
       department = self.request.query_params.get('department', None)
       status = self.request.query_params.get('status', None)
       date_from = self.request.query_params.get('date_from', None)
@@ -128,7 +129,8 @@ class TicketViewSet(viewsets.ModelViewSet):
          # Parameters
          if search: qs = qs.filter(Q(ticket_no__icontains=search) | Q(reference_no__icontains=search) | Q(description__icontains=search))
          if request_form: qs = qs.filter(request_form_id__exact=request_form)
-         if category_type: qs = qs.filter(category__category_type_id__exact=category_type)
+         if category_type: qs = qs.filter(category__category_type_id__exact=category_type).distinct()
+         if category: qs = qs.filter(category__exact=category)
          if department: qs = qs.filter(department_id__exact=department)
          if status: qs = qs.filter(status_id__exact=status)
          if date_from: qs = qs.filter(date_created__gte=date_from)

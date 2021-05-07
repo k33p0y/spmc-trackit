@@ -74,6 +74,7 @@ $(document).ready(function () {
                return data
             },
             width: "20%"
+            
          }, // Category
          { 
             data: "reference_no",
