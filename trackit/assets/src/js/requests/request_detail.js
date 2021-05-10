@@ -1,6 +1,12 @@
 $(document).ready(function () {
    $('#select2_types').select2();
    $('#select2_categories').select2({});
+   $('.form-datetime').datetimepicker({
+      icons: {
+         time: 'fas fa-clock',
+         date:'fas fa-calendar',
+      }
+   });
 
    // Load Dropdown Category Type
    axios.get( `/api/requests/lists/${$(".ticket-no").data().ticketId}/`).then(result => {

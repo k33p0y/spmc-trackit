@@ -11,6 +11,12 @@
         <textarea class="form-control form-control-sm form_field_detail {% if form.is_required %} form-text-required {% endif %}" id="{{form.form_field.id}}" placeholder="Enter {{form.title}}" rows="2">{{data.value}}</textarea>
         <small class="error-info" id="error-info-type"></small>
     </div>
+    {% elif form.form_field.type == 'datetime' and form.form_field.id == data.id  %}
+    <div class="form-group">
+        <label> {{form.title}} {% if form.is_required %}<span class="text-danger">*</span>{% endif %} </label>
+        <input type="text" class="form-control form-control-sm form_field_detail form-datetime {% if form.is_required %} form-text-required {% endif %}" id="{{form.form_field.id}}" value="{{data.value}}" placeholder="Enter {{form.title}}">
+        <small class="error-info"></small>
+    </div>
     {% elif form.form_field.type == 'radio' and form.form_field.id == data.id  %}
     <div class="form-group">
         <label> {{form.title}} </label>

@@ -128,6 +128,21 @@
                         </div>`
                      );
                   }
+                  if (form_field.type == "datetime") {
+                     form_wrapper.append(
+                        `<div class=" form-group">
+                           <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''}</label>
+                           <input type="text" class="form-control form-control-sm ${is_required ? 'form-text-required' : ''} form-datetime" id="${form_field.id}" placeholder="Enter ${title}">
+                           <small class="error-info" id="error-${form_field.id}"></small>
+                        </div>`
+                     );
+                     $(`#${form_field.id}`).datetimepicker({
+                        icons: {
+                           time: 'fas fa-clock',
+                           date:'fas fa-calendar',
+                        }
+                     });
+                  }
                   if (form_field.type == "radio") {
                      form_wrapper.append(
                         `<div class="form-group">

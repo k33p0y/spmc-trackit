@@ -1,6 +1,15 @@
 $(document).ready(function () {
     const ticket = $(".ticket-no").data().ticketId;
 
+    // humanize date
+    $('.list-datetime').each((i, e) => {
+        const date_str = $(`#${e.id}`).text();
+        const date = moment(new Date(date_str)).format("MMMM DD, YYYY hh:mm A");
+        
+        if (date_str) $(`#${e.id}`).text(date); else '' 
+        
+    });
+
     // get ticket number in localStorage if available
     if (localStorage.getItem('ticketNumber')){
         localStorage.removeItem('ticketNumber');
