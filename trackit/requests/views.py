@@ -67,8 +67,7 @@ def detail_ticket(request, ticket_id):
       }
       return render(request, 'pages/requests/ticket_detail.html', context)
    else:
-      raise Http404()
-  
+      raise Http404()  
 
 @login_required
 @permission_required('requests.view_ticket', raise_exception=True)
@@ -106,29 +105,7 @@ def ticket_log_list(request):
 
 # Create notification method
 def create_notification(object_id, ticket, sender):
-   log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
-   groups = ticket.request_form.group.all()
-   requestor = ticket.requested_by
-   date_created = ticket.date_created.replace(microsecond=0)
-   date_modified = ticket.date_modified.replace(microsecond=0)
-
-   for group in groups:
-      users = group.user_set.all()
-      # create notifications for users in selected group
-      for user in users:
-         if not log.user == user:
-            Notification(log=log, user=user).save()
-   # create notification for department head
-   if date_modified == date_created and sender == 'ticket':
-      if ticket.department.department_head:
-         if not log.user == ticket.department.department_head:
-            Notification(log=log, user=ticket.department.department_head).save()
-   if not log.user == requestor:
-      Notification(log=log, user=requestor).save()
-
-# Create notification method
-def create_notification(object_id, ticket, sender):
-   log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
+   log = CRUDEvent.objects.filter(object_id=object_id, event_type__in=list([1, 2, 3])).latest('datetime')
    groups = ticket.request_form.group.all()
    requestor = ticket.requested_by
    date_created = ticket.date_created.replace(microsecond=0)
