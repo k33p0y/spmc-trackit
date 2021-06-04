@@ -80,7 +80,7 @@ $(document).ready(function () {
             data: "reference_no",
             render: function (data, type, row) {
                if (type == 'display') {
-                  data = (row.reference_no) ? row.reference_no : '<span style="color: #e3e5ed"> XXX-0000-0000</span>'
+                  data = (row.reference_no) ? row.reference_no : '<span style="color: #e3e5ed"> XXX-0000-00000</span>'
                }
                return data
             }         

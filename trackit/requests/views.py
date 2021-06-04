@@ -144,10 +144,10 @@ def generate_reference(form):
    if ticket:
       ref_no = ticket.reference_no.split('-')
       num_series = int(ref_no[2])+1
-      reference_no = (str(ticket.request_form.prefix)+"-"+str(year)+"-"+str(num_series).zfill(4))
+      reference_no = (str(ticket.request_form.prefix)+"-"+str(year)+"-"+str(num_series).zfill(5))
    else:
       form = RequestForm.objects.get(id=form)
-      num_series = "0001"
-      reference_no = (str(form.prefix)+"-"+str(year)+"-"+num_series.zfill(4))
+      num_series = "00001"
+      reference_no = (str(form.prefix)+"-"+str(year)+"-"+num_series.zfill(5))
 
    return reference_no
