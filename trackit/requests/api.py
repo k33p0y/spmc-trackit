@@ -122,9 +122,9 @@ class TicketViewSet(viewsets.ModelViewSet):
             qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status')
          elif self.request.user.is_staff:
             groups = list(self.request.user.groups.all())
-            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(request_form__group__in=groups) | Q(requested_by = self.request.user))
+            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(request_form__group__in=groups) | Q(requested_by = self.request.user)).distinct()
          else: 
-            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user), is_active=True)
+            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user), is_active=True).distinct()
          
          # Parameters
          if search: qs = qs.filter(Q(ticket_no__icontains=search) | Q(reference_no__icontains=search) | Q(description__icontains=search))

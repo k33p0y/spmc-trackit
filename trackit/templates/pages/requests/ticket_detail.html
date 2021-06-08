@@ -94,14 +94,12 @@
                                           <span class="label">Reference No</span>
                                        </div>
                                        {% if not ticket.reference_no  %}  <!-- check if reference no is not yet generated -->
-                                          {% if remark.is_approve or user.is_superuser %}  <!-- check if approved by dept head or is_superuser -->
-                                             {% if user.is_staff or user.is_superuser %}
-                                                {% if curr_step.status != last_step.status or user.is_superuser %}                                             
-                                                <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 
-                                                   <span class="spinner-border spinner-border-xs text-secondary mr-1 ref-spinner d-none" role="status" aria-hidden="true"></span> 
-                                                   <span>Generate</span> 
-                                                </button>
-                                                {% endif %}
+                                          {% if user.is_staff or user.is_superuser %}
+                                             {% if curr_step.status != last_step.status or user.is_superuser %}                                             
+                                             <button type="button" class="btn btn-xs btn-light d-flex align-items-center" id="btn_generate" data-ticket-id="{{ticket}}"> 
+                                                <span class="spinner-border spinner-border-xs text-secondary mr-1 ref-spinner d-none" role="status" aria-hidden="true"></span> 
+                                                <span>Generate</span> 
+                                             </button>
                                              {% endif %}
                                           {% endif %}
                                        {% endif %}
