@@ -31,10 +31,15 @@
       <li class="nav-item dropdown">
          <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="far fa-bell"></i>
-            <span class="badge badge-warning navbar-badge new-notifications-count"></span>
+            <span class="badge badge-danger navbar-badge new-notifications-count"></span>
          </a>
-         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right dropdown-notifications-div">
-            <span class="dropdown-item dropdown-header dropdown-notifications-title"></span>
+         <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right dropdown-notifications-div">
+            <div class="dropdown-item dropdown-header dropdown-notifications-title d-flex align-items-center">
+               <span class="font-weight-bold">Notifications</span>
+               <span class="badge badge-light new-notifications-count ml-1"></span>
+               <span class="ml-auto"> <button class="btn btn-xs btn-link btn-link-orange m-0 p-0" id="clear-all-notifications">Clear all</button> </span>
+            </div>
+            <div class="dropdown-body p-1"></div>
          </div>
       </li>
 

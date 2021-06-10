@@ -115,7 +115,7 @@ def create_notification(object_id, ticket, sender):
       users = group.user_set.all()
       # create notifications for users in selected group
       for user in users:
-         if not log.user == user:
+         if not log.user == user and not user == requestor:
             Notification(log=log, user=user).save()
    # create notification for department head
    if date_modified == date_created and sender == 'ticket':

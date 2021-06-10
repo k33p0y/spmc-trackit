@@ -25,24 +25,30 @@ let getAllNotifications = function(){
     getUserNotifications().then(data=>{
         let notifications = data
         unread_count = notifications.filter(obj=>obj.unread==true).length
+        
 
         if (notifications.length){ // if notification is available
-            $('.dropdown-notifications-title').html(`Notications (${unread_count}) `) // display unread notification to title
-            if (unread_count > 0) $('.new-notifications-count').html(unread_count); // display unread notification to bell
-            
-            var saveDropdown = $('.dropdown-notifications-div .dropdown-notifications-title').detach();
-            $('.dropdown-notifications-div').empty().append(saveDropdown);
+            if (unread_count > 0) {
+                $('.new-notifications-count').html(unread_count); // display unread notification to bell
+                $('#clear-all-notifications').removeClass('d-none')
+            }
+
+            // var saveDropdown = $('.dropdown-notifications-div .dropdown-body').detach();
+            $('.dropdown-notifications-div .dropdown-body').empty();
             for (i=0; i<notifications.length; i++){
                 let model = JSON.parse(notifications[i].log.object_json_repr)
                 if (JSON.parse(model[0].model == 'requests.ticket')) displayTicketNotification(notifications[i]);
                 if (JSON.parse(model[0].model == 'requests.comment')) displayCommentNotification(notifications[i]);
             }
-            $('.dropdown-notifications-div a').click(function(){
+            $('.dropdown-notifications-div .dropdown-body a').click(function(){
                 localStorage.setItem("ticketNumber", $(this).attr('data-ticket-no'));
                 localStorage.setItem("notification-id", $(this).attr('data-notification-id'));
             })
+
         } else {
-            $('.dropdown-notifications-title').html('Notifications (0)')
+            $('.dropdown-body').html('<p class="text-center text-muted p-2">No new notifications</p>')
+            $('#clear-all-notifications').addClass('d-none')
+            $('.new-notifications-count').html('');
         }
     });
 };
@@ -55,14 +61,15 @@ let displayTicketNotification = function(notification){
     if (created_by === user) created_by = 'You'; // if the authenticated user is the requestor of the ticket
     action = `${notification.log.event_type}`
     time_from_now = moment(notification.log.datetime).fromNow()
-    if (action === 'Create') action = `created a new request, Ticket no. <b>${ticket_no}</b>`;
+    if (action === 'Create') action = `Created a new request: <b class="text-orange">${ticket_no}</b>.`;
     else if (action === 'Update') {
         if (notification.log.remarks){
-            if (notification.log.remarks.is_approve) action = `approved request <b>${ticket_no}</b>`
-            else if (notification.log.remarks.is_approve == false) action = `disapproved request <b>${ticket_no}</b>`
-            else action = `updated <b>${ticket_no}</b> status from ${notification.log.changed_fields.status[0]} to ${notification.log.changed_fields.status[1]}`
-        } else action = `updated request <b>${ticket_no}</b>`
+            if (notification.log.remarks.is_approve) action = `Approved request: <b class="text-orange">${ticket_no}</b> changed status to <b class="text-orange">${notification.log.changed_fields.status[1]}</b>.`
+            else if (notification.log.remarks.is_approve == false) action = `Disapproved request: <b class="text-orange">${ticket_no}</b> changed status to <b class="text-orange">${notification.log.changed_fields.status[1]}</b>.`
+            else action = `Updated request: <b class="text-orange">${ticket_no}</b> status to <b class="text-orange">${notification.log.changed_fields.status[1]}</b>.`
+        } else action = `Updated request: <b class="text-orange">${ticket_no}</b> details.`
     }
+    
     if (notification.unread) {
         bg_color = 'bg-notification'; 
         display_status = '';
@@ -71,41 +78,66 @@ let displayTicketNotification = function(notification){
         display_status = 'd-none'
     }
 
-    $('.dropdown-notifications-div').append(
-        `<a href="/requests/${notification.log.object_id}/view" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
-            <div class="notification-content flex-grow-1">
-                <p><b>${created_by} </b> ${action} </p>
-                <span class="text-muted notification-time">${time_from_now}</span>    
+    $('.dropdown-body').append(
+        `<a href="/requests/${notification.log.object_id}/view" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
+            <div class="notification-user align-self-start mt-1 mr-2">
+                <div class="img-circle text-uppercase">${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}</div>
             </div>
-            <div class="notification-status align-self-center ${display_status}"><i class="fas fa-circle"></i></div>
-            </a>`
+            <div class="notification-content flex-grow-1">
+                <p><b>${created_by}</b></p>
+                <p>${action}</p>
+                <span class="text-black-50 notification-time">${time_from_now}</span>    
+            </div>
+            <div class="notification-status align-self-center ml-4"><i class="fas fa-circle"></i></div>
+        </a>`   
     )
 };
 
 let displayCommentNotification = function(notification){
     created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     user = `${notification.user.first_name} ${notification.user.last_name}`
-    if (created_by === user) created_by = 'You'; // if the authenticated user is the requestor of the ticket
+    
+    if (created_by === user) self = 'You'; // if the authenticated user is the requestor of the ticket
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     
-    time_from_now = moment(notification.log.datetime).fromNow()
-    if (notification.unread) {
-        bg_color = 'bg-notification'; 
-        display_status = '';
-    } else {
-        bg_color = '';
-        display_status = 'd-none'
-    }
+    time_from_now = moment(notification.log.datetime).fromNow();
+
+    // if (notification.unread) {
+    //     bg_color = 'bg-notification'; 
+    //     display_status = '';
+    // } else {
+    //     bg_color = '';
+    //     display_status = 'd-none'
+    // }
     
     let ticket_id = `${object_json_repr[0].fields.ticket}`
     let ticket_no = notification.log.ticket_no
-    $('.dropdown-notifications-div').append(
-        `<a href="/requests/${ticket_id}/view" class="dropdown-item dropdown-notification-item d-flex ${bg_color}" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
-            <div class="notification-content flex-grow-1">
-                <p><b>${created_by}</b> commented on ticket <b>${ticket_no}</b></p>
-                <span class="text-muted notification-time">${time_from_now}</span>    
+
+    $('.dropdown-body').append(
+        `<a href="/requests/${ticket_id}/view" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
+            <div class="notification-user align-self-start mt-1 mr-2">
+            <div class="img-circle text-uppercase">${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}</div>
             </div>
-            <div class="notification-status align-self-center ${display_status}"><i class="fas fa-circle"></i></div>
-            </a>`
+            <div class="notification-content flex-grow-1">
+                <p><b>${created_by}</b></p>
+                <p>Commented on request: <b class="text-orange">${ticket_no}</b>. </p>
+                <span class="text-black-50 notification-time">${time_from_now}</span>    
+            </div>
+            <div class="notification-status align-self-center ml-4"><i class="fas fa-circle"></i></div>
+        </a>`   
     )
 };
+
+// Clear all notifications
+$('#clear-all-notifications').click(function(){
+    let notifications = $('.dropdown-body').children();
+
+    $.each(notifications, function(index, value) {
+        const notification_id = $(this).data().notificationId;
+        axios.delete(`/api/user/notifications/${notification_id}/`, {headers: axiosConfig}).then(res => {
+            $(this).fadeOut("fast", "linear", function() {$(this).remove();});
+        })
+        getAllNotifications();
+    });
+    return false;
+})

@@ -18,7 +18,7 @@ socket_comment.onerror = function(event) {
 }
 
 let displayComment = function(obj){
-    
+    console.log(obj)
     if ($('#btn-post-comment').data().ticketId === obj.comment['ticket_id']) {
         let logged_user_id = actor
         
