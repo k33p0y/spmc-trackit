@@ -134,6 +134,14 @@ h1, h2,  h3, h4, h5, h6, small  {
    font-size: 12px;
 }
 
+.line-clamp {
+   display: -webkit-box !important;
+   -webkit-line-clamp: 1 !important;
+   -webkit-box-orient: vertical !important;  
+   overflow: hidden !important;
+   margin-top: 4px !important;
+}
+
 /* Navbar */
 .navbar-nav .dropdown-notifications-div .dropdown-notifications-title {
    font-size: 12px;
@@ -181,13 +189,16 @@ h1, h2,  h3, h4, h5, h6, small  {
    color: #3e454d;
 }
 
+.navbar-nav .dropdown-notifications-div .dropdown-notification-item .notification-content .notification-overview {
+   font-size: 10px !important;
+}
+
 .navbar-nav .dropdown-notifications-div .dropdown-notification-item .notification-content .notification-time {
    font-size: 9px !important;
 }
 
 .navbar-nav .dropdown-notifications-div .dropdown-notification-item .notification-status > i  {
-   font-size: 6px !important;
-   color: #FD7E14;
+   font-size: 12px !important;
 }
 
 .navbar-nav .dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle {

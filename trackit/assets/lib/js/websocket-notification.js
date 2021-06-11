@@ -56,6 +56,7 @@ let getAllNotifications = function(){
 let displayTicketNotification = function(notification){
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     let ticket_no = object_json_repr[0].fields.ticket_no
+    let description = object_json_repr[0].fields.description
     created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     user = `${notification.user.first_name} ${notification.user.last_name}`
     if (created_by === user) created_by = 'You'; // if the authenticated user is the requestor of the ticket
@@ -69,26 +70,18 @@ let displayTicketNotification = function(notification){
             else action = `Updated request: <b class="text-orange">${ticket_no}</b> status to <b class="text-orange">${notification.log.changed_fields.status[1]}</b>.`
         } else action = `Updated request: <b class="text-orange">${ticket_no}</b> details.`
     }
-    
-    if (notification.unread) {
-        bg_color = 'bg-notification'; 
-        display_status = '';
-    } else {
-        bg_color = '';
-        display_status = 'd-none'
-    }
 
     $('.dropdown-body').append(
         `<a href="/requests/${notification.log.object_id}/view" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
             <div class="notification-user align-self-start mt-1 mr-2">
                 <div class="img-circle text-uppercase">${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}</div>
             </div>
-            <div class="notification-content flex-grow-1">
+            <div class="notification-content">
                 <p><b>${created_by}</b></p>
                 <p>${action}</p>
+                <p class="text-muted line-clamp notification-overview mt-1"><i class="fas fa-ticket-alt text-info mr-1"></i><i class="text-muted">${description}</i></p>
                 <span class="text-black-50 notification-time">${time_from_now}</span>    
             </div>
-            <div class="notification-status align-self-center ml-4"><i class="fas fa-circle"></i></div>
         </a>`   
     )
 };
@@ -96,34 +89,27 @@ let displayTicketNotification = function(notification){
 let displayCommentNotification = function(notification){
     created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     user = `${notification.user.first_name} ${notification.user.last_name}`
-    
+
     if (created_by === user) self = 'You'; // if the authenticated user is the requestor of the ticket
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     
     time_from_now = moment(notification.log.datetime).fromNow();
-
-    // if (notification.unread) {
-    //     bg_color = 'bg-notification'; 
-    //     display_status = '';
-    // } else {
-    //     bg_color = '';
-    //     display_status = 'd-none'
-    // }
     
     let ticket_id = `${object_json_repr[0].fields.ticket}`
     let ticket_no = notification.log.ticket_no
+    let comment = `${object_json_repr[0].fields.content}`
 
     $('.dropdown-body').append(
         `<a href="/requests/${ticket_id}/view" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
             <div class="notification-user align-self-start mt-1 mr-2">
             <div class="img-circle text-uppercase">${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}</div>
             </div>
-            <div class="notification-content flex-grow-1">
+            <div class="notification-content">
                 <p><b>${created_by}</b></p>
                 <p>Commented on request: <b class="text-orange">${ticket_no}</b>. </p>
-                <span class="text-black-50 notification-time">${time_from_now}</span>    
+                <p class="text-muted line-clamp notification-overview mt-1"><i class="fas fa-comment text-success mr-1"></i><i class="text-muted">${comment}</i></p>
+                <span class="text-black-50 notification-time">${time_from_now}</span>  
             </div>
-            <div class="notification-status align-self-center ml-4"><i class="fas fa-circle"></i></div>
         </a>`   
     )
 };
