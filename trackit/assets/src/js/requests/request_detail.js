@@ -110,7 +110,7 @@ $(document).ready(function () {
             $("#btn_generate").remove()
          }, 800);
       }).catch(function (error) {
-         toastError(error)
+         toastError(error.response.data.detail)
       });
    });
 

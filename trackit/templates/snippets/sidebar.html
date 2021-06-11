@@ -140,22 +140,21 @@
                   </p>
                </a>
                <ul class="nav nav-treeview">
-                  
-                  {% if perms.requests.view_ticket %}
-                  <li class="nav-item">
-                     <a href="{% url 'ticket' %}"
-                        class="nav-link {% if url == 'ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>All Requests</p>
-                     </a>
-                  </li>
-                  {% endif %}
                   {% if perms.requests.add_ticket %}
                   <li class="nav-item">
                      <a href="{% url 'create_ticket' %}"
                         class="nav-link {% if url == 'create_ticket' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p>Create Request</p>
+                     </a>
+                  </li>
+                  {% endif %}
+                  {% if perms.requests.view_ticket %}
+                  <li class="nav-item">
+                     <a href="{% url 'ticket' %}"
+                        class="nav-link {% if url == 'ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
+                        <i class="nav-icon far fa-circle"></i>
+                        <p>All Requests</p>
                      </a>
                   </li>
                   {% endif %}

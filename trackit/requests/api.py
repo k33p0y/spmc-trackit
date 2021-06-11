@@ -8,6 +8,7 @@ from django.db.models import Q
 from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, TicketReferenceSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from .views import create_notification, create_remark, generate_reference
+from .permissions import CanGenerateReference
 from easyaudit.models import CRUDEvent
 from config.models import Remark
 
@@ -195,7 +196,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
 class TicketReferenceAPIView(generics.RetrieveUpdateAPIView):
    serializer_class = TicketReferenceSerializer
-   permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+   permission_classes = [permissions.IsAuthenticated, CanGenerateReference]
    queryset = Ticket.objects.all()
 
    def partial_update(self, request, pk):

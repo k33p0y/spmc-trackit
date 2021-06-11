@@ -48,6 +48,11 @@ class Ticket(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
+    class Meta:
+        permissions = [
+            ("generate_reference", "Can generate reference no"),
+        ]
+
     def __str__(self):
         return str(self.ticket_id)
 
