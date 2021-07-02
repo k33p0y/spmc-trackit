@@ -72,9 +72,12 @@
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate" id="form_id" form_id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
-                                       <span class="label">Request Form</span>
+                                    <div class="card-body p-0 m-0 d-flex">
+                                       <div class="flex-grow-1 text-truncate align-self-center">
+                                          <p class="context" id="form_id" form_id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
+                                          <span class="label">Request Form</span>
+                                       </div>
+                                       <div class="align-self-start ml-2"><i class="fas fa-bookmark" style="color:{{ticket.request_form.color}}"></i></div>
                                     </div>
                                  </div>
                               </div>
@@ -319,28 +322,6 @@
             </div>
          </div>
          <div class="col-12 col-sm-12 col-md-12 col-lg-3">
-         {% if curr_step.status != last_step.status or user.is_superuser %}
-            {% if curr_step.has_approving %}
-               {% if curr_step.is_head_step and ticket.department.department_head == user or user.is_superuser %} 
-                  {% include '../../snippets/fragments/actions_approval.html' %}
-               {% elif curr_step.is_client_step and ticket.requested_by == user  or user.is_superuser%} 
-                  {% include '../../snippets/fragments/actions_approval.html' %} 
-               {% elif not curr_step.is_client_step and not curr_step.is_head_step and user.is_staff or user.is_superuser%} 
-                  {% include '../../snippets/fragments/actions_approval.html' %} 
-               {% endif %}
-            {% elif curr_step.has_pass_fail %}
-               {% if curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %} 
-                  {% include '../../snippets/fragments/actions_pass_fail.html' %}
-               {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser %} 
-                  {% include '../../snippets/fragments/actions_pass_fail.html' %} 
-               {% endif %}
-            {% elif curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %}
-               {% include '../../snippets/fragments/actions_default.html' %} 
-            {% else %}
-               {% if user.is_staff and not curr_step.is_client_step %} {% include '../../snippets/fragments/actions_default.html' %} {% endif %}
-            {% endif %}
-         {% endif %}
-
          {% if user == ticket.requested_by or user == ticket.department.department_head or user.is_staff or user.is_superuser  %}
          <div class="row" id="row-comments">
             <div class="col-12 col-sm-12">
@@ -469,8 +450,7 @@
 
 {% block extrascript %}
 <script type="text/javascript" src="{% static 'src/js/requests/request_detail.js' %}"></script>
-<script type="text/javascript" src="{% static 'src/js/requests/attachments.js' %}"></script>
-<script type="text/javascript" src="{% static 'src/js/requests/actions.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/requests/attachments.js' %}"></script> 
 <script type="text/javascript" src="{% static 'src/js/requests/comment.js' %}"></script>
 
 <script src="{% static 'lib/js/websocket-comment.js' %}"></script>

@@ -84,9 +84,12 @@
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate" id="form_id" data-form-id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
-                                       <span class="label">Request Form</span>
+                                     <div class="card-body p-0 m-0 d-flex">
+                                       <div class="flex-grow-1 text-truncate align-self-center">
+                                          <p class="context" id="form_id" form_id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
+                                          <span class="label">Request Form</span>
+                                       </div>
+                                       <div class="align-self-start ml-2"><i class="fas fa-bookmark" style="color:{{ticket.request_form.color}}"></i></div>
                                     </div>
                                  </div>
                               </div>

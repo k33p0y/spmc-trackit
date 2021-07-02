@@ -77,7 +77,7 @@ $(document).ready(function () {
          }).then(function (res) {
             socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: res.data.ticket, notification_type: 'ticket'}}))
             $.when(toastSuccess('Success')).then(function () {
-               $(location).attr('href', '/requests/lists')
+               location.reload();
             });
          });
    
