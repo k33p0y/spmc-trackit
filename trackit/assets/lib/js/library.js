@@ -44,6 +44,10 @@ const Toast = Swal.mixin({
    // }
 });
 
+// HOST, PROTOCOL constants
+const loc = window.location;
+const wsStart = loc.protocol == "https:" ? "wss://" : "ws://";
+
 // Notifications
 const getUserNotifications = function (){
    return axios.get('/api/user/notifications/',).then(response=>response.data).catch(response=>response.data)
@@ -117,6 +121,7 @@ const getComments = function(ticket, next_page){
          let next_page_url = response.data.next
          if (next_page_url) { // check if there is next page to comment list API
             if (next_page_url.includes('socket')){ // check if host == socket
+               if (wsStart == 'wss://') next_page_url = next_page_url.replace('http://', 'https://');
                $('#comment-nextpage-url').val(next_page_url.replace('socket', window.location.host)); // change socket host to window.location.host
             } else $('#comment-nextpage-url').val(next_page_url);
          } else $('#comment-nextpage-url').val(null);
@@ -152,9 +157,6 @@ const getComments = function(ticket, next_page){
 
 // Dropdown Filter Config
 const toggleFilter = function() {return $(".dropdown-filter-toggle").dropdown('hide')}
-
-const loc = window.location;
-const wsStart = loc.protocol == "https:" ? "wss://" : "ws://";
 
 const makeProgress = function(percent, progressbar) {
    if (percent <= 100) {
