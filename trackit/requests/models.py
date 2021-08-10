@@ -82,7 +82,7 @@ class Notification(models.Model):
     unread = models.BooleanField(default=True)
 
 class Comment(models.Model):
-    content = models.CharField(max_length=255)
+    content = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='all_comments')
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='comments')
     date_created = models.DateTimeField(auto_now_add=True)
