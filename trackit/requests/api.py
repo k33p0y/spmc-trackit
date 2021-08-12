@@ -141,58 +141,58 @@ class TicketViewSet(viewsets.ModelViewSet):
 
          return qs
 
-   def create(self, request):
-      request_form = request.data['request_form']
-      form_data = request.data['form_data']
-      category = request.data['category']
-      description = request.data['description']
+   # def create(self, request):
+   #    request_form = request.data['request_form']
+   #    form_data = request.data['form_data']
+   #    category = request.data['category']
+   #    description = request.data['description']
 
-      rf = RequestForm.objects.get(pk=request_form)
-      status = rf.status.get(requestformstatus__order=1)
-      ticket_no = uuid.uuid4().hex[-10:].upper()                     
+   #    rf = RequestForm.objects.get(pk=request_form)
+   #    status = rf.status.get(requestformstatus__order=1)
+   #    ticket_no = uuid.uuid4().hex[-10:].upper()                     
 
-      # Create Ticket
-      ticket = Ticket.objects.create(
-         request_form_id=request_form,
-         description=description, 
-         form_data=form_data, 
-         department=self.request.user.department,
-         requested_by=self.request.user,
-         status=status, 
-         ticket_no=ticket_no
-      )
-      ticket.category.add(*request.data['category'])
+   #    # Create Ticket
+   #    ticket = Ticket.objects.create(
+   #       request_form_id=request_form,
+   #       description=description, 
+   #       form_data=form_data, 
+   #       department=self.request.user.department,
+   #       requested_by=self.request.user,
+   #       status=status, 
+   #       ticket_no=ticket_no
+   #    )
+   #    ticket.category.add(*request.data['category'])
 
-      create_notification(str(ticket.ticket_id), ticket, 'ticket')  # Create notification instance
-      create_remark(str(ticket.ticket_id), ticket) # Create initial remark
+   #    create_notification(str(ticket.ticket_id), ticket, 'ticket')  # Create notification instance
+   #    create_remark(str(ticket.ticket_id), ticket) # Create initial remark
       
-      serializer = TicketSerializer(ticket)
-      return Response(serializer.data)
+   #    serializer = TicketSerializer(ticket)
+   #    return Response(serializer.data)
 
-   def update(self, request, pk):
-      ticket = Ticket.objects.get(ticket_id=pk)
-      ticket.form_data = request.data['form_data']
-      ticket.description = request.data['description']
-      ticket.category_id = request.data['category']
-      ticket.is_active = request.data['is_active']
-      ticket.save()
+   # def update(self, request, pk):
+   #    ticket = Ticket.objects.get(ticket_id=pk)
+   #    ticket.form_data = request.data['form_data']
+   #    ticket.description = request.data['description']
+   #    ticket.category_id = request.data['category']
+   #    ticket.is_active = request.data['is_active']
+   #    ticket.save()
 
-      ticket.category.clear()
-      ticket.category.add(*request.data['category'])
+   #    ticket.category.clear()
+   #    ticket.category.add(*request.data['category'])
          
-      create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
+   #    create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
       
-      serializer = TicketSerializer(ticket)
-      return Response(serializer.data)
+   #    serializer = TicketSerializer(ticket)
+   #    return Response(serializer.data)
 
-   def partial_update(self, request, pk):
-      ticket = Ticket.objects.get(pk=pk)
-      serializer = TicketSerializer(ticket, data=request.data, partial=True)
-      serializer.is_valid(raise_exception=True)
-      serializer.save()
+   # def partial_update(self, request, pk):
+   #    ticket = Ticket.objects.get(pk=pk)
+   #    serializer = TicketSerializer(ticket, data=request.data, partial=True)
+   #    serializer.is_valid(raise_exception=True)
+   #    serializer.save()
 
-      create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
-      return Response(serializer.data)
+   #    create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
+   #    return Response(serializer.data)
 
 class TicketReferenceAPIView(generics.RetrieveUpdateAPIView):
    serializer_class = TicketReferenceSerializer

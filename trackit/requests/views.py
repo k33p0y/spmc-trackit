@@ -128,13 +128,8 @@ def create_notification(object_id, ticket, sender):
 # Remark Method
 def create_remark(object_id, ticket):
    log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
-   remark = Remark(
-      ticket=ticket,
-      status=ticket.status,
-      action_officer=ticket.requested_by,
-      log=log
-   )
-   remark.save()
+   remark, created = Remark.objects.get_or_create(ticket=ticket, status=ticket.status, action_officer=ticket.requested_by, log=log)
+   return remark, created
 
 # Generate reference no
 def generate_reference(form):

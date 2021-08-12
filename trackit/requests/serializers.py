@@ -1,14 +1,17 @@
 from rest_framework import serializers
 
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
+from .views import create_notification, create_remark, generate_reference
 from config.models import Department, Status, Remark
 from core.models import User
+
 from core.serializers import GroupReadOnlySerializer
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer
+
 from django.db import transaction
 from easyaudit.models import CRUDEvent
 
-import json
+import json, uuid
 
 # Serializers
 class RequestFormStatusSerializer(serializers.ModelSerializer):
@@ -41,19 +44,54 @@ class StatusReadOnlySerializer(serializers.ModelSerializer):
 
 class TicketSerializer(serializers.ModelSerializer):
    requested_by = UserSerializer(read_only=True)
-   category = CategoryReadOnlySerializer(many=True, read_only=True)
+   department = DepartmentSerializer(read_only=True)
+
+   def create(self, validated_data):
+      form = RequestForm.objects.get(pk=validated_data['request_form'].id)
+      ticket = Ticket(
+         ticket_no = validated_data['ticket_no'],
+         description = validated_data['description'],
+         request_form = validated_data['request_form'],
+         form_data = validated_data['form_data'],
+         status = form.status.get(requestformstatus__order=1),
+         requested_by = self.context['request'].user,
+         department = self.context['request'].user.department,
+         is_active = True
+      )
+      ticket.save()
+      ticket.category.add(*validated_data['category'])
+      create_notification(str(ticket.ticket_id), ticket, 'ticket')  # Create notification instance
+      remark, created = create_remark(str(ticket.ticket_id), ticket) # Create initial remark
+      return ticket
+
+   def validate_ticket_no(self, ticket_no):
+      if not ticket_no:
+         ticket_no = uuid.uuid4().hex[-10:].upper()            
+      return ticket_no
+
+   def validate_description(self, description):
+      ticket = Ticket.objects.filter(description__iexact=description).exists()
+      if ticket:
+         raise serializers.ValidationError('Duplicate Record. A record with this title already exists.')
+      if not description:
+         raise serializers.ValidationError('This field may not be blank.')         
+      return description
+
+   def validate_request_form(self, request_form):
+      if not request_form:
+         raise serializers.ValidationError('This field may not be blank.')  
+      return request_form
+
+   def validate_category(self, category):
+      if not category:
+         raise serializers.ValidationError('This field may not be blank.')  
+      return category
 
    class Meta:
       model = Ticket
       fields = '__all__'
       datatables_always_serialize = ('ticket_id',)
         
-   def to_representation(self, instance):
-      self.fields['status'] = StatusReadOnlySerializer(read_only=True)
-      self.fields['department'] = DepartmentSerializer(read_only=True)
-      self.fields['request_form'] = RequestFormReadOnlySerializer(read_only=True)
-      return super(TicketSerializer, self).to_representation(instance)
-
 class TicketReferenceSerializer(serializers.ModelSerializer):
 
    class Meta:

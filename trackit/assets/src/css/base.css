@@ -30,7 +30,7 @@ h1, h2,  h3, h4, h5, h6, small  {
    color : #3e454d !important;
 }
 
-.text-xs {
+.text-xs, small {
    font-size: 11px !important;
 }
 
