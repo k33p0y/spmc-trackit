@@ -42,7 +42,19 @@ class StatusReadOnlySerializer(serializers.ModelSerializer):
       model = Status
       fields = ['id', 'name']
 
-class TicketSerializer(serializers.ModelSerializer):
+class TicketListSerializer(serializers.ModelSerializer):
+   requested_by = UserSerializer(read_only=True)
+   status = StatusReadOnlySerializer(read_only=True)
+   request_form = RequestFormReadOnlySerializer(read_only=True)
+   department = DepartmentSerializer(read_only=True)
+   category = CategoryReadOnlySerializer(many=True, read_only=True)
+
+   class Meta:
+      model = Ticket
+      exclude = ['form_data']
+      datatables_always_serialize = ('ticket_id',)
+
+class TicketCRUDSerializer(serializers.ModelSerializer):
    requested_by = UserSerializer(read_only=True)
    department = DepartmentSerializer(read_only=True)
 
@@ -90,7 +102,6 @@ class TicketSerializer(serializers.ModelSerializer):
    class Meta:
       model = Ticket
       fields = '__all__'
-      datatables_always_serialize = ('ticket_id',)
         
 class TicketReferenceSerializer(serializers.ModelSerializer):
 

@@ -7,19 +7,6 @@ $(document).ready(function () {
          date:'fas fa-calendar',
       }
    });
-
-   // Load Dropdown Category Type
-   axios.get( `/api/requests/lists/${$(".ticket-no").data().ticketId}/`).then(result => {
-      const type = result.data.category.map((category) => {return category.category_type_id});
-      const categories = result.data.category.map((category) => {return category.id});
-
-      $('#select2_types').val(type[0]).select2();
-      $('#select2_categories').val(categories).select2({
-         allowClear: true,
-         placeholder: 'Select category',
-         sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
-      });
-   });
    
    // show admin field wrapper 
    if ($('#row-field-admin .form-admin-wrapper').children().length > 0) {

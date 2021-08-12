@@ -214,7 +214,7 @@ $(document).ready(function () {
 
       axios({
          method: 'POST',
-         url: '/api/requests/lists/',
+         url: '/api/requests/ticket/crud/',
          data: data,
          headers: axiosConfig
       }).then(async function (response) { // upload attachments         

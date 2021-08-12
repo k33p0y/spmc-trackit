@@ -188,7 +188,9 @@
                                  <select class="form-control form-control-sm form-select-required" id="select2_categories" style="width: 100%" multiple="multiple">
                                     <option></option>
                                     {% for category in categories %}
-                                    <option value={{category.id}}>{{category}}</option>
+                                       {% for ticket_category in ticket_categories %}
+                                          <option value={{category.id}} {% if ticket_category.id == category.id %} selected {% endif %}>{{category}}</option>
+                                       {% endfor %}
                                     {% endfor %}
                                  </select>
                                  <small class="error-info" id="error-info-category"></small>

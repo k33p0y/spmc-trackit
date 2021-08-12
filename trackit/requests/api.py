@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketSerializer, TicketReferenceSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
+from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketCRUDSerializer, TicketListSerializer, TicketReferenceSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from .views import create_notification, create_remark, generate_reference
 from .permissions import CanGenerateReference
@@ -99,8 +99,8 @@ class RequestFormViewSet(viewsets.ModelViewSet):
       serializer.save()
       return Response(serializer.data)
 
-class TicketViewSet(viewsets.ModelViewSet):    
-   serializer_class = TicketSerializer
+class TicketViewSet(viewsets.ReadOnlyModelViewSet):
+   serializer_class = TicketListSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
@@ -141,34 +141,11 @@ class TicketViewSet(viewsets.ModelViewSet):
 
          return qs
 
-   # def create(self, request):
-   #    request_form = request.data['request_form']
-   #    form_data = request.data['form_data']
-   #    category = request.data['category']
-   #    description = request.data['description']
-
-   #    rf = RequestForm.objects.get(pk=request_form)
-   #    status = rf.status.get(requestformstatus__order=1)
-   #    ticket_no = uuid.uuid4().hex[-10:].upper()                     
-
-   #    # Create Ticket
-   #    ticket = Ticket.objects.create(
-   #       request_form_id=request_form,
-   #       description=description, 
-   #       form_data=form_data, 
-   #       department=self.request.user.department,
-   #       requested_by=self.request.user,
-   #       status=status, 
-   #       ticket_no=ticket_no
-   #    )
-   #    ticket.category.add(*request.data['category'])
-
-   #    create_notification(str(ticket.ticket_id), ticket, 'ticket')  # Create notification instance
-   #    create_remark(str(ticket.ticket_id), ticket) # Create initial remark
-      
-   #    serializer = TicketSerializer(ticket)
-   #    return Response(serializer.data)
-
+class TicketCRUDViewSet(viewsets.ModelViewSet):    
+   serializer_class = TicketCRUDSerializer
+   queryset = Ticket.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   
    # def update(self, request, pk):
    #    ticket = Ticket.objects.get(ticket_id=pk)
    #    ticket.form_data = request.data['form_data']

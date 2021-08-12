@@ -1,11 +1,12 @@
 from django.urls import path
 from rest_framework import routers
-from .api import RequestFormViewSet, TicketViewSet, RequestFormStatusViewSet, CRUDEventList, NotificationViewSet, AttachmentViewSet, CommentListCreateAPIView, TicketReferenceAPIView
+from .api import RequestFormViewSet, TicketViewSet, TicketCRUDViewSet, RequestFormStatusViewSet, CRUDEventList, NotificationViewSet, AttachmentViewSet, CommentListCreateAPIView, TicketReferenceAPIView
 from . import views
 
 router = routers.DefaultRouter()
 router.register('api/requests/forms', RequestFormViewSet, basename='RequestForm')
-router.register('api/requests/lists', TicketViewSet, basename='Ticket')
+router.register('api/requests/ticket/crud', TicketCRUDViewSet, basename='Ticket')
+router.register('api/requests/ticket/all', TicketViewSet, basename='TicketList')
 router.register('api/requests/form-status', RequestFormStatusViewSet, basename='RequestFormStatus')
 router.register('api/requests/attachments', AttachmentViewSet, basename='Attachment')
 router.register('api/user/notifications', NotificationViewSet, basename='Notification')

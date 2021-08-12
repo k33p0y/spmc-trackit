@@ -19,9 +19,9 @@ $(document).ready(function () {
       "autoWidth": false,
       "serverside": true,
       "processing": true,
-      "pageLength": 10,
+      "pageLength": 25,
       "ajax": {
-         url: '/api/requests/lists/?format=datatables',
+         url: '/api/requests/ticket/all/?format=datatables',
          type: "GET",
          data: {
             "search": searchInput,
@@ -133,6 +133,7 @@ $(document).ready(function () {
             data: "status",
             render: function (data, type, row) {
                if (type == 'display') {
+                  console.log (row)
                   data = row.status.name
                }
                return data
@@ -147,7 +148,7 @@ $(document).ready(function () {
                   if (row.is_active == true) {
                      data = "<i class='fas fa-check-circle text-success'></i>";
                   } else {
-                     data = "<i class='fas fa-times-circle text-secondary'></i>";
+                     data = "<i class='fas fa-times-circle text-danger'></i>";
                   }
                }
                return data
