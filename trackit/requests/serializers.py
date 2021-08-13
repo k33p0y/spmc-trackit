@@ -81,14 +81,13 @@ class TicketCRUDSerializer(serializers.ModelSerializer):
       instance.form_data = validated_data.get('form_data', instance.form_data)
       instance.request_form = validated_data.get('request_form', instance.request_form)
       instance.is_active = validated_data.get('is_active', instance.is_active)
-
       instance.category.clear()
       if validated_data.get('category', instance.category): # if there is submitted groups from form
          instance.category.add(*validated_data.get('category', instance.category)) # add selected groups to user
-     
+      instance.save()
+
       create_notification(str(instance.ticket_id), instance, 'ticket')  # Create notification instance
 
-      instance.save()
       return instance
 
    def validate_ticket_no(self, ticket_no):
@@ -116,10 +115,16 @@ class TicketCRUDSerializer(serializers.ModelSerializer):
       exclude = ['reference_no']
         
 class TicketReferenceSerializer(serializers.ModelSerializer):
+   
+   def validate_reference_no(self, reference_no):
+      if self.instance.reference_no:
+         raise serializers.ValidationError('Ticket reference number already generated.')
+      return reference_no
 
    class Meta:
       model = Ticket
-      fields = ['ticket_id', 'reference_no']
+      fields = ['ticket_no', 'reference_no']
+      read_only_fields = ['ticket_no']
 
 class AttachmentSerializer(serializers.ModelSerializer):
    uploaded_by = UserSerializer(read_only=True)

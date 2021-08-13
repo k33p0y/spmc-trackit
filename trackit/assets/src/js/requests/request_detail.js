@@ -77,6 +77,31 @@ $(document).ready(function () {
       });
    });
 
+   // Generate Reference No
+   $('#btn_generate').click(function() {
+      let id = $(this).data().ticketId;
+
+      axios({
+         url: `/api/requests/ticket/generate_reference/${id}/`,
+         method: "PATCH",
+         headers: axiosConfig
+      }).then(function (response) {
+         // Show Spinners
+         $(".ref-spinner").removeClass('d-none');
+         $("#ref_context").html('');
+         $("#btn_generate").prop('disabled', true)
+
+         setTimeout(function() { 
+            $(".ref-spinner").addClass('d-none');
+            $("#ref_context").removeClass('text-light').html(response.data.reference_no);
+            $("#btn_generate").remove()
+         }, 800);
+      }).catch(function (error) {
+         toastError(error.response.statusText)
+      });
+   });
+
+
    let showFieldErrors = function(obj, field, type) {
       // Get error message
       let msg = '';
@@ -109,30 +134,6 @@ $(document).ready(function () {
       else $(`#txt_${field}`).removeClass('form-error');
       $(`#${field}-error`).html('')
    };
-
-   // Generate Reference No
-   $('#btn_generate').click(function() {
-      let id = $(this).data().ticketId;
-
-      axios({
-         url: `/api/requests/${id}/generate-reference/`,
-         method: "PATCH",
-         headers: axiosConfig
-      }).then(function (response) {
-         // Show Spinners
-         $(".ref-spinner").removeClass('d-none');
-         $("#ref_context").html('');
-         $("#btn_generate").prop('disabled', true)
-
-         setTimeout(function() { 
-            $(".ref-spinner").addClass('d-none');
-            $("#ref_context").removeClass('text-light').html(response.data.reference_no);
-            $("#btn_generate").remove()
-         }, 800);
-      }).catch(function (error) {
-         toastError(error.response.data.detail)
-      });
-   });
 
    let validateForms = function () {
       let is_valid = true;

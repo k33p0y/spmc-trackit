@@ -171,7 +171,7 @@ class TicketCRUDViewSet(viewsets.ModelViewSet):
    #    create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
    #    return Response(serializer.data)
 
-class TicketReferenceAPIView(generics.RetrieveUpdateAPIView):
+class TicketGenerateReferenceViewSet(viewsets.ModelViewSet):
    serializer_class = TicketReferenceSerializer
    permission_classes = [permissions.IsAuthenticated, CanGenerateReference]
    queryset = Ticket.objects.all()

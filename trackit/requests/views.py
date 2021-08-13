@@ -53,8 +53,6 @@ def detail_ticket(request, ticket_id):
          remarks = ticket.remarks.filter(ticket_id=ticket_id, status_id=step.status_id, is_approve=True) 
          if step.is_head_step and step.has_approving: 
             remark = remarks.earliest('id') if remarks else None
-      
-      print (ticket_categories)
       context = {
          'ticket': ticket, 
          'forms': forms, 
