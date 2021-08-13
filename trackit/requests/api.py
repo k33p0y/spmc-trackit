@@ -145,31 +145,6 @@ class TicketCRUDViewSet(viewsets.ModelViewSet):
    serializer_class = TicketCRUDSerializer
    queryset = Ticket.objects.all()
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
-   
-   # def update(self, request, pk):
-   #    ticket = Ticket.objects.get(ticket_id=pk)
-   #    ticket.form_data = request.data['form_data']
-   #    ticket.description = request.data['description']
-   #    ticket.category_id = request.data['category']
-   #    ticket.is_active = request.data['is_active']
-   #    ticket.save()
-
-   #    ticket.category.clear()
-   #    ticket.category.add(*request.data['category'])
-         
-   #    create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
-      
-   #    serializer = TicketSerializer(ticket)
-   #    return Response(serializer.data)
-
-   # def partial_update(self, request, pk):
-   #    ticket = Ticket.objects.get(pk=pk)
-   #    serializer = TicketSerializer(ticket, data=request.data, partial=True)
-   #    serializer.is_valid(raise_exception=True)
-   #    serializer.save()
-
-   #    create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
-   #    return Response(serializer.data)
 
 class TicketGenerateReferenceViewSet(viewsets.ModelViewSet):
    serializer_class = TicketReferenceSerializer
@@ -195,24 +170,20 @@ class TicketStatusViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated]
    queryset = Ticket.objects.all()
 
+   def partial_update(self, request, pk):
+      ticket = Ticket.objects.get(pk=pk)         
+      serializer = TicketStatusSerializer(ticket, data=request.data, partial=True)
+      serializer.is_valid(raise_exception=True)
+      serializer.save()
+
+      create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
+      return Response(serializer.data)
+
 class TicketActionViewSet(viewsets.ModelViewSet):
    serializer_class = TicketActionSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
    queryset = Remark.objects.all()
 
-   def create(self, request):
-      ticket = request.data['ticket']
-      remark = request.data['remark']
-      status = request.data['status']
-      is_approve = request.data['is_approve']
-      is_pass = request.data['is_pass']
-      
-      log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime')
-      obj = Remark.objects.create(remark=remark, ticket_id=ticket, action_officer=self.request.user, log=log, status_id=status, is_approve=is_approve, is_pass=is_pass)
-      
-      serializer = TicketActionSerializer(obj)
-      return Response(serializer.data)
-      
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
    serializer_class = RequestFormStatusSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]

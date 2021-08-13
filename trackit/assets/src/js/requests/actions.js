@@ -57,7 +57,7 @@ $(document).ready(function () {
     // Post Action
    const postAction = function(ticket, status, remark, is_approve, is_pass) {
       axios({
-         url:`/api/requests/ticket/crud/${ticket}/`,
+         url:`/api/requests/ticket/status/${ticket}/`,
          method: "PATCH",
          data: {status: status},
          headers: axiosConfig,
@@ -82,7 +82,7 @@ $(document).ready(function () {
          });
    
       }).catch(function (error) { // error
-         toastError(error);
+         toastError(error.response.statusText);
       });
    }; 
 

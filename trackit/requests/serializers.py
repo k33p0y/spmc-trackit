@@ -127,17 +127,32 @@ class TicketReferenceSerializer(serializers.ModelSerializer):
       read_only_fields = ['ticket_no']
 
 class TicketStatusSerializer(serializers.ModelSerializer):
-   
+
    class Meta:
       model = Ticket
       fields = ['ticket_no', 'status']
       read_only_fields = ['ticket_no']
 
 class TicketActionSerializer(serializers.ModelSerializer):
+
+   def create(self, validated_data):
+      log = CRUDEvent.objects.filter(object_id=validated_data['ticket']).latest('datetime')
+      action = Remark(
+         ticket = validated_data['ticket'],
+         remark = validated_data['remark'],
+         status = validated_data['status'],
+         is_approve = validated_data['is_approve'],
+         is_pass = validated_data['is_pass'],
+         action_officer = self.context['request'].user,
+         log = log
+      )
+      action.save()
+      return action
     
-    class Meta:
-        model = Remark
-        fields = ['id', 'remark', 'date_created', 'ticket', 'action_officer', 'log']
+   class Meta:
+      model = Remark
+      fields = ['id', 'remark', 'date_created', 'ticket', 'status', 'is_approve', 'is_pass', 'action_officer', 'log',]
+      read_only_fields = ['action_officer', 'log']
 
 class AttachmentSerializer(serializers.ModelSerializer):
    uploaded_by = UserSerializer(read_only=True)
@@ -149,7 +164,6 @@ class AttachmentSerializer(serializers.ModelSerializer):
    class Meta:
       model = Attachment
       fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'description', 'ticket', 'uploaded_at', 'uploaded_by']
-
 
 # serializer choice field
 class ChoiceField(serializers.ChoiceField):
