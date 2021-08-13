@@ -76,21 +76,33 @@ class TicketCRUDSerializer(serializers.ModelSerializer):
       remark, created = create_remark(str(ticket.ticket_id), ticket) # Create initial remark
       return ticket
 
+   def update(self, instance, validated_data):
+      instance.description = validated_data.get('description', instance.description)
+      instance.form_data = validated_data.get('form_data', instance.form_data)
+      instance.request_form = validated_data.get('request_form', instance.request_form)
+      instance.is_active = validated_data.get('is_active', instance.is_active)
+
+      instance.category.clear()
+      if validated_data.get('category', instance.category): # if there is submitted groups from form
+         instance.category.add(*validated_data.get('category', instance.category)) # add selected groups to user
+     
+      create_notification(str(instance.ticket_id), instance, 'ticket')  # Create notification instance
+
+      instance.save()
+      return instance
+
    def validate_ticket_no(self, ticket_no):
       if not ticket_no:
          ticket_no = uuid.uuid4().hex[-10:].upper()            
       return ticket_no
 
    def validate_description(self, description):
-      ticket = Ticket.objects.filter(description__iexact=description).exists()
-      if ticket:
-         raise serializers.ValidationError('Duplicate Record. A record with this title already exists.')
       if not description:
          raise serializers.ValidationError('This field may not be blank.')         
       return description
 
    def validate_request_form(self, request_form):
-      if not request_form:
+      if not self.instance and not request_form:
          raise serializers.ValidationError('This field may not be blank.')  
       return request_form
 
@@ -101,7 +113,7 @@ class TicketCRUDSerializer(serializers.ModelSerializer):
 
    class Meta:
       model = Ticket
-      fields = '__all__'
+      exclude = ['reference_no']
         
 class TicketReferenceSerializer(serializers.ModelSerializer):
 

@@ -74,7 +74,7 @@
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0 d-flex">
                                        <div class="flex-grow-1 text-truncate align-self-center">
-                                          <p class="context" id="form_id" form_id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
+                                          <p class="context" id="request_form" data-form-id="{{ticket.request_form.id}}">{{ticket.request_form}}</p>
                                           <span class="label">Request Form</span>
                                        </div>
                                        <div class="align-self-start ml-2"><i class="fas fa-bookmark" style="color:{{ticket.request_form.color}}"></i></div>
@@ -171,21 +171,21 @@
                            <div class="form-group">
                               <label>Title / Description  <span class="text-danger">*</span></label>
                               <input type="text" class="form-control form-control-sm form-text-required" placeholder="Enter request title or description" id="txt_description" value="{{ticket.description}}">
-                              <small class="error-info" id="error-info-desc"></small>
+                              <small class="error-info" id="description-error"></small>
                            </div>
                            <div class="form-row">
                               <div class="form-group col-md-6">
                                  <label>Category Type  <span class="text-danger">*</span></label>
-                                 <select class="form-control form-control-sm form-select-required" id="select2_types" style="width: 100%">
+                                 <select class="form-control form-control-sm form-select-required" id="select2_categorytype" style="width: 100%">
                                     {% for type in types %}
                                     <option value={{type.id}} >{{type}}</option>
                                     {% endfor %}
                                  </select>
-                                 <small class="error-info" id="error-info-type"></small>
+                                 <small class="error-info" id="categorytype-error"></small>
                               </div>
                               <div class="form-group col-md-6">
                                  <label>Category  <span class="text-danger">*</span></label>
-                                 <select class="form-control form-control-sm form-select-required" id="select2_categories" style="width: 100%" multiple="multiple">
+                                 <select class="form-control form-control-sm form-select-required" id="select2_category" style="width: 100%" multiple="multiple">
                                     <option></option>
                                     {% for category in categories %}
                                        {% for ticket_category in ticket_categories %}
@@ -193,7 +193,7 @@
                                        {% endfor %}
                                     {% endfor %}
                                  </select>
-                                 <small class="error-info" id="error-info-category"></small>
+                                 <small class="error-info" id="category-error"></small>
                               </div>
                            </div>
                         </div>

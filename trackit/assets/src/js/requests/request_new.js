@@ -260,11 +260,8 @@ $(document).ready(function () {
 
    let removeFieldErrors = function(field, type) {
       // Remove error class for border color
-      if (type === 'select') {
-         $(`#select2_${field}`).next().find('.select2-selection').removeClass('form-error');
-      } else {
-         $(`#txt_${field}`).removeClass('form-error');
-      }
+      if (type === 'select') $(`#select2_${field}`).next().find('.select2-selection').removeClass('form-error');
+      else $(`#txt_${field}`).removeClass('form-error');
       $(`#${field}-error`).html('')
    };
 
