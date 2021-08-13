@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketCRUDSerializer, TicketListSerializer, TicketReferenceSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
+from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketCRUDSerializer, TicketListSerializer, TicketReferenceSerializer, TicketStatusSerializer, TicketActionSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from .views import create_notification, create_remark, generate_reference
 from .permissions import CanGenerateReference
@@ -190,6 +190,29 @@ class TicketGenerateReferenceViewSet(viewsets.ModelViewSet):
       create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
       return Response(serializer.data)
 
+class TicketStatusViewSet(viewsets.ModelViewSet):
+   serializer_class = TicketStatusSerializer
+   permission_classes = [permissions.IsAuthenticated]
+   queryset = Ticket.objects.all()
+
+class TicketActionViewSet(viewsets.ModelViewSet):
+   serializer_class = TicketActionSerializer
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   queryset = Remark.objects.all()
+
+   def create(self, request):
+      ticket = request.data['ticket']
+      remark = request.data['remark']
+      status = request.data['status']
+      is_approve = request.data['is_approve']
+      is_pass = request.data['is_pass']
+      
+      log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime')
+      obj = Remark.objects.create(remark=remark, ticket_id=ticket, action_officer=self.request.user, log=log, status_id=status, is_approve=is_approve, is_pass=is_pass)
+      
+      serializer = TicketActionSerializer(obj)
+      return Response(serializer.data)
+      
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
    serializer_class = RequestFormStatusSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]

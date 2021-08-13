@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 
 from django.db.models import Q
 from easyaudit.models import CRUDEvent
-from .serializers import DepartmentSerializer, CategorySerializer, CategoryTypeSerializer, StatusSerializer, RemarkSerializer
+from .serializers import DepartmentSerializer, CategorySerializer, CategoryTypeSerializer, StatusSerializer
 from .models import Department, Category, CategoryType, Status, Remark
 
 import json
@@ -129,23 +129,3 @@ class StatusViewSet(viewsets.ModelViewSet):
       serializer.is_valid(raise_exception=True)
       serializer.save()
       return Response(serializer.data)
-
-class RemarkViewSet(viewsets.ModelViewSet):
-   serializer_class = RemarkSerializer
-   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
-   queryset = Remark.objects.all()
-
-   def create(self, request):
-      ticket = request.data['ticket']
-      remark = request.data['remark']
-      status = request.data['status']
-      is_approve = request.data['is_approve']
-      is_pass = request.data['is_pass']
-      
-      log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime')
-      obj = Remark.objects.create(remark=remark, ticket_id=ticket, action_officer=self.request.user, log=log, status_id=status, is_approve=is_approve, is_pass=is_pass)
-      
-      serializer = RemarkSerializer(obj)
-      return Response(serializer.data)
-      
-   

@@ -57,7 +57,7 @@ $(document).ready(function () {
     // Post Action
    const postAction = function(ticket, status, remark, is_approve, is_pass) {
       axios({
-         url:`/api/requests/lists/${ticket}/`,
+         url:`/api/requests/ticket/crud/${ticket}/`,
          method: "PATCH",
          data: {status: status},
          headers: axiosConfig,
@@ -71,7 +71,7 @@ $(document).ready(function () {
    
          axios({
             method: 'POST',
-            url: `/api/config/remark/`,
+            url:`/api/requests/ticket/actions/`,
             data: data,
             headers: axiosConfig,
          }).then(function (res) {

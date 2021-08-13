@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
-from .views import create_notification, create_remark, generate_reference
+from .views import create_notification, create_remark
 from config.models import Department, Status, Remark
 from core.models import User
 
@@ -126,6 +126,19 @@ class TicketReferenceSerializer(serializers.ModelSerializer):
       fields = ['ticket_no', 'reference_no']
       read_only_fields = ['ticket_no']
 
+class TicketStatusSerializer(serializers.ModelSerializer):
+   
+   class Meta:
+      model = Ticket
+      fields = ['ticket_no', 'status']
+      read_only_fields = ['ticket_no']
+
+class TicketActionSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Remark
+        fields = ['id', 'remark', 'date_created', 'ticket', 'action_officer', 'log']
+
 class AttachmentSerializer(serializers.ModelSerializer):
    uploaded_by = UserSerializer(read_only=True)
    file_size = serializers.SerializerMethodField('get_file_size')
@@ -136,6 +149,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
    class Meta:
       model = Attachment
       fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'description', 'ticket', 'uploaded_at', 'uploaded_by']
+
 
 # serializer choice field
 class ChoiceField(serializers.ChoiceField):
