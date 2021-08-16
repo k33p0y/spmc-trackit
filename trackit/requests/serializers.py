@@ -60,20 +60,30 @@ class TicketCRUDSerializer(serializers.ModelSerializer):
 
    def create(self, validated_data):
       form = RequestForm.objects.get(pk=validated_data['request_form'].id)
-      ticket = Ticket(
-         ticket_no = validated_data['ticket_no'],
-         description = validated_data['description'],
-         request_form = validated_data['request_form'],
-         form_data = validated_data['form_data'],
-         status = form.status.get(requestformstatus__order=1),
-         requested_by = self.context['request'].user,
-         department = self.context['request'].user.department,
-         is_active = True
-      )
-      ticket.save()
-      ticket.category.add(*validated_data['category'])
-      create_notification(str(ticket.ticket_id), ticket, 'ticket')  # Create notification instance
-      remark, created = create_remark(str(ticket.ticket_id), ticket) # Create initial remark
+      try:
+         ticket = Ticket(
+            ticket_no = validated_data['ticket_no'],
+            description = validated_data['description'],
+            request_form = validated_data['request_form'],
+            form_data = validated_data['form_data'],
+            status = form.status.get(requestformstatus__order=1),
+            requested_by = self.context['request'].user,
+            department = self.context['request'].user.department,
+            is_active = True
+         )
+         ticket.save()
+         ticket.category.add(*validated_data['category'])
+      
+         create_notification(str(ticket.ticket_id), ticket, 'ticket')  # Create notification instance
+         create_remark(str(ticket.ticket_id), ticket) # Create initial remark
+      except Exception as error:
+         # Execute roll back from saved intance
+         logs = CRUDEvent.objects.filter(object_id=str(ticket.ticket_id))
+         ticket.delete()
+         for log in logs:
+            Notification.objects.filter(log=log).delete()
+            log.delete()
+         raise error
       return ticket
 
    def update(self, instance, validated_data):

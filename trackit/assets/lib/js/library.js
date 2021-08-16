@@ -175,13 +175,10 @@ const uploadAttachment = async function(ticket, array) {
    $('#uploadModal').modal('show'); // Open Modal
 
    for (const file of files) {
-      console.log(file)
       // new objcet for file extra data
       let file_obj = new Object();
       file_obj.description = $(file.desc).val();
       file_obj.ticket = ticket
-
-      console.log(file_obj)
 
       // extra data convert to blob
       let blob = new Blob([JSON.stringify(file_obj)], {type: 'application/json'});

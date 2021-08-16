@@ -217,11 +217,11 @@ $(document).ready(function () {
          url: '/api/requests/ticket/crud/',
          data: data,
          headers: axiosConfig
-      }).then(async function (response) { // upload attachments         
-         // Call upload Fn
+      }).then(async function (response) {
+         // upload attachments
          if (file_arr.length > 0) await uploadAttachment(response.data.ticket_id, file_arr) 
          // Alert
-         $.when(toastSuccess('Success')).then(function () {$(location).attr('href', '/requests/lists')})
+         $.when(toastSuccess('Success')).then(() => $(location).attr('href', '/requests/lists'))
          // send notif
          socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: response.data.ticket_id, notification_type: 'ticket'}}))
       }).catch(function (error) { // error
@@ -236,14 +236,9 @@ $(document).ready(function () {
       // Get error message
       let msg = '';
       obj.forEach(error => {msg += `${error} `});
-
       // Add error class change border color to red
-      if (type === 'select') {
-         $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
-      } else {
-         $(`#txt_${field}`).addClass('form-error');
-      }
-
+      if (type === 'select') $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
+      else $(`#txt_${field}`).addClass('form-error');
       // Custom validation for category type
       if (field == 'category') {
          if ($('#select2_categorytype').val()) {
