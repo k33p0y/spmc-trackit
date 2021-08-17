@@ -71,10 +71,9 @@ $(document).ready(function () {
                   `<div class="form-group" id="form-group-${counter}">
                      <label>${title} ${is_required ? '<span class="text-danger">*</span>' : ''}</label>
                      <div class="field-wrap ${is_required ? 'form-field-required' : ''}"></div>
-                     <small class="error-info" id="error-${form_field.id}"></small>
+                     <small class="error-info error-formfields" id="multifield-error"></small>
                   </div>`
                ); 
-
                form_field.forEach(field => {
                   if (field.type == "text") 
                      $(`#form-group-${counter} .field-wrap`).append(`<input type="text" class="form-control form-control-sm" id="${field.id}" placeholder="Enter ${title}">`);
@@ -103,14 +102,13 @@ $(document).ready(function () {
                   }
                });
                counter++;
-
             } else {
                if (form_field.type == "text") {
                   form_wrapper.append(
                      `<div class=" form-group">
                         <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''}</label>
                         <input type="text" class="form-control form-control-sm ${is_required ? 'form-text-required' : ''}" id="${form_field.id}" placeholder="Enter ${title}">
-                        <small class="error-info" id="error-${form_field.id}"></small>
+                        <small class="error-info error-formfields" id="${form_field.id}-error"></small>
                      </div>`
                   );
                }
@@ -119,7 +117,7 @@ $(document).ready(function () {
                      `<div class=" form-group">
                         <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''} </label>
                         <textarea class="form-control form-control-sm ${is_required ? 'form-text-required' : ''}" id="${form_field.id}" placeholder="Enter ${title}" rows="2"></textarea>
-                        <small class="error-info" id="error-${form_field.id}"></small>
+                        <small class="error-info error-formfields" id="${form_field.id}-error"></small>
                      </div>`
                   );
                }
@@ -128,7 +126,7 @@ $(document).ready(function () {
                      `<div class=" form-group">
                         <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''}</label>
                         <input type="text" class="form-control form-control-sm ${is_required ? 'form-text-required' : ''} form-datetime" id="${form_field.id}" placeholder="Enter ${title}">
-                        <small class="error-info" id="error-${form_field.id}"></small>
+                        <small class="error-info error-formfields" id="${form_field.id}-error"></small>
                      </div>`
                   );
                   $(`#${form_field.id}`).datetimepicker({
@@ -143,7 +141,7 @@ $(document).ready(function () {
                      `<div class="form-group">
                         <label> ${title} ${is_required? '<span class="text-danger">*</span>' : ''}</label>
                         <div class="radio-group ${is_required ? 'form-option-required' : ''}"></div>
-                        <small class="error-info" id="error-${form_field.id}"></small>
+                        <small class="error-info error-formfields" id="${form_field.id}-error"></small>
                      </div>`
                   );
                   form_field.option.forEach(opt => {
@@ -160,10 +158,9 @@ $(document).ready(function () {
                      `<div class=" form-group">
                         <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''}</label>
                         <div class="check-group ${is_required ? 'form-option-required' : ''}"></div>
-                        <small class="error-info" id="error-${form_field.id}"></small>
+                        <small class="error-info error-formfields" id="${form_field.id}-error"></small>
                      </div>`
                   );
-
                   form_field.option.forEach(opt => {
                      $(".check-group").append(
                         `<div class="icheck-material-orange icheck-inline m-0 mr-3">
@@ -175,7 +172,6 @@ $(document).ready(function () {
                }
             }
          });
-
          return has_admin
       }).then(function (has_admin) { // show admin row
          if (has_admin > 0 ) $('#row-field-admin').removeAttr('hidden'); else $('#row-field-admin').attr("hidden", true);
@@ -226,20 +222,20 @@ $(document).ready(function () {
          socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: response.data.ticket_id, notification_type: 'ticket'}}))
       }).catch(function (error) { // error
          toastError(error.response.statusText)
-         if (error.response.data.description) showFieldErrors(error.response.data.description, 'description', 'text'); else removeFieldErrors('description', 'text');
-         if (error.response.data.request_form) showFieldErrors(error.response.data.request_form, 'requestform', 'select'); else removeFieldErrors('requestform', 'select');
-         if (error.response.data.category) showFieldErrors(error.response.data.category, 'category', 'select'); else removeFieldErrors('category', 'select');
+         if (error.response.data.description) showFieldErrors(error.response.data.description, 'description'); else removeFieldErrors('description');
+         if (error.response.data.request_form) showFieldErrors(error.response.data.request_form, 'requestform'); else removeFieldErrors('requestform');
+         if (error.response.data.category) showFieldErrors(error.response.data.category, 'category'); else removeFieldErrors('category');
+         if (error.response.data.form_data) showFieldErrors(error.response.data.form_data, 'formfields'); else removeFieldErrors('formfields');
       });
    });   
 
-   let showFieldErrors = function(obj, field, type) {
+   let showFieldErrors = function(obj, field) {
       // Get error message
       let msg = '';
       obj.forEach(error => {msg += `${error} `});
       // Add error class change border color to red
-      if (type === 'select') $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
-      else $(`#txt_${field}`).addClass('form-error');
-      // Custom validation for category type
+      if (field == 'description') $(`#txt_${field}`).addClass('form-error');
+      if (field == 'requestform' || field == 'category') $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
       if (field == 'category') {
          if ($('#select2_categorytype').val()) {
             $('#select2_categorytype').next().find('.select2-selection').removeClass('form-error');
@@ -249,64 +245,28 @@ $(document).ready(function () {
             $('#categorytype-error').html(`*${msg}`)
          }
       }
-      // display message
-      $(`#${field}-error`).html(`*${msg}`)
-   };
-
-   let removeFieldErrors = function(field, type) {
-      // Remove error class for border color
-      if (type === 'select') $(`#select2_${field}`).next().find('.select2-selection').removeClass('form-error');
-      else $(`#txt_${field}`).removeClass('form-error');
-      $(`#${field}-error`).html('')
-   };
-
-   let validateForms = function() {
-      let is_valid = true;
-   
-      // validate text & textarea fields
-      $('.form-text-required').each(function(){
-         if($(this).val() == '') {
-            $(this).addClass('form-error').next().html('*This field may not be blank')
-            is_valid = false;
-         } else {
-            $(this).removeClass('form-error').next().html('')
-         }
-      });
-
-      // validate dropdown fields
-      $('.form-select-required').each(function(){
-         if($(this).val() == '') {
-            $(this).next().find('.select2-selection').addClass('form-error')
-            $(this).siblings('.error-info').html('*This field may not be blank')
-            is_valid = false;
-         } else {
-            $(this).next().find('.select2-selection').removeClass('form-error')
-            $(this).siblings('.error-info').html('')
-         }
-      });
-
-      // validate checkbox & radio btn fields
-      $('.form-option-required').each(function() {
-         let parent = $(this); 
-         let options = parent.children().find('input');
-         
-         options.each(function (i, item) {
-            // option name
-            if (item.type === "radio") var option = `input[name='${item.name}']`; // get input name for radio button
-            if (item.type === "checkbox") var option = `.${$(this).prop('class')}`; // get class for checkbox
-               
-            // validate 
-            if ($(`${option}:checked`).length === 0) {
-               parent.next().html('*Please select an option')
-               is_valid = false;
-            } else {
-               parent.next().html('');
-            }
+      if (field == 'formfields') {
+         $('.error-formfields').html('');
+         obj.forEach(error => {
+            $(`#${error.field_id}`).addClass('form-error');
+            $(`#${error.field_error}-error`).append(`*${error.message} `)
          });
-      });
+      }
+      // display message
+      $(`#${field}-error`).html(`*${msg} `)
+   };
 
-      // Validate multiple form field
-      $('.form-field-required').each(function() {
+   let removeFieldErrors = function(field) {
+      // Remove error class for border color
+      if (field == 'description') $(`#txt_${field}`).removeClass('form-error');
+      if (field == 'requestform' || field == 'category') $(`#select2_${field}`).next().find('.select2-selection').removeClass('form-error');
+      $(`#${field}-error`).html('');
+
+      // Remove error class in form_fields
+      $('.form-text-required').each(function () {  // Text Fields
+         if($(this).val()) $(this).removeClass('form-error').next().html('');
+      });
+      $('.form-field-required').each(function() { // Multi Fields
          let parent = $(this);
          let field = parent.children('input');
          let options = parent.children().find('input');
@@ -316,28 +276,15 @@ $(document).ready(function () {
             // option name
             if (item.type === "radio") var option = `input[name='${item.name}']`; // get input name for radio button
             if (item.type === "checkbox") var option = `.${$(this).prop('class')}`; // get class for checkbox
-               
-            // validate 
-            if ($(`${option}:checked`).length === 0) {
-               parent.next().html('*Please select an option')
-               is_valid = false;
-            } else {
+
+            if ($(`${option}:checked`).length > 0 && field.val()) {
                field.removeClass('form-error')
                parent.next().html('');
             }
-            
-            // textfield
-            if (field.val() == '') {
-               field.addClass('form-error')
-               parent.next().html('*This field may not be blank')
-               is_valid = false;
-            } 
          });
-
       });
       
-      return is_valid;
-   }   
+   };
 
    // Get form Values
    var getFormValues = function(data_obj) {
@@ -349,7 +296,6 @@ $(document).ready(function () {
          
          if (form_field.length > 1) {
             form_field.forEach(field => {
-   
                if (field.type == "text" || field.type == "textarea") { // textfield
                   answer = $(`#${field.id}`).val();                      
                }
@@ -363,12 +309,12 @@ $(document).ready(function () {
                      });
                   });
                }
-   
                form_fields_obj.push({
                   "id":  field.id,
                   "type": field.type,
                   "value" : answer,
-                  "required" : field.required
+                  "is_required" : data.is_required,
+                  "is_multifield" : data.is_multi_field
                });
             });
          } else {
@@ -385,16 +331,15 @@ $(document).ready(function () {
                   });
                });
             }
-   
             form_fields_obj.push({
                "id":  form_field.id,
                "type": form_field.type,
                "value" : answer,
-               "required": form_field.required
+               "is_required": data.is_required,
+               "is_multifield" : data.is_multi_field
             });
          }
       });
-
       return form_fields_obj;
    }
 });

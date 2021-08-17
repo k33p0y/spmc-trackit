@@ -120,6 +120,34 @@ class TicketCRUDSerializer(serializers.ModelSerializer):
          raise serializers.ValidationError('This field may not be blank.')  
       return category
 
+   def validate_form_data(self, form_data):
+      errors = list()
+      # Iterate each dict from list
+      # Check object form type
+      # Verify if field is required and has value
+      # Append to list on each error occur
+      for obj in form_data:
+         field_error = obj['id'] if not obj['is_multifield'] else 'multifield'
+         # For text and textarea fields
+         if obj['type'] == 'text' or obj['type'] == 'textarea':
+            if obj['is_required'] and not obj['value']: 
+               errors.append({'field_id':obj['id'], 'field_error':field_error, 'message':'This field may not be blank.'})
+         # For radio and checkbox fields
+         if obj['type']  == 'radio' or obj['type']  == 'checkbox':
+            if obj['is_required']:
+               checked = False
+               for option in obj['value']:
+                  if option['option_value']:
+                     checked = True
+                     break
+               if not checked:
+                  errors.append({'field_id':obj['id'], 'field_error':field_error, 'message':'Please select an option.'})
+      # If has errors raise exception
+      if errors:
+         raise serializers.ValidationError(errors)
+      return form_data
+      
+
    class Meta:
       model = Ticket
       exclude = ['reference_no']

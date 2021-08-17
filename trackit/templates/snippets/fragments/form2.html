@@ -10,7 +10,7 @@
             <div class="icheck-material-orange icheck-inline m-0 mr-3">
                 <input type="radio" id="{{opt.option_id}}" name="{{field.id}}" {% if opt.option_value == True %} checked {% endif %} />
                 <label for="{{opt.option_id}}">{{opt.option_name}}</label>
-                </div>
+            </div>
             {% endfor %}
         </div>
         {% elif field.type == 'checkbox' and field.id == data.id  %}
