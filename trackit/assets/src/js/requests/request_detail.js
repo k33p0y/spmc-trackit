@@ -60,20 +60,17 @@ $(document).ready(function () {
       }).then(async function (response) {    
          // disable submit button
          $(this).attr('disabled', true);
-
          // Call upload Fn
          if (file_arr.length > 0) await uploadAttachment(ticket, file_arr) 
-
          // Alert
          $.when(toastSuccess('Success')).then(function () {$('#btn_view')[0].click()})
-         
          // send notif
          socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: ticket, notification_type: 'ticket'}}))          
       }).catch(function (error) { // error
          toastError(error.response.statusText)
-         if (error.response.data.description) showFieldErrors(error.response.data.description, 'description', 'text'); else removeFieldErrors('description', 'text');
-         if (error.response.data.request_form) showFieldErrors(error.response.data.request_form, 'requestform', 'select'); else removeFieldErrors('requestform', 'select');
-         if (error.response.data.category) showFieldErrors(error.response.data.category, 'category', 'select'); else removeFieldErrors('category', 'select');
+         if (error.response.data.description) showFieldErrors(error.response.data.description, 'description'); else removeFieldErrors('description');
+         if (error.response.data.category) showFieldErrors(error.response.data.category, 'category'); else removeFieldErrors('category');
+         if (error.response.data.form_data) showFieldErrors(error.response.data.form_data, 'formfields'); else removeFieldErrors('formfields');
       });
    });
 
@@ -102,20 +99,14 @@ $(document).ready(function () {
    });
 
 
-   let showFieldErrors = function(obj, field, type) {
+   let showFieldErrors = function(obj, field) {
       // Get error message
       let msg = '';
       obj.forEach(error => {msg += `${error} `});
-
       // Add error class change border color to red
-      if (type === 'select') {
-         $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
-      } else {
-         $(`#txt_${field}`).addClass('form-error');
-      }
-
-      // Custom validation for category type
+      if (field == 'description') $(`#txt_${field}`).addClass('form-error');
       if (field == 'category') {
+         $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
          if ($('#select2_categorytype').val()) {
             $('#select2_categorytype').next().find('.select2-selection').removeClass('form-error');
             $('#categorytype-error').html('')
@@ -123,6 +114,13 @@ $(document).ready(function () {
             $('#select2_categorytype').next().find('.select2-selection').addClass('form-error');
             $('#categorytype-error').html(`*${msg}`)
          }
+      }
+      if (field == 'formfields') {
+         $('.error-formfields').html('');
+         obj.forEach(error => {
+            $(`#${error.field_id}`).addClass('form-error');
+            $(`#${error.field_error}-error`).append(`*${error.message} `)
+         });
       }
       // display message
       $(`#${field}-error`).html(`*${msg}`)
@@ -218,18 +216,19 @@ $(document).ready(function () {
       const form_data = new Array()
       
       form_fields.each(function(index, val) {
+         const is_required = ($(this).attr("is_required").toLowerCase() === 'true') ? true : false;
+         const is_multifield = ($(this).attr("is_multifield").toLowerCase() === 'true') ? true : false;
+  
          if ($(this).children().length > 0) {
             let nodes = $(this).children();
             var answer = new Array();
             var type;
-   
+
             nodes.each(function(index, element) {
                const field = $(this).find('input');
                const label = $(this).find('label');
-   
                // Set type of field
                type = field.attr('type');
-               
                // Push to array
                answer.push({
                   "option_id": field.attr('id'),
@@ -238,7 +237,6 @@ $(document).ready(function () {
                });
             });
          }
-         
          if (val.type == 'text' || val.type == 'textarea') {
             var answer = $(`#${val.id}`).val()
             var type = val.type;
@@ -248,9 +246,10 @@ $(document).ready(function () {
             "id" : val.id,
             "type" : type,
             "value" : answer,
+            "is_required" : is_required,
+            "is_multifield" : is_multifield
          });
       });
-   
       return form_data;
    }
    

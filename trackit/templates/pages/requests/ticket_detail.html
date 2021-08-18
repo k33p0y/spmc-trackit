@@ -219,7 +219,7 @@
                                     <div class="form-group">
                                        <label> {{form.title}} {% if form.is_required %}<span class="text-danger">*</span>{% endif %} </label>
                                        <div class="field-wrap {% if form.is_required %} form-field-required {% endif %}">{% include '../../snippets/fragments/form2.html' %}</div>
-                                       <small class="error-info" id="error-info-type"></small>
+                                       <small class="error-info error-formfields" id="multifield-error"></small>
                                     </div>
                                  {% else %}
                                     {% include '../../snippets/fragments/form.html' %}

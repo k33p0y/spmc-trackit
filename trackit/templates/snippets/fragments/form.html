@@ -2,25 +2,25 @@
     {% if form.form_field.type == 'text' and form.form_field.id == data.id %}
     <div class="form-group">
         <label> {{form.title}} {% if form.is_required %}<span class="text-danger">*</span>{% endif %} </label>
-        <input type="text" class="form-control form-control-sm form_field_detail {% if form.is_required %} form-text-required {% endif %}" id="{{form.form_field.id}}" value="{{data.value}}" placeholder="Enter {{form.title}}">
-        <small class="error-info" id="{{form.form_field.id}}-error" ></small>
+        <input type="text" class="form-control form-control-sm form_field_detail {% if form.is_required %} form-text-required {% endif %}" id="{{form.form_field.id}}" value="{{data.value}}" placeholder="Enter {{form.title}}" is_required={{form.is_required}} is_multifield=False>
+        <small class="error-info error-formfields" id="{{form.form_field.id}}-error" ></small>
     </div>
     {% elif form.form_field.type == 'textarea' and form.form_field.id == data.id  %}
     <div class="form-group">
         <label> {{form.title}} {% if form.is_required %}<span class="text-danger">*</span>{% endif %} </label>
-        <textarea class="form-control form-control-sm form_field_detail {% if form.is_required %} form-text-required {% endif %}" id="{{form.form_field.id}}" placeholder="Enter {{form.title}}" rows="2">{{data.value}}</textarea>
-        <small class="error-info" id="{{form.form_field.id}}-error"></small>
+        <textarea class="form-control form-control-sm form_field_detail {% if form.is_required %} form-text-required {% endif %}" id="{{form.form_field.id}}" placeholder="Enter {{form.title}}" rows="2" is_required={{form.is_required}} is_multifield={{form.is_multi_field}}>{{data.value}}</textarea>
+        <small class="error-info error-formfields" id="{{form.form_field.id}}-error"></small>
     </div>
     {% elif form.form_field.type == 'datetime' and form.form_field.id == data.id  %}
     <div class="form-group">
         <label> {{form.title}} {% if form.is_required %}<span class="text-danger">*</span>{% endif %} </label>
-        <input type="text" class="form-control form-control-sm form_field_detail form-datetime {% if form.is_required %} form-text-required {% endif %}" id="{{form.form_field.id}}" value="{{data.value}}" placeholder="Enter {{form.title}}">
-        <small class="error-info" id="{{form.form_field.id}}-error"></small>
+        <input type="text" class="form-control form-control-sm form_field_detail form-datetime {% if form.is_required %} form-text-required {% endif %}" id="{{form.form_field.id}}" value="{{data.value}}" placeholder="Enter {{form.title}}" is_required={{form.is_required}} is_multifield={{form.is_multi_field}}>
+        <small class="error-info error-formfields" id="{{form.form_field.id}}-error"></small>
     </div>
     {% elif form.form_field.type == 'radio' and form.form_field.id == data.id  %}
     <div class="form-group">
         <label> {{form.title}} </label>
-        <div class="radio-group form_field_detail {% if form.is_required %}form-option-required{% endif %}" id="{{form.form_field.id}}">
+        <div class="radio-group form_field_detail {% if form.is_required %}form-option-required{% endif %}" id="{{form.form_field.id}}" is_required={{form.is_required}} is_multifield={{form.is_multi_field}}>
             {% for opt in data.value %}
             <div class="icheck-material-orange icheck-inline m-0 mr-3">
                 <input type="radio" id="{{opt.option_id}}" name="{{form.form_field.id}}" {% if opt.option_value == True %} checked {% endif %} option_name="{{opt.option_name}}"/>
@@ -28,12 +28,12 @@
             </div>
             {% endfor %}
         </div>
-        <small class="error-info" id="{{form.form_field.id}}-error"></small>
+        <small class="error-info error-formfields" id="{{form.form_field.id}}-error"></small>
     </div>
     {% elif form.form_field.type == 'checkbox' and form.form_field.id == data.id  %}
     <div class="form-group">
         <label> {{form.title}} </label>
-        <div class="check-group form_field_detail {% if form.is_required %}form-option-required{% endif %}" id="{{form.form_field.id}}">
+        <div class="check-group form_field_detail {% if form.is_required %}form-option-required{% endif %}" id="{{form.form_field.id}}" is_required={{form.is_required}} is_multifield={{form.is_multi_field}} >
             {% for opt in data.value %}
             <div class="icheck-material-orange icheck-inline m-0 mr-3">
                 <input type="checkbox" class="{{form.form_field.id}}" id="{{opt.option_id}}" {% if opt.option_value == True %} checked {% endif %} option_name="{{opt.option_name}}" />
@@ -41,7 +41,7 @@
             </div>
             {% endfor %}
         </div>
-        <small class="error-info" id="{{form.form_field.id}}-error"></small>
+        <small class="error-info error-formfields" id="{{form.form_field.id}}-error"></small>
     </div>
     {% endif %}
 {% endfor %}

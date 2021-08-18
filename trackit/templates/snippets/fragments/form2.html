@@ -1,11 +1,11 @@
 {% for field in form.form_field %}
     {% for data in ticket.form_data %}
         {% if field.type == 'text' and field.id == data.id  %}
-        <input type="text" class="form-control form-control-sm form_field_detail" id="{{field.id}}" value="{{data.value}}" placeholder="Enter {{form.title}}">
+        <input type="text" class="form-control form-control-sm form_field_detail" id="{{field.id}}" value="{{data.value}}" placeholder="Enter {{form.title}}" is_required={{form.is_required}} is_multifield={{form.is_multi_field}}>
         {% elif field.type == 'textarea' and field.id == data.id  %}
-        <textarea class="form-control form-control-sm form_field_detail" id="{{field.id}}" placeholder="Enter {{form.title}}" rows="2">{{data.value}}</textarea>
+        <textarea class="form-control form-control-sm form_field_detail" id="{{field.id}}" placeholder="Enter {{form.title}}" rows="2" is_required={{form.is_required}} is_multifield={{form.is_multi_field}}>{{data.value}}</textarea>
         {% elif field.type == 'radio' and field.id == data.id  %}
-        <div class="radio-group form_field_detail" id="{{field.id}}">
+        <div class="radio-group form_field_detail" id="{{field.id}}" is_required={{form.is_required}} is_multifield="False">
             {% for opt in data.value %}
             <div class="icheck-material-orange icheck-inline m-0 mr-3">
                 <input type="radio" id="{{opt.option_id}}" name="{{field.id}}" {% if opt.option_value == True %} checked {% endif %} />
@@ -14,7 +14,7 @@
             {% endfor %}
         </div>
         {% elif field.type == 'checkbox' and field.id == data.id  %}
-        <div class="check-group form_field_detail" id="{{field.id}}">
+        <div class="check-group form_field_detail" id="{{field.id}}" is_required={{form.is_required}} is_multifield={{form.is_multi_field}}>
             {% for opt in data.value %}
             <div class="icheck-material-orange icheck-inline m-0 mr-3">
                 <input type="checkbox" id="{{opt.option_id}}" {% if opt.option_value == True %} checked {% endif %} />
