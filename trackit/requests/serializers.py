@@ -150,7 +150,6 @@ class TicketCRUDSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors)
       return form_data
       
-
    class Meta:
       model = Ticket
       exclude = ['reference_no']

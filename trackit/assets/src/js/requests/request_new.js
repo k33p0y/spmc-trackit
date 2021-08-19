@@ -40,6 +40,11 @@ $(document).ready(function () {
             .append('<option></option>')
             .removeAttr('disabled');
 
+         $("#select2_category")
+            .empty()
+            .append('<option></option>')
+            .removeAttr('disabled');
+
          // populate category type select
          response.data.category_types.forEach(type => {
             $("#select2_categorytype").append(`<option value='${type.id}'>${type.name}</option>`)
@@ -235,8 +240,9 @@ $(document).ready(function () {
       obj.forEach(error => {msg += `${error} `});
       // Add error class change border color to red
       if (field == 'description') $(`#txt_${field}`).addClass('form-error');
-      if (field == 'requestform' || field == 'category') $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
+      if (field == 'requestform') $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
       if (field == 'category') {
+         $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
          if ($('#select2_categorytype').val()) {
             $('#select2_categorytype').next().find('.select2-selection').removeClass('form-error');
             $('#categorytype-error').html('')

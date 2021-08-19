@@ -98,7 +98,6 @@ $(document).ready(function () {
       });
    });
 
-
    let showFieldErrors = function(obj, field) {
       // Get error message
       let msg = '';
@@ -132,84 +131,6 @@ $(document).ready(function () {
       else $(`#txt_${field}`).removeClass('form-error');
       $(`#${field}-error`).html('')
    };
-
-   let validateForms = function () {
-      let is_valid = true;
-      
-      // validate text & textarea fields
-      $('.form-text-required').each(function(){
-         if($(this).val() == '') {
-            $(this).addClass('form-error').next().html('*This field may not be blank')
-            is_valid = false;
-         } else {
-            $(this).removeClass('form-error').next().html('')
-         }
-      });
-
-      // validate dropdown fields
-      $('.form-select-required').each(function(){
-         if($(this).val() == '') {
-            $(this).next().find('.select2-selection').addClass('form-error')
-            $(this).siblings('.error-info').html('*This field may not be blank')
-            is_valid = false;
-         } else {
-            $(this).next().find('.select2-selection').removeClass('form-error')
-            $(this).siblings('.error-info').html('')
-         }
-      });
-
-      // validate checkbox & radio btn fields
-      $('.form-option-required').each(function() {
-         let parent = $(this); 
-         let options = parent.children().find('input');
-         
-         options.each(function (i, item) {
-            // option name
-            if (item.type === "radio") var option = `input[name='${item.name}']`; // get input name for radio button
-            if (item.type === "checkbox") var option = `.${$(this).prop('class')}`; // get class for checkbox
-               
-            // validate 
-            if ($(`${option}:checked`).length === 0) {
-               parent.next().html('*Please select an option')
-               is_valid = false;
-            } else {
-               parent.next().html('');
-            }
-         });
-      });
-
-      // Validate multiple form field
-      $('.form-field-required').each(function() {
-         let parent = $(this);
-         let field = parent.children('input');
-         let options = parent.children().find('input');
-         
-         // radio or checkbox
-         options.each(function (i, item) {
-            // option name
-            if (item.type === "radio") var option = `input[name='${item.name}']`; // get input name for radio button
-            if (item.type === "checkbox") var option = `.${$(this).prop('class')}`; // get class for checkbox
-              
-            // validate 
-            if ($(`${option}:checked`).length === 0) {
-               parent.next().html('*Please select an option')
-               is_valid = false;
-            } else {
-               field.removeClass('form-error')
-               parent.next().html('');
-            }
-            
-            // textfield
-            if (field.val() == '') {
-               field.addClass('form-error')
-               parent.next().html('*This field may not be blank')
-               is_valid = false;
-            } 
-         });
-      });
-      
-      return is_valid;
-   }
 
    let getFormDetailValues = function() {
       const form_fields = $('.form_field_detail');
@@ -252,5 +173,4 @@ $(document).ready(function () {
       });
       return form_data;
    }
-   
 });
