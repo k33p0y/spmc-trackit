@@ -80,6 +80,7 @@ $(document).ready(function () {
                   </div>`
                ); 
                form_field.forEach(field => {
+                  console.log(field)
                   if (field.type == "text") 
                      $(`#form-group-${counter} .field-wrap`).append(`<input type="text" class="form-control form-control-sm" id="${field.id}" placeholder="Enter ${title}">`);
                   if (field.type == "textarea") {
@@ -104,6 +105,16 @@ $(document).ready(function () {
                            </div>`
                         );
                      });
+                  }
+                  if (field.type == "paragraph") {
+                     $(`#form-group-${counter} .field-wrap`).append(`<p class="mx-1 my-0" id="${field.id}"> ${field.value} </p>`);
+                  }
+                  if (field.type == "list") {
+                     $(`#form-group-${counter} .field-wrap`).append(`
+                        <ul class="m-1 list-style pl-4" id="${field.id}">
+                           ${field.value.map(list => `<li>${list.text}</li>`).join("\n")}                    
+                        </ul>`
+                     );
                   }
                });
                counter++;
@@ -174,6 +185,24 @@ $(document).ready(function () {
                         </div>`
                      );
                   });
+               }
+               if (form_field.type == "paragraph") {
+                  form_wrapper.append(
+                     `<div class=" form-group">
+                        <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''} </label>
+                        <p class="mx-1 my-0" id="${form_field.id}"> ${form_field.value} </p>
+                     </div>`
+                  );
+               }
+               if (form_field.type == "list") {
+                  form_wrapper.append(
+                     `<div class=" form-group">
+                        <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''} </label>
+                        <ul class="m-1 list-style pl-4" id="${form_field.id}">
+                           ${form_field.value.map(list => `<li>${list.text}</li>`).join("\n")}                    
+                        </ul>
+                     </div>`
+                  );
                }
             }
          });

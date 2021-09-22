@@ -43,5 +43,19 @@
         </div>
         <small class="error-info error-formfields" id="{{form.form_field.id}}-error"></small>
     </div>
+    {% elif form.form_field.type == 'paragraph' and form.form_field.id == data.id %}
+    <div class="form-group">
+        <label> {{form.title}} {% if form.is_required %}<span class="text-danger">*</span>{% endif %} </label>
+        <p class="mx-1 my-0" id="{{form.form_field.id}}"> {{form.form_field.value}} </p>
+    </div>
+    {% elif form.form_field.type == 'list' and form.form_field.id == data.id %}
+    <div class="form-group">
+        <label> {{form.title}} {% if form.is_required %}<span class="text-danger">*</span>{% endif %} </label>
+        <ul class="list-style m-1 pl-4" id="{{form.form_field.id}}">
+            {% for list in form.form_field.value %}
+                <li>{{list.text}}</li>
+            {% endfor %}
+        </ul>
+    </div>
     {% endif %}
 {% endfor %}

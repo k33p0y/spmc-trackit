@@ -22,6 +22,14 @@
             </div>
             {% endfor %}
         </div>
+        {% elif field.type == 'paragraph' and field.id == data.id  %}
+        <p class="mx-1 my-0" id="{{field.id}}">{{data.value}}</p>
+        {% elif field.type == 'list' and field.id == data.id  %}
+        <ul class="list-style m-1 pl-4" id="{{field.id}}">
+            {% for list in field.value %}
+                <li>{{list.text}}</li>
+            {% endfor %}
+        </ul>
         {% endif %}
     {% endfor %}
 {% endfor %}

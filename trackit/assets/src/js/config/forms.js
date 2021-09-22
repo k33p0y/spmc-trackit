@@ -407,11 +407,10 @@ $(document).ready(function () {
                "id": "",
                "type": "",
                "value" : null,
-               "option": null,
-               "required" : false
+               "option": null
             }
          ],
-         "is_admin": true,
+         "is_admin": false,
          "is_required": true,
          "is_multi_field": false,
       }]
