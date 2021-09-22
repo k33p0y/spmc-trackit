@@ -80,7 +80,7 @@ $(document).ready(function () {
                      if (is_pass) {
                         data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Passed </span>";
                      } else {
-                        data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Failed </span>";
+                        data = "<span class='text-danger'> <i class='fas fa-sm fa-times-circle'></i> Failed </span>";
                      }
                   } else data = ''
                }
