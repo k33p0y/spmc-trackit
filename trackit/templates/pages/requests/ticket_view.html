@@ -113,12 +113,14 @@
                                  </div>
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                                 <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context">{{ticket.requested_by}} </p>
-                                       <span class="label">Requested By</span>
+                                 <a href="#userdetailModal" data-toggle="modal" data-target="#userdetailModal">
+                                    <div class="card card-detail mt-2 mb-1">
+                                       <div class="card-body p-0 m-0">
+                                          <p class="context">{{ticket.requested_by}} </p>
+                                          <span class="label">Requested By</span>
+                                       </div>
                                     </div>
-                                 </div>
+                                 </a>
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
@@ -354,6 +356,67 @@
          <div class="modal-footer">
             <button type="button" class="btn btn-sm btn-light m-0 mr-2" id="btn_close" data-dismiss="modal"><span>Close</span> </button>
             <a class="btn btn-sm btn-orange m-0" id="btn_download"><span>Download</span></a>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- User Details Modal-->
+<div class="modal modal-userdetail fade" id="userdetailModal" tabindex="-1" role="dialog" aria-labelledby="userdetailModal" aria-hidden="true">
+   <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content text-sm">
+         <div class="modal-header">
+            <h6 class="modal-title">Details - Requested By</h6>
+         </div>
+         <div class="modal-body">
+            <form id="form">
+               <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3"> 
+                     <div class="mr-auto list-modal-key">Full Name</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                         <p class="p-0 m-0 text-right">
+                           {{ticket.requested_by.first_name}}
+                           {% if ticket.requested_by.middle_name %} {{ticket.requested_by.middle_name}} {% endif %}
+                           {{ticket.requested_by.last_name}}
+                           {% if ticket.requested_by.suffix %} {{ticket.requested_by.suffix}} {% endif %}
+                         </p>
+                     </div>
+                 </li>
+                 <li class="list-group-item d-flex p-2 pt-3 pb-3"> 
+                     <div class="mr-auto list-modal-key">Department</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                         <p class="p-0 m-0 text-right">{{ticket.requested_by.department}}</p>
+                     </div>
+                 </li>
+                 <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto list-modal-key">Email</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right">{{ticket.requested_by.email}}</p>
+                     </div>
+                  </li>
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto list-modal-key">Contact No</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right">{{ticket.requested_by.contact_no}}</p>
+                     </div>
+                  </li>
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto list-modal-key">License No</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right">{{ticket.requested_by.license_no}}</p>
+                     </div>
+                  </li>
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto list-modal-key">Date Joined</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right">Since {{ticket.requested_by.date_joined|date:"d F Y"}}</p>
+                     </div>
+                  </li>
+               </ul>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-light m-0" id="btn_close" data-dismiss="modal"><span>Close</span> </button>
          </div>
       </div>
    </div>

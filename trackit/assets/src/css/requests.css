@@ -146,6 +146,11 @@
 
 .list-group-flush .list-group-item{
    border-style: dashed;
+   color: #59626b;
+}
+
+.list-modal-key {
+   font-size: 12px !important;
 }
 
 #dt_attachments.dataTable td  {
