@@ -161,7 +161,7 @@ $(document).ready(function () {
       // // // Open Modal
       // // // Rename Modal Title
       $("#modal-add-user").modal();
-      $("#modal-add-user .modal-title").text('Update User');
+      $("#modal-add-user .modal-title").text(`Update User - ${dt_data['first_name']} ${dt_data['last_name']}`);
 
       // // // Populate Fields
       resetForm(); // reset form
@@ -171,6 +171,8 @@ $(document).ready(function () {
       $('#txt-lastname').val(dt_data['last_name']); // LAST NAME
       $('#txt-suffix').val(dt_data['suffix']); // SUFFIX
       $('#txt-email').val(dt_data['email']); // EMAIL ADDRESS
+      $('#txt-contact').val(dt_data['contact_no']); // CONTACT NO
+      $('#txt-license').val(dt_data['license_no']); // LICENSE NO
       if (dt_data['department']) $('#select2-department').val(dt_data['department'].id).trigger('change'); else $('#select2-department').val('').trigger('change'); // DEPARTMENT
       if (dt_data['is_superuser']) $('#chk-superuser-status').prop('checked', true); else $('#chk-superuser-status').prop('checked', false); // IS SUPERUSER
       if (dt_data['is_staff']) $('#chk-staff-status').prop('checked', true); else $('#chk-staff-status').prop('checked', false); // IS STAFF
@@ -195,7 +197,9 @@ $(document).ready(function () {
       data.last_name = $('#txt-lastname').val();
       data.suffix = $('#txt-suffix').val();
       data.email = $('#txt-email').val();
+      data.contact_no = $('#txt-contact').val();
       data.department = department
+      data.license_no = $('#txt-license').val();
       data.is_superuser = $('#chk-superuser-status').is(':checked')
       data.is_staff = $('#chk-staff-status').is(':checked')
       data.is_active = $('#chk-active-status').is(':checked')
@@ -222,6 +226,7 @@ $(document).ready(function () {
          if (error.response.data.last_name) showFieldErrors(error.response.data.last_name, 'lastname'); else removeFieldErrors('lastname');
          if (error.response.data.password) showFieldErrors(error.response.data.password, 'password'); else removeFieldErrors('password');
          if (error.response.data.email) showFieldErrors(error.response.data.email, 'email'); else removeFieldErrors('email');
+         if (error.response.data.contact_no) showFieldErrors(error.response.data.contact_no, 'contact'); else removeFieldErrors('contact');
          if (error.response.data.department) showFieldErrors(error.response.data.department, 'department'); else removeFieldErrors('department');
       });
    }); // submit form end
@@ -345,5 +350,6 @@ $(document).ready(function () {
       removeFieldErrors('lastname');
       removeFieldErrors('password');
       removeFieldErrors('department');
+      removeFieldErrors('contact');
    }
 });

@@ -21,7 +21,9 @@ class UserSerializer(serializers.ModelSerializer):
             last_name = validated_data['last_name'],
             suffix = validated_data['suffix'],
             email = validated_data['email'],
+            contact_no = validated_data['contact_no'],
             department = validated_data['department'],
+            license_no = validated_data['license_no'],
             is_superuser = validated_data['is_superuser'],
             is_staff = validated_data['is_staff'],
             is_active = validated_data['is_active'],
@@ -73,6 +75,11 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('This field may not be blank.')
         return department
 
+    def validate_contact_no(self, contact_no):
+        if contact_no and not contact_no.isdigit():
+            raise serializers.ValidationError('This field must be numeric.')
+        return contact_no
+
     def to_representation(self, instance):
         self.fields['department'] =  DepartmentReadOnlySerializer(read_only=True)
         return super(UserSerializer, self).to_representation(instance)
@@ -82,18 +89,16 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'first_name', 'middle_name', 'last_name', 'email', 'suffix', 'department', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
-
     def update(self, instance, validated_data):
         instance.username = validated_data.get('username', instance.username)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.middle_name = validated_data.get('middle_name', instance.middle_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.email = validated_data.get('email', instance.email)
         instance.suffix = validated_data.get('suffix', instance.suffix)
+        instance.email = validated_data.get('email', instance.email)
+        instance.contact_no = validated_data.get('contact_no', instance.contact_no)
         instance.department = validated_data.get('department', instance.department)
+        instance.license_no = validated_data.get('license_no', instance.license_no)
         instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
         instance.is_staff = validated_data.get('is_staff', instance.is_staff)
         instance.is_active = validated_data.get('is_active', instance.is_active)
@@ -124,6 +129,15 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         if not department and not is_superuser:
             raise serializers.ValidationError('This field may not be blank.')
         return department
+
+    def validate_contact_no(self, contact_no):
+        if contact_no and not contact_no.isdigit():
+            raise serializers.ValidationError('This field must be numeric.')
+        return contact_no
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'middle_name', 'last_name', 'suffix', 'email', 'contact_no', 'department', 'license_no', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
 
 class UserProfileSerializer(serializers.ModelSerializer):
 

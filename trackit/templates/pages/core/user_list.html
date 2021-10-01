@@ -147,7 +147,7 @@
 {% block modal %}
 <!-- Create -->
 <div class="modal fade" id="modal-add-user" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-   <div class="modal-dialog modal-md" role="document">
+   <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content text-sm">
          <div class="modal-header">
             <h6 class="modal-title"></h6>
@@ -168,60 +168,94 @@
                <div class="tab-content" id="nav-tabContent">
                   <!-- Personal Informaton Tab -->
                   <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="nav-personal-tab">
-                     <!-- FIRST NAME -->
-                     <div class="form-group name-group">
-                        <label for="firstnameHelp">First Name <span class="text-danger">*</span> </label>
-                        <input type="text" class="form-control form-control-sm" id="txt-firstname" aria-describedby="firstnameHelp"
-                           placeholder="Enter first name">
-                        <small class="error-info" id="firstname-error"></small>
+                     
+                     <div class="form-row">
+                        <div class="col-12 col-lg-6">
+                           <!-- FIRST NAME -->
+                           <div class="form-group name-group">
+                              <label for="firstnameHelp">First Name <span class="text-danger">*</span> </label>
+                              <input type="text" class="form-control form-control-sm" id="txt-firstname" aria-describedby="firstnameHelp"
+                                 placeholder="Enter first name">
+                              <small class="error-info" id="firstname-error"></small>
+                           </div>
+                        </div>
+                        <!-- MIDDLE NAME -->
+                        <div class="col-12 col-lg-6">
+                           <div class="form-group name-group">
+                              <label for="middlenameHelp">Middle Name</label>
+                              <input type="text" class="form-control form-control-sm" id="txt-middlename" aria-describedby="middlenameHelp"
+                                 placeholder="Enter middle name">
+                              <small class="error-info" id="middlename-error"></small>
+                           </div>
+                        </div>
                      </div>
-
-                     <!-- MIDDLE NAME -->
-                     <div class="form-group name-group">
-                        <label for="middlenameHelp">Middle Name</label>
-                        <input type="text" class="form-control form-control-sm" id="txt-middlename" aria-describedby="middlenameHelp"
-                           placeholder="Enter middle name">
-                        <small class="error-info" id="middlename-error"></small>
-                     </div>
-
-                     <!-- LAST NAME -->
-                     <div class="form-group name-group">
-                        <label for="lastnameHelp">Last Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-sm" id="txt-lastname" aria-describedby="lastnameHelp"
-                           placeholder="Enter last name">
-                        <small class="error-info" id="lastname-error"></small>
-                     </div>
-
-                     <!-- SUFFIX -->
-                     <div class="form-group name-group">
-                        <label for="suffixHelp">Suffix</label>
-                        <input type="text" class="form-control form-control-sm" id="txt-suffix" aria-describedby="suffixHelp"
-                           placeholder="Enter extension name">
-                        <small class="text-muted d-block help-text">i.e. Jr., Sr., I, II etc.</small>
-                        <small class="error-info" id="suffix-error"></small>
-                     </div>
-
-                     <!-- EMAIL -->
-                     <div class="form-group name-group">
-                        <label for="emailHelp">Email Address</label>
-                        <input type="email" class="form-control form-control-sm" id="txt-email" aria-describedby="emailHelp"
-                           placeholder="Enter email address">
-                        <small class="text-muted d-block help-text">Optional. Must be a valid and active email address</small>
-                        <small class="error-info" id="email-error"></small>
-                     </div>
-
-                      <!-- DEPARTMENT -->
-                     <div class="form-group name-group">
-                        <label for="departmentHelp">Department <span class="text-danger">*</span> </label>
-                        <select class="form-control form-control-sm" id="select2-department" name="departmentHelp">
-                           <option></option>
-                           {% for department in select_departments %}
-                           <option value={{department.id}}>{{department}}</option>
-                           {% endfor %}
-                        </select>
-                        <small class="text-muted d-block help-text">Required. For superuser account you may leave this field blank.</small>
-                        <small class="error-info" id="department-error"></small>
-                     </div>
+                     <div class="form-row">
+                        <!-- LAST NAME -->
+                        <div class="col-12 col-lg-6">
+                           <div class="form-group name-group">
+                              <label for="lastnameHelp">Last Name <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control form-control-sm" id="txt-lastname" aria-describedby="lastnameHelp"
+                                 placeholder="Enter last name">
+                              <small class="error-info" id="lastname-error"></small>
+                           </div>
+                        </div>
+                         <!-- SUFFIX -->
+                        <div class="col-12 col-lg-6">
+                           <div class="form-group name-group">
+                              <label for="suffixHelp">Suffix</label>
+                              <input type="text" class="form-control form-control-sm" id="txt-suffix" aria-describedby="suffixHelp"
+                                 placeholder="Enter extension name (i.e. Jr., Sr., I, II etc.)">
+                              <small class="text-muted d-block help-text"></small>
+                              <small class="error-info" id="suffix-error"></small>
+                           </div>
+                        </div>
+                     </div> 
+                     <div class="form-row">
+                        <!-- EMAIL -->
+                        <div class="col-12 col-lg-6">
+                           <div class="form-group name-group">
+                              <label for="emailHelp">Email Address</label>
+                              <input type="email" class="form-control form-control-sm" id="txt-email" aria-describedby="emailHelp"
+                                 placeholder="Enter email address">
+                              <small class="text-muted d-block help-text">Optional. Must be a valid and active email address</small>
+                              <small class="error-info" id="email-error"></small>
+                           </div>
+                        </div>
+                        <!-- CONTACT -->
+                        <div class="col-12 col-lg-6">
+                           <div class="form-group name-group">
+                              <label for="emailHelp">Contact No</label>
+                              <input type="email" class="form-control form-control-sm" id="txt-contact" aria-describedby="contactHelp"
+                                 placeholder="Enter Contact Number">
+                              <small class="error-info" id="contact-error"></small>
+                           </div>
+                        </div>
+                     </div>    
+                     <div class="form-row">
+                        <!-- DEPARTMENT -->
+                        <div class="col-12 col-lg-6">
+                           <div class="form-group name-group">
+                              <label for="departmentHelp">Department <span class="text-danger">*</span> </label>
+                              <select class="form-control form-control-sm" id="select2-department" name="departmentHelp">
+                                 <option></option>
+                                 {% for department in select_departments %}
+                                 <option value={{department.id}}>{{department}}</option>
+                                 {% endfor %}
+                              </select>
+                              <small class="text-muted d-block help-text">Required. For superuser account you may leave this field blank.</small>
+                              <small class="error-info" id="department-error"></small>
+                           </div>
+                        </div>
+                        <!-- LICENSE NO -->
+                        <div class="col-12 col-lg-6">
+                           <div class="form-group name-group">
+                              <label for="emailHelp">License No</label>
+                              <input type="email" class="form-control form-control-sm" id="txt-license" aria-describedby="licenseHelp"
+                                 placeholder="Enter License Number">
+                              <small class="error-info" id="license-error"></small>
+                           </div>
+                        </div>
+                     </div>        
                   </div>
 
                   <!-- Account Info Tab -->
