@@ -113,14 +113,14 @@
                                  </div>
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                                 <a href="#userdetailModal" data-toggle="modal" data-target="#userdetailModal">
+                                 {% if user.is_staff or user == ticket.requested_by %}<a href="#userdetailModal" data-toggle="modal" data-target="#userdetailModal">{% endif %}
                                     <div class="card card-detail mt-2 mb-1">
                                        <div class="card-body p-0 m-0">
                                           <p class="context">{{ticket.requested_by}} </p>
                                           <span class="label">Requested By</span>
                                        </div>
                                     </div>
-                                 </a>
+                                 {% if user.is_staff or user == ticket.requested_by %}</a>{% endif %}
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
@@ -382,18 +382,25 @@
                          </p>
                      </div>
                  </li>
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto list-modal-key">Username</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right">{{ticket.requested_by.username}}</p>
+                     </div>
+                  </li>
+                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto list-modal-key">Email</div>
+                     <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right">{{ticket.requested_by.email}}</p>
+                     </div>
+                  </li>
                  <li class="list-group-item d-flex p-2 pt-3 pb-3"> 
                      <div class="mr-auto list-modal-key">Department</div>
                      <div class="font-weight-bold" style="width: 60% !important;">
                          <p class="p-0 m-0 text-right">{{ticket.requested_by.department}}</p>
                      </div>
                  </li>
-                 <li class="list-group-item d-flex p-2 pt-3 pb-3">
-                     <div class="mr-auto list-modal-key">Email</div>
-                     <div class="font-weight-bold" style="width: 60% !important;">
-                        <p class="p-0 m-0 text-right">{{ticket.requested_by.email}}</p>
-                     </div>
-                  </li>
+
                   <li class="list-group-item d-flex p-2 pt-3 pb-3">
                      <div class="mr-auto list-modal-key">Contact No</div>
                      <div class="font-weight-bold" style="width: 60% !important;">
