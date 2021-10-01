@@ -139,44 +139,23 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'first_name', 'middle_name', 'last_name', 'suffix', 'email', 'contact_no', 'department', 'license_no', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
-        instance.username = validated_data.get('username', instance.username)
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.middle_name = validated_data.get('middle_name', instance.middle_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.email = validated_data.get('email', instance.email)
-        instance.suffix = validated_data.get('suffix', instance.suffix)
-        instance.department = validated_data.get('department', instance.department)
-        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
-        instance.is_staff = validated_data.get('is_staff', instance.is_staff)
-        instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.contact_no = validated_data.get('contact_no', instance.contact_no)
+        instance.license_no = validated_data.get('license_no', instance.license_no)
         instance.save() 
         return instance
-
-    def validate_first_name(self, firstname):
-        if not firstname:
-            raise serializers.ValidationError('This field may not be blank.')
-        return firstname
-
-    def validate_last_name(self, lastname):
-        if not lastname:
-            raise serializers.ValidationError('This field may not be blank.')
-        return lastname
-
-    def validate_department(self, department):
-        if not department:
-            raise serializers.ValidationError('This field may not be blank.')
-        return department
-
-    def to_representation(self, instance):
-        self.fields['department'] =  DepartmentReadOnlySerializer(read_only=True)
-        return super(UserProfileSerializer, self).to_representation(instance)
+    
+    def validate_contact_no(self, contact_no):
+        if contact_no and not contact_no.isdigit():
+            raise serializers.ValidationError('This field must be numeric.')
+        return contact_no
 
     class Meta:
         model = User
-        exclude =  ('password', 'groups', 'user_permissions')
+        fields =  ('id', 'email', 'contact_no', 'license_no')
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
     current_password = serializers.CharField(max_length=128, write_only=True, required=True)
@@ -187,10 +166,6 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         instance.password = make_password(validated_data.get('new_password', instance.password)) # hash password
         instance.save() 
         return instance
-
-    class Meta:
-        model = User
-        fields =  ('id', 'username', 'current_password', 'new_password',)
 
     def validate_current_password(self, current_password):   
         if not self.context['request'].user.check_password(current_password):
@@ -205,6 +180,10 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Password does not match.')
         validate_password(password=new_password, user=request.user)
         return new_password
+
+    class Meta:
+        model = User
+        fields =  ('id', 'username', 'current_password', 'new_password',)
 
 class GroupSerializer(serializers.ModelSerializer):
    user_count = serializers.SerializerMethodField()

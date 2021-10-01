@@ -36,20 +36,12 @@ $(document).ready(function () {
       axios.get(url, {headers: axiosConfig}).then(res => {
          // Configure Modal
          $('#modal-profile').modal();
-         $('.password-group').hide();
          
          // Populate fields to modal
          resetForm(); 
-         $('#txt-username').val(res.data.username); // USERNAME
-         $('#txt-firstname').val(res.data.first_name); // FIRST NAME
-         $('#txt-middlename').val(res.data.middle_name); // MIDDLE NAME
-         $('#txt-lastname').val(res.data.last_name); // LAST NAME
-         $('#txt-suffix').val(res.data.suffix); // EXT NAME 
          $('#txt-email').val(res.data.email); // EMAIL
-         if (res.data.department) $('#select2-department').val(res.data.department.id).trigger('change'); else $('#select2-department').val('').trigger('change'); // DEPARTMENT
-
-         // Pass data object to password button
-         $("#btn-change-password").data('user', res.data);
+         $('#txt-contact').val(res.data.contact_no); // CONTACT
+         $('#txt-license').val(res.data.license_no); // LICENSE
 
          // Pass data to save button
          $('#btn_save').data('user-id', res.data.id);
@@ -63,14 +55,10 @@ $(document).ready(function () {
       e.preventDefault();
       
       // new object
-      let data = new Object();
-      data.username = $('#txt-username').val();
-      data.first_name = $('#txt-firstname').val();
-      data.middle_name = $('#txt-middlename').val();
-      data.last_name = $('#txt-lastname').val();
-      data.suffix = $('#txt-suffix').val();
+      let data = new Object()
       data.email = $('#txt-email').val();
-      data.department = department
+      data.license_no = $('#txt-license').val();
+      data.contact_no = $('#txt-contact').val();
 
       // axios put
       axios({
@@ -86,27 +74,25 @@ $(document).ready(function () {
          });
          
       }).catch(err => { // error
-         if (err.response.data.username) showFieldErrors(err.response.data.username, 'username'); else removeFieldErrors('username');
-         if (err.response.data.first_name) showFieldErrors(err.response.data.first_name, 'firstname'); else removeFieldErrors('firstname');
-         if (err.response.data.last_name) showFieldErrors(err.response.data.last_name, 'lastname'); else removeFieldErrors('lastname');
          if (err.response.data.email) showFieldErrors(err.response.data.email, 'email'); else removeFieldErrors('email');
-         if (err.response.data.department) showFieldErrors(err.response.data.department, 'department'); else removeFieldErrors('department');
+         if (err.response.data.contact_no) showFieldErrors(err.response.data.contact_no, 'contact'); else removeFieldErrors('contact');
       }) 
    });
 
-
    // Change Password
    $("#btn-change-password").click(function (e) {
+      console.log()
       // Open Modal
-      $('#modal-profile').modal('hide')
       $('#modal-change-password').modal();
 
       // Pass data to save button
       resetForm(); 
       $('#btn_submit_password').data('data', {
-         'id' : $(this).data('user').id,
-         'username' : $(this).data('user').username
-      })
+         'id' : $(this).data('userId'),
+         'username' : $(this).data('username')
+      });
+
+      
    }); 
 
    // Submit Change Password
@@ -162,8 +148,6 @@ $(document).ready(function () {
       }  else if (field === 'new_password') {
          $(`#txt-${field}1`).addClass('form-error').val('')
          $(`#txt-${field}2`).addClass('form-error').val('')
-      }  else if (field === 'department') {
-         $(`#select2-${field}`).next().find('.select2-selection').addClass('form-error')
       }  else $(`#txt-${field}`).addClass('form-error');
       let errors = ''
       for (i=0; i<obj.length; i++) errors += `${obj[i]} `;
@@ -176,8 +160,6 @@ $(document).ready(function () {
       } else if (field === 'new_password') {
          $(`#txt-${field}1`).removeClass('form-error')
          $(`#txt-${field}2`).removeClass('form-error')
-      }  else if (field === 'department') {
-         $(`#select2-${field}`).next().find('.select2-selection').removeClass('form-error')
       }  else $(`#txt-${field}`).removeClass('form-error');
       $(`#${field}-error`).html(``)
    };
@@ -185,12 +167,10 @@ $(document).ready(function () {
    let resetForm = function(e){
       $('#form').trigger('reset');
       $("#change-password-form").trigger("reset");
-      removeFieldErrors('username');
       removeFieldErrors('email');
-      removeFieldErrors('firstname');
-      removeFieldErrors('lastname');
+      removeFieldErrors('contact_no');
+      removeFieldErrors('license_no');
       removeFieldErrors('current_password');
-      removeFieldErrors('new_password');
-      removeFieldErrors('department');
+      removeFieldErrors('new_password');  
    }
 });
