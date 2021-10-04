@@ -80,7 +80,6 @@ $(document).ready(function () {
                   </div>`
                ); 
                form_field.forEach(field => {
-                  console.log(field)
                   if (field.type == "text") 
                      $(`#form-group-${counter} .field-wrap`).append(`<input type="text" class="form-control form-control-sm" id="${field.id}" placeholder="Enter ${title}">`);
                   if (field.type == "textarea") {
@@ -104,6 +103,19 @@ $(document).ready(function () {
                               <label for="${opt.id}">${opt.name}</label>
                            </div>`
                         );
+                     });
+                  }
+                  if (field.type == "select") {
+                     $(`#form-group-${counter} .field-wrap`).append(
+                        `<select class="form-control form-control-sm" id="${field.id}" style="width: 100%" >
+                           <option></option>
+                        </select>`
+                     );
+
+                     $(`#${field.id}`).select2({
+                        data : form_field.option,
+                        allowClear: true,
+                        placeholder: 'Select Reason',
                      });
                   }
                   if (field.type == "paragraph") {
@@ -184,6 +196,23 @@ $(document).ready(function () {
                            <label for="${opt.id}">${opt.name}</label>
                         </div>`
                      );
+                  });
+               }
+               if (form_field.type == "select") {
+                  form_wrapper.append(
+                     `<div class=" form-group">
+                        <label> ${title} ${is_required ? '<span class="text-danger">*</span>' : ''}</label>
+                        <select class="form-control form-control-sm ${is_required ? 'form-text-required' : ''} " id="${form_field.id}" style="width: 100%" >
+                           <option></option>
+                        </select>
+                        <small class="error-info error-formfields" id="${form_field.id}-error"></small>
+                     </div>`
+                  );
+                  
+                  $(`#${form_field.id}`).select2({
+                     data : form_field.option,
+                     placeholder: `Select ${title}`,
+                     allowClear: true,
                   });
                }
                if (form_field.type == "paragraph") {
@@ -283,6 +312,7 @@ $(document).ready(function () {
       if (field == 'formfields') {
          $('.error-formfields').html('');
          obj.forEach(error => {
+            if(error.field_type == 'select') $(`#${error.field_id}`).next().find('.select2-selection').addClass('form-error');
             $(`#${error.field_id}`).addClass('form-error');
             $(`#${error.field_error}-error`).append(`*${error.message} `)
          });
@@ -315,10 +345,9 @@ $(document).ready(function () {
             if ($(`${option}:checked`).length > 0 && field.val()) {
                field.removeClass('form-error')
                parent.next().html('');
-            }
+            }  
          });
       });
-      
    };
 
    // Get form Values
@@ -334,6 +363,9 @@ $(document).ready(function () {
                if (field.type == "text" || field.type == "textarea") { // textfield
                   answer = $(`#${field.id}`).val();                      
                }
+               if (field.type == "datetime") { // datetime
+                  answer = $(`#${field.id}`).val();
+               }
                if (field.type == "radio" || field.type == "checkbox") { // radio button
                   answer = new Array();
                   field.option.forEach(opt => {
@@ -341,6 +373,17 @@ $(document).ready(function () {
                         "option_id": opt.id,
                         "option_name" : opt.name,
                         "option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
+                     });
+                  });
+               }
+               if (field.type == "select") { // select
+                  answer = new Array();
+                  field.option.forEach(opt => {
+                     let val = $(`#${field.id}`).val()
+                     answer.push({
+                        "option_id": opt.id,
+                        "option_name" : opt.text,
+                        "option_value": (opt.id === val) ? true : false
                      });
                   });
                }
@@ -356,6 +399,9 @@ $(document).ready(function () {
             if (form_field.type == "text" || form_field.type == "textarea") { // textfield
                answer = $(`#${form_field.id}`).val();
             }
+            if (form_field.type == "datetime") { // datetime
+               answer = $(`#${form_field.id}`).val();
+            }
             if (form_field.type == "radio" || form_field.type == "checkbox") { // radio button
                answer = new Array();
                form_field.option.forEach(opt => {
@@ -363,6 +409,17 @@ $(document).ready(function () {
                      "option_id": opt.id,
                      "option_name" : opt.name,
                      "option_value": ($(`#${opt.id}`).is(":checked")) ? true : false
+                  });
+               });
+            }
+            if (form_field.type == "select") { // select
+               answer = new Array();
+               form_field.option.forEach(opt => {
+                  let val = $(`#${form_field.id}`).val()
+                  answer.push({
+                     "option_id": opt.id,
+                     "option_name" : opt.text,
+                     "option_value": (opt.id === val) ? true : false
                   });
                });
             }

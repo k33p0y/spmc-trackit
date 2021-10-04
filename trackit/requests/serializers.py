@@ -132,19 +132,19 @@ class TicketCRUDSerializer(serializers.ModelSerializer):
          for obj in form_data:
             field_error = obj['id'] if not obj['is_multifield'] else 'multifield'
             # For text and textarea fields
-            if obj['type'] == 'text' or obj['type'] == 'textarea':
+            if obj['type'] == 'text' or obj['type'] == 'textarea' or obj['type'] == 'datetime':
                if obj['is_required'] and not obj['value']: 
-                  errors.append({'field_id':obj['id'], 'field_error':field_error, 'message':'This field may not be blank.'})
+                  errors.append({'field_id':obj['id'], 'field_type':obj['type'], 'field_error':field_error, 'message':'This field may not be blank.'})
             # For radio and checkbox fields
-            if obj['type']  == 'radio' or obj['type']  == 'checkbox':
+            if obj['type']  == 'radio' or obj['type']  == 'checkbox' or obj['type'] == 'select':
                if obj['is_required']:
-                  checked = False
+                  checked = False # Checked or selected
                   for option in obj['value']:
                      if option['option_value']:
-                        checked = True
+                        checked = True # Checked or selected
                         break
                   if not checked:
-                     errors.append({'field_id':obj['id'], 'field_error':field_error, 'message':'Please select an option.'})
+                     errors.append({'field_id':obj['id'], 'field_type':obj['type'], 'field_error':field_error, 'message':'Please select an option.'})
          # If has errors raise exception
          if errors:
             raise serializers.ValidationError(errors)
