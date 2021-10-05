@@ -145,6 +145,8 @@ class TicketCRUDSerializer(serializers.ModelSerializer):
                         break
                   if not checked:
                      errors.append({'field_id':obj['id'], 'field_type':obj['type'], 'field_error':field_error, 'message':'Please select an option.'})
+            # Remove object
+            del obj['title']
          # If has errors raise exception
          if errors:
             raise serializers.ValidationError(errors)

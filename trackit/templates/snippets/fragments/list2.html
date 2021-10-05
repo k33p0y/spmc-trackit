@@ -3,7 +3,7 @@
         {% if field.id == data.id %}
             {% if field.type == 'text' or field.type == 'textarea'%}
             <p class="p-0 m-0 text-right">{{data.value}}</p>
-            {% elif field.type == 'radio' or field.type == 'checkbox' %}
+            {% elif field.type == 'radio' or field.type == 'checkbox' or field.type == 'select' %}
             <p class="p-0 m-0 text-right">
                 {% for opt in data.value %}
                     {% if opt.option_value == True %} 

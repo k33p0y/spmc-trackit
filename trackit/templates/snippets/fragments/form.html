@@ -33,7 +33,7 @@
     {% elif form.form_field.type == 'checkbox' and form.form_field.id == data.id  %}
     <div class="form-group">
         <label> {{form.title}} </label>
-        <div class="check-group form_field_detail {% if form.is_required %}form-option-required{% endif %}" id="{{form.form_field.id}}" is_required={{form.is_required}} is_multifield={{form.is_multi_field}} >
+        <div class="check-group form_field_detail {% if form.is_required %}form-option-required{% endif %}" id="{{form.form_field.id}}" is_required={{form.is_required}} is_multifield={{form.is_multi_field}}>
             {% for opt in data.value %}
             <div class="icheck-material-orange icheck-inline m-0 mr-3">
                 <input type="checkbox" class="{{form.form_field.id}}" id="{{opt.option_id}}" {% if opt.option_value == True %} checked {% endif %} option_name="{{opt.option_name}}" />
@@ -42,6 +42,16 @@
             {% endfor %}
         </div>
         <small class="error-info error-formfields" id="{{form.form_field.id}}-error"></small>
+    </div>
+    {% elif form.form_field.type == 'select' and form.form_field.id == data.id  %}
+    <div class="form-group">
+        <label> {{form.title}} {% if form.is_required %}<span class="text-danger">*</span>{% endif %} </label>
+        <select class="form-control form-control-sm form_field_detail form-select {% if form.is_required %} form-text-required {% endif %}" id="{{form.form_field.id}}" style="width: 100%" is_required={{form.is_required}} is_multifield={{form.is_multi_field}} >
+            {% for opt in data.value %}
+                <option value="{{opt.option_id}}" {% if opt.option_value == True %} selected {% endif %} >{{opt.option_name}}</option>
+            {% endfor %}
+         </select>
+        <small class="error-info error-formfields" id="{{form.form_field.id}}-error" ></small>
     </div>
     {% elif form.form_field.type == 'paragraph' and form.form_field.id == data.id %}
     <div class="form-group">

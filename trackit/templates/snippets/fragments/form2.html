@@ -22,6 +22,12 @@
             </div>
             {% endfor %}
         </div>
+        {% elif field.type == 'select' and field.id == data.id  %}
+        <select class="form-control form-control-sm form_field_detail form-select" id="{{field.id}}" style="width: 100%" is_required={{form.is_required}} is_multifield={{form.is_multi_field}} >
+            {% for opt in data.value %}
+            <option value="{{opt.option_id}}" {% if opt.option_value == True %} selected {% endif %} >{{opt.option_name}}</option>
+            {% endfor %}
+         </select>
         {% elif field.type == 'paragraph' and field.id == data.id  %}
         <p class="mx-1 my-0" id="{{field.id}}">{{data.value}}</p>
         {% elif field.type == 'list' and field.id == data.id  %}

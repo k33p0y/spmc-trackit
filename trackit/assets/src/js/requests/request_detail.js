@@ -1,6 +1,7 @@
 $(document).ready(function () {
    $('#select2_categprytype').select2();
-   $('#select2_category').select2({});
+   $('#select2_category').select2();
+   $('.form-select').select2();
    $('.form-datetime').datetimepicker({
       icons: {
          time: 'fas fa-clock',
@@ -162,13 +163,27 @@ $(document).ready(function () {
             var answer = $(`#${val.id}`).val()
             var type = val.type;
          }
-         
+         if (val.type == 'select-one') {
+            var answer = new Array();
+            var type = val.type;
+            var selected_val =  $(`#${val.id}`).val();
+
+            $(`#${val.id} option`).each(function(i, opt) {
+               answer.push({
+                  "option_id": opt.value,
+                  "option_name" : opt.text,
+                  "option_value": (opt.value == selected_val) ? true : false
+               });
+            });           
+         }
+
          form_data.push({
             "id" : val.id,
             "type" : type,
             "value" : answer,
             "is_required" : is_required,
-            "is_multifield" : is_multifield
+            "is_multifield" : is_multifield,
+            "title" : 'None'
          });
       });
       return form_data;

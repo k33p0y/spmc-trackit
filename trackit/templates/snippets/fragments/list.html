@@ -36,6 +36,17 @@
                 {% endif %}
             {% endfor %}
         </li>
+        {% elif form.form_field.type == 'select' %}
+        <li class="list-group-item d-flex p-3">
+            <div class="mr-auto">{{form.title}} </div>
+            {% for opt in data.value %}
+                {% if opt.option_value == True %} 
+                <div class="font-weight-bold" style="width: 60% !important;">
+                    <p class="p-0 m-0 text-right">{{opt.option_name}}</p>
+                </div>
+                {% endif %}
+            {% endfor %}                       
+        </li>
         {% endif %}
     {% endif %}
 {% endfor %}

@@ -115,7 +115,7 @@ $(document).ready(function () {
                      $(`#${field.id}`).select2({
                         data : form_field.option,
                         allowClear: true,
-                        placeholder: 'Select Reason',
+                        placeholder: `Select ${title}`,
                      });
                   }
                   if (field.type == "paragraph") {
@@ -208,7 +208,7 @@ $(document).ready(function () {
                         <small class="error-info error-formfields" id="${form_field.id}-error"></small>
                      </div>`
                   );
-                  
+                     
                   $(`#${form_field.id}`).select2({
                      data : form_field.option,
                      placeholder: `Select ${title}`,
@@ -285,10 +285,20 @@ $(document).ready(function () {
          socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: response.data.ticket_id, notification_type: 'ticket'}}))
       }).catch(function (error) { // error
          toastError(error.response.statusText)
+         // Display Error
          if (error.response.data.description) showFieldErrors(error.response.data.description, 'description'); else removeFieldErrors('description');
          if (error.response.data.request_form) showFieldErrors(error.response.data.request_form, 'requestform'); else removeFieldErrors('requestform');
          if (error.response.data.category) showFieldErrors(error.response.data.category, 'category'); else removeFieldErrors('category');
          if (error.response.data.form_data) showFieldErrors(error.response.data.form_data, 'formfields'); else removeFieldErrors('formfields');
+         // Initialized select2 fields
+         data.form_data.forEach(field => {
+            if (field.type == 'select') {                 
+               $(`#${field.id}`).select2({
+                  data : {id: field.value.option_id, text:field.value.option_name},
+                  placeholder : `Select ${field.title}`
+               });
+            }
+         });
       });
    });   
 
@@ -379,11 +389,11 @@ $(document).ready(function () {
                if (field.type == "select") { // select
                   answer = new Array();
                   field.option.forEach(opt => {
-                     let val = $(`#${field.id}`).val()
+                     let selected_val = $(`#${field.id}`).val()
                      answer.push({
                         "option_id": opt.id,
                         "option_name" : opt.text,
-                        "option_value": (opt.id === val) ? true : false
+                        "option_value": (opt.id == selected_val) ? true : false
                      });
                   });
                }
@@ -392,12 +402,13 @@ $(document).ready(function () {
                   "type": field.type,
                   "value" : answer,
                   "is_required" : data.is_required,
-                  "is_multifield" : data.is_multi_field
+                  "is_multifield" : data.is_multi_field,
+                  "title": data.title
                });
             });
          } else {
             if (form_field.type == "text" || form_field.type == "textarea") { // textfield
-               answer = $(`#${form_field.id}`).val();
+               answer = $(`#${form_field.id}`).val(); 
             }
             if (form_field.type == "datetime") { // datetime
                answer = $(`#${form_field.id}`).val();
@@ -415,11 +426,11 @@ $(document).ready(function () {
             if (form_field.type == "select") { // select
                answer = new Array();
                form_field.option.forEach(opt => {
-                  let val = $(`#${form_field.id}`).val()
+                  let selected_val = $(`#${form_field.id}`).val()
                   answer.push({
                      "option_id": opt.id,
                      "option_name" : opt.text,
-                     "option_value": (opt.id === val) ? true : false
+                     "option_value": (opt.id == selected_val) ? true : false
                   });
                });
             }
@@ -428,7 +439,8 @@ $(document).ready(function () {
                "type": form_field.type,
                "value" : answer,
                "is_required": data.is_required,
-               "is_multifield" : data.is_multi_field
+               "is_multifield" : data.is_multi_field,
+               "title" : data.title
             });
          }
       });
