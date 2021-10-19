@@ -261,7 +261,10 @@ $(document).ready(function () {
 
    // Submit Form
    $("#btn_submit").click(function (e) {
-      e.preventDefault();      
+      e.preventDefault();
+      
+      // Disable Button
+      $(this).prop('disabled', true); 
 
       // Object Data
       data = new Object();
@@ -277,13 +280,14 @@ $(document).ready(function () {
          data: data,
          headers: axiosConfig
       }).then(async function (response) {
-         // upload attachments
+         // Upload attachments
          if (file_arr.length > 0) await uploadAttachment(response.data.ticket_id, file_arr) 
-         // Alert
-         $.when(toastSuccess('Success')).then(() => $(location).attr('href', '/requests/lists'))
-         // send notif
+         // Send Notification
          socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: response.data.ticket_id, notification_type: 'ticket'}}))
+      }).then(function () {
+         $.when(toastSuccess('Success')).then(() => $(location).attr('href', '/requests/lists')) // Alert
       }).catch(function (error) { // error
+         // Alert
          toastError(error.response.statusText)
          // Display Error
          if (error.response.data.description) showFieldErrors(error.response.data.description, 'description'); else removeFieldErrors('description');
@@ -300,9 +304,12 @@ $(document).ready(function () {
             }
          });
       });
-   });   
+   });
 
    let showFieldErrors = function(obj, field) {
+      // Enable button
+      $("#btn_submit").prop('disabled', false);
+
       // Get error message
       let msg = '';
       obj.forEach(error => {msg += `${error} `});
