@@ -196,6 +196,12 @@ $(document).ready(function () {
       return false; // prevent refresh
    });
 
+   // Search Bar keyPress Event
+   $('#search-input').keypress(function(event){
+      let keycode = event.keyCode || event.which;
+      if (keycode == '13') table.ajax.reload();
+  });
+
    // Search Bar onClick Event
    $("#execute-search").click(function () {
       table.ajax.reload();
