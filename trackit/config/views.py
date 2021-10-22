@@ -19,7 +19,8 @@ def department(request):
 def category(request):
    types = CategoryType.objects.all().order_by('name')
    select_types = types.filter(is_active=True)
-   context = {'types': types, 'select_types': select_types}
+   groups = Group.objects.all().order_by('name')
+   context = {'types': types, 'select_types': select_types, 'groups':groups}
    return render(request, 'pages/config/category.html', context)
 
 @login_required

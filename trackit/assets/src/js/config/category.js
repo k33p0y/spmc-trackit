@@ -64,6 +64,13 @@ $(document).ready(function () {
       cache: true,
    });
 
+   // Select2 Config
+   $('#dd_groups').select2({
+      allowClear: true,
+      placeholder: 'Select groups',
+      cache: true,
+   });
+
    // Get Dropdown Value
    $('#dd_types').on('change', function () {
       dd_type_id = $("#dd_types option:selected").val();
