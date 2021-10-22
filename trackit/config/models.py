@@ -1,5 +1,6 @@
 from django.db import models
 from core.models import User
+from django.contrib.auth.models import Group
 from easyaudit.models import CRUDEvent
 
 # Create your models here.
@@ -21,6 +22,7 @@ class CategoryType(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=255)
     category_type = models.ForeignKey(CategoryType, related_name='category_types', on_delete=models.CASCADE)
+    groups = models.ManyToManyField(Group, related_name='category_groups', blank=True)
     is_active = models.BooleanField(default=True)
         
     def __str__(self):
