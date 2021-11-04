@@ -122,8 +122,9 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
          if self.request.user.is_superuser:
             qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status')
          elif self.request.user.is_staff:
-            groups = list(self.request.user.groups.all())
-            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(request_form__group__in=groups) | Q(requested_by = self.request.user)).distinct()
+            user_groups = list(self.request.user.groups.all())
+            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(request_form__group__in=user_groups) | Q(requested_by = self.request.user)).distinct()
+            qs = qs.filter(Q(category__groups__in=user_groups) | Q(requested_by=self.request.user)) if qs.filter(category__groups__in=user_groups).exists() else qs
          else: 
             qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user), is_active=True).distinct()
          
