@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .models import Department, Category, CategoryType, Status
 from core.models import User
+from core.serializers import GroupReadOnlySerializer
 
 # Serializers
 class UserSerializer(serializers.ModelSerializer):
@@ -22,22 +23,57 @@ class DepartmentSerializer(serializers.ModelSerializer):
         return super(DepartmentSerializer, self).to_representation(instance)
 
 class CategoryTypeSerializer(serializers.ModelSerializer):
-    
+
+    def create(self, validated_data):
+        category = Category(
+            name = validated_data['name'],
+            category_type = validated_data['category_type'],
+            is_active = validated_data['is_active']
+        )
+        category.save()
+        category.groups.add(*validated_data['groups'])
+        return category
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.category_type = validated_data.get('category_type', instance.category_type)
+        
+        instance.groups.clear()
+        if validated_data.get('groups', instance.groups):
+            instance.groups.add(*validated_data.get('groups', instance.groups))
+        instance.save()
+        return instance
+
+    def validate_name(self, name):
+        if not name:
+            raise serializers.ValidationError('This field may not be blank.')
+        return name
+
+    def validate_category_type(self, category_type):
+        if not category_type:
+            raise serializers.ValidationError('This field may not be blank.')
+        return category_type
+
     class Meta:
         model = CategoryType
         fields = ['id', 'name', 'is_active']
         datatables_always_serialize = ('id',)
 
-class CategorySerializer(serializers.ModelSerializer):
-    
+class CategoryGETSerializer(serializers.ModelSerializer):
+    groups = GroupReadOnlySerializer(read_only=True, many=True)
+    category_type = CategoryTypeSerializer(read_only=True)
+
     class Meta:
         model = Category
-        fields = ['id', 'name', 'is_active', 'category_type']
+        fields = ['id', 'name', 'is_active', 'category_type', 'groups',]
         datatables_always_serialize = ('id',)
 
-    def to_representation(self, instance):
-        self.fields['category_type'] =  CategoryTypeSerializer(read_only=True)
-        return super(CategorySerializer, self).to_representation(instance)
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'is_active', 'category_type', 'groups',]
+        datatables_always_serialize = ('id',)
 
 class CategoryReadOnlySerializer(serializers.BaseSerializer):
 

@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 
 from django.db.models import Q
 from easyaudit.models import CRUDEvent
-from .serializers import DepartmentSerializer, CategorySerializer, CategoryTypeSerializer, StatusSerializer
+from .serializers import DepartmentSerializer, CategorySerializer, CategoryGETSerializer, CategoryTypeSerializer, StatusSerializer
 from .models import Department, Category, CategoryType, Status, Remark
 
 import json
@@ -38,15 +38,16 @@ class DepartmentViewSet(viewsets.ModelViewSet):
       serializer.is_valid(raise_exception=True)
       serializer.save()
       return Response(serializer.data)
-         
-class CategoryViewSet(viewsets.ModelViewSet):    
-   serializer_class = CategorySerializer
+
+class CategoryListViewSet(viewsets.ReadOnlyModelViewSet):
+   serializer_class = CategoryGETSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
       # Search & Filter Parameters
       search = self.request.query_params.get('search', None)
       category_type = self.request.query_params.get('category_type', None)
+      groups = self.request.query_params.get('groups', None)
       is_active = self.request.query_params.get('is_active', None)
 
       if not self.request.user.has_perm('config.view_category') and not self.request.user.has_perm('requests.add_ticket'):
@@ -54,26 +55,19 @@ class CategoryViewSet(viewsets.ModelViewSet):
       else:
          # Queryset
          qs = Category.objects.select_related('category_type').order_by('-id')
-
+         
          # Paramters
          if search: qs = qs.filter(name__icontains=search)
          if category_type: qs = qs.filter(category_type_id__exact=category_type)
+         if groups: qs = qs.filter(groups__in=list(''.join(str(groups).split(','))))
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
 
          return qs
 
-   def paginate_queryset(self, queryset):
-      # Disable Pagination
-      if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
-         return None
-      return super().paginate_queryset(queryset)
-
-   def partial_update(self, request, pk):
-      category = Category.objects.get(pk=pk)
-      serializer = CategorySerializer(category, data=request.data, partial=True)
-      serializer.is_valid(raise_exception=True)
-      serializer.save()
-      return Response(serializer.data)
+class CategoryViewSet(viewsets.ModelViewSet):    
+   serializer_class = CategorySerializer
+   queryset = Category.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
 class CategoryTypeViewSet(viewsets.ModelViewSet):    
    serializer_class = CategoryTypeSerializer

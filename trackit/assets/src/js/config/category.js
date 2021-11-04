@@ -1,14 +1,18 @@
 $(document).ready(function () {
 
+   // Select2 Config
+   $('#select2_categorytypes').select2({allowClear: true, placeholder: 'Select category type',});
+   $('#select2_groups').select2({allowClear: true, placeholder: 'Select groups',});
+   $('.select-filter-multiple').select2({placeholder: "All"});
+   $('.select-filter').select2();
+  
    var searchInput = function() { return $('#search-input').val(); }
    var typeFilter = function() { return $('#type-filter').val(); }
    var activeFilter = function() { return $('#active-filter').val(); }
+   var groupFilter = function() { return $('#group-filter').val(); }
 
    // Local Variables
-   let dd_type_id;
-   let chk_status = true;
-   let action_type, url;
-   let alert_msg = '';
+   let method, url, action;
 
    // GET
    // List Table
@@ -21,12 +25,13 @@ $(document).ready(function () {
       "processing": true,
       "pageLength": 20,
       "ajax": {
-         url: '/api/config/category/?format=datatables',
+         url: '/api/config/list/category/?format=datatables',
          type: "GET",
          data: {
             "search": searchInput,
             "category_type": typeFilter,
-            "is_active": activeFilter
+            "groups": groupFilter,
+            "is_active": activeFilter,
          }
       },
       "columns": [
@@ -38,6 +43,20 @@ $(document).ready(function () {
                }
                return data
             },
+         }, 
+         { 
+            data: "groups",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  var data = '';
+                  if (row.groups) {
+                     row.groups.forEach(group => {
+                        data += `<span class="td-badge text-nowrap text-light mr-1" style="background-color: #FD7E14">${group.name}</span>`;
+                     })
+                  }
+               }
+               return data
+            }
          },
          { data: "category_type.name" },
          {
@@ -57,158 +76,99 @@ $(document).ready(function () {
       ],
    });
 
-   // Select2 Config
-   $('#dd_types').select2({
-      allowClear: true,
-      placeholder: 'Select category type',
-      cache: true,
-   });
-
-   // Select2 Config
-   $('#dd_groups').select2({
-      allowClear: true,
-      placeholder: 'Select groups',
-      cache: true,
-   });
-
-   // Get Dropdown Value
-   $('#dd_types').on('change', function () {
-      dd_type_id = $("#dd_types option:selected").val();
-   });
-
-   // Get Checkbox State
-   $('#chk_status').click(function () {
-      if ($(this).prop("checked") == true) {
-         chk_status = true;
-      }
-      else if ($(this).prop("checked") == false) {
-         chk_status = false;
-      }
-   });
-
    // CREATE / POST
-   $('#btn-create-category').on('click', function () {
-      // Assign AJAX Action Type and URL
-      action_type = 'POST';
+   $('#btn-create-category').click(function (e) {
+      // Set Axios method and URL
+      method = 'POST';
+      action = 'CREATE';
       url = '/api/config/category/'
-
-      $("#formModal").modal();
+      
+      // Modal
+      $("#modalCategory").modal();
       $(".modal-title").text('Add Category');
-      $('#txt_categoryname').val('');
-   });
 
+      // Reset Form
+      removeFieldErrors('categoryname');
+      removeFieldErrors('categorytypes');
+      $('#txt_categoryname').val('');
+      $('#select2_categorytypes').val('').trigger('change');
+      $('#select2_groups').val([]).trigger('change');
+      $('#chk_status').prop("checked", true);
+   });
 
    // UPDATE / PUT
    $('#dt_category tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
+      
+      // Return id for each group
+      let category_groups = new Array();
+      dt_data['groups'].forEach(group => {category_groups.push(group.id)})
 
-      // Assign AJAX Action Type/Method and URL
-      action_type = 'PUT';
+      // Set axios method and url
+      method = 'PUT';
+      action = 'UPDATE'
       url = `/api/config/category/${id}/`;
 
-      // Open Modal
-      // Rename Modal Title
-      $("#formModal").modal();
+      // Modal
+      $("#modalCategory").modal();
       $(".modal-title").text('Update Cataegory');
 
       // Populate Fields
+      removeFieldErrors('categoryname');
+      removeFieldErrors('categorytypes');
       $('#txt_categoryname').val(dt_data['name']);
-      $('#dd_types').val(dt_data['category_type'].id).trigger('change');
+      $('#select2_categorytypes').val(dt_data['category_type'].id).trigger('change');
+      $('#select2_groups').val(category_groups).trigger('change');
       $('#chk_status').prop("checked", dt_data['is_active']);
    });
-
 
    // Submit Form
    $("#btn_save").click(function (e) {
       e.preventDefault();
 
       // Variables
-      var data = {}
-      var success = 2;
-
-      // Data Values
+      let data = new Object();
       data.name = $('#txt_categoryname').val();
-      data.category_type = dd_type_id;
-      data.is_active = chk_status;
+      data.category_type = $('#select2_categorytypes').val();
+      data.groups = $('#select2_groups').val();
+      data.is_active = ($("#chk_status").prop("checked")) ? true : false;
 
-      // Validation
-      if ($('#txt_categoryname').val() == '') {
-         $('#txt_categoryname').addClass('form-error');
-         $('#error-info-name').html('*This field may not be blank');
-         success--;
-      } else {
-         $('#txt_categoryname').removeClass('form-error');
-         $('#error-info-name').html('');
-      }
-
-      if ($("#dd_types option:selected").val() == "") {
-         $('.select2-selection--single').css('border-color', '#dc3546a2');
-         $('#error-info-type').html('*This field  may not be blank');
-         success--;
-      } else {
-         $('#dd_types').removeClass('form-error');
-         $('#error-info-type').html('');
-      }
-
-      // Form is Valid
-      if (success == 2) {
-         $.ajax({
-            url: url,
-            type: action_type,
-            data: data,
-            beforeSend: function (xhr, settings) {
-               xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            },
-            success: function (result) {
-               toastSuccess('Success');
-               table.ajax.reload();
-            },
-            error: function (xhr, status, error) {
-               if (xhr.responseJSON.name) {
-                  $('#txt_categoryname').addClass('form-error');
-                  $('#error-info-name').html(`*${xhr.responseJSON.name}`)
-               } else {
-                  $('#txt_categoryname').removeClass('form-error');
-                  $('#error-info-name').html('')
-               }
-               if (xhr.responseJSON.category_type) {
-                  $('.select2-selection--single').css('border-color', '#dc3546a2'); // change border color to red
-                  $('#error-info-type').html(`*${xhr.responseJSON.category_type}`)
-               } else {
-                  $('.select2-selection--single').css('border-color', '#ced4da'); // change border color to light gray
-                  $('#error-info-type').html('')
-               }
-               toastError(error);
-            },
-         }).done(function () {
-            $('#formModal').modal('hide');
-            $('#dd_types').val('').trigger('change');
-            $("#form").trigger("reset");
-            $('.error-info').html('');
-         });
-      }
+      axios({
+         method: method,
+         url: url,
+         data: data,
+         headers: axiosConfig,
+      }).then(res => {
+         toastSuccess('Success');
+         $("#modalCategory").modal('toggle');
+         table.ajax.reload();
+      }).catch(err => {
+         if (err.response.data.name) showFieldErrors(err.response.data.name, 'categoryname'); else removeFieldErrors('categoryname');
+         if (err.response.data.category_type) showFieldErrors(err.response.data.category_type, 'categorytypes'); else removeFieldErrors('categorytypes');
+      }) 
    });
-
 
    //Modal Cancel
    $('#btn_cancel').click(function () {
-      // Reset Fields to Defaults
-      $('#txt_categoryname').removeClass('form-error');
-      $('.select2-selection--single').css('border-color', '');
-      $('.error-info').html('');
+      // Reset Form
+      $('#txt_categoryname').val('');
+      $('#select2_categorytypes').val('').trigger('change');
+      $('#select2_groups').val([]).trigger('change');
       $('#chk_status').prop("checked", true);
-      $('#dd_types').val('').trigger('change');
    });
 
    // // //  Filters
-   // Select2 config
-   $('.select-filter').select2();
-
    // Search Bar onSearch Event
    $("#search-input").on('search', function () {
       table.ajax.reload();
       return false; // prevent refresh
+   });
+
+   // Search Bar keyPress Event
+   $('#search-input').keypress(function(event){
+      let keycode = event.keyCode || event.which;
+      if (keycode == '13') table.ajax.reload();
    });
 
    // Search Bar onClick Event
@@ -219,6 +179,7 @@ $(document).ready(function () {
 
    // Apply Filter
    $("#btn_apply").click(function () {
+      console.log($('#group-filter').val())
       table.ajax.reload();
       return false; // prevent refresh
    });
@@ -226,6 +187,7 @@ $(document).ready(function () {
    // Clear Filter
    $("#btn_clear").click(function () {
       $('#form-filter').trigger("reset");
+      $("#chk_status").prop("checked");
       $('#form-filter select').trigger("change");
       table.ajax.reload();
       return false; // prevent refresh
@@ -241,5 +203,21 @@ $(document).ready(function () {
    $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
       if (e.clickEvent) e.preventDefault();      
    });
+
+   let showFieldErrors = function(obj, field){
+      if (field === 'categoryname') $(`#txt_${field}`).addClass('form-error');
+      if (field === 'categorytypes') $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
+      
+      // Error message
+      let msg = '';
+      obj.forEach(error => {msg += `${error} `});
+      $(`#${field}_error`).html(`*${msg} `);
+   };
+
+   let removeFieldErrors = function(field){
+      if (field === 'categoryname') $(`#txt_${field}`).removeClass('form-error');
+      if (field === 'categorytypes') $(`#select2_${field}`).next().find('.select2-selection').removeClass('form-error');
+      $(`#${field}_error`).html(``)
+   };
 
 });

@@ -1,11 +1,12 @@
 from django.urls import path
 from rest_framework import routers
-from .api import DepartmentViewSet, CategoryViewSet, CategoryTypeViewSet, StatusViewSet
+from .api import DepartmentViewSet, CategoryViewSet, CategoryListViewSet, CategoryTypeViewSet, StatusViewSet
 from . import views
 
 router = routers.DefaultRouter()
 router.register('api/config/department', DepartmentViewSet, basename='Department')
 router.register('api/config/category', CategoryViewSet, basename='Category')
+router.register('api/config/list/category', CategoryListViewSet, basename='CategoryList')
 router.register('api/config/categorytype', CategoryTypeViewSet, basename='CategoryType')
 router.register('api/config/status', StatusViewSet, basename='Status')
 
