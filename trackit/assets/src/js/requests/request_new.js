@@ -242,7 +242,7 @@ $(document).ready(function () {
    });
 
    $('#select2_categorytype').on('change', function () { // category type dropdown
-      axios.get('/api/config/category', {
+      axios.get('/api/config/list/category', {
          params: {
             "category_type" : $("#select2_categorytype").val(),
             "is_active" : 0

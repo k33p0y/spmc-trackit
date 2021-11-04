@@ -64,6 +64,12 @@ class CategoryListViewSet(viewsets.ReadOnlyModelViewSet):
 
          return qs
 
+   def paginate_queryset(self, queryset):
+      # Disable Pagination
+      if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
+         return None
+      return super().paginate_queryset(queryset)
+
 class CategoryViewSet(viewsets.ModelViewSet):    
    serializer_class = CategorySerializer
    queryset = Category.objects.all()

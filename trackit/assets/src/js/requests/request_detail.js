@@ -24,7 +24,7 @@ $(document).ready(function () {
    $('#select2_categprytype').on('change', function () { // category type dropdown
       category_type = $("#select2_categprytype option:selected").val();
 
-      axios.get('/api/config/category', {
+      axios.get('/api/config/list/category', {
          params: {
             "category_type" : category_type,
             "is_active": 0
