@@ -106,17 +106,29 @@ def ticket_log_list(request):
 # Create notification method
 def create_notification(object_id, ticket, sender):
    log = CRUDEvent.objects.filter(object_id=object_id, event_type__in=list([1, 2, 3])).latest('datetime')
-   groups = ticket.request_form.group.all()
+   form_groups = ticket.request_form.group.all()
    requestor = ticket.requested_by
    date_created = ticket.date_created.replace(microsecond=0)
    date_modified = ticket.date_modified.replace(microsecond=0)
 
-   for group in groups:
-      users = group.user_set.all()
-      # create notifications for users in selected group
-      for user in users:
-         if not log.user == user and not user == requestor:
-            Notification(log=log, user=user).save()
+   for group in form_groups:
+      categories = Category.objects.filter(groups=group)
+      if categories:
+         for category in categories:
+            if ticket.category.filter(id=category.id):
+               # create notifications for users in selected group
+               users = group.user_set.all()
+               for user in users:
+                  if not log.user == user and not user == requestor:
+                     Notification(log=log, user=user).save()
+            else:
+               continue
+      else:
+         # create notifications for users in selected group
+         users = group.user_set.all()
+         for user in users:
+            if not log.user == user and not user == requestor:
+               Notification(log=log, user=user).save()
    # create notification for department head
    if date_modified == date_created and sender == 'ticket':
       if ticket.department.department_head:
