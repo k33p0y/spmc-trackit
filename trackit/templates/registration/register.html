@@ -1,4 +1,4 @@
-{% load static crispy_forms_tags %}
+{% load static %}
 
 <!DOCTYPE html>
 <html>
@@ -7,32 +7,81 @@
    <meta charset="utf-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-   <title> Trackit | Login </title>
+   <title> Track-it | Register </title>
 
    <!-- Tell the browser to be responsive to screen width -->
    <meta name="viewport" content="width=device-width, initial-scale=1">
 
    <!-- CSS Dependencies -->
    {% include "snippets/styles.html" %}
-   <link rel="stylesheet" href="{% static 'src/css/core.css' %}">
+   <link rel="stylesheet" href="{% static 'src/css/login.css' %}">
 
 </head>
 
 <body class="bg-dark text-sm">
-
    <div class="wrapper small">
       <div class="wrap">
          <div class="card mx-auto shadow">
-            <div class="card-body m-0 p-5">
-
-               <h2 class="font-weight-bold text-orange mb-2"> Log in to continue </h2>
+            <div class="card-header px-5 py-4">
+               <h1 class="text-light text-center text-md-left font-weight-bold mx-3 mt-4">Hello There!</h1>
+               <p class="text-light text-center text-md-left mx-3 my-0">Enter personal details and start your request
+               </p>
+            </div>
+            <div class="card-body px-4 px-md-5 py-4 m-3">
+               <h4 class="font-weight-bold text-center text-md-left text-orange mb-4"> Create An Account </h4>
                <!-- <p> Log in to continue</p> -->
-               <form method="post" novalidate>
-                  {% csrf_token %}
-                  <input type="text" class="form-control"/>
-                  <button type="submit" class="btn btn-outline-orange btn-block btn-login">Login</button>
-                  <a href="#" class="mt-2 btn btn-link p-0 text-dark">Create New Account</a>
+               <form class="text-center text-md-left">
+                  <div class="form-row">
+                     <div class="col-12 col-lg-6 mb-2">
+                        <input type="text" class="form-control" placeholder="First name">
+                     </div>
+                     <div class="col-12 col-lg-6 mb-2">
+                        <input type="text" class="form-control" placeholder="Last name">
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Department">
+                  </div>
+                  <div class="form-group">
+                     <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Email Address">
+                  </div>
+                  <div class="form-group">
+                     <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Username">
+                  </div>
+                  <div class="form-group">
+                     <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Password">
+                  </div>
+                  <div class="form-group">
+                     <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Confirm Password">
+                  </div>
+                  <button type="submit" class="btn btn-orange btn-sign my-3">sign up</button>
+                  <p class="mt-2">Already have an account?
+                     <a href="{% url 'login'  %}" class="font-weight-bold btn-link-orange">Sign in</a>
+                  </p>
                </form>
+            </div>
+         </div>
+      </div>
+   </div>
+
+
+   <!-- Button trigger modal -->
+   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalScrollable">
+      Launch demo modal
+   </button>
+
+   <!-- Modal -->
+   <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+         <div class="modal-content">
+            <div class="modal-body m-4 p-5">
+               <div class="px-3">
+                  {% include "snippets/fragments/notice.html" %}
+                  <button type="button" class="btn btn-orange btn-agree px-4">
+                     <span> I AGREE</span>
+                  </button>
+               </div>
             </div>
          </div>
       </div>
@@ -41,4 +90,5 @@
    <!-- Scripts Dependencies -->
    {% include "snippets/scripts.html" %}
 </body>
+
 </html>

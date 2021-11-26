@@ -9,6 +9,12 @@ from requests.models import Ticket, RequestForm
 
 import datetime
 
+def register(request):
+   return render(request, 'registration/register.html')
+
+def verification(request):
+   return render(request, 'registration/verify.html')
+
 @login_required
 def home(request):
    now = datetime.datetime.now()

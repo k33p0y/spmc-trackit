@@ -6,15 +6,6 @@ input {
    color : #5f6b77 !important;
 }
 
-.btn-outline-orange {
-   border:1px solid #FD7E14 !important;
-   color:#FD7E14;
-}
-.btn-outline-orange:hover {
-   background-color: #FD7E14 !important;
-   color:#fff;
-}
-
 .text-muted {
    color: #c0c0c0 !important;
 }
@@ -35,16 +26,11 @@ input {
    width:80%;
    border-radius: 0;
 }
-
 .card-header {
    background: rgb(255,173,106);
    background: linear-gradient(315deg, rgba(255,173,106,1) 0%, rgba(224,126,90,1) 100%);
    border-radius: 0;
    border: none;
-   padding: 2rem 4rem;
-}
-.card-body {
-   padding: 2rem 4rem;
 }
 .card-body .btn {
    font-size: 12px !important;

@@ -34,7 +34,7 @@ h1, h2,  h3, h4, h5, h6, small  {
    font-size: 11px !important;
 }
 
-.text-small, p {
+.text-small, p, li {
    font-size: 12px !important;
 }
 
