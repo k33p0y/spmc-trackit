@@ -14,14 +14,14 @@
 
     <!-- CSS Dependencies -->
     {% include "snippets/styles.html" %}
-    <link rel="stylesheet" href="{% static 'src/css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'src/css/auth.css' %}">
 
 </head>
 
 <body class="bg-dark text-sm">
     <div class="wrapper small">
         <div class="wrap">
-            <div class="card mx-auto shadow">
+            <div class="card card-verify mx-auto shadow">
                 <div class="card-header px-5 py-4">
                     <h1 class="text-light text-center text-md-left font-weight-bold mx-3 mt-4">Hello Louie!</h1>
                     <p class="text-light text-center text-md-left mx-3 my-0">To confirm you are you please upload
@@ -29,21 +29,8 @@
                     </p>
                 </div>
                 <div class="card-body px-4 px-md-5 py-4 m-3">
-                    <!-- <h4 class="font-weight-bold text-center text-md-left text-orange mb-4"> HRMO portal account
-                    </h4>
-                    <form class="text-center text-md-left">
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Username">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Password">
-                        </div>
-                        <button type="submit" class="btn btn-orange btn-sign my-3">Submit</button>
-                    </form> -->
                     <h4 class="font-weight-bold text-center text-md-left text-orange mb-4"> Upload documents </h4>
-                    <!-- <p> Log in to continue</p> -->
                     <form class="text-center text-md-left">
-
                         <button type="submit" class="btn btn-orange btn-sign my-3">Submit</button>
                         <!-- <p class="mt-2"> <a href="{% url 'login'  %}" class="text-secondary">Skip</a>
                         </p> -->

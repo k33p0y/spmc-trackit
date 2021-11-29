@@ -14,7 +14,7 @@
 
    <!-- CSS Dependencies -->
    {% include "snippets/styles.html" %}
-   <link rel="stylesheet" href="{% static 'src/css/login.css' %}">
+   <link rel="stylesheet" href="{% static 'src/css/auth.css' %}">
 
 </head>
 
@@ -33,9 +33,9 @@
                <form method="post" novalidate class="text-center text-md-left">
                   {% csrf_token %}
                   {{ form|crispy }}
-                  <button type="submit" class="btn btn-orange btn-btn-login my-3">sign in</button>
+                  <button type="submit" class="btn btn-orange btn-btn-login my-2">sign in</button>
                   <p class="mt-2">Not yet registered?
-                     <a href="{% url 'register'  %}" class="font-weight-bold btn-link-orange">Create an Account</a>
+                     <a href="#" class="font-weight-bold btn-link-orange" id="btn_register">Create an Account</a>
                   </p>
                   <p><a href="https://www.tinyurl.com/ihompreset" target="_blank"
                         class="font-weight-bold btn-link-orange">Forgot
@@ -47,8 +47,21 @@
       </div>
    </div>
 
+   <!-- Notice Modal -->
+   <div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="noticeModal"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+         <div class="modal-content">
+            <div class="modal-body m-4 p-5">
+               {% include "snippets/fragments/notice.html" %}
+            </div>
+         </div>
+      </div>
+   </div>
+
    <!-- Scripts Dependencies -->
    {% include "snippets/scripts.html" %}
+   <script type="text/javascript" src="{% static 'src/js/auth/login.js' %}"></script>
 </body>
 
 </html>

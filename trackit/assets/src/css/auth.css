@@ -1,0 +1,94 @@
+html, body {
+   height:100%;
+}
+
+input {
+   color : #5f6b77 !important;
+}
+
+.text-muted {
+   color: #c0c0c0 !important;
+}
+
+.wrapper {
+   min-height: 100%;
+}
+
+.wrap {
+   padding-top: 80px;
+}
+
+.dispaly-4 {
+   font-size: 3rem !important;
+}
+
+.card,
+.card-verify {
+   width:90%;
+   border-radius: 0;
+}
+.card p {
+   color: #5f6b77;
+}
+.card .card-header {
+   background: rgb(255,173,106);
+   background: linear-gradient(315deg, rgba(255,173,106,1) 0%, rgba(224,126,90,1) 100%);
+   border-radius: 0;
+   border: none;
+}
+.card .card-body .btn {
+   font-size: 12px !important;
+   text-transform: uppercase;
+   padding: 0.6rem 4rem;
+   /* border-radius: 20px !important; */
+   border:none;
+}
+
+
+.btn-notice,
+.btn-notice-outline {
+   font-size: 12px !important;
+   text-transform: uppercase;
+   padding: 0.6rem 3rem;
+   /* border-radius: 20px !important; */
+}
+
+.invalid-feedback {
+   color:#dc3545 !important;
+   font-size: 11px !important;
+}
+
+.asteriskField {
+   display: none;
+}
+
+.upload-wrapper {
+   width: 100%;
+   height: 200px;
+   border: 1.5px dashed #cdd5df;
+   background-color: #e3e5ed3d;
+}
+
+.upload-content > i {
+   /* font-size: 32px !important; */
+   color: #b5bdc4;
+}
+
+.upload-content > p {
+   color: #939BA2;
+   font-size: 14px !important;
+   font-weight: bold;
+}
+
+.upload-content .upload-info {
+   color: #b5bdc4;
+   font-size: 12px !important;
+   font-style: italic;
+}
+
+@media (min-width: 1200px) { 
+   .card,
+   .card-verify {
+      width: 40%;
+   }
+}

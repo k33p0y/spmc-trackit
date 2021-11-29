@@ -12,7 +12,7 @@ router.register('api/core/user-profile', UserProfileViewSet)
 urlpatterns = [
    path('', views.home, name='home'),
    path('registration/', views.register, name='register'),
-   path('registration/verification', views.verification, name='verification'),
+   path('verification/', views.verification, name='verification'),
    path('core/group', views.group_list, name='group_list'),
    path('core/user', views.user_list, name='user_list'),
    path('core/user/<int:pk>/profile', views.user_profile, name='user_profile'),

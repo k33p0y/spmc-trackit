@@ -14,7 +14,7 @@
 
    <!-- CSS Dependencies -->
    {% include "snippets/styles.html" %}
-   <link rel="stylesheet" href="{% static 'src/css/login.css' %}">
+   <link rel="stylesheet" href="{% static 'src/css/auth.css' %}">
 
 </head>
 
@@ -54,7 +54,7 @@
                   <div class="form-group">
                      <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Confirm Password">
                   </div>
-                  <button type="submit" class="btn btn-orange btn-sign my-3">sign up</button>
+                  <button type="submit" class="btn btn-orange btn-sign my-2">sign up</button>
                   <p class="mt-2">Already have an account?
                      <a href="{% url 'login'  %}" class="font-weight-bold btn-link-orange">Sign in</a>
                   </p>
@@ -65,30 +65,10 @@
    </div>
 
 
-   <!-- Button trigger modal -->
-   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalScrollable">
-      Launch demo modal
-   </button>
-
-   <!-- Modal -->
-   <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog"
-      aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-         <div class="modal-content">
-            <div class="modal-body m-4 p-5">
-               <div class="px-3">
-                  {% include "snippets/fragments/notice.html" %}
-                  <button type="button" class="btn btn-orange btn-agree px-4">
-                     <span> I AGREE</span>
-                  </button>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
 
    <!-- Scripts Dependencies -->
    {% include "snippets/scripts.html" %}
+
 </body>
 
 </html>
