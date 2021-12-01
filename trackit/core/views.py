@@ -10,7 +10,8 @@ from requests.models import Ticket, RequestForm
 import datetime
 
 def register(request):
-   return render(request, 'registration/register.html')
+   departments = Department.objects.filter(is_active=True).order_by('name')
+   return render(request, 'registration/register.html', {'departments': departments})
 
 def verification(request):
    return render(request, 'registration/verify.html')

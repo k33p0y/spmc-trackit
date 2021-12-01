@@ -453,15 +453,16 @@ table.dataTable tbody tr:hover {
    margin-top: .31rem;
    font-size: 12px;
 }
-
 .select2-container--default .select2-selection--single {
    font-size: 12px !important;
 }
-
-.select2-container--default .select2-results__options {
+.select2-container--default .select2-selection--single {
    font-size: 12px !important;
 }
-
+.select2-container--default .select2-selection__rendered,
+.select2-container--default .select2-results {
+   color: #5f6b77 !important;
+}
 
 [class*="icheck-material"]>input:first-child + label::before {
    border: 1px solid #ced4da;
