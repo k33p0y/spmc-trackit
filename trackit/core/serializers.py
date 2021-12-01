@@ -200,3 +200,9 @@ class GroupReadOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ['id', 'name']
+
+class RegisterSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'contact_no', 'license_no', 'department', 'email', 'username', 'is_active', 'password']

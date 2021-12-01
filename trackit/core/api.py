@@ -2,7 +2,7 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import Group
 from django.db.models import Q
-from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer, UserProfileUpdateSerializer, ChangePasswordSerializer
+from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer, UserProfileUpdateSerializer, ChangePasswordSerializer, RegisterSerializer
 from .models import User
 
 import datetime
@@ -69,3 +69,8 @@ class GroupViewSet(viewsets.ModelViewSet):
       qs = Group.objects.all()
       if search: qs = qs.filter(name__icontains=search)
       return qs
+
+class RegisterViewSet(viewsets.ModelViewSet):
+   serializer_class = RegisterSerializer
+   queryset = User.objects.all()
+   http_method_names = ['post', 'head']
