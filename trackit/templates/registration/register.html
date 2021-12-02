@@ -27,63 +27,72 @@
                <p class="text-light text-center text-md-left mx-3 my-0">Enter personal details and start your request
                </p>
             </div>
-            <div class="card-body px-4 px-md-5 py-4 m-3">
+            <div class="card-body px-3 px-md-5 py-4 m-3">
                <h4 class="font-weight-bold text-center text-md-left text-orange mb-4"> Create An Account </h4>
                <!-- <p> Log in to continue</p> -->
                <form class="text-center text-md-left">
-                  <div class="form-row">
+                  <div class="form-row text-left">
                      <div class="col-12 col-lg-6 mb-2">
                         <input type="text" class="form-control" id="txt_firstname" placeholder="First name">
-                        <small class="error-info" id="firstname-error"></small>
+                        <small class="error-info" id="firstname_error"></small>
                      </div>
                      <div class="col-12 col-lg-6 mb-2">
                         <input type="text" class="form-control" id="txt_lastname" placeholder="Last name">
-                        <small class="error-info" id="lastname-error"></small>
+                        <small class="error-info" id="lastname_error"></small>
                      </div>
                   </div>
-                  <div class="form-row">
+                  <div class="form-row text-left">
                      <div class="col-12 col-lg-6 mb-2">
                         <input type="text" class="form-control" id="txt_contact" placeholder="Contact No">
-                        <small class="error-info" id="contact-error"></small>
+                        <small class="error-info" id="contact_error"></small>
                      </div>
                      <div class="col-12 col-lg-6 mb-2">
                         <input type="text" class="form-control" id="txt_license" placeholder="License No (optional)">
-                        <small class="error-info" id="license-error"></small>
+                        <small class="error-info" id="license_error"></small>
                      </div>
                   </div>
-                  <div class="form-row">
-                     <div class="col-12 col-lg-6 mb-2">
-                        <input type="email" class="form-control" id="txt_email"
-                           placeholder="Email Address (email@address.com)">
-                        <small class="error-info" id="email-error"></small>
-                     </div>
-                     <div class="col-12 col-lg-6 mb-2">
-                        <select class="form-control form-select-required" id="select2_department" style="width: 100%">
-                           <option></option>
-                           {% for department in departments %}
-                           <option value={{department.id}}>{{department.name}}</option>
-                           {% endfor %}
-                        </select>
-                        <small class="error-info" id="department-error"></small>
-                     </div>
+                  <div class="form-group text-left">
+                     <select class="form-control" id="select2_department" style="width: 100%">
+                        <option></option>
+                        {% for department in departments %}
+                        <option value={{department.id}}>{{department.name}}</option>
+                        {% endfor %}
+                     </select>
+                     <small class="error-info" id="department_error"></small>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group text-left">
+                     <input type="email" class="form-control" id="txt_email"
+                        placeholder="Email Address (email@address.com)">
+                     <small class="error-info" id="email_error"></small>
+                  </div>
+                  <div class="form-group text-left">
                      <input type="text" class="form-control" id="txt_username" placeholder="Username">
-                     <small class="error-info" id="username-error"></small>
+                     <small class="error-info" id="username_error"></small>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group text-left">
                      <input type="password" class="form-control" id="txt_password1" placeholder="Password">
-                     <small class="error-info" id="password1-error"></small>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group text-left">
                      <input type="password" class="form-control" id="txt_password2" placeholder="Confirm Password">
-                     <small class="error-info" id="password2-error"></small>
+                     <small class="error-info" id="password_error"></small>
                   </div>
                   <button type="submit" class="btn btn-orange btn-sign my-2" id="btn_signup">sign up</button>
                   <p class="my-3">Already have an account?
                      <a href="{% url 'login'  %}" class="font-weight-bold btn-link-orange">Sign in</a>
                   </p>
                </form>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Notice Modal -->
+   <div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="noticeModal"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+         <div class="modal-content">
+            <div class="modal-body m-4 p-5">
+               {% include "snippets/fragments/notice.html" %}
             </div>
          </div>
       </div>
