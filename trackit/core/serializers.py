@@ -202,7 +202,56 @@ class GroupReadOnlySerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 class RegisterSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        user = User(
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
+            contact_no = validated_data['contact_no'],
+            license_no = validated_data['license_no'],
+            department = validated_data['department'],
+            email = validated_data['email'],
+            username = validated_data['username'],
+            password = make_password(validated_data['password']) # hash password
+        )
+        user.save()
+        return user
+
+    def validate_first_name(self, firstname):
+        if not firstname:
+            raise serializers.ValidationError('This field may not be blank.')
+        return firstname
+
+    def validate_last_name(self, lastname):
+        if not lastname:
+            raise serializers.ValidationError('This field may not be blank.')
+        return lastname
+    
+    def validate_contact_no(self, contact_no):
+        if not contact_no:
+            raise serializers.ValidationError('This field may not be blank.')
+        if contact_no and not contact_no.isdigit():
+            raise serializers.ValidationError('This field must be numeric.')
+        return contact_no
+
+    def validate_email(self, email):
+        if not email:
+            raise serializers.ValidationError('This field may not be blank.')
+        return email
+
+    def validate_department(self, department):
+        if not department:
+            raise serializers.ValidationError('This field may not be blank.')
+        return department
+
+    def validate_password(self, password):
+        request = self.context['request']
+        password2 = request.data.get('password2')
+        
+        if not password == password2:
+            raise serializers.ValidationError('Password does not match.')
+        validate_password(password=password, user=request.user)
+        return password
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'contact_no', 'license_no', 'department', 'email', 'username', 'is_active', 'password']
+        fields = ['first_name', 'last_name', 'contact_no', 'license_no', 'department', 'email', 'username', 'password',]
