@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title> Track-it | Register </title>
+    <title> Track-it | Verification </title>
 
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,17 +23,43 @@
         <div class="wrap">
             <div class="card card-verify mx-auto shadow">
                 <div class="card-header px-5 py-4">
-                    <h1 class="text-light text-center text-md-left font-weight-bold mx-3 mt-4">Hello Louie!</h1>
+                    <h1 class="text-light text-center text-md-left font-weight-bold mx-3 mt-4">Hello {{user.first_name}}
+                    </h1>
                     <p class="text-light text-center text-md-left mx-3 my-0">To confirm you are you please upload
-                        digital photos any of the valid documents from HRMO.
+                        digital photos any of the valid form of identification
                     </p>
                 </div>
                 <div class="card-body px-4 px-md-5 py-4 m-3">
-                    <h4 class="font-weight-bold text-center text-md-left text-orange mb-4"> Upload documents </h4>
+                    <div class="mb-4">
+                        <h4 class="font-weight-bold text-center text-md-left text-orange"> Verify your account</h4>
+                    </div>
                     <form class="text-center text-md-left">
-                        <button type="submit" class="btn btn-orange btn-sign my-3">Submit</button>
-                        <!-- <p class="mt-2"> <a href="{% url 'login'  %}" class="text-secondary">Skip</a>
-                        </p> -->
+                        <label class="btn-upload btn-light btn-block-sm px-3 mb-2">
+                            <span><i class="fas fa-sm fa-folder-open"></i> Browse Files</span>
+                            <input type="file" name="file" accept="image/*" id="file_upload" multiple hidden>
+                        </label>
+                        <div class="upload-wrapper h-auto">
+                            <!-- image preview -->
+                            <div class="upload-zone d-flex flex-row">
+                                <!-- <div class="card w-25 m-2">
+                                    <div class="card-body p-0 m-0">
+                                        <button class="btn btn-danger btn-remove">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <img src="..." class="card-img-top" alt="...">
+                                    </div>
+                                </div> -->
+                            </div>
+                            <!-- placeholder -->
+                            <div class="d-flex justify-content-center h-100">
+                                <div class="upload-content text-center my-4">
+                                    <i class="far fa-images mb-2"></i>
+                                    <p class="upload-info m-0"> SPMC Identity Card or PHS Registration Form</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-orange btn-submit my-3">Submit</button>
+                        <p class="m-0"><a href="{% url 'home' %}" class="text-secondary">Skip</a></p>
                     </form>
                 </div>
             </div>
@@ -42,6 +68,7 @@
 
     <!-- Scripts Dependencies -->
     {% include "snippets/scripts.html" %}
+    <script src="{% static 'src/js/auth/verify.js' %}"></script>
 </body>
 
 </html>

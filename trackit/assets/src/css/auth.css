@@ -36,8 +36,6 @@ input {
    font-size: 12px !important;
    text-transform: uppercase;
    padding: 0.6rem 4rem;
-   /* border-radius: 20px !important; */
-   /* border:none; */
 }
 
 .select2-selection__rendered {
@@ -60,6 +58,12 @@ input {
    text-transform: uppercase;
    padding: 0.5rem 2rem;
    /* border-radius: 20px !important; */
+}
+
+.btn-upload{
+   border: solid 1px #cdd5df;
+   padding: 0.5rem 2rem;
+   border-radius: 5px !important;
 }
 
 .invalid-feedback {
@@ -101,6 +105,19 @@ input {
    color: #b5bdc4;
    font-size: 12px !important;
    font-style: italic;
+}
+
+.upload-wrapper .upload-zone .card .btn-remove {
+   padding: 12px;
+   border-radius: 50% !important;
+   height: 16px !important;
+   width: 16px !important;
+   font-size: 10px !important;
+   text-align: center;
+   padding: 0;
+   position: absolute;
+   right: -5px;
+   top: -5px;
 }
 
 @media (min-width: 1200px) { 
