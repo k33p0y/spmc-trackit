@@ -1,6 +1,7 @@
+from rest_framework import serializers
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
-from rest_framework import serializers
 from django.contrib.auth.models import Group, Permission
 from .models import User
 from config.models import Department
@@ -214,6 +215,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             password = make_password(validated_data['password']) # hash password
         )
         user.save()
+        login(self.context['request'], user)
         return user
 
     def validate_first_name(self, firstname):

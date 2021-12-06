@@ -13,8 +13,10 @@ def register(request):
    departments = Department.objects.filter(is_active=True).order_by('name')
    return render(request, 'registration/register.html', {'departments': departments})
 
+@login_required
 def verification(request):
-   return render(request, 'registration/verify.html')
+   user = User.objects.get(pk=request.user.pk)
+   return render(request, 'registration/verify.html', {'user' : user})
 
 @login_required
 def home(request):

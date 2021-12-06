@@ -56,8 +56,25 @@ $(document).ready(function () {
             data: data,
             headers: axiosConfig
         }).then(function (res) { //response
-            console.log(res);
+            $.when(
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    html: '<p class="text-secondary"> You have succesfully registered </p>',
+                    showConfirmButton: false,
+                    timer: 2000,
+                })
+            ).then(() => $(location).attr('href', `/verification/`))
         }).catch(function (err) { // error
+            Swal.fire({
+                icon: 'error',
+                title: 'Ooops',
+                html: `<p class="text-secondary">${err.response.statusText} </p>`,
+                showConfirmButton: false,
+                timer: 1200,
+            });
+
+            // form fields errror
             if (err.response.data.first_name) showFieldErrors(err.response.data.first_name, 'firstname'); else removeFieldErrors('firstname');
             if (err.response.data.last_name) showFieldErrors(err.response.data.last_name, 'lastname'); else removeFieldErrors('lastname');
             if (err.response.data.contact_no) showFieldErrors(err.response.data.contact_no, 'contact'); else removeFieldErrors('contact');
@@ -66,8 +83,6 @@ $(document).ready(function () {
             if (err.response.data.username) showFieldErrors(err.response.data.username, 'username'); else removeFieldErrors('username');
             if (err.response.data.password) showFieldErrors(err.response.data.password, 'password'); else removeFieldErrors('password');
         });
-
-
     }); // submit form end
 
     // concat firstname and lastname for username
