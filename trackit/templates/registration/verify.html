@@ -23,43 +23,38 @@
         <div class="wrap">
             <div class="card card-verify mx-auto shadow">
                 <div class="card-header px-5 py-4">
-                    <h1 class="text-light text-center text-md-left font-weight-bold mx-3 mt-4">Hello {{user.first_name}}
-                    </h1>
-                    <p class="text-light text-center text-md-left mx-3 my-0">To confirm you are you please upload
+                    <h2 class="text-light text-center text-md-left font-weight-bold mx-0 mt-4">Hello {{user.first_name}}
+                    </h2>
+                    <p class="text-light text-center text-md-left m-0">To confirm you are you please upload
                         digital photos any of the valid form of identification
                     </p>
                 </div>
-                <div class="card-body px-4 px-md-5 py-4 m-3">
-                    <div class="mb-4">
-                        <h4 class="font-weight-bold text-center text-md-left text-orange"> Verify your account</h4>
+                <div class="card-body px-3 px-md-5 py-4">
+                    <div class="my-3">
+                        <h5 class="font-weight-bold text-center text-md-left text-orange m-0"> Verify your account</h5>
                     </div>
                     <form class="text-center text-md-left">
-                        <label class="btn-upload btn-light btn-block-sm px-3 mb-2">
+                        <label class="btn-sm btn-upload btn-light btn-block-sm px-3 mb-2">
                             <span><i class="fas fa-sm fa-folder-open"></i> Browse Files</span>
                             <input type="file" name="file" accept="image/*" id="file_upload" multiple hidden>
                         </label>
                         <div class="upload-wrapper h-auto">
                             <!-- image preview -->
                             <div class="upload-zone d-flex flex-row">
-                                <!-- <div class="card w-25 m-2">
-                                    <div class="card-body p-0 m-0">
-                                        <button class="btn btn-danger btn-remove">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <img src="..." class="card-img-top" alt="...">
-                                    </div>
-                                </div> -->
                             </div>
                             <!-- placeholder -->
                             <div class="d-flex justify-content-center h-100">
-                                <div class="upload-content text-center my-4">
+                                <div class="upload-content text-center my-5">
                                     <i class="far fa-images mb-2"></i>
                                     <p class="upload-info m-0"> SPMC Identity Card or PHS Registration Form</p>
+                                    <span class="upload-info m-0">Maximuim file size: 5MB</span>
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-orange btn-submit my-3">Submit</button>
-                        <p class="m-0"><a href="{% url 'home' %}" class="text-secondary">Skip</a></p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="m-0"><a href="{% url 'home' %}" class="text-secondary">Skip</a></p>
+                            <button type="submit" class="btn btn-orange btn-submit my-3">Submit</button>
+                        </div>
                     </form>
                 </div>
             </div>

@@ -35,7 +35,7 @@ input {
 .card .card-body .btn {
    font-size: 12px !important;
    text-transform: uppercase;
-   padding: 0.6rem 4rem;
+   padding: 0.4rem 3rem;
 }
 
 .select2-selection__rendered {
@@ -56,13 +56,13 @@ input {
 .btn-ghost {
    font-size: 12px !important;
    text-transform: uppercase;
-   padding: 0.5rem 2rem;
+   /* padding: 0.5rem 2rem; */
    /* border-radius: 20px !important; */
 }
 
 .btn-upload{
    border: solid 1px #cdd5df;
-   padding: 0.5rem 2rem;
+   padding: 0.4rem 2rem;
    border-radius: 5px !important;
 }
 
