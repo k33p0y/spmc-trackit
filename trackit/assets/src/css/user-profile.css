@@ -41,6 +41,20 @@
    text-transform: uppercase;
 }
 
+.profile-verified,
+.profile-unverified {
+   position: absolute;
+   top:0;
+   left: 0;
+   bottom: -150px;
+   right: -90px;
+   margin: auto;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   vertical-align: middle;
+}
+
 .profile-info {
    text-align: center;
 }
