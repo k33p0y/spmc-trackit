@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import Group, Permission
-from .models import User
+from .models import User, UserVerification
 from config.models import Department
 
 class DepartmentReadOnlySerializer(serializers.ModelSerializer):
@@ -257,3 +257,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'contact_no', 'license_no', 'department', 'email', 'username', 'password',]
+
+class VerifySerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = UserVerification
+        fields = '__all__'

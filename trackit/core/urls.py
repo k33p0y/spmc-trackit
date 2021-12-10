@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from .api import UserViewSet, GroupViewSet, UserUpdateAPIView, UserProfileViewSet, ChangePasswordAPIView, RegisterViewSet
+from .api import UserViewSet, GroupViewSet, UserUpdateAPIView, UserProfileViewSet, ChangePasswordAPIView, RegisterViewSet, VerifyViewSet
 from . import views
 
 
@@ -9,6 +9,7 @@ router.register('api/core/user', UserViewSet)
 router.register('api/core/group', GroupViewSet)
 router.register('api/core/user-profile', UserProfileViewSet)
 router.register('api/auth/registration', RegisterViewSet)
+router.register('api/core/verify/user', VerifyViewSet)
 
 urlpatterns = [
    path('', views.home, name='home'),

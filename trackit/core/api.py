@@ -2,8 +2,8 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import Group
 from django.db.models import Q
-from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer, UserProfileUpdateSerializer, ChangePasswordSerializer, RegisterSerializer
-from .models import User
+from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer, UserProfileUpdateSerializer, ChangePasswordSerializer, RegisterSerializer, VerifySerializer
+from .models import User, UserVerification
 
 import datetime
 
@@ -74,3 +74,9 @@ class RegisterViewSet(viewsets.ModelViewSet):
    serializer_class = RegisterSerializer
    queryset = User.objects.all()
    http_method_names = ['post', 'head']
+
+class VerifyViewSet(viewsets.ModelViewSet):
+   serializer_class = VerifySerializer
+   queryset = UserVerification.objects.all()
+   permission_classes = [permissions.IsAuthenticated]
+   http_method_names = ['get', 'post', 'head']
