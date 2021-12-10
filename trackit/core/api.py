@@ -80,3 +80,14 @@ class VerifyViewSet(viewsets.ModelViewSet):
    queryset = UserVerification.objects.all()
    permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['get', 'post', 'head']
+
+   def create(self, request):
+      file = request.FILES['file']
+      user_verify = UserVerification.objects.create(
+         file=file, 
+         file_name=file.name, 
+         file_type=file.content_type, 
+         user=self.request.user
+      )
+      serializer = VerifySerializer(user_verify)
+      return Response(serializer.data)

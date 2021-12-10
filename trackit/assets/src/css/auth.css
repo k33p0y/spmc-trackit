@@ -87,8 +87,9 @@ input {
 }
 
 .upload-wrapper {
+   position: relative;
    width: 100%;
-   height: 200px;
+   height: 250px;
    border: 1.5px dashed #cdd5df;
    background-color: #e3e5ed3d;
 }
@@ -105,6 +106,25 @@ input {
    color: #b5bdc4;
    font-size: 12px !important;
    font-style: italic;
+}
+
+.upload-overlay {
+   position:absolute;
+   width: 100%;
+   height: 100%;
+   z-index: 2;
+   background-color: rgba(0,0,0,0.2);
+}
+.upload-overlay .progress {
+   position: absolute;
+   bottom:0;
+   width: 100%;
+}
+.upload-overlay .progress-bar {
+   font-weight: bold;
+}
+.upload-overlay .bg-orange {
+   color: #FFF !important;
 }
 
 .upload-wrapper .upload-zone .card .btn-remove {
