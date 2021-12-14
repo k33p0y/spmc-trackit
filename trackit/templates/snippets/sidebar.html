@@ -4,23 +4,32 @@
 <aside class="main-sidebar elevation-4 sidebar-dark-orange">
    <!-- Brand Logo -->
    <a href="{% url 'home' %}" class="brand-link text-center">
-      <span class="brand-text font-weight-light">TrackIt</span>
+      <span class="brand-text font-weight-light">Track-It </span>
    </a>
 
    <!-- Sidebar -->
    <div class="sidebar">
       {% with request.resolver_match.url_name as url %}
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
-         <div class="ml-2">
-            <div class="img-circle">{{user.first_name|make_list|first}}{{user.last_name|make_list|first}}</div>
+      <a href="{% url 'user_profile' pk=user.id %}"> 
+         <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
+            <div class="mx-2">
+               <div class="img-circle">{{user.first_name|make_list|first}}{{user.last_name|make_list|first}}</div>
+               <div class="online-status bg-success d-none"></div>
+            </div>
+            <div class="info d-flex flex-column p-0 mx-2">
+               <p class="d-flex align-items-center text-sm m-0 {% if url == 'user_profile' %} text-light {% endif %}" >
+                  {{user.first_name}} {{user.last_name}}
+                  {% if user.verified_at %}
+                  <span class="fa-stack text-primary verification-status ml-1">
+                     <i class="fas fa-certificate fa-stack-2x"></i>
+                     <i class="fas fa-check fa-stack-1x fa-inverse"></i>
+                  </span>
+               {% endif %}
+               </p>
+               <p class="text-secondary m-0 text-xs">See your profile</p>
+            </div>
          </div>
-         <div class="info">
-            <a href="{% url 'user_profile' pk=user.id %}" class="d-block align-self-center {% if url == 'user_profile' %} active {% endif %}">
-               {{user.first_name}} {{user.last_name}}
-               <span class="online-status"><i class="fas fa-circle"></i></span> 
-            </a>
-         </div>
-      </div>
+      </a>
       
       <!-- Sidebar Menu -->
       <nav class="mt-2">

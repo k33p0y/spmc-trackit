@@ -230,9 +230,13 @@ h1, h2,  h3, h4, h5, h6, small  {
 }
 
 /* Sidebar */
+.sidebar .user-panel:hover {
+   color: #fff !important;
+}
+
 .sidebar .user-panel .img-circle {
-   width: 30px;
-   height: 30px;
+   width: 32px;
+   height: 32px;
    border-radius: 50%;
    display: flex;
    justify-content: center;
@@ -249,12 +253,21 @@ h1, h2,  h3, h4, h5, h6, small  {
    color: #fff !important;
 }
 
-.sidebar .user-panel .online-status > i  {
-   font-size: 5px !important;
-   margin-left: 3px;
-   display: inline;
-   vertical-align: middle;
+.sidebar .user-panel .online-status   {
+   position: absolute;
+   top: 25px;
+   left: 30px;
+   bottom:0;
+   right: 0;
+   padding: auto;
+   display: flex;
    justify-content: center;
+   align-items: center;
+   vertical-align: middle;
+   width: 9px;
+   height: 9px;
+   border-radius: 50%;
+   border: 1px solid #fff;
 }
 
 .sidebar .nav .nav-header {
@@ -629,4 +642,12 @@ table.dataTable tbody tr:hover {
 
 .alert-debug {
    border-radius: 0 !important;
+}
+
+/* Verification */
+.verification-status {
+   font-size: 6px;
+}
+.verification-status > i {
+   vertical-align: middle;
 }
