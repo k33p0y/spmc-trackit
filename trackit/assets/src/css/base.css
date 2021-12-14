@@ -341,12 +341,14 @@ table.dataTable td  > a.action-link i {
    margin-right: 6px;
 }
 
-table.dataTable td  > p.title {
+table.dataTable td  > p.title,
+table.dataTable td  > a > div > div > p.title {
    font-size: 11px !important;
    margin: 0 !important;
 }
 
-table.dataTable td  > span.sub-title {
+table.dataTable td  > span.sub-title,
+table.dataTable td  > a > div > div > span.sub-title {
    font-weight: normal;
    font-size: 10px !important;
    margin: 0 !important;

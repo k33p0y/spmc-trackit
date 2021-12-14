@@ -2,7 +2,7 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import Group
 from django.db.models import Q
-from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer, UserProfileUpdateSerializer, ChangePasswordSerializer, RegisterSerializer, VerifySerializer
+from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer, UserProfileUpdateSerializer, ChangePasswordSerializer, RegisterSerializer, VerifySerializer, UserListSerializer
 from .models import User, UserVerification
 
 import datetime
@@ -12,6 +12,17 @@ class UserViewSet(viewsets.ModelViewSet):
    serializer_class = UserSerializer
    queryset = User.objects.all()
    permission_classes = [permissions.IsAuthenticated]
+
+class UserUpdateAPIView(generics.RetrieveUpdateAPIView):
+   serializer_class = UserUpdateSerializer
+   queryset = User.objects.all()
+   permission_classes = [permissions.IsAuthenticated]
+
+class UserListViewSet(viewsets.ModelViewSet):
+   serializer_class = UserListSerializer
+   queryset = User.objects.all()
+   permission_classes = [permissions.IsAuthenticated]
+   http_method_names = ['get']    
 
    def get_queryset(self):
       # Search & Filter Parameters
@@ -41,11 +52,7 @@ class UserViewSet(viewsets.ModelViewSet):
          if date_to: qs = qs.filter(date_joined__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
 
          return qs
-
-class UserUpdateAPIView(generics.RetrieveUpdateAPIView):
-   serializer_class = UserUpdateSerializer
-   queryset = User.objects.all()
-   permission_classes = [permissions.IsAuthenticated]
+  
 
 class UserProfileViewSet(viewsets.ModelViewSet):
    serializer_class = UserProfileUpdateSerializer

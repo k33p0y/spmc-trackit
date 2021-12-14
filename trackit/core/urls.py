@@ -1,11 +1,12 @@
 from django.urls import path
 from rest_framework import routers
-from .api import UserViewSet, GroupViewSet, UserUpdateAPIView, UserProfileViewSet, ChangePasswordAPIView, RegisterViewSet, VerifyViewSet
+from .api import UserViewSet, GroupViewSet, UserUpdateAPIView, UserProfileViewSet, ChangePasswordAPIView, RegisterViewSet, VerifyViewSet, UserListViewSet
 from . import views
 
 
 router = routers.DefaultRouter()
 router.register('api/core/user', UserViewSet)
+router.register('api/core/all/user', UserListViewSet)
 router.register('api/core/group', GroupViewSet)
 router.register('api/core/user-profile', UserProfileViewSet)
 router.register('api/auth/registration', RegisterViewSet)

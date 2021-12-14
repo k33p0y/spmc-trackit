@@ -1,3 +1,18 @@
+.profile-img {
+    font-size: 0.7rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    background-color: #fccfaa;
+    font-weight: bold;
+    color: #997867;
+    text-transform: uppercase;
+}
+
 .modal-md {
     max-width: 600px !important;
 }

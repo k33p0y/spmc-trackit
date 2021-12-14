@@ -202,6 +202,14 @@ class GroupReadOnlySerializer(serializers.ModelSerializer):
         model = Group
         fields = ['id', 'name']
 
+class UserListSerializer(serializers.ModelSerializer):
+    groups = GroupReadOnlySerializer(read_only=True, many=True)
+    department = DepartmentReadOnlySerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
 class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User(

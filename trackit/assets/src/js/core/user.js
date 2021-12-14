@@ -3,14 +3,14 @@ $(document).ready(function () {
    let department;
    let alert_msg = '';
 
-   var searchInput = function() { return $('#search-input').val(); }
-   var staffFilter = function() { return $('#staff-filter').val(); }
-   var superuserFilter = function() { return $('#superuser-filter').val(); }
-   var activeFilter = function() { return $('#active-filter').val(); }
-   var departmentFilter = function() { return $('#department-filter').val(); }
-   var groupFilter = function() { return $('#group-filter').val(); }
-   var dateFromFilter = function() { return $('#date-from-filter').val(); }
-   var dateToFilter = function() { return $('#date-to-filter').val(); }
+   var searchInput = function () { return $('#search-input').val(); }
+   var staffFilter = function () { return $('#staff-filter').val(); }
+   var superuserFilter = function () { return $('#superuser-filter').val(); }
+   var activeFilter = function () { return $('#active-filter').val(); }
+   var departmentFilter = function () { return $('#department-filter').val(); }
+   var groupFilter = function () { return $('#group-filter').val(); }
+   var dateFromFilter = function () { return $('#date-from-filter').val(); }
+   var dateToFilter = function () { return $('#date-to-filter').val(); }
 
    // RETRIEVE / GET
    let table = $('#dt_user').DataTable({
@@ -22,67 +22,88 @@ $(document).ready(function () {
       "processing": true,
       "pageLength": 25,
       "ajax": {
-         url: '/api/core/user/?format=datatables',
+         url: '/api/core/all/user/?format=datatables',
          type: "GET",
          data: {
             "search": searchInput,
             "is_staff": staffFilter,
             "is_superuser": superuserFilter,
             "is_active": activeFilter,
-            "department" : departmentFilter,
+            "department": departmentFilter,
             "group": groupFilter,
             "date_from": dateFromFilter,
-            "date_to" : dateToFilter
+            "date_to": dateToFilter
          }
       },
       "columns": [
-         { 
-            data: "username",
+         {
+            data: "first_name",
             render: function (data, type, row) {
                if (type == 'display') {
-                  data = ($('#changeUserHidden').val() == 'true') ? `<a href="#" class='btn-link-orange action-link btn_edit'>${row.username}</a>` : row.username
-               }
-               return data
-            },
-         },
-         { 
-            data: "last_name",
-            render: function (data, type, row) {
-               if (type == 'display') {
-                  data = `${row.last_name}, ${row.first_name} ${row.middle_name} ${row.suffix}`
-               }
-               return data
-            },
+                  let name_template = `<div class="d-flex align-items-center" id="name_profile">
+                     <div class="profile-img">${row.first_name.charAt(0)}${row.last_name.charAt(0)}</div>
+                        <div class="ml-2"> 
+                           <p class="title text-nowrap m-0">${row.first_name} ${row.last_name}</p> 
+                           <span class="sub-title text-muted">${row.username}</span>
+                        </div>
+                     </div>`;
 
+                  data = ($('#changeUserHidden').val() == 'true') ? `<a href="#" class='btn-link-orange btn_edit'>${name_template}</a>` : name_template;
+               }
+               return data
+            },
          },
-         { 
+         {
             data: "department",
             render: function (data, type, row) {
-               if (type == 'display') {
-                  data = (row.department) ? `${row.department.name}` : ''
-               }
+               if (type == 'display') data = (row.department) ? `${row.department.name}` : '';
                return data
             },
          },
-         { 
+         {
             data: "null",
             render: function (data, type, row) {
                data = '';
-               if (row.is_staff) data = data + "<i class='fas fa-lg fa-user-tie text-info mr-2' data-toggle='tooltip' data-placement='bottom' title='Staff'></i>";
-               if (row.is_superuser) data = data + "<i class='fas fa-lg fa-unlock-alt text-orange mr-2' data-toggle='tooltip' data-placement='bottom' title='Superuser'></i>";
-               if (!row.is_superuser && !row.is_staff) data = "<i class='fas fa-lg fa-user text-secondary mr-2' data-toggle='tooltip' data-placement='bottom' title='User'></i>";
+               if (row.is_staff) data = "<span class='text-nowrap'><i class='fas fa-user-tie text-info mr-1'></i>Staff</span>";
+               if (row.is_superuser) data = "<span class='text-nowrap'><i class='fas fa-unlock-alt text-orange mr-1'></i>Superuser</span>";
+               if (!row.is_superuser && !row.is_staff) data = "<span class='text-nowrap'><i class='fas fa-user mr-1'></i>Member</span>";
                return data
             },
          },
-         { 
+         {
+            data: "groups",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  var data = '';
+                  if (row.groups) {
+                     row.groups.forEach(group => data += `<span class='badge bg-orange text-light text-uppercase p-1 mr-1'> ${group.name}</span>`);
+                  }
+               }
+               return data
+            },
+         },
+         {
             data: "date_joined",
             render: function (data, type, row) {
-               datetime = moment(row.date_joined).format('MMM DD, YYYY h:mm a');
-               data = `<p class="title mb-1">${datetime}</p>`
+               if (type == 'display') {
+                  var date = moment(row.date_joined).format('DD MMMM YYYY');
+                  var time = moment(row.date_joined).format('h:mm:ss a');
+
+                  data = `<p class="title mb-0">${date}</p><span class="sub-title">${time}</span>`
+               }
                return data
             },
          },
-         { 
+         {
+            data: "verified_at",
+            render: function (data, type, row) {
+               data = '';
+               if (row.verified_at) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <i class='fas fa-check fa-sm mr-1'></i> <span> Verified </span> </div>";
+               else data = "<div class='badge badge-warning text-uppercase d-inline-flex align-items-center p-1'> <i class='fas fa-exclamation-triangle fa-sm mr-1'></i> <span>Not Verified </span> </div>";
+               return data
+            },
+         },
+         {
             data: "is_active",
             render: function (data, type, row) {
                if (row.is_active === true) data = "<i class='fas fa-check-circle text-success'></i>";
@@ -91,7 +112,7 @@ $(document).ready(function () {
             },
          }
       ],
-      "order": [[ 4, "desc" ]],
+      "order": [[4, "desc"]],
    }); // table end
 
    // Permissions Select2 Config
@@ -124,14 +145,14 @@ $(document).ready(function () {
    });
 
    // Create
-   $('#btn-create-user').click(function(e){
+   $('#btn-create-user').click(function (e) {
       // Assign Axios Action Type and URL
       method = 'POST';
       action = 'CREATE';
       url = '/api/core/user/';
       $('.name-group').show() // username, firstname, lastname
       $('.password-group').show() // password1, password2
-      $('#btn-change-password').hide () // change passwordlink
+      $('#btn-change-password').hide() // change passwordlink
       $('.status-group').show() // is-active, is-superuser, is-staff
       $('.m2m-group').show() // groups, user permissions
 
@@ -142,12 +163,12 @@ $(document).ready(function () {
       $("#modal-add-user").modal();
       $(".modal-title").text('Add User');
    }); // create new group button end
- 
+
    // UPDATE / PUT
    $('#dt_user tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id'];
-      
+
       // Assign AJAX Action Type/Method and URL
       method = 'PUT';
       action = 'UPDATE';
@@ -160,7 +181,11 @@ $(document).ready(function () {
 
       // // // Open Modal
       // // // Rename Modal Title
-      $("#modal-add-user").modal();
+      $("#modal-add-user").modal({
+         show: true,
+         backdrop: 'static',
+         keyboard: false,
+      });
       $("#modal-add-user .modal-title").text(`Update User - ${dt_data['first_name']} ${dt_data['last_name']}`);
 
       // // // Populate Fields
@@ -179,7 +204,7 @@ $(document).ready(function () {
       if (dt_data['is_active']) $('#chk-active-status').prop('checked', true); else $('#chk-active-status').prop('checked', false); // IS ACTIVE
       $('#select2-groups').val(dt_data['groups']).trigger('change'); // GROUPS
       $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
-      
+
       $('#btn-change-password').data('user', dt_data)
    });
 
@@ -205,7 +230,7 @@ $(document).ready(function () {
       data.is_active = $('#chk-active-status').is(':checked')
       data.groups = $('#select2-groups').val();
       data.user_permissions = $('#select2-permissions').val();
-      
+
       axios({
          method: method,
          url: url,
@@ -213,7 +238,7 @@ $(document).ready(function () {
          headers: axiosConfig,
       }).then(function (response) { // success
          toastSuccess('Success');
-         
+
          $("#form").trigger("reset"); // reset form
          $("#select2-department").val('').trigger('change'); // reset permissions select2
          $("#select2-permissions").val([]).trigger('change'); // reset permissions select2
@@ -235,7 +260,7 @@ $(document).ready(function () {
    // CHANGE PASSWORD / PUT
    $('#btn-change-password').click(function () {
       let data = $(this).data('user');
-      
+
       // // // Open Modal
       $('#modal-add-user').modal('hide')
       $('#modal-change-password').modal();
@@ -247,7 +272,7 @@ $(document).ready(function () {
    });
 
    // Sumbit Change Password
-   $('#btn_submit_password').click(function(e) {
+   $('#btn_submit_password').click(function (e) {
       e.preventDefault();
 
       // Variables
@@ -257,7 +282,7 @@ $(document).ready(function () {
       data.username = $('#txt-username').val();
       data.password = $('#txt-changepassword1').val();
       data.password2 = $('#txt-changepassword2').val();
-      
+
       axios({
          method: 'PUT',
          url: `/api/core/user/${id}/`,
@@ -265,11 +290,11 @@ $(document).ready(function () {
          headers: axiosConfig,
       }).then(function (response) { // success
          toastSuccess('Password Change');
-         
+
          $("#change-password-form").trigger("reset"); // reset form
          $('#modal-change-password').modal('toggle');
          table.ajax.reload();
-         
+
       }).catch(function (error) { // error
          if (error.response.data.password) showFieldErrors(error.response.data.password, 'changepassword'); else removeFieldErrors('changepassword');
       });
@@ -303,47 +328,47 @@ $(document).ready(function () {
       table.ajax.reload();
       return false; // prevent refresh
    });
-   
+
    // Close Dropdown 
-   $('#close_dropdown').click(function (){ toggleFilter() });
+   $('#close_dropdown').click(function () { toggleFilter() });
 
    // Close Dropdown When Click Outside 
    $(document).on('click', function (e) { toggleFilter() });
 
    // Dropdown Prevent From closing
    $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
-      if (e.clickEvent) e.preventDefault();      
+      if (e.clickEvent) e.preventDefault();
    });
 
-   let showFieldErrors = function(obj, field){
+   let showFieldErrors = function (obj, field) {
       if (field === 'password') {
          $(`#txt-${field}1`).addClass('form-error')
          $(`#txt-${field}2`).addClass('form-error')
-      }  else if (field === 'changepassword') {
+      } else if (field === 'changepassword') {
          $(`#txt-${field}1`).addClass('form-error')
          $(`#txt-${field}2`).addClass('form-error')
-      }  else if (field === 'department') {
+      } else if (field === 'department') {
          $(`#select2-${field}`).next().find('.select2-selection').addClass('form-error')
-      }  else $(`#txt-${field}`).addClass('form-error');
+      } else $(`#txt-${field}`).addClass('form-error');
       let errors = ''
-      for (i=0; i<obj.length; i++) errors += `${obj[i]} `;
+      for (i = 0; i < obj.length; i++) errors += `${obj[i]} `;
       $(`#${field}-error`).html(`*${errors}`)
    };
 
-   let removeFieldErrors = function(field){
+   let removeFieldErrors = function (field) {
       if (field === 'password') {
          $(`#txt-${field}1`).removeClass('form-error')
          $(`#txt-${field}2`).removeClass('form-error')
       } else if (field === 'changepassword') {
          $(`#txt-${field}1`).removeClass('form-error')
          $(`#txt-${field}2`).removeClass('form-error')
-      }  else if (field === 'department') {
+      } else if (field === 'department') {
          $(`#select2-${field}`).next().find('.select2-selection').removeClass('form-error')
-      }  else $(`#txt-${field}`).removeClass('form-error');
+      } else $(`#txt-${field}`).removeClass('form-error');
       $(`#${field}-error`).html(``)
    };
 
-   let resetForm = function(e){
+   let resetForm = function (e) {
       $('#form').trigger('reset');
       removeFieldErrors('username');
       removeFieldErrors('firstname');
