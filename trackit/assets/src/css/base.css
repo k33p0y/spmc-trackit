@@ -133,6 +133,10 @@ h1, h2,  h3, h4, h5, h6, small  {
 .btn span {
    font-size: 12px;
 }
+.badge-orange {
+   background-color: #FD7E14;
+   color: #fff;
+}
 
 .line-clamp {
    display: -webkit-box !important;

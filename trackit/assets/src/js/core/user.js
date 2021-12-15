@@ -20,7 +20,7 @@ $(document).ready(function () {
       "autoWidth": false,
       "serverside": true,
       "processing": true,
-      "pageLength": 25,
+      "pageLength": 15,
       "ajax": {
          url: '/api/core/all/user/?format=datatables',
          type: "GET",
@@ -76,7 +76,7 @@ $(document).ready(function () {
                if (type == 'display') {
                   var data = '';
                   if (row.groups) {
-                     row.groups.forEach(group => data += `<span class='badge bg-orange text-light text-uppercase p-1 mr-1'> ${group.name}</span>`);
+                     row.groups.forEach(group => data += `<span class='badge badge-orange text-uppercase p-1 mr-1'> ${group.name}</span>`);
                   }
                }
                return data
@@ -98,8 +98,11 @@ $(document).ready(function () {
             data: "verified_at",
             render: function (data, type, row) {
                data = '';
-               if (row.verified_at) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <i class='fas fa-check fa-sm mr-1'></i> <span> Verified </span> </div>";
-               else data = "<div class='badge badge-warning text-uppercase d-inline-flex align-items-center p-1'> <i class='fas fa-exclamation-triangle fa-sm mr-1'></i> <span>Not Verified </span> </div>";
+               if (row.verified_at) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
+               else if (row.documents.length > 0) {
+                  data = "<div class='badge badge-info text-uppercase d-inline-flex align-items-center p-1'> <span> Pending </span> </div>";
+               }
+               else data = "<div class='badge badge-warning text-uppercase d-inline-flex align-items-center p-1'> <span>No Verification </span> </div>";
                return data
             },
          },

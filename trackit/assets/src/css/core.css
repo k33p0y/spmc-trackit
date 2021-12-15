@@ -40,3 +40,11 @@
 .modal-body .text-muted {
     color: #95a4b5 !important;
 }
+
+.list-group-item {
+    border-radius: 5px !important;
+}
+
+.list-group-item >small {
+    font-size: 0.8em !important;
+}

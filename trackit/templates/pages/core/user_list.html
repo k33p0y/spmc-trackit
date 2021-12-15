@@ -32,14 +32,71 @@
 <section class="content">
    <div class="container-fluid">
 
-
-      <div class="d-flex mb-1">
-         <div class="row">
-            <div class="col-12">
-
+      {% if user.is_superuser %}
+      <!-- Counter -->
+      <div class="row mb-4">
+         <div class="col-12 col-lg-4">
+            <div class="card shadow-sm m-0 mb-2 mb-lg-0">
+               <div class="card-body p-0">
+                  <ul class="list-group list-group-horizontal text-center">
+                     <li class="list-group-item w-100 border-0 px-0 py-2">
+                        <h5 class="font-weight-bold m-0"> {{users.count}}</h5>
+                        <small class="text-muted">Registered Users</small>
+                     </li>
+                     <li class="list-group-item w-100 border-0 px-0 py-2">
+                        <h5 class="font-weight-bold m-0"> {{active_users.count}}</h5>
+                        <small class="text-muted">Active</small>
+                     </li>
+                     <li class="list-group-item w-100 border-0 px-0 py-2">
+                        <h5 class="font-weight-bold m-0"> {{inactive_users.count}}</h5>
+                        <small class="text-muted">Inactive</small>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div class="col-12 col-lg-4">
+            <div class="card shadow-sm m-0 mb-2 mb-lg-0">
+               <div class="card-body p-0">
+                  <ul class="list-group list-group-horizontal text-center">
+                     <li class="list-group-item w-100 border-0 px-0 py-2">
+                        <h5 class="font-weight-bold m-0"> {{members.count}}</h5>
+                        <small class="text-muted">Members</small>
+                     </li>
+                     <li class="list-group-item w-100 border-0 px-0 py-2">
+                        <h5 class="font-weight-bold m-0"> {{staff.count}}</h5>
+                        <small class="text-muted">Staff</small>
+                     </li>
+                     <li class="list-group-item w-100 border-0 px-0 py-2">
+                        <h5 class="font-weight-bold m-0"> {{superuser.count}}</h5>
+                        <small class="text-muted">Superuser</small>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div class="col-12 col-lg-4">
+            <div class="card shadow-sm m-0 mb-2 mb-lg-0">
+               <div class="card-body p-0">
+                  <ul class="list-group list-group-horizontal text-center">
+                     <li class="list-group-item w-100 border-0 px-0 py-2">
+                        <h5 class="font-weight-bold m-0"> {{not_verified.count}}</h5>
+                        <small class="text-muted">No Verfication</small>
+                     </li>
+                     <li class="list-group-item w-100 border-0 px-0 py-2">
+                        <h5 class="font-weight-bold m-0"> {{pending_documents.count}}</h5>
+                        <small class="text-muted">Pending</small>
+                     </li>
+                     <li class="list-group-item w-100 border-0 px-0 py-2">
+                        <h5 class="font-weight-bold m-0"> {{verified.count}}</h5>
+                        <small class="text-muted">Verified</small>
+                     </li>
+                  </ul>
+               </div>
             </div>
          </div>
       </div>
+      {% endif %}
 
       <!-- Content Filters, Search and Create Section -->
       <div class="d-flex mb-1">
@@ -125,7 +182,8 @@
          <div class="ml-auto">
             {% if perms.core.add_user %}
             <button class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-user"><i
-                  class="fas fa-xs fa-plus"></i> <span class="d-none d-sm-inline ml-1">Add User</span></button>
+                  class="fas fa-xs fa-plus"></i>
+               <span class="d-none d-sm-inline ml-1">Add User</span></button>
             {% endif %}
          </div>
       </div>
@@ -180,6 +238,8 @@
                         aria-controls="nav-account" aria-selected="false">Account Credentials </a>
                      <a class="nav-item nav-link" id="nav-perms-tab" data-toggle="tab" href="#perms" role="tab"
                         aria-controls="nav-perms" aria-selected="false">Permissions</a>
+                     <a class="nav-item nav-link" id="nav-verify-tab" data-toggle="tab" href="#verify" role="tab"
+                        aria-controls="nav-verify" aria-selected="false">Verification</a>
                   </div>
                </nav>
 
@@ -367,6 +427,11 @@
                         </select>
                         <small class="text-muted d-block">Specific permissions for this user.</small>
                      </div>
+                  </div>
+
+                  <!-- Verification -->
+                  <div class="tab-pane fade" id="verify" role="tabpanel" aria-labelledby="nav-verify-tab">
+                     asdasd
                   </div>
                </div>
             </form>
