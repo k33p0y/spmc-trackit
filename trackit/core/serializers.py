@@ -202,14 +202,6 @@ class GroupReadOnlySerializer(serializers.ModelSerializer):
         model = Group
         fields = ['id', 'name']
 
-class UserListSerializer(serializers.ModelSerializer):
-    groups = GroupReadOnlySerializer(read_only=True, many=True)
-    department = DepartmentReadOnlySerializer(read_only=True)
-
-    class Meta:
-        model = User
-        fields = '__all__'
-
 class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User(
@@ -271,3 +263,19 @@ class VerifySerializer(serializers.ModelSerializer):
     class Meta:
         model = UserVerification
         fields = '__all__'
+
+class DocumentsSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = UserVerification
+        exclude = ['user']
+
+class UserListSerializer(serializers.ModelSerializer):
+    groups = GroupReadOnlySerializer(read_only=True, many=True)
+    department = DepartmentReadOnlySerializer(read_only=True)
+    documents = DocumentsSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'middle_name', 'last_name', 'suffix', 'email', 'contact_no', 'license_no', 'is_superuser', 'is_staff', 'is_active', 'department', 'groups', 'user_permissions', 'date_joined', 'verified_by', 'verified_at', 'documents',]
+        datatables_always_serialize = ('id',)

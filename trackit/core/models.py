@@ -29,4 +29,4 @@ class UserVerification(models.Model):
    file_name = models.CharField(max_length=255, blank=True)
    file_type = models.CharField(max_length=255)
    uploaded_at = models.DateTimeField(auto_now_add=True)
-   user = models.ForeignKey(User, related_name='verification_user', on_delete=models.CASCADE)
+   user = models.ForeignKey(User, related_name='documents', on_delete=models.CASCADE)
