@@ -48,3 +48,11 @@
 .list-group-item >small {
     font-size: 0.8em !important;
 }
+
+.card-preview:hover > .card {
+    background-color: red;
+}
+
+.modal-preview {
+    height: 100%;
+}

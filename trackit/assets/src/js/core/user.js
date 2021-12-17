@@ -170,7 +170,8 @@ $(document).ready(function () {
    // UPDATE / PUT
    $('#dt_user tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
-      let id = dt_data['id'];
+      let id = dt_data['id']
+      let documents = $.map(dt_data['documents'], (document) => document.id)
 
       // Assign AJAX Action Type/Method and URL
       method = 'PUT';
@@ -205,10 +206,16 @@ $(document).ready(function () {
       if (dt_data['is_superuser']) $('#chk-superuser-status').prop('checked', true); else $('#chk-superuser-status').prop('checked', false); // IS SUPERUSER
       if (dt_data['is_staff']) $('#chk-staff-status').prop('checked', true); else $('#chk-staff-status').prop('checked', false); // IS STAFF
       if (dt_data['is_active']) $('#chk-active-status').prop('checked', true); else $('#chk-active-status').prop('checked', false); // IS ACTIVE
-      $('#select2-groups').val(dt_data['groups']).trigger('change'); // GROUPS
+      $('#select2-groups').val($.map(dt_data['groups'], (group) => group.id)).trigger('change'); // GROUPS
       $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
+      $('#btn-change-password').data('user', dt_data);
+      verifyDocuments(dt_data['documents']);
+   });
 
-      $('#btn-change-password').data('user', dt_data)
+   $('#file_wrapper').on('click', '.card-preview', function(e) {
+      $('#previewImage').modal('show');
+      $("#file_src").prop('src', $(this).data('file'));
+      
    });
 
    // Submit Form 
@@ -379,5 +386,25 @@ $(document).ready(function () {
       removeFieldErrors('password');
       removeFieldErrors('department');
       removeFieldErrors('contact');
+   }
+
+   let verifyDocuments = function(documents ) {
+      if  (documents.length > 0) {
+         $("#verify_helptext").addClass('d-none');
+         $('#file_wrapper').empty();
+      } else $("#verify_helptext").removeClass('d-none');
+
+      documents.forEach(document => {
+         $('#file_wrapper').append(`<div class="col-4 col-md-3">
+            <a href="#" class="card-preview" data-file="${document.file}">
+               <div class="card m-0 w-100">
+                  <img src="${document.file}" class="card-img" alt="${document.file_name}">
+                  <div class="card-body p-1">
+                     <small class="text-muted">${document.file_name}</small>
+                  </div>
+               </div>
+            </a>
+         </div>`)
+      });
    }
 });

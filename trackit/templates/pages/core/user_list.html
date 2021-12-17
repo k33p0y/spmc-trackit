@@ -35,7 +35,7 @@
       {% if user.is_superuser %}
       <!-- Counter -->
       <div class="row mb-4">
-         <div class="col-12 col-lg-4">
+         <div class="col-12 col-md-4">
             <div class="card shadow-sm m-0 mb-2 mb-lg-0">
                <div class="card-body p-0">
                   <ul class="list-group list-group-horizontal text-center">
@@ -55,7 +55,7 @@
                </div>
             </div>
          </div>
-         <div class="col-12 col-lg-4">
+         <div class="col-12 col-md-4">
             <div class="card shadow-sm m-0 mb-2 mb-lg-0">
                <div class="card-body p-0">
                   <ul class="list-group list-group-horizontal text-center">
@@ -75,7 +75,7 @@
                </div>
             </div>
          </div>
-         <div class="col-12 col-lg-4">
+         <div class="col-12 col-md-4">
             <div class="card shadow-sm m-0 mb-2 mb-lg-0">
                <div class="card-body p-0">
                   <ul class="list-group list-group-horizontal text-center">
@@ -181,9 +181,10 @@
          </div>
          <div class="ml-auto">
             {% if perms.core.add_user %}
-            <button class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-user"><i
-                  class="fas fa-xs fa-plus"></i>
-               <span class="d-none d-sm-inline ml-1">Add User</span></button>
+            <button class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-user">
+               <i class="fas fa-xs fa-plus"></i>
+               <span class="d-none d-sm-inline ml-1">Add User</span>
+            </button>
             {% endif %}
          </div>
       </div>
@@ -228,6 +229,17 @@
             <h6 class="modal-title"></h6>
          </div>
          <div class="modal-body">
+            <div class="alert alert-warning shadow-sm px-3 py-2 mb-3" role="alert">
+               <h6 class="alert-heading font-weight-bold m-0"> No Verification</h6>
+               <small>This account has not been submitted any valid form of identification.</small>
+            </div>
+            <div class="alert alert-info shadow-sm px-3 py-2 mb-3 alert-pending d-flex align-items-center justify-content-between" role="alert">
+               <div class="d-flex-inline">
+                  <h6 class="alert-heading font-weight-bold text-light m-0"> Pending Verification</h6>
+                  <small class="text-light">Review submitted form of identification and verify this account. </small>
+               </div>
+               <button type="button" class="btn btn-sm btn-outline-light">Verify User</button>
+             </div>
             <form id="form">
                <nav>
                   <!-- Navigation -->
@@ -238,8 +250,8 @@
                         aria-controls="nav-account" aria-selected="false">Account Credentials </a>
                      <a class="nav-item nav-link" id="nav-perms-tab" data-toggle="tab" href="#perms" role="tab"
                         aria-controls="nav-perms" aria-selected="false">Permissions</a>
-                     <a class="nav-item nav-link" id="nav-verify-tab" data-toggle="tab" href="#verify" role="tab"
-                        aria-controls="nav-verify" aria-selected="false">Verification</a>
+                     <a class="nav-item nav-link" id="nav-verify-tab" data-toggle="tab" href="#verify"
+                        role="tab" aria-controls="nav-verify" aria-selected="true">Verification</a>
                   </div>
                </nav>
 
@@ -340,9 +352,8 @@
                         </div>
                      </div>
                   </div>
-
                   <!-- Account Info Tab -->
-                  <div class="tab-pane fade show" id="account" role="tabpanel" aria-labelledby="nav-account-tab">
+                  <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="nav-account-tab">
                      <!-- USERNAME -->
                      <div class="form-group name-group">
                         <label for="usernameHelp">Username <span class="text-danger">*</span> </label>
@@ -381,7 +392,6 @@
                      </button>
                      {% endif %}
                   </div>
-
                   <!-- Roles & Permission Tab -->
                   <div class="tab-pane fade" id="perms" role="tabpanel" aria-labelledby="nav-perms-tab">
                      <div class="icheck-material-green status-group">
@@ -428,10 +438,12 @@
                         <small class="text-muted d-block">Specific permissions for this user.</small>
                      </div>
                   </div>
-
-                  <!-- Verification -->
+                  <!-- Verification Tab -->
                   <div class="tab-pane fade" id="verify" role="tabpanel" aria-labelledby="nav-verify-tab">
-                     asdasd
+                     <div class="h-75 p-2 bg-secondary">
+                        <p class="text-center text-secondary my-5 d-none" id="verify_helptext">No file or digital photos submitted</p>
+                        <div class="row" id="file_wrapper"></div>
+                     </div>
                   </div>
                </div>
             </form>
@@ -487,6 +499,21 @@
             </button>
             <button type="submit" class="btn btn-sm btn-orange" id="btn_submit_password"><span>Change
                   Password</span></button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade preview-image" id="previewImage" tabindex="-1" role="dialog" aria-labelledby="previewImageModal"
+   aria-hidden="true">
+   <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content text-sm">
+         <div class="modal-header d-flex align-items-center">
+            <h6 class="modal-title">Preview</h6>
+            <a href="#" class="text-dark" id="btn_save" data-dismiss="modal"> <i class="fas fa-times"></i> </a>
+         </div>
+         <div class="modal-body modal-preview">
+            <img class="card-img" id="file_src">
          </div>
       </div>
    </div>
