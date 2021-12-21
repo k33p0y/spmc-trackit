@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission, Group
+from django.db.models import Q
 from django.http import Http404
 from django.template.response import SimpleTemplateResponse
 from core.models import User
@@ -50,7 +51,7 @@ def user_list(request):
    superuser = users.filter(is_active=True, is_superuser=True)  # get superusers
    not_verified = users.filter(documents__isnull=True, verified_at__isnull=True) # get unverified
    pending_documents = users.filter(documents__isnull=False, verified_at__isnull=True) # get pending users
-   verified = users.filter(verified_at__isnull=False) # get verified users
+   verified = users.filter(Q(verified_at__isnull=False) | Q(is_superuser=True)) # get verified users
 
    select_departments = departments.filter(is_active=True)
 

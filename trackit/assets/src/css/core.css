@@ -56,3 +56,11 @@
 .modal-preview {
     height: 100%;
 }
+
+.alert-verified {
+    border: 1px solid #007bff;
+}
+
+.alert-pending > div > .btn {
+    font-size: 12px !important;
+}

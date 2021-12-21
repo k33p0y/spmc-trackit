@@ -277,5 +277,4 @@ class UserListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'middle_name', 'last_name', 'suffix', 'email', 'contact_no', 'license_no', 'is_superuser', 'is_staff', 'is_active', 'department', 'groups', 'user_permissions', 'date_joined', 'verified_by', 'verified_at', 'documents',]
-        datatables_always_serialize = ('id',)
+        exclude = ['password']

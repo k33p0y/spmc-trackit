@@ -57,7 +57,7 @@
                      </p>
                   </a>
                   <ul class="nav nav-treeview">
-                     {% if perms.auth.view_group %}
+                     {% if perms.core.view_user %}
                      <li class="nav-item">
                         <a href="{% url 'user_list' %}" class="nav-link {% if url == 'user_list' %} active {% endif %}">
                            <i class="nav-icon far fa-circle"></i>

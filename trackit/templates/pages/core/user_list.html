@@ -229,17 +229,38 @@
             <h6 class="modal-title"></h6>
          </div>
          <div class="modal-body">
-            <div class="alert alert-warning shadow-sm px-3 py-2 mb-3" role="alert">
-               <h6 class="alert-heading font-weight-bold m-0"> No Verification</h6>
-               <small>This account has not been submitted any valid form of identification.</small>
-            </div>
-            <div class="alert alert-info shadow-sm px-3 py-2 mb-3 alert-pending d-flex align-items-center justify-content-between" role="alert">
-               <div class="d-flex-inline">
-                  <h6 class="alert-heading font-weight-bold text-light m-0"> Pending Verification</h6>
-                  <small class="text-light">Review submitted form of identification and verify this account. </small>
+
+            <div class="alert alert-warning alert-noverif shadow-sm px-3 py-2 mb-3 d-none" role="alert">
+               <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex-inline">
+                     <h6 class="alert-heading font-weight-bold m-0"> No Verification</h6>
+                     <small>This account has not been submitted any valid form of identification.</small>
+                  </div>
+                  <i class="fas fa-exclamation-triangle fa-lg"></i>
                </div>
-               <button type="button" class="btn btn-sm btn-outline-light">Verify User</button>
-             </div>
+            </div>
+            <div class="alert alert-info alert-pending shadow-sm px-3 py-2 mb-3 d-none" role="alert">
+               <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex-inline">
+                     <h6 class="alert-heading font-weight-bold text-light m-0"> Pending Verification</h6>
+                     <small class="text-light">Review submitted form of identification and verify this account. </small>
+                  </div>
+                  <button type="button" class="btn btn-outline-light text-nowrap d-flex align-items-center" id="verify_user"> 
+                     <span class="spinner-border spinner-border-xs mr-1" role="status" aria-hidden="true"></span>
+                     <span>Verify Now</span>
+                  </button>
+               </div>
+            </div>
+            <div class="alert alert-verified shadow-sm px-3 py-2 mb-3 d-none" role="alert">
+               <div class="d-flex align-items-center justify-content-between">
+                  <h6 class="alert-heading font-weight-bold text-primary m-0"> Verified</h6>
+                  <span class="fa-stack fa-xs text-primary">
+                     <i class="fas fa-certificate fa-stack-2x"></i>
+                     <i class="fas fa-check fa-stack-1x fa-inverse"></i>
+                  </span> 
+               </div>
+            </div>
+
             <form id="form">
                <nav>
                   <!-- Navigation -->

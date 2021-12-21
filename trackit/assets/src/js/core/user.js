@@ -98,7 +98,7 @@ $(document).ready(function () {
             data: "verified_at",
             render: function (data, type, row) {
                data = '';
-               if (row.verified_at) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
+               if (row.verified_at || row.is_superuser) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
                else if (row.documents.length > 0) {
                   data = "<div class='badge badge-info text-uppercase d-inline-flex align-items-center p-1'> <span> Pending </span> </div>";
                }
@@ -171,7 +171,6 @@ $(document).ready(function () {
    $('#dt_user tbody').on('click', '.btn_edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id']
-      let documents = $.map(dt_data['documents'], (document) => document.id)
 
       // Assign AJAX Action Type/Method and URL
       method = 'PUT';
@@ -209,7 +208,12 @@ $(document).ready(function () {
       $('#select2-groups').val($.map(dt_data['groups'], (group) => group.id)).trigger('change'); // GROUPS
       $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
       $('#btn-change-password').data('user', dt_data);
-      verifyDocuments(dt_data['documents']);
+      verifyDocuments(dt_data['documents']); // VERIFICATION DOCUMENTS
+
+      // // // show alert verification status
+      if (dt_data['documents'].length === 0 && dt_data['verified_at'] === null && !dt_data['is_superuser']) $(".alert-noverif").removeClass('d-none');
+      if (dt_data['documents'].length > 0 && dt_data['verified_at'] === null) $(".alert-pending").removeClass('d-none');
+      if (dt_data['verified_at'] || dt_data['is_superuser']) $(".alert-verified").removeClass('d-none');
    });
 
    $('#file_wrapper').on('click', '.card-preview', function(e) {
@@ -310,6 +314,11 @@ $(document).ready(function () {
       });
    });
 
+   // Verify User
+   $('#verify_user').click(function (e) {
+      console.log('asdasd')
+   });
+
    // // //  Filters
    // Select2 config
    $('.select-filter').select2();
@@ -386,6 +395,9 @@ $(document).ready(function () {
       removeFieldErrors('password');
       removeFieldErrors('department');
       removeFieldErrors('contact');
+      $('#file_wrapper').empty();
+      $("#verify_helptext").removeClass('d-none');
+      $(".alert-noverif, .alert-pending, .alert-verified").addClass('d-none');
    }
 
    let verifyDocuments = function(documents ) {

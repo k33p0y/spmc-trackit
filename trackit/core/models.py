@@ -21,7 +21,7 @@ class User(AbstractUser):
    class Meta:
       permissions = (
          ('change_user_password', 'Can change user password'),
-         ('verifiy_user', 'Can verify user'),
+         ('verify_user', 'Can verify user'),
       )
 
 class UserVerification(models.Model):
