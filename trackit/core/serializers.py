@@ -6,6 +6,8 @@ from django.contrib.auth.models import Group, Permission
 from .models import User, UserVerification
 from config.models import Department
 
+import datetime
+
 class DepartmentReadOnlySerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -258,7 +260,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['first_name', 'last_name', 'contact_no', 'license_no', 'department', 'email', 'username', 'password',]
 
-class VerifySerializer(serializers.ModelSerializer):
+class UserVerificationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = UserVerification
@@ -278,3 +280,18 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ['password']
+
+class VerifyUserSerializer(serializers.ModelSerializer):
+
+    def update(self, instance, validated_data):
+        instance.verified_by = self.context['request'].user
+        instance.verified_at = datetime.datetime.now()
+        instance.save()
+        return instance
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'verified_by', 'verified_at']
+        read_only_fields = ['username']
+   
+ 

@@ -133,7 +133,7 @@ $(document).ready(function () {
                 let form_data = new FormData()
                 form_data.append('file', file.file)
 
-                axios.post('/api/core/verify/user/', form_data, {
+                axios.post('/api/core/all/verification/', form_data, {
                     headers: uploadConfig
                 }).then(response => {
                     percent = Math.round(((file_loaded) / file_arr.length) * 100);

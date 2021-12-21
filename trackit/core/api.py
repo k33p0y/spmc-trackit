@@ -2,7 +2,7 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import Group
 from django.db.models import Q
-from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer, UserProfileUpdateSerializer, ChangePasswordSerializer, RegisterSerializer, VerifySerializer, UserListSerializer
+from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer, UserProfileUpdateSerializer, ChangePasswordSerializer, RegisterSerializer, UserVerificationSerializer, UserListSerializer, VerifyUserSerializer
 from .models import User, UserVerification
 
 import datetime
@@ -53,7 +53,6 @@ class UserListViewSet(viewsets.ModelViewSet):
 
          return qs
   
-
 class UserProfileViewSet(viewsets.ModelViewSet):
    serializer_class = UserProfileUpdateSerializer
    queryset = User.objects.all()
@@ -82,8 +81,8 @@ class RegisterViewSet(viewsets.ModelViewSet):
    queryset = User.objects.all()
    http_method_names = ['post', 'head']
 
-class VerifyViewSet(viewsets.ModelViewSet):
-   serializer_class = VerifySerializer
+class UserVerificationViewSet(viewsets.ModelViewSet):
+   serializer_class = UserVerificationSerializer
    queryset = UserVerification.objects.all()
    permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['get', 'post', 'head']
@@ -96,5 +95,12 @@ class VerifyViewSet(viewsets.ModelViewSet):
          file_type=file.content_type, 
          user=self.request.user
       )
-      serializer = VerifySerializer(user_verify)
+      serializer = UserVerificationSerializer(user_verify)
       return Response(serializer.data)
+
+class VerifyUserViewSet(viewsets.ModelViewSet):
+   serializer_class = VerifyUserSerializer
+   queryset = User.objects.all()
+   permission_classes = [permissions.IsAuthenticated]
+      
+

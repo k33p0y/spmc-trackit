@@ -212,14 +212,16 @@ $(document).ready(function () {
 
       // // // show alert verification status
       if (dt_data['documents'].length === 0 && dt_data['verified_at'] === null && !dt_data['is_superuser']) $(".alert-noverif").removeClass('d-none');
-      if (dt_data['documents'].length > 0 && dt_data['verified_at'] === null) $(".alert-pending").removeClass('d-none');
+      if (dt_data['documents'].length > 0 && dt_data['verified_at'] === null) {
+         $("#verify_user").data('user', id);
+         $(".alert-pending").removeClass('d-none');
+      }
       if (dt_data['verified_at'] || dt_data['is_superuser']) $(".alert-verified").removeClass('d-none');
    });
 
    $('#file_wrapper').on('click', '.card-preview', function(e) {
       $('#previewImage').modal('show');
       $("#file_src").prop('src', $(this).data('file'));
-      
    });
 
    // Submit Form 
@@ -270,7 +272,6 @@ $(document).ready(function () {
       });
    }); // submit form end
 
-
    // CHANGE PASSWORD / PUT
    $('#btn-change-password').click(function () {
       let data = $(this).data('user');
@@ -316,7 +317,25 @@ $(document).ready(function () {
 
    // Verify User
    $('#verify_user').click(function (e) {
-      console.log('asdasd')
+      const id = $(this).data('user');
+      
+      axios({
+         url: `/api/core/verify/user/${id}/`,
+         method: "PUT",
+         headers: axiosConfig
+      }).then(function (response) {
+         $(".spinner-verify").removeClass('d-none');
+         $(this).prop('disabled', true)
+
+         setTimeout(function() { 
+            $(".spinner-verify").addClass('d-none');
+            $('#modal-add-user').modal('toggle');
+            toastSuccess('Success');
+            table.ajax.reload();
+         }, 800);         
+      }).catch(function (error) {
+         toastError(error.response.statusText)
+      });
    });
 
    // // //  Filters
