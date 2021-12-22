@@ -16,9 +16,12 @@ def register(request):
 
 @login_required
 def verification(request):
-   user = User.objects.get(pk=request.user.pk)
-   return render(request, 'registration/verify.html', {'user' : user})
-
+   user = User.objects.prefetch_related('documents').get(pk=request.user.pk)
+   if not user.verified_at and not user.documents.all() or user.is_superuser:
+      return render(request, 'registration/verify.html', {'user' : user})
+   else:
+      raise Http404()
+   
 @login_required
 def home(request):
    now = datetime.datetime.now()
@@ -54,10 +57,10 @@ def user_list(request):
 @login_required
 def user_profile(request, pk):
    if request.user.id == pk:
-      user = User.objects.get(id=pk)
+      user = User.objects.prefetch_related('documents').get(id=pk)
       tickets = Ticket.objects.filter(requested_by=user.id, is_active=True)[:5]
       departments = Department.objects.filter(is_active=True).order_by('name')
-
+      
       context = {'user': user, 'tickets': tickets, 'departments': departments}
       return render(request, 'pages/core/user_profile.html', context)
    else:

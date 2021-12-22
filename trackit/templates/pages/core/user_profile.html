@@ -17,21 +17,22 @@
             <div class="profile-photo shadow">
                {{user.first_name|make_list|first}}{{user.last_name|make_list|first}}
             </div>
-            <div class="profile-online-status bg-success d-none"></div>
+            {% comment %} <div class="profile-online-status bg-success d-none"></div> {% endcomment %}
          </div>
          <div class="card-body p-3 mt-4 mb-1">
             <div class="profile-info d-flex justify-content-center align-items-center">
                <h5 class="profile-name m-0">{{user.first_name}} {{user.last_name}} </h5>
-               {% if user.verified_at%}
+               {% if user.is_superuser %}
+               <span class="fa-stack text-orange ml-1 profile-verified">
+                  <i class="fas fa-certificate fa-stack-2x"></i>
+                  <i class="fas fa-check fa-stack-1x fa-inverse"></i>
+               </span> 
+               {% elif user.is_staff and not user.is_superuser %}
                <span class="fa-stack text-primary ml-1 profile-verified">
                   <i class="fas fa-certificate fa-stack-2x"></i>
                   <i class="fas fa-check fa-stack-1x fa-inverse"></i>
                </span> 
                {% endif %}
-               {% comment %} <span class="badge badge-primary ml-2 text-uppercase p-1">
-                  <i class="fas fa-check fa-sm"></i> 
-                  Verified
-               </span>  {% endcomment %}
             </div>
          </div>
       </div>
@@ -47,16 +48,12 @@
                            <div class="card-title m-0"> Acount </div>
                            <div class="font-weight-bold ml-auto" style="width: 60% !important;">
                               <p class="p-0 m-0 text-right">
-                                 {% if user.verified_at %}
-                                 <span class="badge badge-primary ml-2 text-uppercase p-1">
-                                    <i class="fas fa-check fa-sm"></i> 
-                                    Verified
-                                 </span> 
-                                 {% else %}
-                                 <span class="badge badge-warning ml-2 text-uppercase p-1">
-                                    <i class="fas fa-exclamation-triangle fa-sm "></i> 
-                                    Not verified
-                                 </span>
+                                 {% if user.verified_at or user.is_superuser or user.is_staff %}
+                                 <span class="badge badge-primary ml-2 text-uppercase p-1">Verified</span>
+                                 {% elif not user.verified_at and user.documents.all and not user.is_superuser and not user.is_staff %}
+                                 <span class="badge badge-info ml-2 text-uppercase p-1">Pending</span>
+                                 {% elif not user.verified_at and not user.documents.all and not user.is_superuser and not user.is_staff %}
+                                 <span class="badge badge-warning ml-2 text-uppercase p-1">Not verified</span>
                                  {% endif %}
                               </p>
                            </div>
@@ -139,7 +136,8 @@
                   </div>
                </div>
             </div>
-            {% if not user.verified_at %}
+            
+            {% if not user.verified_at and not user.documents.all and not user.is_superuser and not user.is_staff  %}
             <div class="col-12 col-lg-4 col-xl-4 order-1 order-lg-2">
                <div class="row">
                   <div class="col-12">
@@ -149,11 +147,27 @@
                            <div class="ml-auto"> <i class="fas fa-exclamation-triangle"></i></div>
                         </div>
                         <div class="card-body px-4">
-                           <p>Hi {{user.first_name}}! Your account is not yet verified. Click the button below to verify
+                           <p class="m-0">Hi {{user.first_name}}! Your account is not yet verified. Please submit digital photos of identification. Click the button below to verify
                               your account and start enjoying
                               Track-It.
                            </p>
-                           <a href="{% url 'verification' %}" class="btn btn-xs btn-block btn-dark btn-shadow">Verify Account</a>
+                           <a href="{% url 'verification' %}" class="btn btn-xs btn-block btn-dark btn-shadow mt-3">Verify Account</a>
+                        </div>
+                     </div> 
+                  </div>               
+               </div>
+            </div>
+            {% elif not user.verified_at and user.documents.all and not user.is_superuser and not user.is_staff %}
+            <div class="col-12 col-lg-4 col-xl-4 order-1 order-lg-2">
+               <div class="row">
+                  <div class="col-12">
+                     <div class="card shadow-sm bg-info">
+                        <div class="card-header p-3 d-flex">
+                           <div class="card-title m-0 text-light"> Pending Verification </div>
+                           <div class="ml-auto"> <i class="fas fa-hourglass-half"></i></div>
+                        </div>
+                        <div class="card-body px-4">
+                           <p class="m-0">Your account is now for review by the Administrator. You will be notified when your account is verified.</p>
                         </div>
                      </div> 
                   </div>
@@ -161,7 +175,7 @@
             </div>
             {% endif %}
 
-            {% if user.verified_at %}
+            {% if user.verified_at or user.is_superuser or user.is_staff %}
             <div class="col-12 col-lg-8 col-xl-8 order-3">                
                <div class="row">
                   <!-- Request Column -->

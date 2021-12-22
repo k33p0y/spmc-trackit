@@ -19,12 +19,17 @@
             <div class="info d-flex flex-column p-0 mx-2">
                <p class="d-flex align-items-center text-sm m-0 {% if url == 'user_profile' %} text-light {% endif %}" >
                   {{user.first_name}} {{user.last_name}}
-                  {% if user.verified_at %}
+                  {% if user.is_superuser %}
+                     <span class="fa-stack text-orange verification-status ml-1">
+                        <i class="fas fa-certificate fa-stack-2x"></i>
+                        <i class="fas fa-check fa-stack-1x fa-inverse"></i>
+                     </span>
+                  {% elif user.is_staff and not user.is_superuser %}
                   <span class="fa-stack text-primary verification-status ml-1">
                      <i class="fas fa-certificate fa-stack-2x"></i>
                      <i class="fas fa-check fa-stack-1x fa-inverse"></i>
                   </span>
-               {% endif %}
+                  {% endif %}
                </p>
                <p class="text-secondary m-0 text-xs">See your profile</p>
             </div>
@@ -169,7 +174,6 @@
                   {% endif %}
                </ul>
             </li>
-            {% endif %}
             <li class="nav-item">
                <a href="{% url 'ticket_log_list' %}"
                   class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}">
@@ -177,7 +181,8 @@
                   <p>Track</p>
                </a>
             </li>
-
+            {% endif %}
+           
             <li class="nav-item">
                <a href="{% static 'user_guide.pdf' %}"
                   class="nav-link" target="_blank">

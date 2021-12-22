@@ -60,7 +60,7 @@
 }
 
 .profile-verified {
-   font-size: 0.7em;
+   font-size: 0.7rem;
 }
 
 .profile-info {
@@ -76,14 +76,12 @@
    margin-top: 18px; 
 }
 
-
 .card-header {
    border: none;
 }
 
 .card-header .card-title {
    font-weight: bold;
-   color: #343a40 !important;
 }
 
 .list-group-flush .list-group-item {

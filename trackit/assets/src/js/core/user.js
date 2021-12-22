@@ -145,7 +145,7 @@ $(document).ready(function () {
             data: "verified_at",
             render: function (data, type, row) {
                data = '';
-               if (row.verified_at || row.is_superuser) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
+               if (row.verified_at || row.is_superuser || row.is_staff) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
                else if (row.documents.length > 0) {
                   data = "<div class='badge badge-info text-uppercase d-inline-flex align-items-center p-1'> <span> Pending </span> </div>";
                }

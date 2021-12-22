@@ -652,7 +652,7 @@ table.dataTable tbody tr:hover {
 
 /* Verification */
 .verification-status {
-   font-size: 6px;
+   font-size: 5px;
 }
 .verification-status > i {
    vertical-align: middle;
