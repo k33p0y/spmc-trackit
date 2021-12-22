@@ -178,12 +178,21 @@
                            {% endfor %}
                         </select>
                      </div>
-                     <div class="form-group mb-1">
+                     <div class="form-group">
                         <label for="date-filter">By Date Created </label>
                         <input type="date" class="form-control form-control-sm mb-2" id="date-from-filter"
                            name="date-filter" placeholder="From">
                         <input type="date" class="form-control form-control-sm" id="date-to-filter" name="date-filter"
                            placeholder="To">
+                     </div>
+                     <div class="form-group mb-1">
+                        <label for="status-filter">By Status </label>
+                        <select class="form-control form-control-sm select-filter" id="status-filter">
+                           <option value="">All</option>
+                           <option value="noverif">No Verification</option>
+                           <option value="pending">Pending</option>
+                           <option value="verified">Verified</option>
+                        </select>
                      </div>
                   </div>
                   <div class="dropdown-divider"></div>

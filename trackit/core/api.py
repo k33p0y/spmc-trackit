@@ -34,6 +34,8 @@ class UserListViewSet(viewsets.ModelViewSet):
       group = self.request.query_params.get("group", None)
       date_from = self.request.query_params.get('date_from', None)
       date_to = self.request.query_params.get('date_to', None)
+
+      status = self.request.query_params.get("status", None)
       is_member = self.request.query_params.get("is_member", None)
       no_verification = self.request.query_params.get("no_verification", None)
       pending = self.request.query_params.get("pending", None)
@@ -54,11 +56,11 @@ class UserListViewSet(viewsets.ModelViewSet):
          if group: qs = qs.filter(groups__in=group)
          if date_from: qs = qs.filter(date_joined__gte=date_from)
          if date_to: qs = qs.filter(date_joined__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
-
          if is_member: qs = qs.filter(is_staff=False, is_superuser=False)
-         if no_verification: qs = qs.filter(documents__isnull=True, verified_at__isnull=True, is_superuser=False)
-         if pending: qs = qs.filter(documents__isnull=False, verified_at__isnull=True).distinct()
-         if is_verified: qs = qs.filter(Q(verified_at__isnull=False) | Q(is_superuser=True))
+         if status: 
+            if status == 'noverif': qs = qs.filter(documents__isnull=True, verified_at__isnull=True, is_superuser=False)
+            if status == 'pending': qs = qs.filter(documents__isnull=False, verified_at__isnull=True).distinct()
+            if status == 'verified': qs = qs.filter(Q(verified_at__isnull=False) | Q(is_superuser=True))
          return qs
   
 class UserProfileViewSet(viewsets.ModelViewSet):

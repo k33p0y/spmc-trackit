@@ -11,6 +11,7 @@ $(document).ready(function () {
    var groupFilter = function () { return $('#group-filter').val(); }
    var dateFromFilter = function () { return $('#date-from-filter').val(); }
    var dateToFilter = function () { return $('#date-to-filter').val(); }
+   var statusFilter = function () { return $('#status-filter').val(); }
 
    const getCounterDash = function() {
       const api_url = '/api/core/all/user/';
@@ -42,15 +43,15 @@ $(document).ready(function () {
          $('#spinner_superuser').addClass('d-none'); // remove spinners
          $('#count_superuser').html(response.count) // display count
       });
-      $.get(api_url, {"no_verification" : true}, (response) => { // get all no verification users
+      $.get(api_url, {"status" : "noverif"}, (response) => { // get all no verification users
          $('#spinner_noverif').addClass('d-none'); // remove spinners
          $('#count_noverif').html(response.count) // display count
       });
-      $.get(api_url, {"pending" : true}, (response) => { // get all pending
+      $.get(api_url, {"status" : "pending"}, (response) => { // get all pending
          $('#spinner_pending').addClass('d-none'); // remove spinners
          $('#count_pending').html(response.count) // display count
       });
-      $.get(api_url, {"is_verified" : true}, (response) => { // get all verified users
+      $.get(api_url, {"status" : "verified"}, (response) => { // get all verified users
          $('#spinner_verified').addClass('d-none'); // remove spinners
             $('#count_verified').html(response.count) // display count
       });
@@ -77,7 +78,8 @@ $(document).ready(function () {
             "department": departmentFilter,
             "group": groupFilter,
             "date_from": dateFromFilter,
-            "date_to": dateToFilter
+            "date_to": dateToFilter,
+            "status" : statusFilter
          }
       },
       "columns": [
