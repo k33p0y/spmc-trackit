@@ -37,21 +37,9 @@ def group_list(request):
 @login_required
 @permission_required('core.view_user', raise_exception=True)
 def user_list(request):
-   users = User.objects.select_related('department', 'verified_by').prefetch_related('documents').all()
-   
-
    permissions = Permission.objects.all()
    groups = Group.objects.all().order_by('name')
    departments = Department.objects.all().order_by('name')
-
-   active_users = users.filter(is_active=True) # get active users
-   inactive_users = users.filter(is_active=False) # get inactive users
-   members = users.filter(is_active=True, is_staff=False, is_superuser=False) # get non staff users
-   staff = users.filter(is_active=True, is_staff=True, is_superuser=False)  # get staff users
-   superuser = users.filter(is_active=True, is_superuser=True)  # get superusers
-   not_verified = users.filter(documents__isnull=True, verified_at__isnull=True) # get unverified
-   pending_documents = users.filter(documents__isnull=False, verified_at__isnull=True) # get pending users
-   verified = users.filter(Q(verified_at__isnull=False) | Q(is_superuser=True)) # get verified users
 
    select_departments = departments.filter(is_active=True)
 
@@ -59,16 +47,7 @@ def user_list(request):
       'permissions': permissions,
       'groups': groups,
       'departments' : departments,
-      'select_departments' : select_departments,
-      'users' : users,
-      'active_users' : active_users,
-      'inactive_users' : inactive_users,
-      'members' : members,
-      'staff' : staff,
-      'superuser' : superuser,
-      'not_verified' : not_verified,
-      'verified' : verified,
-      'pending_documents' : pending_documents
+      'select_departments' : select_departments
    }
    return render(request, 'pages/core/user_list.html', context)
 

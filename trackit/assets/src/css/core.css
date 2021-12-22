@@ -64,3 +64,8 @@
 .alert-pending > div > .btn {
     font-size: 12px !important;
 }
+
+.spinner-dash {
+    width: 1rem;
+    height: 1rem;
+}

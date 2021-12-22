@@ -40,15 +40,24 @@
                <div class="card-body p-0">
                   <ul class="list-group list-group-horizontal text-center">
                      <li class="list-group-item w-100 border-0 px-0 py-2">
-                        <h5 class="font-weight-bold m-0"> {{users.count}}</h5>
-                        <small class="text-muted">Registered Users</small>
+                        <div class="d-flex align-items-center justify-content-center"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_users" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0  " id="count_users"></h5>
+                        </div>
+                        <small class="text-muted">Users</small>
                      </li>
                      <li class="list-group-item w-100 border-0 px-0 py-2">
-                        <h5 class="font-weight-bold m-0"> {{active_users.count}}</h5>
+                        <div class="d-flex align-items-center justify-content-center"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_active" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0 counter" id="count_active"></h5>
+                        </div>
                         <small class="text-muted">Active</small>
                      </li>
                      <li class="list-group-item w-100 border-0 px-0 py-2">
-                        <h5 class="font-weight-bold m-0"> {{inactive_users.count}}</h5>
+                        <div class="d-flex align-items-center justify-content-center"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_inactive" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0 counter" id="count_inactive"></h5>
+                        </div>
                         <small class="text-muted">Inactive</small>
                      </li>
                   </ul>
@@ -60,15 +69,24 @@
                <div class="card-body p-0">
                   <ul class="list-group list-group-horizontal text-center">
                      <li class="list-group-item w-100 border-0 px-0 py-2">
-                        <h5 class="font-weight-bold m-0"> {{members.count}}</h5>
+                        <div class="d-flex align-items-center justify-content-center"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_members" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0 counter" id="count_members"></h5>
+                        </div>
                         <small class="text-muted">Members</small>
                      </li>
                      <li class="list-group-item w-100 border-0 px-0 py-2">
-                        <h5 class="font-weight-bold m-0"> {{staff.count}}</h5>
+                        <div class="d-flex align-items-center justify-content-center"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_staff" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0 counter" id="count_staff"></h5>
+                        </div>
                         <small class="text-muted">Staff</small>
                      </li>
                      <li class="list-group-item w-100 border-0 px-0 py-2">
-                        <h5 class="font-weight-bold m-0"> {{superuser.count}}</h5>
+                        <div class="d-flex align-items-center justify-content-center"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_superuser" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0 counter" id="count_superuser"></h5>
+                        </div>
                         <small class="text-muted">Superuser</small>
                      </li>
                   </ul>
@@ -80,15 +98,24 @@
                <div class="card-body p-0">
                   <ul class="list-group list-group-horizontal text-center">
                      <li class="list-group-item w-100 border-0 px-0 py-2">
-                        <h5 class="font-weight-bold m-0"> {{not_verified.count}}</h5>
+                        <div class="d-flex align-items-center justify-content-center"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_noverif" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0 counter" id="count_noverif"></h5>
+                        </div>
                         <small class="text-muted">No Verfication</small>
                      </li>
                      <li class="list-group-item w-100 border-0 px-0 py-2">
-                        <h5 class="font-weight-bold m-0"> {{pending_documents.count}}</h5>
+                        <div class="d-flex align-items-center justify-content-center"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_pending" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0 counter" id="count_pending"></h5>
+                        </div>
                         <small class="text-muted">Pending</small>
                      </li>
                      <li class="list-group-item w-100 border-0 px-0 py-2">
-                        <h5 class="font-weight-bold m-0"> {{verified.count}}</h5>
+                        <div class="d-flex align-items-center justify-content-center"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_verified" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0 counter" id="count_verified"></h5>
+                        </div>
                         <small class="text-muted">Verified</small>
                      </li>
                   </ul>

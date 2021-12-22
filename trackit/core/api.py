@@ -34,16 +34,20 @@ class UserListViewSet(viewsets.ModelViewSet):
       group = self.request.query_params.get("group", None)
       date_from = self.request.query_params.get('date_from', None)
       date_to = self.request.query_params.get('date_to', None)
+      is_member = self.request.query_params.get("is_member", None)
+      no_verification = self.request.query_params.get("no_verification", None)
+      pending = self.request.query_params.get("pending", None)
+      is_verified = self.request.query_params.get("is_verified", None)
 
       if not self.request.user.has_perm('core.view_user'):
          return User.objects.none()
       else:
          # Queryset
-         qs = User.objects.all().order_by('-id')
+         qs = User.objects.select_related('department', 'verified_by').prefetch_related('documents').all().order_by('-id')
 
          # Parameters
          if search: qs = qs.filter(Q(last_name__icontains=search) | Q(first_name__icontains=search) | Q(username__icontains=search))
-         if is_staff: qs = qs.filter(is_staff=True) if is_staff =='0' else qs.filter(is_staff=False)
+         if is_staff: qs = qs.filter(is_staff=True, is_superuser=False) if is_staff =='0' else qs.filter(is_staff=False)
          if is_superuser: qs = qs.filter(is_superuser=True) if is_superuser == '0' else qs.filter(is_superuser=False)
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
          if department: qs = qs.filter(department=department)
@@ -51,6 +55,10 @@ class UserListViewSet(viewsets.ModelViewSet):
          if date_from: qs = qs.filter(date_joined__gte=date_from)
          if date_to: qs = qs.filter(date_joined__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
 
+         if is_member: qs = qs.filter(is_staff=False, is_superuser=False)
+         if no_verification: qs = qs.filter(documents__isnull=True, verified_at__isnull=True, is_superuser=False)
+         if pending: qs = qs.filter(documents__isnull=False, verified_at__isnull=True).distinct()
+         if is_verified: qs = qs.filter(Q(verified_at__isnull=False) | Q(is_superuser=True))
          return qs
   
 class UserProfileViewSet(viewsets.ModelViewSet):

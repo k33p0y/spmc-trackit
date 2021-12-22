@@ -12,6 +12,51 @@ $(document).ready(function () {
    var dateFromFilter = function () { return $('#date-from-filter').val(); }
    var dateToFilter = function () { return $('#date-to-filter').val(); }
 
+   const getCounterDash = function() {
+      const api_url = '/api/core/all/user/';
+
+      $('.spinner-dash').removeClass('d-none'); // remove spinners
+      $('.counter').html(''); // clear values
+         
+      $.get(api_url, (response) => { // get all users
+         $('#spinner_users').addClass('d-none'); // remove spinners
+         $('#count_users').html(response.count) // registered users
+      });     
+      $.get(api_url, {"is_active" : 0}, (response) => { // get all active users
+         $('#spinner_active').addClass('d-none'); // remove spinners
+         $('#count_active').html(response.count) // display count
+      });
+      $.get(api_url, {"is_active" : 1}, (response) => { // get all inactive users
+         $('#spinner_inactive').addClass('d-none'); // remove spinners
+         $('#count_inactive').html(response.count) // display count
+      });
+      $.get(api_url, {"is_member" : true}, (response) => { // get all members
+         $('#spinner_members').addClass('d-none'); // remove spinners
+         $('#count_members').html(response.count) // display count
+      });
+      $.get(api_url, {"is_staff" : 0}, (response) => { // get all staff
+         $('#spinner_staff').addClass('d-none'); // remove spinners
+         $('#count_staff').html(response.count) // display count
+      });
+      $.get(api_url, {"is_superuser" : 0}, (response) => { // get all superuser
+         $('#spinner_superuser').addClass('d-none'); // remove spinners
+         $('#count_superuser').html(response.count) // display count
+      });
+      $.get(api_url, {"no_verification" : true}, (response) => { // get all no verification users
+         $('#spinner_noverif').addClass('d-none'); // remove spinners
+         $('#count_noverif').html(response.count) // display count
+      });
+      $.get(api_url, {"pending" : true}, (response) => { // get all pending
+         $('#spinner_pending').addClass('d-none'); // remove spinners
+         $('#count_pending').html(response.count) // display count
+      });
+      $.get(api_url, {"is_verified" : true}, (response) => { // get all verified users
+         $('#spinner_verified').addClass('d-none'); // remove spinners
+            $('#count_verified').html(response.count) // display count
+      });
+   }
+   getCounterDash();
+
    // RETRIEVE / GET
    let table = $('#dt_user').DataTable({
       "searching": false,
@@ -330,8 +375,9 @@ $(document).ready(function () {
          setTimeout(function() { 
             $(".spinner-verify").addClass('d-none');
             $('#modal-add-user').modal('toggle');
-            toastSuccess('Success');
-            table.ajax.reload();
+            toastSuccess('Success'); // alert
+            getCounterDash(); // reload counter
+            table.ajax.reload(); // reload table
          }, 800);         
       }).catch(function (error) {
          toastError(error.response.statusText)
