@@ -30,6 +30,8 @@ class UserSerializer(serializers.ModelSerializer):
             is_superuser = validated_data['is_superuser'],
             is_staff = validated_data['is_staff'],
             is_active = validated_data['is_active'],
+            verified_at = datetime.datetime.now(),
+            verified_by = self.context['request'].user
         )
         user.save()
         user.groups.add(*validated_data['groups']) # add groups to user
