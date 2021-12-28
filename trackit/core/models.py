@@ -12,8 +12,13 @@ class User(AbstractUser):
    contact_no = models.CharField(max_length=12, blank=True)
    license_no = models.CharField(max_length=25, blank=True)
 
-   verified_by = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+   verified_by = models.ForeignKey('self', null=True, related_name="verifier", on_delete=models.CASCADE)
    verified_at = models.DateTimeField(null=True)
+   is_verified = models.BooleanField(null=True)
+
+   created_by = models.ForeignKey('self', null=True, related_name="creator", on_delete=models.CASCADE)
+   modified_by = models.ForeignKey('self', null=True, related_name="modifier", on_delete=models.CASCADE)
+   modified_at = models.DateTimeField(auto_now=True)
 
    def __str__(self):
       return '%s %s' % (self.first_name, self.last_name)

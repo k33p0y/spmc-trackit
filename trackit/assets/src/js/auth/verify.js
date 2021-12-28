@@ -55,8 +55,8 @@ $(document).ready(function () {
         const file_lists = $('.upload-zone');
 
         // limit maximum files
-        if (files.length <= 2) {
-            if (file_arr.length < 2) {
+        if (files.length <= 3) {
+            if (file_arr.length < 3) {
 
                 // placeholder 
                 if (files) $('.upload-content').addClass('d-none');
@@ -169,21 +169,21 @@ $(document).ready(function () {
         }
     });
 
-    // skip button 
-    $('#btn_skip').click(function (e) {
-        e.preventDefault()
+    // // skip button 
+    // $('#btn_skip').click(function (e) {
+    //     e.preventDefault()
 
-        Swal.fire({
-            title: 'Verify Later',
-            html: '<p class="m-0">You may verify your account on your profile page. Continue?</p>',
-            icon: 'question',
-            showCancelButton: true,
-            cancelButtonText: 'Cancel',
-            confirmButtonText: 'Proceed',
-            confirmButtonColor: '#17a2b8',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.value) $(location).attr('href', '/');
-        });
-    });
+    //     Swal.fire({
+    //         title: 'Verify Later',
+    //         html: '<p class="m-0">You may verify your account on your profile page. Continue?</p>',
+    //         icon: 'question',
+    //         showCancelButton: true,
+    //         cancelButtonText: 'Cancel',
+    //         confirmButtonText: 'Proceed',
+    //         confirmButtonColor: '#17a2b8',
+    //         reverseButtons: true
+    //     }).then((result) => {
+    //         if (result.value) $(location).attr('href', '/');
+    //     });
+    // });
 });

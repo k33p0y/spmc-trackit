@@ -30,8 +30,11 @@ class UserSerializer(serializers.ModelSerializer):
             is_superuser = validated_data['is_superuser'],
             is_staff = validated_data['is_staff'],
             is_active = validated_data['is_active'],
+            created_by = self.context['request'].user,
+            modified_by = self.context['request'].user,
+            verified_by = self.context['request'].user,
             verified_at = datetime.datetime.now(),
-            verified_by = self.context['request'].user
+            is_verified = True,   
         )
         user.save()
         user.groups.add(*validated_data['groups']) # add groups to user
@@ -107,6 +110,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
         instance.is_staff = validated_data.get('is_staff', instance.is_staff)
         instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.modified_by = self.context['request'].user
 
         instance.groups.clear() # clear user groups
         instance.user_permissions.clear() # clear user permissions
@@ -288,12 +292,13 @@ class VerifyUserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.verified_by = self.context['request'].user
         instance.verified_at = datetime.datetime.now()
+        instance.is_verified = True
         instance.save()
         return instance
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'verified_by', 'verified_at']
+        fields = ['id', 'username', 'verified_by', 'verified_at', 'is_verified']
         read_only_fields = ['username']
    
  

@@ -55,9 +55,9 @@ class UserListViewSet(viewsets.ModelViewSet):
          if date_to: qs = qs.filter(date_joined__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
          if is_member: qs = qs.filter(is_staff=False, is_superuser=False)
          if status: 
-            if status == 'noverif': qs = qs.filter(documents__isnull=True, verified_at__isnull=True, is_superuser=False, is_staff=False)
-            if status == 'pending': qs = qs.filter(documents__isnull=False, verified_at__isnull=True, is_superuser=False, is_staff=False).distinct()
-            if status == 'verified': qs = qs.filter(Q(verified_at__isnull=False) | Q(is_superuser=True) | Q(is_staff=True))
+            if status == 'declined': qs = qs.filter(is_verified=False, verified_at__isnull=True, is_superuser=False, is_staff=False)
+            if status == 'pending': qs = qs.filter(is_verified__isnull=True, verified_at__isnull=True, is_superuser=False, is_staff=False)
+            if status == 'verified': qs = qs.filter(Q(is_verified=True) | Q(is_superuser=True) | Q(is_staff=True))
          return qs
   
 class UserProfileViewSet(viewsets.ModelViewSet):

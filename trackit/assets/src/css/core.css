@@ -61,6 +61,9 @@
     border: 1px solid #007bff;
 }
 
+.alert-pending {
+    border: 1px solid #17a2b8;
+}
 .alert-pending > div > .btn {
     font-size: 12px !important;
 }

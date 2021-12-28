@@ -34,6 +34,11 @@
                </span> 
                {% endif %}
             </div>
+            {% if user.is_verified or user.is_superuser or user.is_staff %}
+            <div class="font-weight-bold text-center mt-1">
+               <span class="badge badge-primary ml-2 text-uppercase p-1">Verified</span>
+            </div>
+            {% endif %}
          </div>
       </div>
 
@@ -46,17 +51,6 @@
                      <div class="card shadow-sm">
                         <div class="card-header p-3 d-flex">
                            <div class="card-title m-0"> Acount </div>
-                           <div class="font-weight-bold ml-auto" style="width: 60% !important;">
-                              <p class="p-0 m-0 text-right">
-                                 {% if user.verified_at or user.is_superuser or user.is_staff %}
-                                 <span class="badge badge-primary ml-2 text-uppercase p-1">Verified</span>
-                                 {% elif not user.verified_at and user.documents.all and not user.is_superuser and not user.is_staff %}
-                                 <span class="badge badge-info ml-2 text-uppercase p-1">Pending</span>
-                                 {% elif not user.verified_at and not user.documents.all and not user.is_superuser and not user.is_staff %}
-                                 <span class="badge badge-warning ml-2 text-uppercase p-1">Not verified</span>
-                                 {% endif %}
-                              </p>
-                           </div>
                         </div>
                         <div class="card-body p-2">
                            <ul class="list-group list-group-flush">
@@ -137,27 +131,25 @@
                </div>
             </div>
             
-            {% if not user.verified_at and not user.documents.all and not user.is_superuser and not user.is_staff  %}
+            {% if user.is_verified is False and not user.is_superuser and not user.is_staff  %}
             <div class="col-12 col-lg-4 col-xl-4 order-1 order-lg-2">
                <div class="row">
                   <div class="col-12">
                      <div class="card shadow-sm bg-warning">
                         <div class="card-header p-3 d-flex">
-                           <div class="card-title m-0"> Verify Your Account</div>
+                           <div class="card-title m-0"> Declined Verification</div>
                            <div class="ml-auto"> <i class="fas fa-exclamation-triangle"></i></div>
                         </div>
                         <div class="card-body px-4">
-                           <p class="m-0">Hi {{user.first_name}}! Your account is not yet verified. Please submit digital photos of identification. Click the button below to verify
-                              your account and start enjoying
-                              Track-It.
+                           <p class="m-0">Hi {{user.first_name}}! Your account is has been declined due to unclear images. It must be clear and readable. Click below to upload again digital photos of identification. 
                            </p>
-                           <a href="{% url 'verification' %}" class="btn btn-xs btn-block btn-dark btn-shadow mt-3">Verify Account</a>
+                           <a href="{% url 'verification' %}" class="btn btn-xs btn-block btn-dark btn-shadow mt-3">Upload Identification</a>
                         </div>
                      </div> 
                   </div>               
                </div>
             </div>
-            {% elif not user.verified_at and user.documents.all and not user.is_superuser and not user.is_staff %}
+            {% elif not user.is_verified and not user.is_superuser and not user.is_staff %}
             <div class="col-12 col-lg-4 col-xl-4 order-1 order-lg-2">
                <div class="row">
                   <div class="col-12">
@@ -167,7 +159,7 @@
                            <div class="ml-auto"> <i class="fas fa-hourglass-half"></i></div>
                         </div>
                         <div class="card-body px-4">
-                           <p class="m-0">Your account is now for review by the Administrator. You will be notified when your account is verified.</p>
+                           <p class="m-0">Your account is now for review by the Administrator. You will be notified once your account is verified and start enjoying Track It.</p>
                         </div>
                      </div> 
                   </div>
@@ -175,7 +167,7 @@
             </div>
             {% endif %}
 
-            {% if user.verified_at or user.is_superuser or user.is_staff %}
+            {% if user.is_verified or user.is_superuser or user.is_staff %}
             <div class="col-12 col-lg-8 col-xl-8 order-3">                
                <div class="row">
                   <!-- Request Column -->

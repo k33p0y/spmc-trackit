@@ -99,10 +99,10 @@
                   <ul class="list-group list-group-horizontal text-center">
                      <li class="list-group-item w-100 border-0 px-0 py-2">
                         <div class="d-flex align-items-center justify-content-center"> 
-                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_noverif" role="status" aria-hidden="true"></span>
-                           <h5 class="font-weight-bold m-0 counter" id="count_noverif"></h5>
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_verified" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0 counter" id="count_verified"></h5>
                         </div>
-                        <small class="text-muted">No Verfication</small>
+                        <small class="text-muted">Verified</small>
                      </li>
                      <li class="list-group-item w-100 border-0 px-0 py-2">
                         <div class="d-flex align-items-center justify-content-center"> 
@@ -113,10 +113,10 @@
                      </li>
                      <li class="list-group-item w-100 border-0 px-0 py-2">
                         <div class="d-flex align-items-center justify-content-center"> 
-                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_verified" role="status" aria-hidden="true"></span>
-                           <h5 class="font-weight-bold m-0 counter" id="count_verified"></h5>
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_decline" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold m-0 counter" id="count_decline"></h5>
                         </div>
-                        <small class="text-muted">Verified</small>
+                        <small class="text-muted">Declined</small>
                      </li>
                   </ul>
                </div>
@@ -275,25 +275,25 @@
                   <i class="fas fa-exclamation-triangle fa-lg"></i>
                </div>
             </div>
-            <div class="alert alert-info alert-pending shadow-sm px-3 py-2 mb-3 d-none" role="alert">
-               <div class="d-flex align-items-center justify-content-between">
-                  <div class="d-flex-inline">
-                     <h6 class="alert-heading font-weight-bold text-light m-0"> Pending Verification</h6>
-                     <small class="text-light">Review submitted form of identification and verify this account. </small>
+            <div class="alert alert-pending shadow-sm px-3 py-2 mb-3" role="alert">
+               <div class="d-flex align-items-center">
+                  <div class="d-flex-inline mr-auto">
+                     <h6 class="alert-heading font-weight-bold text-info m-0"> Pending Verification</h6>
+                     <small class="text-secondary">Review submitted form of identification and verify this account. </small>
                   </div>
-                  <button type="button" class="btn btn-outline-light text-nowrap d-flex align-items-center" id="verify_user"> 
+                  <button type="button" class="btn btn-outline-secondary text-nowrap d-flex align-items-center mr-2" id="verify_user"> 
                      <span class="spinner-border spinner-border-xs mr-1 spinner-verify d-none" role="status" aria-hidden="true"></span>
-                     <span>Verify Now</span>
+                     <span>Decline</span>
+                  </button>
+                  <button type="button" class="btn btn-info text-nowrap d-flex align-items-center" id="verify_user"> 
+                     <span class="spinner-border spinner-border-xs mr-1 spinner-verify d-none" role="status" aria-hidden="true"></span>
+                     <span>Verify Account</span>
                   </button>
                </div>
             </div>
             <div class="alert alert-verified shadow-sm px-3 py-2 mb-3 d-none" role="alert">
                <div class="d-flex align-items-center justify-content-between">
                   <h6 class="alert-heading font-weight-bold text-primary m-0"> Verified</h6>
-                  <span class="fa-stack fa-xs text-primary">
-                     <i class="fas fa-certificate fa-stack-2x"></i>
-                     <i class="fas fa-check fa-stack-1x fa-inverse"></i>
-                  </span> 
                </div>
             </div>
 
@@ -304,7 +304,7 @@
                      <a class="nav-item nav-link active" id="nav-personal-tab" data-toggle="tab" href="#personal"
                         role="tab" aria-controls="nav-personal" aria-selected="true">Personal Informaton</a>
                      <a class="nav-item nav-link" id="nav-account-tab" data-toggle="tab" href="#account" role="tab"
-                        aria-controls="nav-account" aria-selected="false">Account Credentials </a>
+                        aria-controls="nav-account" aria-selected="false">Account Credential </a>
                      <a class="nav-item nav-link" id="nav-perms-tab" data-toggle="tab" href="#perms" role="tab"
                         aria-controls="nav-perms" aria-selected="false">Permissions</a>
                      <a class="nav-item nav-link" id="nav-verify-tab" data-toggle="tab" href="#verify"
@@ -569,7 +569,7 @@
             <h6 class="modal-title">Preview</h6>
             <a href="#" class="text-dark" id="btn_save" data-dismiss="modal"> <i class="fas fa-times"></i> </a>
          </div>
-         <div class="modal-body modal-preview">
+         <div class="modal-body modal-preview p-1">
             <img class="card-img" id="file_src">
          </div>
       </div>

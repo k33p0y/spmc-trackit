@@ -24,12 +24,14 @@ def verification(request):
    
 @login_required
 def home(request):
-   now = datetime.datetime.now()
-   users = User.objects.filter(date_joined__lte=now, is_active=True, is_superuser=False).order_by('-date_joined')[:8]
-   tickets = Ticket.objects.filter(date_created__lte=now, is_active=True).order_by('-date_created')[:6]
+   if (request.user.is_verified or request.user.documents.all() or request.user.is_superuser or request.user.is_staff):
+      now = datetime.datetime.now()
+      users = User.objects.filter(date_joined__lte=now, is_active=True, is_superuser=False).order_by('-date_joined')[:8]
+      tickets = Ticket.objects.filter(date_created__lte=now, is_active=True).order_by('-date_created')[:6]
 
-   context =  {"users": users, "tickets":tickets}
-   return render(request, 'pages/index.html', context)
+      context =  {"users": users, "tickets":tickets}
+      return render(request, 'pages/index.html', context)
+   return redirect('verification/')
 
 @login_required
 @permission_required('core.view_group', raise_exception=True)

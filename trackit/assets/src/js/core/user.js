@@ -43,9 +43,9 @@ $(document).ready(function () {
          $('#spinner_superuser').addClass('d-none'); // remove spinners
          $('#count_superuser').html(response.count) // display count
       });
-      $.get(api_url, {"status" : "noverif"}, (response) => { // get all no verification users
-         $('#spinner_noverif').addClass('d-none'); // remove spinners
-         $('#count_noverif').html(response.count) // display count
+      $.get(api_url, {"status" : "declined"}, (response) => { // get all declined users
+         $('#spinner_decline').addClass('d-none'); // remove spinners
+         $('#count_decline').html(response.count) // display count
       });
       $.get(api_url, {"status" : "pending"}, (response) => { // get all pending
          $('#spinner_pending').addClass('d-none'); // remove spinners
@@ -146,10 +146,8 @@ $(document).ready(function () {
             render: function (data, type, row) {
                data = '';
                if (row.verified_at || row.is_superuser || row.is_staff) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
-               else if (row.documents.length > 0) {
-                  data = "<div class='badge badge-info text-uppercase d-inline-flex align-items-center p-1'> <span> Pending </span> </div>";
-               }
-               else data = "<div class='badge badge-warning text-uppercase d-inline-flex align-items-center p-1'> <span>No Verification </span> </div>";
+               else if (row.is_verified == null) data = "<div class='badge badge-info text-uppercase d-inline-flex align-items-center p-1'> <span> Pending </span> </div>";
+               else if (row.is_verified == false) data = "<div class='badge badge-warning text-uppercase d-inline-flex align-items-center p-1'> <span> Declined </span> </div>";
                return data
             },
          },
@@ -258,12 +256,12 @@ $(document).ready(function () {
       verifyDocuments(dt_data['documents']); // VERIFICATION DOCUMENTS
 
       // // // show alert verification status
-      if (dt_data['documents'].length === 0 && dt_data['verified_at'] === null && !dt_data['is_superuser']) $(".alert-noverif").removeClass('d-none');
-      if (dt_data['documents'].length > 0 && dt_data['verified_at'] === null) {
+      if (dt_data['is_verified'] || dt_data['is_superuser'] || dt_data['is_staff']) $(".alert-verified").removeClass('d-none');
+      else if (dt_data['is_verified'] == false) $(".alert-noverif").removeClass('d-none');
+      if (dt_data['is_verified'] == null) {
          $("#verify_user").data('user', id);
          $(".alert-pending").removeClass('d-none');
       }
-      if (dt_data['verified_at'] || dt_data['is_superuser']) $(".alert-verified").removeClass('d-none');
    });
 
    $('#file_wrapper').on('click', '.card-preview', function(e) {
@@ -464,7 +462,7 @@ $(document).ready(function () {
       removeFieldErrors('contact');
       $('#file_wrapper').empty();
       $("#verify_helptext").removeClass('d-none');
-      $(".alert-noverif, .alert-pending, .alert-verified").addClass('d-none');
+      $(".alert-declined, .alert-pending, .alert-verified").addClass('d-none');
    }
 
    let verifyDocuments = function(documents ) {
