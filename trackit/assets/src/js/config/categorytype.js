@@ -4,9 +4,7 @@ $(document).ready(function () {
    var activeFilter = function() { return $('#active-filter').val(); }
 
    // Local Variables
-   let chk_status = true;
-   let action_type, url;
-   let alert_msg = '';
+   let method, url;
 
    // GET
    // List Table
@@ -53,20 +51,10 @@ $(document).ready(function () {
       ],
    });
 
-   // Get Checkbox State
-   $('#chk_status').click(function () {
-      if ($(this).prop("checked") == true) {
-         chk_status = true;
-      }
-      else if ($(this).prop("checked") == false) {
-         chk_status = false;
-      }
-   });
-
    // CREATE / POST
    $('#btn-create-type').on('click', function () {
       // Assign AJAX Action Type and URL
-      action_type = 'POST';
+      method = 'POST';
       url = '/api/config/categorytype/'
 
       $("#formModal").modal();
@@ -80,7 +68,7 @@ $(document).ready(function () {
       let id = dt_data['id'];
 
       // Assign AJAX Action Type/Method and URL
-      action_type = 'PUT';
+      method = 'PUT';
       url = `/api/config/categorytype/${id}/`;
 
       // Open Modal
@@ -97,53 +85,25 @@ $(document).ready(function () {
    $("#btn_save").click(function (e) {
       e.preventDefault();
 
-      // Variables
-      var data = {}
-      var success = 1;
-
-      // Data Values
+      let data = new Object();
       data.name = $('#txt_typename').val();
-      data.is_active = chk_status;
+      data.is_active = $('#chk_status').is(':checked');
 
-      // Validation
-      if ($('#txt_typename').val() == '') {
-         $('#txt_typename').addClass('form-error');
-         $('.error-info').html('*This field may not be blank');
-         success--;
-      } else {
-         $('#txt_typename').removeClass('form-error');
-         $('#error-password').html('');
-      }
-
-      // Form is Valid
-      if (success == 1) {
-         $.ajax({
-            url: url,
-            type: action_type,
-            data: data,
-            beforeSend: function (xhr, settings) {
-               xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            },
-            success: function (result) {
-               toastSuccess('Success');
-               table.ajax.reload();
-            },
-            error: function (xhr, status, error) {
-               if (xhr.responseJSON.name) {
-                  $('#txt_typename').addClass('form-error');
-                  $('.name-error').html(`*${xhr.responseJSON.name}`)
-               } else {
-                  $('#txt_typename').removeClass('form-error');
-                  $('.name-error').html('')
-               }
-               toastError(error);
-            },
-         }).done(function () {
-            $('#formModal').modal('toggle');
-            $("#form").trigger("reset");
-            $('.error-info').html(''); 
-         });
-      }
+      axios({
+         method: method,
+         url: url,
+         data: data,
+         headers: axiosConfig,
+      }).then(response => {
+         toastSuccess('Success');
+         $('#formModal').modal('toggle');
+         $("#form").trigger("reset");
+         $('.error-info').html(''); 
+         table.ajax.reload();
+      }).catch(error => {
+         toastError(error.response.statusText);
+         if (error.response.data.name) showFieldErrors(error.response.data.name, 'typename'); else removeFieldErrors('name');
+      })
    });
 
    //Modal Cancel
@@ -195,4 +155,15 @@ $(document).ready(function () {
       if (e.clickEvent) e.preventDefault();      
    });
 
+   let showFieldErrors = function(obj, field){
+      let errors = ''
+      $(`#txt_${field}`).addClass('form-error');
+      for (i=0; i<obj.length; i++) errors += `${obj[i]} `;
+      $(`#${field}_error`).html(`*${errors}`)
+   };
+
+   let removeFieldErrors = function(field){
+      $(`#txt_${field}`).removeClass('form-error');
+      $(`#${field}_error`).html(``)
+   };
 });
