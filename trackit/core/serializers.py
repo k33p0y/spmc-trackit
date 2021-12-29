@@ -300,5 +300,15 @@ class VerifyUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'verified_by', 'verified_at', 'is_verified']
         read_only_fields = ['username']
-   
- 
+
+class DeclineVerificationSerializer(serializers.ModelSerializer):
+
+    def update(self, instance, validated_data):
+        instance.is_verified = False
+        instance.save()
+        return instance
+        
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'is_verified']
+        read_only_fields = ['username']

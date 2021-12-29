@@ -145,7 +145,7 @@ $(document).ready(function () {
             data: "verified_at",
             render: function (data, type, row) {
                data = '';
-               if (row.verified_at || row.is_superuser || row.is_staff) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
+               if (row.is_verified || row.is_superuser || row.is_staff) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
                else if (row.is_verified == null) data = "<div class='badge badge-info text-uppercase d-inline-flex align-items-center p-1'> <span> Pending </span> </div>";
                else if (row.is_verified == false) data = "<div class='badge badge-warning text-uppercase d-inline-flex align-items-center p-1'> <span> Declined </span> </div>";
                return data
@@ -256,10 +256,10 @@ $(document).ready(function () {
       verifyDocuments(dt_data['documents']); // VERIFICATION DOCUMENTS
 
       // // // show alert verification status
-      if (dt_data['is_verified'] || dt_data['is_superuser'] || dt_data['is_staff']) $(".alert-verified").removeClass('d-none');
-      else if (dt_data['is_verified'] == false) $(".alert-noverif").removeClass('d-none');
-      if (dt_data['is_verified'] == null) {
-         $("#verify_user").data('user', id);
+      if (dt_data['is_verified'] === true || dt_data['is_superuser'] || dt_data['is_staff']) $(".alert-verified").removeClass('d-none');
+      else if (dt_data['is_verified'] === false) $(".alert-decline").removeClass('d-none');
+      else if (dt_data['is_verified'] === null) {
+         $("#verify_user, #decline_user").data('user', id);
          $(".alert-pending").removeClass('d-none');
       }
    });
@@ -384,6 +384,30 @@ $(document).ready(function () {
       });
    });
 
+   // Decline User
+   $('#decline_user').click(function (e) {
+      const id = $(this).data('user');
+      
+      axios({
+         url: `/api/core/decline/user/${id}/`,
+         method: "PUT",
+         headers: axiosConfig
+      }).then(function (response) {
+         $(".spinner-decline").removeClass('d-none');
+         $(this).prop('disabled', true)
+
+         setTimeout(function() { 
+            $(".spinner-decline").addClass('d-none');
+            $('#modal-add-user').modal('toggle');
+            toastSuccess('Success'); // alert
+            getCounterDash(); // reload counter
+            table.ajax.reload(); // reload table
+         }, 800);         
+      }).catch(function (error) {
+         toastError(error.response.statusText)
+      });
+   });
+
    // // //  Filters
    // Select2 config
    $('.select-filter').select2();
@@ -462,7 +486,7 @@ $(document).ready(function () {
       removeFieldErrors('contact');
       $('#file_wrapper').empty();
       $("#verify_helptext").removeClass('d-none');
-      $(".alert-declined, .alert-pending, .alert-verified").addClass('d-none');
+      $(".alert-decline, .alert-pending, .alert-verified").addClass('d-none');
    }
 
    let verifyDocuments = function(documents ) {
