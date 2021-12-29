@@ -25,22 +25,16 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class CategoryTypeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
-        category = Category(
+        categorytype = CategoryType(
             name = validated_data['name'],
-            category_type = validated_data['category_type'],
             is_active = validated_data['is_active']
         )
-        category.save()
-        category.groups.add(*validated_data['groups'])
-        return category
+        categorytype.save()
+        return categorytype
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
-        instance.category_type = validated_data.get('category_type', instance.category_type)
-        
-        instance.groups.clear()
-        if validated_data.get('groups', instance.groups):
-            instance.groups.add(*validated_data.get('groups', instance.groups))
+        instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.save()
         return instance
 
@@ -48,11 +42,6 @@ class CategoryTypeSerializer(serializers.ModelSerializer):
         if not name:
             raise serializers.ValidationError('This field may not be blank.')
         return name
-
-    def validate_category_type(self, category_type):
-        if not category_type:
-            raise serializers.ValidationError('This field may not be blank.')
-        return category_type
 
     class Meta:
         model = CategoryType
@@ -69,6 +58,36 @@ class CategoryGETSerializer(serializers.ModelSerializer):
         datatables_always_serialize = ('id',)
 
 class CategorySerializer(serializers.ModelSerializer):
+
+    def create(self, validated_data):
+        category = Category(
+            name = validated_data['name'],
+            category_type = validated_data['category_type'],
+            is_active = validated_data['is_active']
+        )
+        category.save()
+        category.groups.add(*validated_data['groups'])
+        return category
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.category_type = validated_data.get('category_type', instance.category_type)
+        instance.is_active = validated_data.get('is_active', instance.is_active)  
+        instance.groups.clear()
+        if validated_data.get('groups', instance.groups):
+            instance.groups.add(*validated_data.get('groups', instance.groups))
+        instance.save()
+        return instance
+
+    def validate_name(self, name):
+        if not name:
+            raise serializers.ValidationError('This field may not be blank.')
+        return name
+
+    def validate_category_type(self, category_type):
+        if not category_type:
+            raise serializers.ValidationError('This field may not be blank.')
+        return category_type
 
     class Meta:
         model = Category
