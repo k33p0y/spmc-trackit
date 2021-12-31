@@ -113,7 +113,7 @@
                      </li>
                      <li class="list-group-item w-100 border-0 px-0 py-2">
                         <div class="d-flex align-items-center justify-content-center"> 
-                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_decline" role="status" aria-hidden="true"></span>
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_declined" role="status" aria-hidden="true"></span>
                            <h5 class="font-weight-bold m-0 counter" id="count_decline"></h5>
                         </div>
                         <small class="text-muted">Declined</small>
@@ -189,9 +189,9 @@
                         <label for="status-filter">By Status </label>
                         <select class="form-control form-control-sm select-filter" id="status-filter">
                            <option value="">All</option>
-                           <option value="noverif">No Verification</option>
-                           <option value="pending">Pending</option>
                            <option value="verified">Verified</option>
+                           <option value="pending">Pending</option>
+                           <option value="declined">Declined</option>
                         </select>
                      </div>
                   </div>
@@ -235,10 +235,10 @@
                         <tr>
                            <th data-priority="1">Name</th>
                            <th data-priority="3">Department</th>
-                           <th data-priority="2">Role</th>
+                           <th data-priority="4">Role</th>
                            <th>Groups</th>
-                           <th>Date Created</th>
-                           <th>Status</th>
+                           <th>Last Modified</th>
+                           <th data-priority="2">Status</th>
                            <th>is Active</th>
                         </tr>
                      </thead>
@@ -266,25 +266,29 @@
          </div>
          <div class="modal-body">
             <div class="alert alert-decline shadow-sm px-3 py-2 mb-3 d-none" role="alert">
-               <div class="d-flex align-items-center justify-content-between">
-                  <div class="d-flex-inline">
+               <div class="d-flex flex-column flex-lg-row align-items-lg-center">
+                  <div class="d-flex-inline mr-auto">
                      <h6 class="alert-heading font-weight-bold m-0 text-warning"> Decline Verification</h6>
                      <small class="text-secondary">This account has been subject to resubmission of identification.</small>
                   </div>
+                  <button type="button" class="btn btn-warning text-nowrap d-flex align-items-center justify-content-center mt-2 mt-lg-0" id="verifyanyway_user"> 
+                     <span class="spinner-border spinner-border-xs mr-1 d-none spinner-verification" id="spinner_verifyanyway" role="status" aria-hidden="true" ></span>
+                     <span>Verify Anyway</span>
+                  </button>
                </div>
             </div>
             <div class="alert alert-pending shadow-sm px-3 py-2 mb-3 d-none" role="alert">
-               <div class="d-flex align-items-center">
+               <div class="d-flex flex-column flex-lg-row align-items-lg-center">
                   <div class="d-flex-inline mr-auto">
                      <h6 class="alert-heading font-weight-bold text-info m-0"> Pending Verification</h6>
                      <small class="text-secondary">Review submitted form of identification and verify this account. </small>
                   </div>
-                  <button type="button" class="btn btn-outline-secondary text-nowrap d-flex align-items-center mr-2" id="decline_user"> 
-                     <span class="spinner-border spinner-border-xs mr-1 spinner-decline d-none" role="status" aria-hidden="true"></span>
+                  <button type="button" class="btn btn-outline-secondary text-nowrap d-flex align-items-center justify-content-center mr-0 mr-md-2 mt-2 mt-lg-0" id="decline_user"> 
+                     <span class="spinner-border spinner-border-xs mr-1 d-none spinner-verification" id="spinner_decline" role="status" aria-hidden="true"></span>
                      <span>Decline</span>
                   </button>
-                  <button type="button" class="btn btn-info text-nowrap d-flex align-items-center" id="verify_user"> 
-                     <span class="spinner-border spinner-border-xs mr-1 spinner-verify d-none" role="status" aria-hidden="true"></span>
+                  <button type="button" class="btn btn-info text-nowrap d-flex align-items-center justify-content-center mt-2 mt-lg-0" id="verify_user"> 
+                     <span class="spinner-border spinner-border-xs mr-1 d-none spinner-verification" id="spinner_verify" role="status" aria-hidden="true"></span>
                      <span>Verify Account</span>
                   </button>
                </div>

@@ -44,7 +44,7 @@ $(document).ready(function () {
          $('#count_superuser').html(response.count) // display count
       });
       $.get(api_url, {"status" : "declined"}, (response) => { // get all declined users
-         $('#spinner_decline').addClass('d-none'); // remove spinners
+         $('#spinner_declined').addClass('d-none'); // remove spinners
          $('#count_decline').html(response.count) // display count
       });
       $.get(api_url, {"status" : "pending"}, (response) => { // get all pending
@@ -130,11 +130,11 @@ $(document).ready(function () {
             },
          },
          {
-            data: "date_joined",
+            data: "modified_at",
             render: function (data, type, row) {
                if (type == 'display') {
-                  var date = moment(row.date_joined).format('DD MMMM YYYY');
-                  var time = moment(row.date_joined).format('h:mm:ss a');
+                  var date = moment(row.modified_at).format('DD MMMM YYYY');
+                  var time = moment(row.modified_at).format('h:mm:ss a');
 
                   data = `<p class="title mb-0">${date}</p><span class="sub-title">${time}</span>`
                }
@@ -257,7 +257,10 @@ $(document).ready(function () {
 
       // // // show alert verification status
       if (dt_data['is_verified'] === true || dt_data['is_superuser'] || dt_data['is_staff']) $(".alert-verified").removeClass('d-none');
-      else if (dt_data['is_verified'] === false) $(".alert-decline").removeClass('d-none');
+      else if (dt_data['is_verified'] === false) {
+         $("#verifyanyway_user").data('user', id);
+         $(".alert-decline").removeClass('d-none');
+      }
       else if (dt_data['is_verified'] === null) {
          $("#verify_user, #decline_user").data('user', id);
          $(".alert-pending").removeClass('d-none');
@@ -369,16 +372,17 @@ $(document).ready(function () {
          method: "PUT",
          headers: axiosConfig
       }).then(function (response) {
-         $(".spinner-verify").removeClass('d-none');
+         $("#spinner_verify").removeClass('d-none');
          $(this).prop('disabled', true)
 
          setTimeout(function() { 
-            $(".spinner-verify").addClass('d-none');
+            $("#spinner_verify").addClass('d-none');
             $('#modal-add-user').modal('toggle');
             toastSuccess('Success'); // alert
-            getCounterDash(); // reload counter
-            table.ajax.reload(); // reload table
-         }, 800);         
+         }, 500);  
+
+         getCounterDash(); // reload counter
+         table.ajax.reload(); // reload table
       }).catch(function (error) {
          toastError(error.response.statusText)
       });
@@ -393,18 +397,57 @@ $(document).ready(function () {
          method: "PUT",
          headers: axiosConfig
       }).then(function (response) {
-         $(".spinner-decline").removeClass('d-none');
+         $("#spinner_decline").removeClass('d-none');
          $(this).prop('disabled', true)
 
          setTimeout(function() { 
-            $(".spinner-decline").addClass('d-none');
+            $("#spinner_decline").addClass('d-none');
             $('#modal-add-user').modal('toggle');
             toastSuccess('Success'); // alert
-            getCounterDash(); // reload counter
-            table.ajax.reload(); // reload table
-         }, 800);         
+         }, 500);         
+
+         getCounterDash(); // reload counter
+         table.ajax.reload(); // reload table
       }).catch(function (error) {
          toastError(error.response.statusText)
+      });
+   });
+
+   // Verify User Anayway 
+   $('#verifyanyway_user').click(function (e) {
+      const id = $(this).data('user');
+      
+      Swal.fire({
+         title: 'Are you sure?',
+         html: '<p class="m-0">User has not yet submitted any form of identification.</p>',
+         icon: 'question',
+         showCancelButton: true,
+         cancelButtonText: 'Cancel',
+         confirmButtonText: 'Verify Anyway',
+         confirmButtonColor: '#17a2b8',
+         reverseButtons: true
+      }).then((result) => {
+         if (result.value) {
+            axios({
+               url: `/api/core/verify/user/${id}/`,
+               method: "PUT",
+               headers: axiosConfig
+            }).then(function (response) {
+               $(" #spinner_verifyanyway").removeClass('d-none');
+               $(this).prop('disabled', true)
+       
+               setTimeout(function() { 
+                  $("#spinner_verifyanyway").addClass('d-none');
+                  $('#modal-add-user').modal('toggle');
+                  toastSuccess('Success'); // alert
+               }, 500);    
+               
+               getCounterDash(); // reload counter
+               table.ajax.reload(); // reload table
+            }).catch(function (error) {
+               toastError(error.response.statusText)
+            });
+         }
       });
    });
 
