@@ -116,3 +116,63 @@
 .modal-body .text-muted {
    color: #95a4b5 !important;
 }
+
+
+.btn-upload{
+   border: solid 1px #cdd5df;
+   padding: 0.4rem 2rem;
+   border-radius: 5px !important;
+}
+.upload-wrapper {
+   position: relative;
+   width: 100%;
+   height: 250px;
+   border: 1.5px dashed #cdd5df;
+   background-color: #e3e5ed3d;
+}
+.upload-content > i {
+   font-size: 50px !important;
+   color: #b5bdc4;
+}
+.upload-content > p {
+   color: #939BA2;
+   font-size: 14px !important;
+   font-weight: bold;
+}
+.upload-content .upload-info {
+   color: #b5bdc4;
+   font-size: 12px !important;
+   font-style: italic;
+}
+
+.upload-overlay {
+   position:absolute;
+   width: 100%;
+   height: 100%;
+   z-index: 2;
+   background-color: rgba(0,0,0,0.2);
+}
+.upload-overlay .progress {
+   position: absolute;
+   bottom:0;
+   width: 100%;
+}
+.upload-overlay .progress-bar {
+   font-weight: bold;
+}
+.upload-overlay .bg-orange {
+   color: #FFF !important;
+}
+
+.upload-wrapper .upload-zone .card .btn-remove {
+   padding: 12px;
+   border-radius: 50% !important;
+   height: 16px !important;
+   width: 16px !important;
+   font-size: 10px !important;
+   text-align: center;
+   padding: 0;
+   position: absolute;
+   right: -5px;
+   top: -5px;
+}

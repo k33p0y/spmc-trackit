@@ -104,6 +104,32 @@ const fileSize = function(bytes) {
    return file_size;
 };
 
+const imageSize = function (bytes) {
+   let file_size;
+   if (bytes < 1024) {
+       file_size = `${bytes} bytes`;
+   } else if (bytes >= 1024 && bytes < 1024000) { // Convert Bytes to Kilobytes
+       bytes = (bytes / 1024).toFixed(1);
+       file_size = `${bytes} KB`;
+   } else if (bytes > 1024000 && bytes <= 5242880) { // Convert Bytes to MegaBytes & set limit 5MB 
+       bytes = (bytes / 1024000).toFixed(1);
+       file_size = `${bytes} MB`;
+   } else { // Invalid Size 
+       file_size = 'invalid';
+   }
+   return file_size;
+};
+
+const imageType = function (file_type) {
+   let media_type = ['image/png', 'image/jpeg'];
+   let image_type;
+
+   if (media_type.includes(file_type)) image_type = "fa-file-image"
+   else image_type = 'invalid';
+
+   return image_type;
+};
+
 // Post Comments
 const getComments = function(ticket, next_page){
    let url = '/api/requests/comments/'
@@ -214,11 +240,32 @@ const toastSuccess = async function (title) {
       icon: 'success',
       title: title,
    });   
-}
+};
 
 const toastError = async function (title) {
    await Toast.fire({
       icon: 'error',
       title: title,
    });   
-}
+};
+
+const alertError = function (message) {
+   Swal.fire({
+       icon: 'error',
+       title: 'Ooops',
+       html: `<p class="text-secondary"> ${message} </p>`,
+       showConfirmButton: false,
+       timer: 2000,
+   });
+};
+
+const alertSuccess = function (message) {
+   Swal.fire({
+       icon: 'success',
+       title: 'Success',
+       html: `<p class="text-secondary"> ${message} </p>`,
+       showConfirmButton: false,
+       timer: 2000,
+       
+   })
+};

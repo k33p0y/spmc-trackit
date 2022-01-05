@@ -149,7 +149,7 @@ $(document).ready(function () {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Verification Complete',
-                                html: `<p class="text-secondary">You'll be able to create requests after we review your information and verify it within approximately 24 hours.</p>`,
+                                html: `<p class="text-secondary">Your account is now for review by the Administrator. You will be notified once your account is verified and start enjoying Track It.</p>`,
                                 confirmButtonColor: '#17a2b8',
                             }).then(() => {
                                 $(location).attr('href', '/')

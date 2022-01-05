@@ -102,6 +102,11 @@ class UserVerificationViewSet(viewsets.ModelViewSet):
          file_type=file.content_type, 
          user=self.request.user
       )
+      # update user, set 'is_verified' field to null
+      if user_verify.user.is_verified == False:
+         user = User.objects.get(id=user_verify.user.id)
+         user.is_verified = None
+         user.save()
       serializer = UserVerificationSerializer(user_verify)
       return Response(serializer.data)
 
