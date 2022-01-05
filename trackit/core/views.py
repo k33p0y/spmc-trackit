@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.http import Http404
 from django.template.response import SimpleTemplateResponse
 from core.models import User
+from core.decorators import user_is_verified, user_has_upload_verification
 from config.models import Department
 from requests.models import Ticket, RequestForm
 
@@ -23,15 +24,14 @@ def verification(request):
       raise Http404()
    
 @login_required
+@user_has_upload_verification
 def home(request):
-   if (request.user.is_verified or request.user.documents.all() or request.user.is_superuser or request.user.is_staff):
-      now = datetime.datetime.now()
-      users = User.objects.filter(date_joined__lte=now, is_active=True, is_superuser=False).order_by('-date_joined')[:8]
-      tickets = Ticket.objects.filter(date_created__lte=now, is_active=True).order_by('-date_created')[:6]
+   now = datetime.datetime.now()
+   users = User.objects.filter(date_joined__lte=now, is_active=True, is_superuser=False).order_by('-date_joined')[:8]
+   tickets = Ticket.objects.filter(date_created__lte=now, is_active=True).order_by('-date_created')[:6]
 
-      context =  {"users": users, "tickets":tickets}
-      return render(request, 'pages/index.html', context)
-   return redirect('verification/')
+   context =  {"users": users, "tickets":tickets}
+   return render(request, 'pages/index.html', context)
 
 @login_required
 @permission_required('core.view_group', raise_exception=True)
@@ -57,6 +57,7 @@ def user_list(request):
    return render(request, 'pages/core/user_list.html', context)
 
 @login_required
+@user_has_upload_verification
 def user_profile(request, pk):
    if request.user.id == pk:
       user = User.objects.prefetch_related('documents').get(id=pk)

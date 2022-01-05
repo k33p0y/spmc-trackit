@@ -4,13 +4,15 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 
 from config.models import Category, CategoryType, Department, Status, Remark
-from .models import Ticket, RequestForm, Attachment, RequestFormStatus, Notification, Comment
 from easyaudit.models import CRUDEvent
+from .models import Ticket, RequestForm, Attachment, RequestFormStatus, Notification, Comment
+from core.decorators import user_is_verified
 
 import json, uuid, datetime
 
 # Create your views here.
 @login_required
+@user_is_verified
 @permission_required('requests.view_ticket', raise_exception=True)
 def ticket(request):
    tickets = Ticket.objects.all()
@@ -23,6 +25,7 @@ def ticket(request):
    return render(request, 'pages/requests/ticket_lists.html', context)
    
 @login_required
+@user_is_verified
 @permission_required('requests.add_ticket', raise_exception=True)
 def create_ticket(request):
    forms= RequestForm.objects.filter(is_active=True).order_by('name')
@@ -32,6 +35,7 @@ def create_ticket(request):
    return render(request, 'pages/requests/ticket_new.html', context)
 
 @login_required
+@user_is_verified
 @permission_required('requests.change_ticket', raise_exception=True)
 def detail_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
@@ -70,6 +74,7 @@ def detail_ticket(request, ticket_id):
       raise Http404()  
 
 @login_required
+@user_is_verified
 @permission_required('requests.view_ticket', raise_exception=True)
 def view_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
