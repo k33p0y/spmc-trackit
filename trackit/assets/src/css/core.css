@@ -49,10 +49,6 @@
     font-size: 0.8em !important;
 }
 
-.card-preview:hover > .card {
-    background-color: red;
-}
-
 .modal-preview {
     height: 100%;
 }
@@ -68,4 +64,21 @@
 .spinner-dash {
     width: 1rem;
     height: 1rem;
+}
+
+#file_wrapper .list-group-item,
+#detail_wrapper .list-group-item {
+    border-style: dashed !important;
+    border-radius: 0 !important;
+    color: #3e454d;
+}
+
+#file_wrapper .list-group-item:hover {
+    cursor: pointer;
+    background-color: #f2f4fa;
+}
+
+.btn-edit:hover {
+    color :#e77619 !important;
+    cursor: pointer;
 }

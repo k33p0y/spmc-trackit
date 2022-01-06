@@ -95,7 +95,7 @@ $(document).ready(function () {
                         </div>
                      </div>`;
 
-                  data = ($('#changeUserHidden').val() == 'true') ? `<a href="#" class='btn-link-orange btn_edit'>${name_template}</a>` : name_template;
+                  data = ($('#changeUserHidden').val() == 'true') ? `<a role="button" class='text-orange btn-edit'>${name_template}</a>` : name_template;
                }
                return data
             },
@@ -213,7 +213,7 @@ $(document).ready(function () {
    }); // create new group button end
 
    // UPDATE / PUT
-   $('#dt_user tbody').on('click', '.btn_edit', function () {
+   $('#dt_user tbody').on('click', '.btn-edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
       let id = dt_data['id']
 
@@ -254,6 +254,7 @@ $(document).ready(function () {
       $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
       $('#btn-change-password').data('user', dt_data);
       verifyDocuments(dt_data['documents']); // VERIFICATION DOCUMENTS
+      viewDetailsTab(dt_data);
 
       // // // show alert verification status
       if (dt_data['is_verified'] === true || dt_data['is_superuser'] || dt_data['is_staff']) $(".alert-verified").removeClass('d-none');
@@ -267,7 +268,7 @@ $(document).ready(function () {
       }
    });
 
-   $('#file_wrapper').on('click', '.card-preview', function(e) {
+   $('#file_wrapper').on('click', '.list-preview', function(e) {
       $('#previewImage').modal('show');
       $("#file_src").prop('src', $(this).data('file'));
    });
@@ -539,16 +540,19 @@ $(document).ready(function () {
       } else $("#verify_helptext").removeClass('d-none');
 
       documents.forEach(document => {
-         $('#file_wrapper').append(`<div class="col-4 col-md-3">
-            <a href="#" class="card-preview" data-file="${document.file}">
-               <div class="card m-0 w-100">
-                  <img src="${document.file}" class="card-img" alt="${document.file_name}">
-                  <div class="card-body p-1">
-                     <small class="text-muted">${document.file_name}</small>
-                  </div>
-               </div>
-            </a>
-         </div>`)
+         $('#file_wrapper').append(`
+            <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-2 list-preview" data-file="${document.file}">
+               <img src="${document.file}" alt="${document.file_name}" height="40" width="auto">
+               <p class="text-muted m-0 px-2">${document.file_name}</p>
+               <p class="text-muted m-0 px-2">${moment(document.uploaded_at).format('DD MMMM YYYY h:mm:ss a')}</p>
+            </li>`
+         )
       });
+   }
+
+   let viewDetailsTab = function(obj) {      
+      $('#created_data').html(`${obj.created_by ? `${obj.created_by.name},` : ''} ${obj.date_joined ? `${moment(obj.date_joined).format('DD MMMM YYYY h:mm:ss a')}` : '-'}`);
+      $('#modified_data').html(`${obj.modified_by ? `${obj.modified_by.name},` : ''} ${obj.modified_at ? `${moment(obj.modified_at).format('DD MMMM YYYY h:mm:ss a')}` : '-'}`);
+      $('#verified_data').html(`${obj.verified_by  ? `${obj.verified_by.name},` : ''} ${obj.verified_at ? `${moment(obj.verified_at).format('DD MMMM YYYY h:mm:ss a')}` : '-'}`);
    }
 });

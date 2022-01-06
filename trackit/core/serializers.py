@@ -278,10 +278,23 @@ class DocumentsSerializer(serializers.ModelSerializer):
         model = UserVerification
         exclude = ['user']
 
+class UserInfoSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField('get_full_name')
+
+    def get_full_name(self, obj):
+        return '%s %s' % (obj.first_name, obj.last_name)
+
+    class Meta:
+        model = User
+        fields = ['name']
+
 class UserListSerializer(serializers.ModelSerializer):
     groups = GroupReadOnlySerializer(read_only=True, many=True)
     department = DepartmentReadOnlySerializer(read_only=True)
     documents = DocumentsSerializer(read_only=True, many=True)
+    created_by = UserInfoSerializer(read_only=True)
+    modified_by = UserInfoSerializer(read_only=True)
+    verified_by = UserInfoSerializer(read_only=True)
 
     class Meta:
         model = User

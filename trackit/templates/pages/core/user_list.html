@@ -304,13 +304,17 @@
                   <!-- Navigation -->
                   <div class="nav nav-tabs mb-2" id="nav-tab" role="tablist">
                      <a class="nav-item nav-link active" id="nav-personal-tab" data-toggle="tab" href="#personal"
-                        role="tab" aria-controls="nav-personal" aria-selected="true">Personal Informaton</a>
+                        role="tab" aria-controls="nav-personal" aria-selected="true">Profile</a>
                      <a class="nav-item nav-link" id="nav-account-tab" data-toggle="tab" href="#account" role="tab"
-                        aria-controls="nav-account" aria-selected="false">Account Credential </a>
+                        aria-controls="nav-account" aria-selected="false">Account </a>
                      <a class="nav-item nav-link" id="nav-perms-tab" data-toggle="tab" href="#perms" role="tab"
                         aria-controls="nav-perms" aria-selected="false">Permissions</a>
                      <a class="nav-item nav-link" id="nav-verify-tab" data-toggle="tab" href="#verify"
-                        role="tab" aria-controls="nav-verify" aria-selected="true">Verification</a>
+                        role="tab" aria-controls="nav-general" aria-selected="true">Verification</a>
+                     <a class="nav-item nav-link" id="nav-general-tab" data-toggle="tab" href="#general"
+                        role="tab" aria-controls="nav-general" aria-selected="true">Details</a>
+                     <a class="nav-item nav-link" id="nav-history-tab" data-toggle="tab" href="#history"
+                        role="tab" aria-controls="nav-history" aria-selected="true">History</a>
                   </div>
                </nav>
 
@@ -499,10 +503,27 @@
                   </div>
                   <!-- Verification Tab -->
                   <div class="tab-pane fade" id="verify" role="tabpanel" aria-labelledby="nav-verify-tab">
-                     <div class="h-75 p-2 bg-secondary">
+                     <div class="h-75">
                         <p class="text-center text-secondary my-5 d-none" id="verify_helptext">No file or digital photos submitted</p>
-                        <div class="row" id="file_wrapper"></div>
+                        <ul class="list-group list-group-flush" id="file_wrapper"></ul>
                      </div>
+                  </div>
+                  <!-- General Tab -->
+                  <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="nav-general-tab">
+                     <ul class="list-group list-group-flush" id="detail_wrapper">
+                        <li class="list-group-item d-flex align-items-center justify-content-between p-2 py-3">
+                           <label>Created</label>
+                           <span class="font-weight-bold" id="created_data"></span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center justify-content-between p-2 py-3">
+                           <label>Modified</label>
+                           <span class="font-weight-bold" id="modified_data"></span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center justify-content-between p-2 py-3">
+                           <label>Validated</label>
+                           <span class="font-weight-bold" id="verified_data"></span>
+                        </li>
+                     </ul>
                   </div>
                </div>
             </form>
