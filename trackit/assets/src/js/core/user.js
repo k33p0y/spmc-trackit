@@ -253,8 +253,9 @@ $(document).ready(function () {
       $('#select2-groups').val($.map(dt_data['groups'], (group) => group.id)).trigger('change'); // GROUPS
       $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
       $('#btn-change-password').data('user', dt_data);
-      verifyDocuments(dt_data['documents']); // VERIFICATION DOCUMENTS
-      viewDetailsTab(dt_data);
+      verifyDocuments(dt_data['documents']); // VERIFICATION DOCUMENTS TAB
+      viewDetailsTab(dt_data); // DETAILS TAB
+      viewActivityLogTab(id); // ACTIVITY LOGS TAB
 
       // // // show alert verification status
       if (dt_data['is_verified'] === true || dt_data['is_superuser'] || dt_data['is_staff']) $(".alert-verified").removeClass('d-none');
@@ -550,9 +551,91 @@ $(document).ready(function () {
       });
    }
 
-   let viewDetailsTab = function(obj) {      
-      $('#created_data').html(`${obj.created_by ? `${obj.created_by.name},` : ''} ${obj.date_joined ? `${moment(obj.date_joined).format('DD MMMM YYYY h:mm:ss a')}` : '-'}`);
-      $('#modified_data').html(`${obj.modified_by ? `${obj.modified_by.name},` : ''} ${obj.modified_at ? `${moment(obj.modified_at).format('DD MMMM YYYY h:mm:ss a')}` : '-'}`);
-      $('#verified_data').html(`${obj.verified_by  ? `${obj.verified_by.name},` : ''} ${obj.verified_at ? `${moment(obj.verified_at).format('DD MMMM YYYY h:mm:ss a')}` : '-'}`);
+   let viewDetailsTab = function(obj) {    
+      $('#login_data').html(`${obj.last_login ? `${moment(obj.last_login).format('ddd, DD MMMM YYYY h:mm:ss a')}` : '-'}`);
+      $('#created_data').html(`${obj.created_by ? `${obj.created_by.name},` : ''} ${obj.date_joined ? `${moment(obj.date_joined).format('ddd, DD MMMM YYYY h:mm:ss a')}` : '-'}`);
+      $('#modified_data').html(`${obj.modified_by ? `${obj.modified_by.name},` : ''} ${obj.modified_at ? `${moment(obj.modified_at).format('ddd, DD MMMM YYYY h:mm:ss a')}` : '-'}`);
+      $('#verified_data').html(`${obj.verified_by  ? `${obj.verified_by.name},` : ''} ${obj.verified_at ? `${moment(obj.verified_at).format('ddd, DD MMMM YYYY h:mm:ss a')}` : '-'}`);
+   }
+
+   let viewActivityLogTab = function(user) {
+      $('.table-activity').DataTable().clear().destroy();
+      $('.table-activity').DataTable({
+         "searching": false,
+         "responsive": true,
+         "lengthChange": false,
+         "autoWidth": false,
+         "serverside": true,
+         "pageLength" : 10,
+         "info" : false,
+         "ajax": {
+            url: '/api/ticket/logs/?format=datatables',
+            type: "GET",
+            data: {
+               "user": user,
+            }
+         },
+         "columns" : [
+            {
+               data: "datetime",
+               render: function (data, type, row) {
+                  if (type == 'display') data = moment(row.datetime).format('DD MMMM YYYY h:mm:ss a');
+                  return data
+               },
+            },
+            {
+               data: "user",
+               render: function (data, type, row) {
+                  if (type == 'display') {
+                     if (row.user) {
+                        if (row.user.id == user) data = 'User';
+                        else data = `${row.user.first_name} ${row.user.last_name}`;
+                     }
+                     else data = 'System';
+                  }
+                  return data
+               },
+            },
+            {
+               data: "changed_fields",
+               render: function (data, type, row) {
+                  if (type == 'display') {
+                     
+                     if (row.event_type == 'Update') { // // UPDATE Event type 
+                        let action = row.changed_fields;
+                        console.log(action)
+
+                        if (Object.keys(action).length == 1) {
+                           if (action.last_login) data = 'Logged in';
+                           else if (action.is_verified) {
+                              if (action.is_verified[1] == 'None') data = 'Upload files'
+                              else if (action.is_verified[1] == 'False') data = 'Decline verification'
+                           }
+                           else if (action.is_staff) data = (action.is_staff[1] == 'True') ? 'Allow staff permission' : 'Remove staff permission'
+                           else if (action.is_superuser) data = (action.is_superuser[1] == 'True') ? 'Allow superuser permission' : 'Remove superuser permission'
+                           else if (action.username) data = 'Change username'
+                           else if (action.password) data = 'Change password'
+                           else data = 'Update profile';
+                        } else if (Object.keys(action).length == 2) {
+                           if (action.is_staff && action.is_superuser) data = 'Update permissions'
+                           else if (action.username && action.modified_by) data = 'Change username'
+                           else if (action.is_staff && action.modified_by) data = (action.is_staff[1] == 'True') ? 'Allow staff permission' : 'Remove staff permission'
+                           else if (action.is_superuser && action.modified_by) data = (action.is_superuser[1] == 'True') ? 'Allow superuser permission' : 'Remove superuser permission'
+                           else data = 'Update profile' 
+                        } else if (Object.keys(action).length >= 3) {
+                           if (action.is_verified && action.verified_at && action.verified_by) data = 'Verify'
+                           else data = 'Update profile' 
+                        } 
+                     }
+                     else if (row.event_type == 'Create') {
+                        if (!row.changed_fields) data = 'Register';
+                     }
+                  }
+                  return data
+               },
+            },
+         ],
+         "order": [[0, "desc"]],
+      });
    }
 });

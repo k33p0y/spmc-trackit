@@ -313,8 +313,8 @@
                         role="tab" aria-controls="nav-general" aria-selected="true">Verification</a>
                      <a class="nav-item nav-link" id="nav-general-tab" data-toggle="tab" href="#general"
                         role="tab" aria-controls="nav-general" aria-selected="true">Details</a>
-                     <a class="nav-item nav-link" id="nav-history-tab" data-toggle="tab" href="#history"
-                        role="tab" aria-controls="nav-history" aria-selected="true">History</a>
+                     <a class="nav-item nav-link" id="nav-activity-tab" data-toggle="tab" href="#activity"
+                        role="tab" aria-controls="nav-activity" aria-selected="true">Activity</a>
                   </div>
                </nav>
 
@@ -508,7 +508,7 @@
                         <ul class="list-group list-group-flush" id="file_wrapper"></ul>
                      </div>
                   </div>
-                  <!-- General Tab -->
+                  <!-- Details Tab -->
                   <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="nav-general-tab">
                      <ul class="list-group list-group-flush" id="detail_wrapper">
                         <li class="list-group-item d-flex align-items-center justify-content-between p-2 py-3">
@@ -520,10 +520,26 @@
                            <span class="font-weight-bold" id="modified_data"></span>
                         </li>
                         <li class="list-group-item d-flex align-items-center justify-content-between p-2 py-3">
-                           <label>Validated</label>
+                           <label>Verified</label>
                            <span class="font-weight-bold" id="verified_data"></span>
                         </li>
+                        <li class="list-group-item d-flex align-items-center justify-content-between p-2 py-3">
+                           <label>Last Login</label>
+                           <span class="font-weight-bold" id="login_data"></span>
+                        </li>
                      </ul>
+                  </div>
+                  <!-- Activity Tab -->
+                  <div class="tab-pane fade" id="activity" role="tabpanel" aria-labelledby="nav-activity-tab">
+                     <table class="table table-sm table-activity">
+                        <thead>
+                          <tr>
+                              <th>Date and time</th>
+                              <th>Officer</th>
+                              <th>Action</th>
+                          </tr>
+                        </thead>
+                      </table>
                   </div>
                </div>
             </form>

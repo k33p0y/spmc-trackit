@@ -2,6 +2,7 @@ from rest_framework import generics, viewsets, permissions, serializers, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import Group
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import Q
 
@@ -11,6 +12,7 @@ from .views import create_notification, create_remark, generate_reference
 from .permissions import CanGenerateReference
 from easyaudit.models import CRUDEvent
 from config.models import Remark
+from core.models import User
 
 import json, uuid, datetime
 
@@ -239,26 +241,25 @@ class CRUDEventList(generics.ListAPIView):
 
    def get_queryset(self):
       ticket_num = self.request.GET.get('tracking_num', None)
+      user_pk = self.request.GET.get('user', None)
+      
       if ticket_num:
          try:
             ticket = Ticket.objects.get(ticket_no__iexact=ticket_num)
-         
-            # CREATE = 1
-            # UPDATE = 2
-            # DELETE = 3
-            # M2M_CHANGE = 4
-            # M2M_CHANGE_REV = 5
-            # M2M_ADD = 6
-            # M2M_ADD_REV = 7
-            # M2M_REMOVE = 8
-            # M2M_REMOVE_REV = 9
-            event_types = list([1, 2, 3])
-
+            event_types = list([CRUDEvent.CREATE, CRUDEvent.UPDATE, CRUDEvent.DELETE])
             # attachments = ticket.attachments_ticket.all().values_list('id', flat=True)
             # return CRUDEvent.objects.filter(Q(object_id__endswith=str(ticket.ticket_id)[-12:]) | Q(object_id__in=attachments))
             return CRUDEvent.objects.filter(object_id__endswith=str(ticket.ticket_id)[-12:], event_type__in=event_types)
          except Ticket.DoesNotExist:
             pass
+      if user_pk:
+         try:
+            ctype = ContentType.objects.get(model='user')
+            event_types = list([CRUDEvent.CREATE, CRUDEvent.UPDATE, CRUDEvent.DELETE])
+            return CRUDEvent.objects.filter(object_id__iexact=str(user_pk), event_type__in=event_types, content_type=ctype)
+         except User.DoesNotExist:
+            pass
+
       return CRUDEvent.objects.none()
          
 class NotificationViewSet(viewsets.ModelViewSet):
