@@ -7,8 +7,6 @@ socket_notification.onopen = function (event) {
 }
 
 socket_notification.onmessage = function (event) {
-    //console.log(event)
-
     if ('notification' in JSON.parse(event.data)) getAllNotifications(); // Notifications
 }
 

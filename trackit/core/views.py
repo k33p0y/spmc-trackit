@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission, Group
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import Http404
 from django.template.response import SimpleTemplateResponse
 from core.models import User
 from core.decorators import user_is_verified, user_has_upload_verification
 from config.models import Department
-from requests.models import Ticket, RequestForm
+from requests.models import Ticket, RequestForm, Notification
+from easyaudit.models import CRUDEvent
 
 import datetime
 
@@ -24,7 +26,7 @@ def verification(request):
       raise Http404()
    
 @login_required
-@user_has_upload_verification
+@user_has_upload_verification 
 def home(request):
    now = datetime.datetime.now()
    users = User.objects.filter(date_joined__lte=now, is_active=True, is_superuser=False).order_by('-date_joined')[:8]
@@ -68,6 +70,26 @@ def user_profile(request, pk):
       return render(request, 'pages/core/user_profile.html', context)
    else:
       raise Http404()
+
+# Create user notification method
+def create_users_notification(object_id, user_instance, sender):
+   events = list([CRUDEvent.CREATE, CRUDEvent.UPDATE, CRUDEvent.DELETE])
+   log = CRUDEvent.objects.filter(object_id=object_id, event_type__in=events).latest('datetime')
+   ctype = ContentType.objects.get(model='user')
+   perms = Permission.objects.filter(content_type=ctype).values_list('id')
+   users_with_perms = User.objects.filter(Q(groups__permissions__in=perms) | Q(user_permissions__in=perms)).distinct()
+
+   if sender == 'client':
+      # create notifications for users with permission
+      for user in users_with_perms:
+         if not log.user == user and not user == user_instance:
+            Notification(log=log, user=user).save()
+
+   if sender == 'staff':
+      # create notifications for user client     
+      if log.user and not log.user == user_instance:
+         Notification(log=log, user=user_instance).save()
+
 
 # Error Template 403, 404 & 500
 def forbidden(request, exception=None):

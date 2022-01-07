@@ -9,6 +9,7 @@ from core.models import User
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.joined_groups = await self.get_groups()
+        self.user_has_add_user_perm = await self.get_users_with_add_user_perm()
         self.user = self.scope["user"]
         self.user_room_name = "notif_room_for_user_"+str(self.user.id) # notification for a single user
 
@@ -24,7 +25,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             self.user_room_name,
             self.channel_name
         )
-
+       
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -94,6 +95,17 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                         'sender_channel_name': self.channel_name
                     }
                 )
+            # notification to with add user permission
+            if self.user_has_add_user_perm:
+                # send notification to user
+                await self.channel_layer.group_send(
+                    self.user_room_name,
+                    {
+                        'type': 'notification_message',
+                        'notification': self.obj,
+                        'sender_channel_name': self.channel_name
+                    }
+                )
 
     # send notification
     async def notification_message(self, event):
@@ -154,11 +166,32 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             obj['requestor_pk'] = comment.ticket.requested_by.pk
             obj['date_created'] = str(date_created)
             obj['date_modified'] = str(date_modified)
+        if notification_type == 'user':
+            comment = Comment.objects.get(pk=object_id)
+            date_created = comment.ticket.date_created.replace(microsecond=0)
+            date_modified = comment.ticket.date_modified.replace(microsecond=0)
+            log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')        
+            
+            obj['ticket_id'] = str(comment.ticket.pk)
+            obj['ticket_no'] = comment.ticket.ticket_no
+            obj['group_ids'] = list(comment.ticket.request_form.group.values('id'))
+            obj['dept_head_id'] = comment.ticket.department.department_head.pk
+            obj['actor'] = log.user.get_full_name()
+            obj['requestor'] = comment.ticket.requested_by.get_full_name()
+            obj['requestor_pk'] = comment.ticket.requested_by.pk
+            obj['date_created'] = str(date_created)
+            obj['date_modified'] = str(date_modified)
         return obj
 
     @database_sync_to_async
     def get_groups(self):
         return list(self.scope['user'].groups.all())
+
+    @database_sync_to_async
+    def get_users_with_add_user_perm(self):
+        if self.scope['user'].has_perm('core.add_user'):
+            return True
+        return False
     
 class CommentConsumer(AsyncWebsocketConsumer):
     async def connect(self):

@@ -4,7 +4,9 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import Group, Permission
 from .models import User, UserVerification
+from .views import create_users_notification
 from config.models import Department
+
 
 import datetime
 
@@ -119,6 +121,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         if validated_data.get('user_permissions', instance.user_permissions): # if there is submitted user permissions from form
             instance.user_permissions.add(*validated_data.get('user_permissions', instance.user_permissions)) # add selected permissions to user
         instance.save() 
+        
+        create_users_notification(str(instance.pk), instance, 'staff')  # Create notification instance
         return instance
 
     def validate_first_name(self, firstname):
@@ -155,6 +159,7 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
         instance.contact_no = validated_data.get('contact_no', instance.contact_no)
         instance.license_no = validated_data.get('license_no', instance.license_no)
         instance.save() 
+        create_users_notification(str(instance.pk), instance, 'client')  # Create notification instance
         return instance
     
     def validate_contact_no(self, contact_no):
@@ -223,6 +228,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             password = make_password(validated_data['password']) # hash password
         )
         user.save()
+        create_users_notification(str(user.pk), user, 'client')  # Create notification instance
         login(self.context['request'], user)
         return user
 
@@ -307,6 +313,7 @@ class VerifyUserSerializer(serializers.ModelSerializer):
         instance.verified_at = datetime.datetime.now()
         instance.is_verified = True
         instance.save()
+        create_users_notification(str(instance.pk), instance, 'staff')  # Create notification instance
         return instance
 
     class Meta:
@@ -319,6 +326,7 @@ class DeclineVerificationSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.is_verified = False
         instance.save()
+        create_users_notification(str(instance.pk), instance, 'staff')  # Create notification instance
         return instance
         
     class Meta:

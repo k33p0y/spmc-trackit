@@ -175,6 +175,7 @@ DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = [ # list of models that Easy Audi
     # auth app
     'auth.group',
     # core app
+    'core.userverification',
     # config app
     'config.department', 'config.categorytype', 'config.category', 'config.status', 'config.remark',
     # requests app
