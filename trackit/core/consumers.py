@@ -1,6 +1,8 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from easyaudit.models import CRUDEvent
 from requests.models import Ticket, Notification, Comment
@@ -9,7 +11,7 @@ from core.models import User
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.joined_groups = await self.get_groups()
-        self.user_has_add_user_perm = await self.get_users_with_add_user_perm()
+        self.joined_staff = await self.get_users_with_core_perms()
         self.user = self.scope["user"]
         self.user_room_name = "notif_room_for_user_"+str(self.user.id) # notification for a single user
 
@@ -25,7 +27,14 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             self.user_room_name,
             self.channel_name
         )
-       
+
+        # join staff group
+        if self.user.id in self.joined_staff:
+            await self.channel_layer.group_add(
+                'notif_room_for_staff',
+                self.channel_name
+            )
+           
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -85,21 +94,15 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                         'sender_channel_name': self.channel_name
                     }
                 )
-            if text_data_json['data']['notification_type'] == 'comment': # notification for comment create
+        if text_data_json['type'] == 'user_notification': 
+            object_id = text_data_json['data']['object_id']
+            self.obj = await self.send_notification(object_id, text_data_json['data']['notification_type'])
+            
+            # notification to client
+            if text_data_json['data']['notification_type'] == 'user': # notification for user update
                 # send notification to requestor
                 await self.channel_layer.group_send(
-                    'notif_room_for_user_' + str(self.obj['requestor_pk']),
-                    {
-                        'type': 'notification_message',
-                        'notification': self.obj,
-                        'sender_channel_name': self.channel_name
-                    }
-                )
-            # notification to with add user permission
-            if self.user_has_add_user_perm:
-                # send notification to user
-                await self.channel_layer.group_send(
-                    self.user_room_name,
+                    'notif_room_for_user_' + str(self.obj['user_pk']),
                     {
                         'type': 'notification_message',
                         'notification': self.obj,
@@ -107,6 +110,16 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                     }
                 )
 
+            # send notification for staff
+            await self.channel_layer.group_send(
+                'notif_room_for_staff',
+                {
+                    'type': 'notification_message',
+                    'notification': self.obj,
+                    'sender_channel_name': self.channel_name
+                }
+            )
+        
     # send notification
     async def notification_message(self, event):
         notification = event['notification']
@@ -167,20 +180,19 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             obj['date_created'] = str(date_created)
             obj['date_modified'] = str(date_modified)
         if notification_type == 'user':
-            comment = Comment.objects.get(pk=object_id)
-            date_created = comment.ticket.date_created.replace(microsecond=0)
-            date_modified = comment.ticket.date_modified.replace(microsecond=0)
-            log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')        
-            
-            obj['ticket_id'] = str(comment.ticket.pk)
-            obj['ticket_no'] = comment.ticket.ticket_no
-            obj['group_ids'] = list(comment.ticket.request_form.group.values('id'))
-            obj['dept_head_id'] = comment.ticket.department.department_head.pk
+            user = User.objects.get(pk=object_id)
+            date_created = user.date_joined.replace(microsecond=0)
+            date_modified = user.modified_at.replace(microsecond=0)
+            log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
+
+            obj['user_pk'] = user.pk
             obj['actor'] = log.user.get_full_name()
-            obj['requestor'] = comment.ticket.requested_by.get_full_name()
-            obj['requestor_pk'] = comment.ticket.requested_by.pk
             obj['date_created'] = str(date_created)
             obj['date_modified'] = str(date_modified)
+            obj['sample text'] = 'The quick brown fox jump over the lazy dog.'
+
+            choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model
+            obj['event_type'] = choices[log.event_type]
         return obj
 
     @database_sync_to_async
@@ -188,10 +200,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         return list(self.scope['user'].groups.all())
 
     @database_sync_to_async
-    def get_users_with_add_user_perm(self):
-        if self.scope['user'].has_perm('core.add_user'):
-            return True
-        return False
+    def get_users_with_core_perms(self):
+        ctype = ContentType.objects.get(model='user')
+        perms = Permission.objects.filter(content_type=ctype).values_list('id')
+        users_with_perms = User.objects.filter(Q(groups__permissions__in=perms) | Q(user_permissions__in=perms)).distinct().values_list('id', flat=True)
+        return list(users_with_perms)
     
 class CommentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
