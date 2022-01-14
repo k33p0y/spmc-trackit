@@ -44,10 +44,6 @@ const Toast = Swal.mixin({
    // }
 });
 
-// HOST, PROTOCOL constants
-const loc = window.location;
-const wsStart = loc.protocol == "https:" ? "wss://" : "ws://";
-
 // Notifications
 const getUserNotifications = function (){
    return axios.get('/api/user/notifications/',).then(response=>response.data).catch(response=>response.data)

@@ -1,4 +1,5 @@
-let url_ws_comment = wsStart + loc.host + '/ws/comments/';
+const wsStartComment = window.location.protocol == "https:" ? "wss://" : "ws://";
+let url_ws_comment = wsStartComment + window.location.host + '/ws/comments/';
 const socket_comment = new WebSocket(url_ws_comment)
 
 socket_comment.onopen = function (event) {

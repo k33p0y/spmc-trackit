@@ -76,7 +76,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             if text_data_json['data']['notification_type'] == 'ticket': # notification for ticket update
                 # send notification to requestor
                 await self.channel_layer.group_send(
-                    'notif_room_for_user_' + str(self.obj['requestor_pk']),
+                    'notif_room_for_user_' + str(self.obj[' ']),
                     {
                         'type': 'notification_message',
                         'notification': self.obj,
@@ -179,20 +179,18 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             obj['requestor_pk'] = comment.ticket.requested_by.pk
             obj['date_created'] = str(date_created)
             obj['date_modified'] = str(date_modified)
+        if notification_type == 'register':
+            user = User.objects.get(pk=object_id)
+            date_created = user.date_joined.replace(microsecond=0)
+            date_modified = user.modified_at.replace(microsecond=0)
+            ctype = ContentType.objects.get(model='user')
+            log = CRUDEvent.objects.filter(object_id=object_id, content_type=ctype, event_type=CRUDEvent.CREATE).latest('datetime')
         if notification_type == 'user':
             user = User.objects.get(pk=object_id)
             date_created = user.date_joined.replace(microsecond=0)
             date_modified = user.modified_at.replace(microsecond=0)
-            log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')
-
-            obj['user_pk'] = user.pk
-            obj['actor'] = log.user.get_full_name()
-            obj['date_created'] = str(date_created)
-            obj['date_modified'] = str(date_modified)
-            obj['sample text'] = 'The quick brown fox jump over the lazy dog.'
-
-            choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model
-            obj['event_type'] = choices[log.event_type]
+            ctype = ContentType.objects.get(model='user')
+            log = CRUDEvent.objects.filter(object_id=object_id, content_type=ctype).latest('datetime')
         return obj
 
     @database_sync_to_async

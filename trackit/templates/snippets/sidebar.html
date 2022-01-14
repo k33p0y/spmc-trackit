@@ -143,7 +143,6 @@
             {% endif %}
 
             {% if perms.requests.add_ticket or perms.requests.view_ticket %}
-               {% if user.is_verified %}
                <li
                   class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} menu-open {% endif %}">
                   <a href="#"
@@ -182,7 +181,6 @@
                      <p>Track</p>
                   </a>
                </li>
-               {% endif %}
             {% endif %}
            
             <li class="nav-item">

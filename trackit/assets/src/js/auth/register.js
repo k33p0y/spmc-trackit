@@ -56,6 +56,8 @@ $(document).ready(function () {
             data: data,
             headers: axiosConfig
         }).then(function (res) { //response
+            // send notification
+            socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: res.data.id, notification_type: 'register'}})), 
             $.when(
                 Swal.fire({
                     icon: 'success',
@@ -63,7 +65,7 @@ $(document).ready(function () {
                     html: '<p class="text-secondary"> You have succesfully registered </p>',
                     showConfirmButton: false,
                     timer: 2000,
-                })
+                }),
             ).then(() => $(location).attr('href', `/verification/`))
         }).catch(function (err) { // error
             Swal.fire({
