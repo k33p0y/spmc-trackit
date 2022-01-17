@@ -185,12 +185,16 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             date_modified = user.modified_at.replace(microsecond=0)
             ctype = ContentType.objects.get(model='user')
             log = CRUDEvent.objects.filter(object_id=object_id, content_type=ctype, event_type=CRUDEvent.CREATE).latest('datetime')
+
+            obj['user_pk'] = user.pk
         if notification_type == 'user':
             user = User.objects.get(pk=object_id)
             date_created = user.date_joined.replace(microsecond=0)
             date_modified = user.modified_at.replace(microsecond=0)
             ctype = ContentType.objects.get(model='user')
             log = CRUDEvent.objects.filter(object_id=object_id, content_type=ctype).latest('datetime')
+            
+            obj['user_pk'] = user.pk
         return obj
 
     @database_sync_to_async

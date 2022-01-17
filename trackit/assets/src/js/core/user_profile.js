@@ -68,7 +68,8 @@ $(document).ready(function () {
          data: data,
          headers: axiosConfig,
       }).then(res => { // success
-
+         // send notification
+         socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: res.data.id, notification_type: 'user'}})), 
          $.when( toastSuccess('Success')).then(function () {
             $('#modal-profile').modal('hide');
             location.reload();
@@ -233,16 +234,18 @@ $(document).ready(function () {
                   );
                   file_loaded++;
                   if (percent == 100) {
-                      setTimeout(() => {
-                          Swal.fire({
-                              icon: 'success',
-                              title: 'Verification Complete',
-                              html: `<p class="text-secondary">You'll be able to create requests after we review your information and verify it within approximately 24 hours.</p>`,
-                              confirmButtonColor: '#17a2b8',
-                          }).then(() => {
-                              location.reload();
-                          })
-                      }, 500);
+                     // send notification
+                     socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.user, notification_type: 'user'}})), 
+                     setTimeout(() => {
+                        Swal.fire({
+                           icon: 'success',
+                           title: 'Verification Complete',
+                           html: `<p class="text-secondary">You'll be able to create requests after we review your information and verify it within approximately 24 hours.</p>`,
+                           confirmButtonColor: '#17a2b8',
+                        }).then(() => {
+                           location.reload();
+                        })
+                     }, 500);
                   }
               }).then().catch(error => {
                   toastError(error)

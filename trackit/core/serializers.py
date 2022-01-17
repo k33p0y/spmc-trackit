@@ -150,7 +150,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'middle_name', 'last_name', 'suffix', 'email', 'contact_no', 'department', 'license_no', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
+        fields = ['id', 'username', 'first_name', 'middle_name', 'last_name', 'suffix', 'email', 'contact_no', 'department', 'license_no', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
 
@@ -158,6 +158,7 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
         instance.email = validated_data.get('email', instance.email)
         instance.contact_no = validated_data.get('contact_no', instance.contact_no)
         instance.license_no = validated_data.get('license_no', instance.license_no)
+        instance.modified_by = self.context['request'].user
         instance.save() 
         create_users_notification(str(instance.pk), instance, 'client')  # Create notification instance
         return instance

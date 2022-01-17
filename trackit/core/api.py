@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group
 from django.db.models import Q
 from .serializers import UserSerializer, GroupSerializer, UserUpdateSerializer, UserProfileUpdateSerializer, ChangePasswordSerializer, RegisterSerializer, UserVerificationSerializer, UserListSerializer, VerifyUserSerializer, DeclineVerificationSerializer
 from .models import User, UserVerification
+from .views import create_users_notification
 
 import datetime
 
@@ -107,6 +108,8 @@ class UserVerificationViewSet(viewsets.ModelViewSet):
          user = User.objects.get(id=user_verify.user.id)
          user.is_verified = None
          user.save()
+         create_users_notification(str(user.pk), user, 'client')  # Create notification instance
+      
       serializer = UserVerificationSerializer(user_verify)
       return Response(serializer.data)
 

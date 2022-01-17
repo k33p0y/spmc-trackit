@@ -303,6 +303,8 @@ $(document).ready(function () {
          data: data,
          headers: axiosConfig,
       }).then(function (response) { // success
+         // send notification
+         socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}}));
          toastSuccess('Success');
 
          $("#form").trigger("reset"); // reset form
@@ -377,6 +379,9 @@ $(document).ready(function () {
          $("#spinner_verify").removeClass('d-none');
          $(this).prop('disabled', true)
 
+         // send notification
+         socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}})), 
+
          setTimeout(function() { 
             $("#spinner_verify").addClass('d-none');
             $('#modal-add-user').modal('toggle');
@@ -393,6 +398,7 @@ $(document).ready(function () {
    // Decline User
    $('#decline_user').click(function (e) {
       const id = $(this).data('user');
+      $(this).prop('disabled', true)
       
       axios({
          url: `/api/core/decline/user/${id}/`,
@@ -400,7 +406,9 @@ $(document).ready(function () {
          headers: axiosConfig
       }).then(function (response) {
          $("#spinner_decline").removeClass('d-none');
-         $(this).prop('disabled', true)
+         
+         // send notification
+         socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}}))
 
          setTimeout(function() { 
             $("#spinner_decline").addClass('d-none');
@@ -437,6 +445,9 @@ $(document).ready(function () {
             }).then(function (response) {
                $(" #spinner_verifyanyway").removeClass('d-none');
                $(this).prop('disabled', true)
+
+               // send notification
+               socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}}))
        
                setTimeout(function() { 
                   $("#spinner_verifyanyway").addClass('d-none');
@@ -603,8 +614,6 @@ $(document).ready(function () {
                      
                      if (row.event_type == 'Update') { // // UPDATE Event type 
                         let action = row.changed_fields;
-                        console.log(action)
-
                         if (Object.keys(action).length == 1) {
                            if (action.last_login) data = 'Logged in';
                            else if (action.is_verified) {
