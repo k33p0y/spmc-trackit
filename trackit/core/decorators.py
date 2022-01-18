@@ -5,7 +5,7 @@ from .models import User
 def user_is_verified(function):
     def wrap(request, *args, **kwargs):
         user = User.objects.get(pk=request.user.id)
-        if user.is_verified:
+        if user.is_verified or user.is_superuser:
             return function(request, *args, **kwargs)
         else:
             raise PermissionDenied
@@ -16,7 +16,7 @@ def user_is_verified(function):
 def user_has_upload_verification(function):
     def wrap(request, *args, **kwargs):
         user = User.objects.get(pk=request.user.id)
-        if user.documents.all() or user.is_superuser or user.is_staff:
+        if user.documents.all() or user.is_superuser:
             return function(request, *args, **kwargs)
         else:
             return redirect('/verification/')

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.template.response import SimpleTemplateResponse
 from core.models import User
 from core.decorators import user_is_verified, user_has_upload_verification
@@ -14,8 +14,10 @@ from easyaudit.models import CRUDEvent
 import datetime
 
 def register(request):
-   departments = Department.objects.filter(is_active=True).order_by('name')
-   return render(request, 'registration/register.html', {'departments': departments})
+   if request.user.is_anonymous:
+      departments = Department.objects.filter(is_active=True).order_by('name')
+      return render(request, 'registration/register.html', {'departments': departments})
+   raise Http404()
 
 @login_required
 def verification(request):

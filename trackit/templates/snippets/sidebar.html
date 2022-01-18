@@ -142,45 +142,47 @@
                {% endif %}
             {% endif %}
 
-            {% if perms.requests.add_ticket or perms.requests.view_ticket %}
-               <li
-                  class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} menu-open {% endif %}">
-                  <a href="#"
-                     class="nav-link {% if url == 'ticket' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
-                     <i class="nav-icon fas fa-pen"></i>
-                     <p>
-                        Request
-                        <i class="right fas fa-angle-left"></i>
-                     </p>
-                  </a>
-                  <ul class="nav nav-treeview">
-                     {% if perms.requests.add_ticket %}
-                     <li class="nav-item">
-                        <a href="{% url 'create_ticket' %}"
-                           class="nav-link {% if url == 'create_ticket' %} active {% endif %}">
-                           <i class="nav-icon far fa-circle"></i>
-                           <p>Create Request</p>
-                        </a>
-                     </li>
-                     {% endif %}
-                     {% if perms.requests.view_ticket %}
-                     <li class="nav-item">
-                        <a href="{% url 'ticket' %}"
-                           class="nav-link {% if url == 'ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
-                           <i class="nav-icon far fa-circle"></i>
-                           <p>All Requests</p>
-                        </a>
-                     </li>
-                     {% endif %}
-                  </ul>
-               </li>
-               <li class="nav-item">
-                  <a href="{% url 'ticket_log_list' %}"
-                     class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}">
-                     <i class="nav-icon fas fa-search-location"></i>
-                     <p>Track</p>
-                  </a>
-               </li>
+            {% if user.is_verified or user.is_superuser or user.is_staff %}
+               {% if perms.requests.add_ticket or perms.requests.view_ticket %}
+                  <li
+                     class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} menu-open {% endif %}">
+                     <a href="#"
+                        class="nav-link {% if url == 'ticket' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
+                        <i class="nav-icon fas fa-pen"></i>
+                        <p>
+                           Request
+                           <i class="right fas fa-angle-left"></i>
+                        </p>
+                     </a>
+                     <ul class="nav nav-treeview">
+                        {% if perms.requests.add_ticket %}
+                        <li class="nav-item">
+                           <a href="{% url 'create_ticket' %}"
+                              class="nav-link {% if url == 'create_ticket' %} active {% endif %}">
+                              <i class="nav-icon far fa-circle"></i>
+                              <p>Create Request</p>
+                           </a>
+                        </li>
+                        {% endif %}
+                        {% if perms.requests.view_ticket %}
+                        <li class="nav-item">
+                           <a href="{% url 'ticket' %}"
+                              class="nav-link {% if url == 'ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
+                              <i class="nav-icon far fa-circle"></i>
+                              <p>All Requests</p>
+                           </a>
+                        </li>
+                        {% endif %}
+                     </ul>
+                  </li>
+                  <li class="nav-item">
+                     <a href="{% url 'ticket_log_list' %}"
+                        class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}">
+                        <i class="nav-icon fas fa-search-location"></i>
+                        <p>Track</p>
+                     </a>
+                  </li>
+               {% endif %}
             {% endif %}
            
             <li class="nav-item">

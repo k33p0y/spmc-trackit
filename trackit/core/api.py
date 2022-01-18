@@ -58,7 +58,7 @@ class UserListViewSet(viewsets.ModelViewSet):
          if status: 
             if status == 'declined': qs = qs.filter(is_verified=False, verified_at__isnull=True, is_superuser=False, is_staff=False)
             if status == 'pending': qs = qs.filter(is_verified__isnull=True, verified_at__isnull=True, is_superuser=False, is_staff=False)
-            if status == 'verified': qs = qs.filter(Q(is_verified=True) | Q(is_superuser=True) | Q(is_staff=True))
+            if status == 'verified': qs = qs.filter(is_verified=True)
          return qs
   
 class UserProfileViewSet(viewsets.ModelViewSet):
