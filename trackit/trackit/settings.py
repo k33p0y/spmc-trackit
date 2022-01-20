@@ -48,9 +48,10 @@ INSTALLED_APPS = [
     'easyaudit',
     
     # Django Apps
+    'announcement',
     'core',
     'config',
-    'requests',
+    'requests'
 ]
 
 MIDDLEWARE = [
