@@ -12,7 +12,6 @@ class Article(models.Model):
     content = models.TextField()
     author = models.ForeignKey(User, related_name="articles",  on_delete=models.CASCADE)
     date_publish = models.DateTimeField(auto_now_add=True)
-    date_scheduled = models.DateTimeField(null=True)
     
     modified_by = models.ForeignKey(User, related_name="modified_articles", on_delete=models.CASCADE)
     modified_at = models.DateTimeField(auto_now=True)

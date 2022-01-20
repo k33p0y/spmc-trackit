@@ -81,7 +81,7 @@
                   </ul>
                </li>
                {% endif %}
-            {% endif %}
+            {% endif %}               
 
             {% if request.user.is_superuser or request.user.is_staff %}
                {% if perms.config.view_department or perms.config.view_category or perms.config.view_categorytype or perms.requests.view_requestform or perms.config.view_status %}
@@ -184,7 +184,16 @@
                   </li>
                {% endif %}
             {% endif %}
-           
+
+            {% if request.user.is_superuser or request.user.is_staff %}
+               <li class="nav-item">
+               <a href="{% url 'announcement' %}" class="nav-link {% if url == 'announcement' %} active {% endif %}">
+                  <i class="nav-icon fas fa-bullhorn"></i>
+                  <p> Announcement</p>
+               </a>
+            </li>
+            {% endif %}
+
             <li class="nav-item">
                <a href="{% static 'user_guide.pdf' %}"
                   class="nav-link" target="_blank">

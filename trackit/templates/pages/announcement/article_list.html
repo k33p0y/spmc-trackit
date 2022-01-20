@@ -1,0 +1,122 @@
+{% extends '../../base.html' %}
+{% load static %}
+
+{% block title %} Announcement | {% endblock %}
+
+{% block extrastyle %}
+{% endblock %}
+
+{% block content %}
+<!-- Content Header -->
+<section class="content-header">
+   <div class="container-fluid">
+      <div class="row mb-2">
+         <div class="col-sm-6">
+            <h5 class="font-weight-bolder">Announcement</h5>
+         </div>
+         <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-xs">
+               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-orange"><i
+                        class="fas fa-home"></i></a></li>
+               <li class="breadcrumb-item">Announcement</li>
+               <li class="breadcrumb-item active">List</li>
+            </ol>
+         </div>
+      </div>
+   </div>
+</section>
+
+<!-- /.content -->
+<section class="content">
+   <div class="container-fluid">
+
+      <!-- Content Filters, Search and Create Section -->
+      <div class="d-flex mb-1">
+         <div class="dropdown dropdown-filter mr-2">
+            <button class="btn btn-sm btn-light shadow-sm dropdown-filter-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <i class="fas fa-xs fa-filter m-0 d-inline d-md-none"></i>
+               <span class="d-none d-md-inline pl-1">Filter <i class="fas fa-caret-down ml-1"></i></span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-filter-menu">
+                <form id="form-filter">
+                    <div class="p-3 scrollable-menu">
+                        <div class="form-group mb-1">
+                            <label for="requestform-filter">By Request Form</label>
+                            <select class="form-control form-control-sm select-filter" id="requestform-filter" name="requestform-filter">
+                            <option value="">All</option>
+                            {% for form in forms %}
+                            <option value={{form.id}}>{{form}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label for="active-filter">By Active </label>
+                            <select class="form-control form-control-sm select-filter" id="active-filter" name="active-filter">
+                            <option value="">All</option>
+                            <option value="0">Yes</option>
+                            <option value="1">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label for="date-filter">By Date Published </label>
+                            <input type="date" class="form-control form-control-sm mb-2" id="date-from-filter" name="date-filter" placeholder="From">
+                            <input type="date" class="form-control form-control-sm" id="date-to-filter" name="date-filter" placeholder="To">
+                        </div>
+                        <div class="form-group mb-1">
+                            <label for="date-filter">By Date Scheduled </label>
+                            <input type="date" class="form-control form-control-sm mb-2" id="date-from-filter" name="date-filter" placeholder="From">
+                            <input type="date" class="form-control form-control-sm" id="date-to-filter" name="date-filter" placeholder="To">
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="d-flex flex-row-reverse pt-2 pb-2 pl-3 pr-3">
+                        <div><button class="btn btn-sm btn-orange ml-1" id="btn_apply"> <span>Apply</span> </button></div>
+                        <div><a class="btn btn-sm btn-link text-secondary" id="btn_clear"> <span>Clear</span> </a></div>
+                        <div class="mr-auto"><a class="btn btn-sm btn-link text-secondary pl-0" id="close_dropdown"> <span>Close</span> </a></div>
+                    </div>
+                </form>
+            </div>
+         </div>
+         <div class="col-auto col-lg-3 p-0"> 
+            <div class="input-group shadow-sm">
+               <input type="search" class="form-control form-control-sm" placeholder="Search" id="search-input">
+               <div class="input-group-append">
+                 <button class="btn btn-sm btn-outline-secondary" type="button" id="execute-search">
+                     <i class="fas fa-sm fa-search"></i>
+                  </button>
+               </div>
+            </div>
+         </div>
+         <div class="ml-auto">
+            <a href="#" class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-list"><i class="fas fa-xs fa-plus"></i> <span class="d-none d-sm-inline ml-1">New Article</span></a>
+         </div>
+      </div>
+
+        <!-- Table Section -->
+        <div class="row flex-column-reverse flex-lg-row">
+            <div class="col-12">
+                <div class="card shadow-sm mt-2 mb-2">
+                <div class="card-body p-0">
+                    <table id="dt_articles" class="table table-hover" width="100%">
+                        <thead>
+                            <tr>
+                            <th data-priority="1">Title</th>
+                            <th data-priority="4">Author</th>
+                            <th data-priority="4">Date Published</th>
+                            <th data-priority="4">Last Modified</th>
+                            <th>is Active</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block extrascript %}
+   <script type="text/javascript" src="{% static 'src/js/announcement/article.js' %}"></script>
+{% endblock %}
