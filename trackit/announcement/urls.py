@@ -8,6 +8,7 @@ router.register('api/announcement/all/article', ArticleListViewSet)
 
 urlpatterns = [
    path('announcement/lists', views.announcement, name='announcement'),
+   path('announcement/article/new', views.create_article, name='create_article'),
 ]
 
 urlpatterns += router.urls

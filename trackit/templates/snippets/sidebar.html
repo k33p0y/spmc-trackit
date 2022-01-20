@@ -187,7 +187,7 @@
 
             {% if request.user.is_superuser or request.user.is_staff %}
                <li class="nav-item">
-               <a href="{% url 'announcement' %}" class="nav-link {% if url == 'announcement' %} active {% endif %}">
+               <a href="{% url 'announcement' %}" class="nav-link {% if url == 'announcement' or  url == 'create_article' %} active {% endif %}">
                   <i class="nav-icon fas fa-bullhorn"></i>
                   <p> Announcement</p>
                </a>
