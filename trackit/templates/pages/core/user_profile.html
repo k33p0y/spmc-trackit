@@ -167,7 +167,7 @@
             </div>
             {% endif %}
 
-            {% if user.is_verified or user.is_superuser or user.is_staff %}
+            {% if user.is_verified or user.is_superuser %}
             <div class="col-12 col-lg-8 col-xl-8 order-3">                
                <div class="row">
                   <!-- Request Column -->
@@ -285,7 +285,7 @@
                </div>
                <!-- NEW PASSWORD -->
                <div class="form-group">
-                  <label for="password1Help">New Password <span class="text-danger">*</span> </label>a
+                  <label for="password1Help">New Password <span class="text-danger">*</span> </label>
                   <input type="password" class="form-control form-control-sm" id="txt-new_password1"
                      aria-describedby="password1Help" placeholder="Enter new password">
                   <small class="text-muted d-block help-text">
