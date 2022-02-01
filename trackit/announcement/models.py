@@ -12,10 +12,11 @@ class Article(models.Model):
     content = models.TextField()
     author = models.ForeignKey(User, related_name="articles",  on_delete=models.CASCADE)
     date_publish = models.DateTimeField(auto_now_add=True)
+    is_publish = models.BooleanField(default=False)
     
-    modified_by = models.ForeignKey(User, related_name="modified_articles", on_delete=models.CASCADE)
+    modified_by = models.ForeignKey(User, null=True, related_name="modified_articles", on_delete=models.CASCADE)
     modified_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
 
 class Resources(models.Model):
     file = models.FileField(upload_to=upload_resources_url)
