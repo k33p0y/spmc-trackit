@@ -22,9 +22,9 @@ def register(request):
 @login_required
 def verification(request):
    user = User.objects.prefetch_related('documents').get(pk=request.user.pk)
-   if not user.verified_at and not user.documents.all() or user.is_superuser:
+   if not user.documents.all() and not user.is_verified:
       return render(request, 'registration/verify.html', {'user' : user})
-   else:
+   else: 
       raise Http404()
    
 @login_required

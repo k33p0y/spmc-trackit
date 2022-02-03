@@ -204,6 +204,10 @@ $(document).ready(function () {
       $('.status-group').show() // is-active, is-superuser, is-staff
       $('.m2m-group').show() // groups, user permissions
 
+      $('#nav-verify-tab').addClass('d-none'); // hide verify tab
+      $('#nav-general-tab').addClass('d-none'); // hide general tab
+      $('#nav-activity-tab').addClass('d-none'); // hide activity tab
+
       resetForm(); // reset form
       $("#select2-department").val('').trigger('change'); // reset department select2 before loading modal
       $("#select2-permissions").val([]).trigger('change'); // reset permissions select2 before loading modal
@@ -226,6 +230,10 @@ $(document).ready(function () {
       $('#btn-change-password').show()
       $('.status-group').show()
       $('.m2m-group').show()
+
+      $('#nav-verify-tab').removeClass('d-none'); // show verifiy tab
+      $('#nav-general-tab').removeClass('d-none'); // show general tab
+      $('#nav-activity-tab').removeClass('d-none'); // show activity tab
 
       // // // Open Modal
       // // // Rename Modal Title
@@ -258,7 +266,7 @@ $(document).ready(function () {
       viewActivityLogTab(id); // ACTIVITY LOGS TAB
 
       // // // show alert verification status
-      if (dt_data['is_verified'] === true || dt_data['is_superuser'] || dt_data['is_staff']) $(".alert-verified").removeClass('d-none');
+      if (dt_data['is_verified'] === true) $(".alert-verified").removeClass('d-none');
       else if (dt_data['is_verified'] === false) {
          $("#verifyanyway_user").data('user', id);
          $(".alert-decline").removeClass('d-none');
