@@ -258,7 +258,7 @@ $(document).ready(function () {
       viewActivityLogTab(id); // ACTIVITY LOGS TAB
 
       // // // show alert verification status
-      if (dt_data['is_verified'] === true || dt_data['is_superuser'] || dt_data['is_staff']) $(".alert-verified").removeClass('d-none');
+      if (dt_data['is_verified'] === true) $(".alert-verified").removeClass('d-none');
       else if (dt_data['is_verified'] === false) {
          $("#verifyanyway_user").data('user', id);
          $(".alert-decline").removeClass('d-none');

@@ -16,7 +16,7 @@ def user_is_verified(function):
 def user_has_upload_verification(function):
     def wrap(request, *args, **kwargs):
         user = User.objects.get(pk=request.user.id)
-        if user.documents.all() or user.is_superuser:
+        if user.documents.all() or user.is_verified:
             return function(request, *args, **kwargs)
         else:
             return redirect('/verification/')

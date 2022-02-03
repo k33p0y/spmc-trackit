@@ -24,11 +24,6 @@
                         <i class="fas fa-certificate fa-stack-2x"></i>
                         <i class="fas fa-check fa-stack-1x fa-inverse"></i>
                      </span>
-                  {% elif user.is_staff and not user.is_superuser %}
-                  <span class="fa-stack text-primary verification-status ml-1">
-                     <i class="fas fa-certificate fa-stack-2x"></i>
-                     <i class="fas fa-check fa-stack-1x fa-inverse"></i>
-                  </span>
                   {% endif %}
                </p>
                <p class="text-secondary m-0 text-xs">See your profile</p>
@@ -142,7 +137,7 @@
                {% endif %}
             {% endif %}
 
-            {% if user.is_verified or user.is_superuser or user.is_staff %}
+            {% if user.is_verified or user.is_superuser %}
                {% if perms.requests.add_ticket or perms.requests.view_ticket %}
                   <li
                      class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} menu-open {% endif %}">
