@@ -38,12 +38,14 @@ def home(request):
    return render(request, 'pages/index.html', context)
 
 @login_required
+@user_is_verified
 @permission_required('core.view_group', raise_exception=True)
 def group_list(request):
    permissions = Permission.objects.all()
    return render(request, 'pages/core/group_list.html', {'permissions': permissions})
 
 @login_required
+@user_is_verified
 @permission_required('core.view_user', raise_exception=True)
 def user_list(request):
    permissions = Permission.objects.all()

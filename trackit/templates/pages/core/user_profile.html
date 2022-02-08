@@ -22,11 +22,13 @@
          <div class="card-body p-3 mt-4 mb-1">
             <div class="profile-info d-flex justify-content-center align-items-center">
                <h5 class="profile-name m-0">{{user.first_name}} {{user.last_name}} </h5>
+               {% if user.is_verified %}
                {% if user.is_superuser %}
                <span class="fa-stack text-orange ml-1 profile-verified">
                   <i class="fas fa-certificate fa-stack-2x"></i>
                   <i class="fas fa-check fa-stack-1x fa-inverse"></i>
                </span> 
+               {% endif %}
                {% endif %}
             </div>
          </div>

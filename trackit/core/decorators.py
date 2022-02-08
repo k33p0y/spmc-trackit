@@ -5,7 +5,7 @@ from .models import User
 def user_is_verified(function):
     def wrap(request, *args, **kwargs):
         user = User.objects.get(pk=request.user.id)
-        if user.is_verified or user.is_superuser:
+        if user.is_verified:
             return function(request, *args, **kwargs)
         else:
             raise PermissionDenied
