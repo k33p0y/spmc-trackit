@@ -298,7 +298,7 @@ $(document).ready(function () {
          $("#select2-permissions").val([]).trigger('change'); // reset permissions select2
          $("#select2-groups").val([]).trigger('change'); // reset groups select2
          $('#modal-add-user').modal('toggle');
-         $(this).attr('disabled', false)
+         $("#btn_save").attr('disabled', false)
          table.ajax.reload();
       }).catch(function (error) { // error
          if (error.response.data.username) showFieldErrors(error.response.data.username, 'username'); else removeFieldErrors('username');
@@ -539,9 +539,12 @@ $(document).ready(function () {
       } else $("#verify_helptext").removeClass('d-none');
 
       documents.forEach(document => {
+         let file_url = (window.location.protocol == "https:") ? document.file.replace("http://", "https://") : document.file;
+         let file = (file_url.includes('socket')) ? file_url.replace('socket', window.location.host) : file_url;
+
          $('#file_wrapper').append(`
-            <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-2 list-preview" data-file="${document.file}">
-               <img src="${document.file}" alt="${document.file_name}" height="40" width="auto">
+            <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-2 list-preview" data-file="${file}">
+               <img src="${file}" alt="${document.file_name}" height="40" width="auto">
                <p class="text-muted m-0 px-2">${document.file_name}</p>
                <p class="text-muted m-0 px-2">${moment(document.uploaded_at).format('DD MMMM YYYY h:mm:ss a')}</p>
             </li>`
