@@ -121,7 +121,7 @@ $(document).ready(function () {
                data = '';
                if (row.is_verified) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
                else if (row.is_verified == null) data = "<div class='badge badge-info text-uppercase d-inline-flex align-items-center p-1'> <span> Pending </span> </div>";
-               else if (row.is_verified == false) data = "<div class='badge badge-warning text-uppercase d-inline-flex align-items-center p-1'> <span> Declined </span> </div>";
+               else if (row.is_verified == false) data = "<div class='badge badge-danger text-uppercase d-inline-flex align-items-center p-1'> <span> Declined </span> </div>";
                return data
             },
          },

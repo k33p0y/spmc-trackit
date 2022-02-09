@@ -26,7 +26,7 @@ input {
 .card p {
    color: #5f6b77;
 }
-.card .card-header {
+.card .card-header, .notice-head {
    background: rgb(255,173,106);
    background: linear-gradient(315deg, rgba(255,173,106,1) 0%, rgba(224,126,90,1) 100%);
    border-radius: 0;

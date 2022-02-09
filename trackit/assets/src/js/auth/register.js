@@ -24,7 +24,7 @@ $(document).ready(function () {
 
     // select2 config
     $('#select2_department').select2({
-        placeholder: 'Department',
+        placeholder: 'Department *',
         allowClear: true,
     });
 
