@@ -326,11 +326,12 @@ class DeclineVerificationSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.is_verified = False
+        instance.remarks = validated_data.get('remarks', instance.remarks)
         instance.save()
         create_users_notification(str(instance.pk), instance, 'staff')  # Create notification instance
         return instance
         
     class Meta:
         model = User
-        fields = ['id', 'username', 'is_verified']
+        fields = ['id', 'username', 'is_verified', 'remarks']
         read_only_fields = ['username']

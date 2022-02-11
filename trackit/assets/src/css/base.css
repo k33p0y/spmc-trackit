@@ -624,9 +624,23 @@ table.dataTable tbody tr:hover {
    font-size: 16px !important;
 }
 
+
+.swal2-content {
+   padding: 4px !important;
+}
+
 .swal2-confirm,
 .swal2-cancel {
    font-size: 12px !important;
+}
+
+.swal2-validation-message {
+   padding: 0 !important;
+   margin: 0 !important;
+   background: transparent !important;
+   color: #666;
+   font-size: 11px !important;
+   font-weight: 300;
 }
 
 /* Scrollbar */

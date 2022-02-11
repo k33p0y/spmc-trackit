@@ -3,6 +3,9 @@ $(document).ready(function () {
    let department;
    let alert_msg = '';
 
+   // enforces focus on the Bootstrap modal prevent loses focus to another element  
+   $.fn.modal.Constructor.prototype._enforceFocus = function() {};
+
    // set notification instance to unread = False
    if (localStorage.getItem('user-id')) {
       axios.get(`/api/core/all/user/${localStorage.getItem('user-id')}/`, ).then(res => {
@@ -358,56 +361,90 @@ $(document).ready(function () {
    $('#verify_user').click(function (e) {
       const id = $(this).data('user');
       
-      axios({
-         url: `/api/core/verify/user/${id}/`,
-         method: "PUT",
-         headers: axiosConfig
-      }).then(function (response) {
-         $("#spinner_verify").removeClass('d-none');
-         $(this).prop('disabled', true)
+      Swal.fire({
+         title: 'Are you sure?',
+         html: '<p class="m-0">This will allow access to the end-user if they have been given any permission.</p>',
+         icon: 'question',
+         showCancelButton: true,
+         cancelButtonText: 'Cancel',
+         confirmButtonText: 'Continue',
+         reverseButtons: true
+      }).then((result) => {
+         if (result.value) {
+            $(this).prop('disabled', true) // disable button
 
-         // send notification
-         socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}})), 
+            axios({
+               url: `/api/core/verify/user/${id}/`,
+               method: "PUT",
+               headers: axiosConfig
+            }).then(function (response) {
+               $("#spinner_verify").removeClass('d-none');
+               $(this).prop('disabled', false)
 
-         setTimeout(function() { 
-            $("#spinner_verify").addClass('d-none');
-            $('#modal-add-user').modal('toggle');
-            toastSuccess('Success'); // alert
-         }, 500);  
+               // send notification
+               socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}})), 
 
-         getCounterDash(); // reload counter
-         table.ajax.reload(); // reload table
-      }).catch(function (error) {
-         toastError(error.response.statusText)
+               setTimeout(function() { 
+                  $("#spinner_verify").addClass('d-none');
+                  $('#modal-add-user').modal('toggle');
+                  toastSuccess('Success'); // alert
+               }, 500);  
+
+               getCounterDash(); // reload counter
+               table.ajax.reload(); // reload table
+            }).catch(function (error) {
+               toastError(error.response.statusText)
+            });
+         }
       });
    });
 
+
+
    // Decline User
-   $('#decline_user').click(function (e) {
+   $('#decline_user').click(async function (e) {
       const id = $(this).data('user');
-      $(this).prop('disabled', true)
+      const { value: remark } = await Swal.fire({
+         title: 'Remark/Reason',
+         input: 'textarea',
+         inputPlaceholder: 'Type your message here...',
+         inputAttributes: {
+            'aria-label': 'Type your message here',
+            'maxlength': 100,
+         },
+         showCancelButton: true,
+         cancelButtonText: 'Cancel',
+         confirmButtonText: 'Submit',
+         reverseButtons: true,
+      })
       
-      axios({
-         url: `/api/core/decline/user/${id}/`,
-         method: "PUT",
-         headers: axiosConfig
-      }).then(function (response) {
-         $("#spinner_decline").removeClass('d-none');
-         
-         // send notification
-         socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}}))
+      if (remark) {
+         $(this).prop('disabled', true) // disable button
 
-         setTimeout(function() { 
-            $("#spinner_decline").addClass('d-none');
-            $('#modal-add-user').modal('toggle');
-            toastSuccess('Success'); // alert
-         }, 500);         
+         axios({
+            url: `/api/core/decline/user/${id}/`,
+            method: "PUT",
+            data: {'remarks' : remark},
+            headers: axiosConfig
+         }).then(function (response) {
+            $("#spinner_decline").removeClass('d-none');
+            $(this).prop('disabled', false)
+            
+            // send notification
+            socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}}))
 
-         getCounterDash(); // reload counter
-         table.ajax.reload(); // reload table
-      }).catch(function (error) {
-         toastError(error.response.statusText)
-      });
+            setTimeout(function() { 
+               $("#spinner_decline").addClass('d-none');
+               $('#modal-add-user').modal('toggle');
+               toastSuccess('Success'); // alert
+            }, 500);         
+
+            getCounterDash(); // reload counter
+            table.ajax.reload(); // reload table
+         }).catch(function (error) {
+            toastError(error.response.statusText)
+         });
+      }
    });
 
    // Verify User Anayway 
@@ -425,13 +462,15 @@ $(document).ready(function () {
          reverseButtons: true
       }).then((result) => {
          if (result.value) {
+            $(this).prop('disabled', true) // disable button
+
             axios({
                url: `/api/core/verify/user/${id}/`,
                method: "PUT",
                headers: axiosConfig
             }).then(function (response) {
                $(" #spinner_verifyanyway").removeClass('d-none');
-               $(this).prop('disabled', true)
+               $(this).prop('disabled', false)
 
                // send notification
                socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}}))
@@ -601,7 +640,7 @@ $(document).ready(function () {
                data: "changed_fields",
                render: function (data, type, row) {
                   if (type == 'display') {
-                     
+                     console.log(row)
                      if (row.event_type == 'Update') { // // UPDATE Event type 
                         let action = row.changed_fields;
                         if (Object.keys(action).length == 1) {
@@ -620,6 +659,7 @@ $(document).ready(function () {
                            else if (action.username && action.modified_by) data = 'Change username'
                            else if (action.is_staff && action.modified_by) data = (action.is_staff[1] == 'True') ? 'Allow staff permission' : 'Remove staff permission'
                            else if (action.is_superuser && action.modified_by) data = (action.is_superuser[1] == 'True') ? 'Allow superuser permission' : 'Remove superuser permission'
+                           else if (action.is_verified && action.remarks) data = 'Decline verification'
                            else data = 'Update profile' 
                         } else if (Object.keys(action).length >= 3) {
                            if (action.is_verified && action.verified_at && action.verified_by) data = 'Verify'

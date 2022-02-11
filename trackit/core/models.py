@@ -15,6 +15,7 @@ class User(AbstractUser):
    verified_by = models.ForeignKey('self', null=True, related_name="verifier", on_delete=models.CASCADE)
    verified_at = models.DateTimeField(null=True)
    is_verified = models.BooleanField(null=True)
+   remarks = models.CharField(max_length=100, blank=True)
 
    created_by = models.ForeignKey('self', null=True, related_name="creator", on_delete=models.CASCADE)
    modified_by = models.ForeignKey('self', null=True, related_name="modifier", on_delete=models.CASCADE)

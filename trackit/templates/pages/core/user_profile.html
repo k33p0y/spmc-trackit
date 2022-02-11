@@ -141,6 +141,9 @@
                         <div class="card-body px-4">
                            <p class="m-0">Hi {{user.first_name}}! The Administrator declined your verification. Click below to upload digital photos of identification. 
                            </p>
+                           <div class="mt-2">
+                              <p class="m-0"> <b>Remark/Reasons:</b> <i>{{user.remarks}}</i> </p>
+                           </div> 
                            <button type="button" class="btn btn-xs btn-block btn-default btn-shadow mt-3" data-toggle="modal" data-target="#modal_verfification">Upload Identification</button>
                         </div>
                      </div> 
@@ -347,7 +350,7 @@
                   <div class="d-flex justify-content-center h-100">
                      <div class="upload-content text-center my-5">
                         <i class="far fa-images mb-2"></i>
-                        <p class="upload-info m-0"> SPMC Identity Card or PHS Registration Form</p>
+                        <p class="upload-info m-0"> SPMC ID or Any Valid ID</p>
                         <span class="upload-info m-0">Maximuim file size: 5MB</span>
                      </div>
                   </div>
