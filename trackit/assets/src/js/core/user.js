@@ -251,6 +251,7 @@ $(document).ready(function () {
       else if (data['is_verified'] === false) {
          $("#verifyanyway_user").data('user', data['id']);
          $(".alert-decline").removeClass('d-none');
+         if (data['remarks']) $(".user-remarks").html(data['remarks']);
       }
       else if (data['is_verified'] === null) {
          $("#verify_user, #decline_user").data('user', data['id']);
@@ -379,7 +380,7 @@ $(document).ready(function () {
                headers: axiosConfig
             }).then(function (response) {
                $("#spinner_verify").removeClass('d-none');
-               $(this).prop('disabled', false)
+               $('#verify_user').prop('disabled', false)
 
                // send notification
                socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}})), 
@@ -402,10 +403,11 @@ $(document).ready(function () {
 
 
    // Decline User
-   $('#decline_user').click(async function (e) {
+   $('#decline_user').click(function (e) {
       const id = $(this).data('user');
-      const { value: remark } = await Swal.fire({
-         title: 'Remark/Reason',
+
+      Swal.fire({
+         title: 'Remarks/Reason',
          input: 'textarea',
          inputPlaceholder: 'Type your message here...',
          inputAttributes: {
@@ -416,19 +418,17 @@ $(document).ready(function () {
          cancelButtonText: 'Cancel',
          confirmButtonText: 'Submit',
          reverseButtons: true,
-      })
-      
-      if (remark) {
+      }).then((result) => {
          $(this).prop('disabled', true) // disable button
 
          axios({
             url: `/api/core/decline/user/${id}/`,
             method: "PUT",
-            data: {'remarks' : remark},
+            data: {'remarks' : result.value},
             headers: axiosConfig
          }).then(function (response) {
             $("#spinner_decline").removeClass('d-none');
-            $(this).prop('disabled', false)
+            $('#decline_user').prop('disabled', false)
             
             // send notification
             socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}}))
@@ -444,7 +444,7 @@ $(document).ready(function () {
          }).catch(function (error) {
             toastError(error.response.statusText)
          });
-      }
+      });
    });
 
    // Verify User Anayway 
@@ -469,8 +469,8 @@ $(document).ready(function () {
                method: "PUT",
                headers: axiosConfig
             }).then(function (response) {
-               $(" #spinner_verifyanyway").removeClass('d-none');
-               $(this).prop('disabled', false)
+               $("#spinner_verifyanyway").removeClass('d-none');
+               $('#verifyanyway_user').prop('disabled', false)
 
                // send notification
                socket_notification.send(JSON.stringify({type: 'user_notification', data: {object_id: response.data.id, notification_type: 'user'}}))
@@ -640,7 +640,6 @@ $(document).ready(function () {
                data: "changed_fields",
                render: function (data, type, row) {
                   if (type == 'display') {
-                     console.log(row)
                      if (row.event_type == 'Update') { // // UPDATE Event type 
                         let action = row.changed_fields;
                         if (Object.keys(action).length == 1) {

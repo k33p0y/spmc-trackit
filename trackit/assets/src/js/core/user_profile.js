@@ -94,7 +94,6 @@ $(document).ready(function () {
 
    // Change Password
    $("#btn-change-password").click(function (e) {
-      console.log()
       // Open Modal
       $('#modal-change-password').modal();
 
@@ -142,7 +141,6 @@ $(document).ready(function () {
                });
                
             }).catch(err => { // error
-               console.log(err.response.data);
                if (err.response.data.current_password) showFieldErrors(err.response.data.current_password, 'current_password'); else removeFieldErrors('current_password');
                if (err.response.data.new_password) showFieldErrors(err.response.data.new_password, 'new_password'); else removeFieldErrors('new_password');
             });

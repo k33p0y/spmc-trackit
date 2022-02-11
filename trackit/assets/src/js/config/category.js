@@ -179,7 +179,6 @@ $(document).ready(function () {
 
    // Apply Filter
    $("#btn_apply").click(function () {
-      console.log($('#group-filter').val())
       table.ajax.reload();
       return false; // prevent refresh
    });
