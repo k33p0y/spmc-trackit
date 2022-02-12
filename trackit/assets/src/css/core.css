@@ -55,7 +55,7 @@
 
 .alert-verified {border: 1px solid #007bff;}
 .alert-pending {border: 1px solid #17a2b8;}
-.alert-decline {border: 1px solid #ffc107;}
+.alert-decline {border: 1px solid #c44a56;}
 
 .alert-pending > div > .btn {
     font-size: 12px !important;

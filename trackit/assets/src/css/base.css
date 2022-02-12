@@ -42,12 +42,14 @@ h1, h2,  h3, h4, h5, h6, small  {
    padding: 5px !important
 }
 
+.alert-danger, .badge-danger {background-color: #c44a56 !important;}
+
 .bt-primary {border-top: 4px solid #007bff;}
 .bt-secondary {border-top: 4px solid #6c757d;}
 .bt-success {border-top: 4px solid #28a745;}
 .bt-info {border-top: 4px solid #17a2b8;}
 .bt-warning {border-top: 4px solid #ffc107;}
-.bt-danger {border-top: 4px solid #dc3545;}
+.bt-danger {border-top: 4px solid #c44a56;}
 .bt-purple {border-top: 4px solid #8a94ee;}
 
 .bl-primary {border-left: 4px solid #007bff;}
@@ -55,25 +57,28 @@ h1, h2,  h3, h4, h5, h6, small  {
 .bl-success {border-left: 4px solid #28a745;}
 .bl-info {border-left: 4px solid #17a2b8;}
 .bl-warning {border-left: 4px solid #ffc107;}
-.bl-danger {border-left: 4px solid #dc3545;}
+.bl-danger {border-left: 4px solid #c44a56;}
 
 .bb-primary {border-bottom: 4px solid #007bff;}
 .bb-secondary {border-bottom: 4px solid #6c757d;}
 .bb-success {border-bottom: 4px solid #28a745;}
 .bb-info {border-bottom: 4px solid #17a2b8;}
 .bb-warning {border-bottom: 4px solid #ffc107;}
-.bb-danger {border-bottom: 4px solid #dc3545;}
+.bb-danger {border-bottom: 4px solid #c44a56;}
 
 .br-primary {border-right: 4px solid #007bff;}
 .br-secondary {border-right: 4px solid #6c757d;}
 .br-success {border-right: 4px solid #28a745;}
 .br-info {border-right: 4px solid #17a2b8;}
 .br-warning {border-right: 4px solid #ffc107;}
-.br-danger {border-right: 4px solid #dc3545;}
+.br-danger {border-right: 4px solid #c44a56;}
 
 .bg-secondary {background-color: #e3E5ED !important;}
+.bg-danger {background-color: #c44a56 !important;}
 .bg-orange {background-color: #FD7E14 ;}
 .bg-notification {background-color: #ff990017 ;}
+
+.text-danger {color: #c44a56 !important;}
 
 .btn-light {
    background-color: #ffffff !important;
@@ -87,6 +92,21 @@ h1, h2,  h3, h4, h5, h6, small  {
 .btn-light:active {
    background-color: #f1f1f1 !important;
    box-shadow: none, 0 0 0 0 #f5f4f4;
+}
+
+.btn-danger {
+   background-color: #c44a56 !important;
+   border-color: #c44a56;
+   color:#fff !important;
+}
+.btn-danger:hover {
+   background-color: #ae3743 !important;
+   border-color: #9e353f;
+   color:#fff !important;
+}
+.btn-danger:active {
+   background-color: #9e353f !important;
+   box-shadow: none, 0 0 0 0 #9e353f72;
 }
 
 .btn-orange {

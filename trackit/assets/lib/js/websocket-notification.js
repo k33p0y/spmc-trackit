@@ -42,6 +42,7 @@ let getAllNotifications = function () {
             $('.dropdown-notifications-div .dropdown-body a').click(function () {
                 localStorage.setItem("ticketNumber", $(this).attr('data-ticket-no'));
                 localStorage.setItem("notification-id", $(this).attr('data-notification-id'));
+                localStorage.setItem("user-id", $(this).attr('data-user-id'));
             })
         } else {
             $('.dropdown-body').html('<p class="text-center text-muted p-2">No new notifications</p>')
@@ -137,18 +138,21 @@ let displayUserNotification = function (notification) {
         img_text = `${object_json_repr[0].fields.first_name.charAt(0)}${object_json_repr[0].fields.last_name.charAt(0)}`
         title = 'A new user has created an account'
         content = `<b class="text-orange">${object_json_repr[0].fields.first_name} ${object_json_repr[0].fields.last_name} </b>successfully registered to Track-It. Review account now.`
+        notification_url = `/core/user`
     } else if (action === 'Update') {
+        notification_url = `/core/user`
         if (notification.log.user.id === parseInt(notification.log.object_id)) { // if user update its profile
             img_text = `${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}`
             title = `${notification.log.user.first_name} ${notification.log.user.last_name}`
             content = `Update profile information. <b class="text-orange">See changes</b>.`
-            
             if (changed_fields.is_verified) {
                 if (changed_fields.is_verified[1] === 'None') {
                     img_icon = 'fa-images'
                     content = `Uploaded new digital photos for verification. <b class="text-orange">Review account now</b>.`
-                }             } 
+                }             
+            } 
         } else { // else admin update its record
+            notification_url = `/core/user/${notification.log.object_id}/profile`
             if (changed_fields.is_verified) {
                 if (changed_fields.is_verified[1] === 'True') {
                     img_text = 'A'
@@ -196,7 +200,7 @@ let displayUserNotification = function (notification) {
     }
 
     $('.dropdown-body').append(
-        `<a href="#" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-user-pk="${user_pk}">
+        `<a href="${notification_url}" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-user-id="${user_pk}">
             <div class="notification-user align-self-start mr-2">
                 <div class="img-circle">
                     <span class="img-name">${img_text}</span>

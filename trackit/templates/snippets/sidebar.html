@@ -19,11 +19,13 @@
             <div class="info d-flex flex-column p-0 mx-2">
                <p class="d-flex align-items-center text-sm m-0 {% if url == 'user_profile' %} text-light {% endif %}" >
                   {{user.first_name}} {{user.last_name}}
+                  {% if user.is_verified %}
                   {% if user.is_superuser %}
                      <span class="fa-stack text-orange verification-status ml-1">
                         <i class="fas fa-certificate fa-stack-2x"></i>
                         <i class="fas fa-check fa-stack-1x fa-inverse"></i>
                      </span>
+                  {% endif %}
                   {% endif %}
                </p>
                <p class="text-secondary m-0 text-xs">See your profile</p>
@@ -43,7 +45,8 @@
                   <p> Dashboard</p>
                </a>
             </li>
-
+            
+            {% if user.is_verified %}
             {% if request.user.is_superuser or request.user.is_staff %}
                {% if perms.auth.view_group or perms.core.view_user %}
                <li
@@ -137,47 +140,46 @@
                {% endif %}
             {% endif %}
 
-            {% if user.is_verified or user.is_superuser %}
-               {% if perms.requests.add_ticket or perms.requests.view_ticket %}
-                  <li
-                     class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} menu-open {% endif %}">
-                     <a href="#"
-                        class="nav-link {% if url == 'ticket' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
-                        <i class="nav-icon fas fa-pen"></i>
-                        <p>
-                           Request
-                           <i class="right fas fa-angle-left"></i>
-                        </p>
-                     </a>
-                     <ul class="nav nav-treeview">
-                        {% if perms.requests.add_ticket %}
-                        <li class="nav-item">
-                           <a href="{% url 'create_ticket' %}"
-                              class="nav-link {% if url == 'create_ticket' %} active {% endif %}">
-                              <i class="nav-icon far fa-circle"></i>
-                              <p>Create Request</p>
-                           </a>
-                        </li>
-                        {% endif %}
-                        {% if perms.requests.view_ticket %}
-                        <li class="nav-item">
-                           <a href="{% url 'ticket' %}"
-                              class="nav-link {% if url == 'ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
-                              <i class="nav-icon far fa-circle"></i>
-                              <p>All Requests</p>
-                           </a>
-                        </li>
-                        {% endif %}
-                     </ul>
-                  </li>
-                  <li class="nav-item">
-                     <a href="{% url 'ticket_log_list' %}"
-                        class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}">
-                        <i class="nav-icon fas fa-search-location"></i>
-                        <p>Track</p>
-                     </a>
-                  </li>
-               {% endif %}
+            {% if perms.requests.add_ticket or perms.requests.view_ticket %}
+               <li
+                  class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} menu-open {% endif %}">
+                  <a href="#"
+                     class="nav-link {% if url == 'ticket' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
+                     <i class="nav-icon fas fa-pen"></i>
+                     <p>
+                        Request
+                        <i class="right fas fa-angle-left"></i>
+                     </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                     {% if perms.requests.add_ticket %}
+                     <li class="nav-item">
+                        <a href="{% url 'create_ticket' %}"
+                           class="nav-link {% if url == 'create_ticket' %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>Create Request</p>
+                        </a>
+                     </li>
+                     {% endif %}
+                     {% if perms.requests.view_ticket %}
+                     <li class="nav-item">
+                        <a href="{% url 'ticket' %}"
+                           class="nav-link {% if url == 'ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>All Requests</p>
+                        </a>
+                     </li>
+                     {% endif %}
+                  </ul>
+               </li>
+               <li class="nav-item">
+                  <a href="{% url 'ticket_log_list' %}"
+                     class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}">
+                     <i class="nav-icon fas fa-search-location"></i>
+                     <p>Track</p>
+                  </a>
+               </li>
+            {% endif %}
             {% endif %}
 
             {% if request.user.is_superuser or request.user.is_staff %}

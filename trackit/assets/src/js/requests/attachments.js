@@ -134,8 +134,8 @@ $(document).ready(function () {
       $('#txt-size').text(fileSize(dt_data.file_size));
       $('#txt-upload-date').text((moment(dt_data.uploaded_at).format('DD MMMM YYYY h:mm:ss a')));
       $('#txt-owner').text(`${dt_data.uploaded_by.first_name} ${dt_data.uploaded_by.last_name}`);
-      let file_url = (loc.protocol == "https:") ? dt_data.file.replace("http://", "https://") : dt_data.file;
-      let file = (file_url.includes('socket')) ? file_url.replace('socket', loc.host) : file_url;
+      let file_url = (window.location.protocol == "https:") ? dt_data.file.replace("http://", "https://") : dt_data.file;
+      let file = (file_url.includes('socket')) ? file_url.replace('socket', window.location.host) : file_url;
       $('#btn_download').attr('href', file)
 
       // View attachment modal shown fn   

@@ -3,6 +3,17 @@ $(document).ready(function () {
    var url;
    var file_arr = new Array();
 
+   // get user in localStorage if available
+   if (localStorage.getItem('user-id')) {
+      localStorage.removeItem('user-id');
+   }
+
+   // set notification instance to unread = False
+   if (localStorage.getItem('notification-id')){
+      axios.delete(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {headers: axiosConfig})
+      localStorage.removeItem('notification-id');
+   }
+
    let table = $('#dt_requests').DataTable({
       "searching": false,
       "responsive": true,

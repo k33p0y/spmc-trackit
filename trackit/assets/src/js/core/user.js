@@ -3,6 +3,25 @@ $(document).ready(function () {
    let department;
    let alert_msg = '';
 
+   // set notification instance to unread = False
+   if (localStorage.getItem('user-id')) {
+      axios.get(`/api/core/all/user/${localStorage.getItem('user-id')}/`, ).then(res => {
+         $("#modal-add-user").modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false,
+         });
+         modalUpdate(res.data);
+      });
+      localStorage.removeItem('user-id');
+   }
+
+   // set notification instance to unread = False
+   if (localStorage.getItem('notification-id')){
+      axios.delete(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {headers: axiosConfig})
+      localStorage.removeItem('notification-id');
+   }
+
    var searchInput = function () { return $('#search-input').val(); }
    var staffFilter = function () { return $('#staff-filter').val(); }
    var superuserFilter = function () { return $('#superuser-filter').val(); }
@@ -12,51 +31,6 @@ $(document).ready(function () {
    var dateFromFilter = function () { return $('#date-from-filter').val(); }
    var dateToFilter = function () { return $('#date-to-filter').val(); }
    var statusFilter = function () { return $('#status-filter').val(); }
-
-   const getCounterDash = function() {
-      const api_url = '/api/core/all/user/';
-
-      $('.spinner-dash').removeClass('d-none'); // remove spinners
-      $('.counter').html(''); // clear values
-         
-      $.get(api_url, (response) => { // get all users
-         $('#spinner_users').addClass('d-none'); // remove spinners
-         $('#count_users').html(response.count) // registered users
-      });     
-      $.get(api_url, {"is_active" : 0}, (response) => { // get all active users
-         $('#spinner_active').addClass('d-none'); // remove spinners
-         $('#count_active').html(response.count) // display count
-      });
-      $.get(api_url, {"is_active" : 1}, (response) => { // get all inactive users
-         $('#spinner_inactive').addClass('d-none'); // remove spinners
-         $('#count_inactive').html(response.count) // display count
-      });
-      $.get(api_url, {"is_member" : true}, (response) => { // get all members
-         $('#spinner_members').addClass('d-none'); // remove spinners
-         $('#count_members').html(response.count) // display count
-      });
-      $.get(api_url, {"is_staff" : 0}, (response) => { // get all staff
-         $('#spinner_staff').addClass('d-none'); // remove spinners
-         $('#count_staff').html(response.count) // display count
-      });
-      $.get(api_url, {"is_superuser" : 0}, (response) => { // get all superuser
-         $('#spinner_superuser').addClass('d-none'); // remove spinners
-         $('#count_superuser').html(response.count) // display count
-      });
-      $.get(api_url, {"status" : "declined"}, (response) => { // get all declined users
-         $('#spinner_declined').addClass('d-none'); // remove spinners
-         $('#count_decline').html(response.count) // display count
-      });
-      $.get(api_url, {"status" : "pending"}, (response) => { // get all pending
-         $('#spinner_pending').addClass('d-none'); // remove spinners
-         $('#count_pending').html(response.count) // display count
-      });
-      $.get(api_url, {"status" : "verified"}, (response) => { // get all verified users
-         $('#spinner_verified').addClass('d-none'); // remove spinners
-            $('#count_verified').html(response.count) // display count
-      });
-   }
-   getCounterDash();
 
    // RETRIEVE / GET
    let table = $('#dt_user').DataTable({
@@ -147,7 +121,7 @@ $(document).ready(function () {
                data = '';
                if (row.is_verified) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
                else if (row.is_verified == null) data = "<div class='badge badge-info text-uppercase d-inline-flex align-items-center p-1'> <span> Pending </span> </div>";
-               else if (row.is_verified == false) data = "<div class='badge badge-warning text-uppercase d-inline-flex align-items-center p-1'> <span> Declined </span> </div>";
+               else if (row.is_verified == false) data = "<div class='badge badge-danger text-uppercase d-inline-flex align-items-center p-1'> <span> Declined </span> </div>";
                return data
             },
          },
@@ -219,12 +193,25 @@ $(document).ready(function () {
    // UPDATE / PUT
    $('#dt_user tbody').on('click', '.btn-edit', function () {
       let dt_data = table.row($(this).parents('tr')).data();
-      let id = dt_data['id']
+      
+      // // // Open Modal
+      // // // Rename Modal Title
+      $("#modal-add-user").modal({
+         show: true,
+         backdrop: 'static',
+         keyboard: false,
+      });
 
-      // Assign AJAX Action Type/Method and URL
+      modalUpdate(dt_data);
+   });
+
+   let modalUpdate = function (data) {
       method = 'PUT';
-      action = 'UPDATE';
-      url = `/core/user/${id}/update`;
+      url = `/core/user/${data['id']}/update`;
+      
+      // modal title 
+      $("#modal-add-user .modal-title").text(`Update User - ${data['first_name']} ${data['last_name']}`);
+
       $('.name-group').show()
       $('.password-group').hide()
       $('#btn-change-password').show()
@@ -235,47 +222,38 @@ $(document).ready(function () {
       $('#nav-general-tab').removeClass('d-none'); // show general tab
       $('#nav-activity-tab').removeClass('d-none'); // show activity tab
 
-      // // // Open Modal
-      // // // Rename Modal Title
-      $("#modal-add-user").modal({
-         show: true,
-         backdrop: 'static',
-         keyboard: false,
-      });
-      $("#modal-add-user .modal-title").text(`Update User - ${dt_data['first_name']} ${dt_data['last_name']}`);
-
       // // // Populate Fields
       resetForm(); // reset form
-      $('#txt-username').val(dt_data['username']); // USERNAME
-      $('#txt-firstname').val(dt_data['first_name']); // FIRST NAME
-      $('#txt-middlename').val(dt_data['middle_name']); // MIDDLE NAME
-      $('#txt-lastname').val(dt_data['last_name']); // LAST NAME
-      $('#txt-suffix').val(dt_data['suffix']); // SUFFIX
-      $('#txt-email').val(dt_data['email']); // EMAIL ADDRESS
-      $('#txt-contact').val(dt_data['contact_no']); // CONTACT NO
-      $('#txt-license').val(dt_data['license_no']); // LICENSE NO
-      if (dt_data['department']) $('#select2-department').val(dt_data['department'].id).trigger('change'); else $('#select2-department').val('').trigger('change'); // DEPARTMENT
-      if (dt_data['is_superuser']) $('#chk-superuser-status').prop('checked', true); else $('#chk-superuser-status').prop('checked', false); // IS SUPERUSER
-      if (dt_data['is_staff']) $('#chk-staff-status').prop('checked', true); else $('#chk-staff-status').prop('checked', false); // IS STAFF
-      if (dt_data['is_active']) $('#chk-active-status').prop('checked', true); else $('#chk-active-status').prop('checked', false); // IS ACTIVE
-      $('#select2-groups').val($.map(dt_data['groups'], (group) => group.id)).trigger('change'); // GROUPS
-      $('#select2-permissions').val(dt_data['user_permissions']).trigger('change'); // PERMISSIONS
-      $('#btn-change-password').data('user', dt_data);
-      verifyDocuments(dt_data['documents']); // VERIFICATION DOCUMENTS TAB
-      viewDetailsTab(dt_data); // DETAILS TAB
-      viewActivityLogTab(id); // ACTIVITY LOGS TAB
+      $('#txt-username').val(data['username']); // USERNAME
+      $('#txt-firstname').val(data['first_name']); // FIRST NAME
+      $('#txt-middlename').val(data['middle_name']); // MIDDLE NAME
+      $('#txt-lastname').val(data['last_name']); // LAST NAME
+      $('#txt-suffix').val(data['suffix']); // SUFFIX
+      $('#txt-email').val(data['email']); // EMAIL ADDRESS
+      $('#txt-contact').val(data['contact_no']); // CONTACT NO
+      $('#txt-license').val(data['license_no']); // LICENSE NO
+      if (data['department']) $('#select2-department').val(data['department'].id).trigger('change'); else $('#select2-department').val('').trigger('change'); // DEPARTMENT
+      if (data['is_superuser']) $('#chk-superuser-status').prop('checked', true); else $('#chk-superuser-status').prop('checked', false); // IS SUPERUSER
+      if (data['is_staff']) $('#chk-staff-status').prop('checked', true); else $('#chk-staff-status').prop('checked', false); // IS STAFF
+      if (data['is_active']) $('#chk-active-status').prop('checked', true); else $('#chk-active-status').prop('checked', false); // IS ACTIVE
+      $('#select2-groups').val($.map(data['groups'], (group) => group.id)).trigger('change'); // GROUPS
+      $('#select2-permissions').val(data['user_permissions']).trigger('change'); // PERMISSIONS
+      $('#btn-change-password').data('user', data);
+      verifyDocuments(data['documents']); // VERIFICATION DOCUMENTS TAB
+      viewDetailsTab(data); // DETAILS TAB
+      viewActivityLogTab(data['id']); // ACTIVITY LOGS TAB
 
       // // // show alert verification status
-      if (dt_data['is_verified'] === true) $(".alert-verified").removeClass('d-none');
-      else if (dt_data['is_verified'] === false) {
-         $("#verifyanyway_user").data('user', id);
+      if (data['is_verified'] === true) $(".alert-verified").removeClass('d-none');
+      else if (data['is_verified'] === false) {
+         $("#verifyanyway_user").data('user', data['id']);
          $(".alert-decline").removeClass('d-none');
       }
-      else if (dt_data['is_verified'] === null) {
-         $("#verify_user, #decline_user").data('user', id);
+      else if (data['is_verified'] === null) {
+         $("#verify_user, #decline_user").data('user', data['id']);
          $(".alert-pending").removeClass('d-none');
       }
-   });
+   }
 
    $('#file_wrapper').on('click', '.list-preview', function(e) {
       $('#previewImage').modal('show');
@@ -284,7 +262,7 @@ $(document).ready(function () {
 
    // Submit Form 
    $("#btn_save").click(function (e) {
-      e.preventDefault();
+      $(this).attr('disabled', true)
 
       // Variables
       let data = {}
@@ -320,6 +298,7 @@ $(document).ready(function () {
          $("#select2-permissions").val([]).trigger('change'); // reset permissions select2
          $("#select2-groups").val([]).trigger('change'); // reset groups select2
          $('#modal-add-user').modal('toggle');
+         $("#btn_save").attr('disabled', false)
          table.ajax.reload();
       }).catch(function (error) { // error
          if (error.response.data.username) showFieldErrors(error.response.data.username, 'username'); else removeFieldErrors('username');
@@ -560,9 +539,12 @@ $(document).ready(function () {
       } else $("#verify_helptext").removeClass('d-none');
 
       documents.forEach(document => {
+         let file_url = (window.location.protocol == "https:") ? document.file.replace("http://", "https://") : document.file;
+         let file = (file_url.includes('socket')) ? file_url.replace('socket', window.location.host) : file_url;
+
          $('#file_wrapper').append(`
-            <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-2 list-preview" data-file="${document.file}">
-               <img src="${document.file}" alt="${document.file_name}" height="40" width="auto">
+            <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-2 list-preview" data-file="${file}">
+               <img src="${file}" alt="${document.file_name}" height="40" width="auto">
                <p class="text-muted m-0 px-2">${document.file_name}</p>
                <p class="text-muted m-0 px-2">${moment(document.uploaded_at).format('DD MMMM YYYY h:mm:ss a')}</p>
             </li>`
@@ -655,4 +637,49 @@ $(document).ready(function () {
          "order": [[0, "desc"]],
       });
    }
+
+   const getCounterDash = function() {
+      const api_url = '/api/core/all/user/';
+
+      $('.spinner-dash').removeClass('d-none'); // remove spinners
+      $('.counter').html(''); // clear values
+         
+      $.get(api_url, (response) => { // get all users
+         $('#spinner_users').addClass('d-none'); // remove spinners
+         $('#count_users').html(response.count) // registered users
+      });     
+      $.get(api_url, {"is_active" : 0}, (response) => { // get all active users
+         $('#spinner_active').addClass('d-none'); // remove spinners
+         $('#count_active').html(response.count) // display count
+      });
+      $.get(api_url, {"is_active" : 1}, (response) => { // get all inactive users
+         $('#spinner_inactive').addClass('d-none'); // remove spinners
+         $('#count_inactive').html(response.count) // display count
+      });
+      $.get(api_url, {"is_member" : true}, (response) => { // get all members
+         $('#spinner_members').addClass('d-none'); // remove spinners
+         $('#count_members').html(response.count) // display count
+      });
+      $.get(api_url, {"is_staff" : 0}, (response) => { // get all staff
+         $('#spinner_staff').addClass('d-none'); // remove spinners
+         $('#count_staff').html(response.count) // display count
+      });
+      $.get(api_url, {"is_superuser" : 0}, (response) => { // get all superuser
+         $('#spinner_superuser').addClass('d-none'); // remove spinners
+         $('#count_superuser').html(response.count) // display count
+      });
+      $.get(api_url, {"status" : "declined"}, (response) => { // get all declined users
+         $('#spinner_declined').addClass('d-none'); // remove spinners
+         $('#count_decline').html(response.count) // display count
+      });
+      $.get(api_url, {"status" : "pending"}, (response) => { // get all pending
+         $('#spinner_pending').addClass('d-none'); // remove spinners
+         $('#count_pending').html(response.count) // display count
+      });
+      $.get(api_url, {"status" : "verified"}, (response) => { // get all verified users
+         $('#spinner_verified').addClass('d-none'); // remove spinners
+            $('#count_verified').html(response.count) // display count
+      });
+   }
+   getCounterDash();
 });
