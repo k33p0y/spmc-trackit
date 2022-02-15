@@ -17,6 +17,15 @@ class ArticleListSerializer(serializers.ModelSerializer):
         article.save()
         return article
 
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.preface = validated_data.get('preface', instance.preface)
+        instance.content = validated_data.get('content', instance.content)
+        instance.is_publish = validated_data.get('is_publish', instance.is_publish)
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.save()
+        return instance
+
     class Meta:
         model = Article
         fields = '__all__'

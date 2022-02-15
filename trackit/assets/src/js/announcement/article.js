@@ -28,14 +28,7 @@ $(document).ready(function () {
          {
             data: "title",
             render: function (data, type, row) {
-               if (type == 'display') data = `<a href='#' class='btn-link-orange action-link btn_view'> ${row.title} </a>`
-               return data
-            },
-         },
-         {
-            data: "author",
-            render: function (data, type, row) {
-               if (type == 'display') data = `${row.author.name}`;
+               if (type == 'display') data = `<a href='/announcement/article/${row.id}/view' class='btn-link-orange action-link btn_view'> ${row.title} </a> `
                return data
             },
          },
@@ -52,9 +45,16 @@ $(document).ready(function () {
             },
          },
          {
+            data: "author",
+            render: function (data, type, row) {
+               if (type == 'display') data = `${row.author.name}`;
+               return data
+            },
+         },
+         {
             data: "is_publish",
             render: function (data, type, row) {
-               data = (row.is_publish) ? "<i class='fas fa-thumbtack text-success'></i>" : "<i class='fas fa-bookmark text-orange' ></i>";
+               data = (row.is_publish) ? "<i class='fas fa-thumbtack text-orange'></i>" : "<i class='fas fa-thumbtack text-black-50' ></i>";
                return data
             },
          },

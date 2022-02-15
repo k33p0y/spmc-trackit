@@ -1,0 +1,162 @@
+{% extends '../../base.html' %}
+{% load static %}
+
+{% block title %} View Request | {% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'src/css/requests.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Content Header -->
+<section class="content-header">
+   <div class="container-fluid">
+      <div class="row mb-2">
+         <div class="col-sm-6">
+            <h5 class="font-weight-bolder">View Announcement</h5>
+         </div>
+         <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-xs">
+               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="btn-link-orange"><i class="fas fa-home"></i></a></li>
+               <li class="breadcrumb-item">Announcement</li>
+               <li class="breadcrumb-item"> <a href="{% url 'announcement' %}" class="btn-link-neutral">List</a> </li>
+               <li class="breadcrumb-item active" data-article-id="{{article.id}}">Article: {{article.title}}</li>
+            </ol>
+         </div>
+      </div>
+   </div>
+</section>
+
+<!-- /.content -->
+<section class="content pb-4">
+   <div class="container-fluid">
+      <div class="overlay d-none"></div>
+      
+      <div class="d-flex flex-row-reverse mb-1">
+        <a href="{% url 'change_article' article.pk %}" class="btn btn-light text-secondary btn-view-logs ml-2" data-article-id="{{article.pk}}">
+            <i class="fas fa-sm fa-pencil-alt"></i> <span>Update Article</span> 
+        </a>
+        <a href="{% url 'ticket_log_list' %}" class="btn btn-light btn-view-logs" data-article-id="{{article.pk}}">
+            {% if article.is_publish %}
+                <i class="fas fa-sm fa-ban"></i> 
+                <span class="d-none d-sm-inline">Unpublish</span>
+            {% else %}
+                <i class="fas fa-sm fa-paper-plane"></i> 
+                <span class="d-none d-sm-inline">Publish</span>
+            {% endif %}
+        </a>
+      </div>
+
+      <div class="row">
+         <div class="col-12 col-sm-12 col-md-12 col-lg-8">
+            <div class="row" id="row-information">
+               <div class="col-12 col-sm-12">
+                  <div class="card card-form mt-2 mb-1">
+                     <a href="#collapseInformation" data-toggle="collapse" aria-expanded="true" aria-controls="collapseInformation">
+                        <div class="card-header p-2">
+                           <div class="card-title">Article Information</div>
+                        </div>
+                     </a>
+                     <div id="collapseInformation" class="collapse show">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-12 col-sm-6 col-md-12 col-lg-12"> 
+                                    <div class="card card-detail mt-2 mb-1">
+                                        <div class="card-body p-0 m-0">
+                                            <p class="context">{{article.title}}</p>
+                                            <span class="label">Title</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12 col-sm-6 col-md-12 col-lg-12"> 
+                                    <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                        <p class="context">
+                                            {% if article.preface %}
+                                                {{article.preface}}
+                                            {% else %}
+                                                <span style="color: #e3e5ed">The quick brown fox jumps over the lazy dog.</span>
+                                            {% endif %}    
+                                        </p>
+                                        <span class="label">Preface </span>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                    <div class="card card-detail mt-2 mb-1">
+                                        <div class="card-body p-0 m-0">
+                                        <p class="context text-truncate">{{article.author}}</p>
+                                        <span class="label">Author</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                    <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                        <p class="context text-truncate">{{article.date_publish|date:"d F Y h:i A"}}</p>
+                                        <span class="label">Date Requested</span>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                    <div class="card card-detail mt-2 mb-1">
+                                        <div class="card-body p-0 m-0">
+                                        <div class="mr-auto">
+                                            <p class="context">{% if article.is_active %} Active {% else %} In Active {% endif %}</p>
+                                            <span class="label">Is Active</span>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                  </div>   
+               </div>
+            </div>
+            <div class="row" id="row-content">
+               <div class="col-12 col-sm-12">
+                  <div class="card card-form mt-2 mb-1 "  style="border-bottom-left-radius: 5px !important;">
+                     <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
+                        <div class="card-header p-2">
+                           <div class="card-title">Article Content</div>
+                        </div>
+                     </a>
+                     <div id="collapseDetails" class="collapse show">
+                        <div class="card-body p-3">
+                            No Content Available
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-12 col-sm-12 col-md-12 col-lg-4">                     
+
+            <div class="row" id="row-comments">
+               <div class="col-12 col-sm-12">
+                  <div class="card card-form mt-2 mb-1">
+                     <a href="#collapseComment" data-toggle="collapse" aria-expanded="true" aria-controls="collapseComment">
+                        <div class="card-header p-2">
+                           <div class="card-title">Resources</div>
+                        </div>
+                     </a>
+                     <div id="collapseComment" class="collapse show">
+                        <div class="card-body p-3">
+                            No Content Available
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+         </div> 
+      </div>
+   </div>
+</section>
+{% endblock %}
+
+{% block extrascript %}
+<script type="text/javascript" src=""></script>
+{% endblock %}

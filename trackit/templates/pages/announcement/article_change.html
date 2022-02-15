@@ -1,0 +1,166 @@
+{% extends '../../base.html' %}
+{% load static %}
+
+{% block title %} Create Article | {% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'src/css/requests.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Content Header -->
+<section class="content-header">
+   <div class="container-fluid">
+      <div class="row mb-2">
+         <div class="col-sm-6">
+            <h5 class="font-weight-bolder">Update Article</h5>
+         </div>
+         <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right text-xs">
+               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="btn-link-orange"><i
+                        class="fas fa-home"></i></a></li>
+               <li class="breadcrumb-item">Announcement</li>
+               <li class="breadcrumb-item"> <a href="{% url 'announcement' %}" class="btn-link-neutral">List</a> </li>
+               <li class="breadcrumb-item"> <a href="{% url 'view_article' article.pk %}" class="btn-link-neutral">View</a> </li>
+               <li class="breadcrumb-item active" data-article-id="{{article.id}}">Article: {{article.title}}</li>
+            </ol>
+         </div>
+      </div>
+   </div>
+</section>
+
+<!-- /.content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="overlay d-none"></div>
+        <div class="d-flex flex-row-reverse mb-1">
+            <a href="{% url 'view_article' article.pk %}" class="btn btn-light text-secondary" id="btn_view">
+                <i class="fas fa-sm fa-eye"></i> <span>View As</span> 
+            </a>
+        </div>
+        
+        <div class="row" id="row-detail">
+            <div class="col-12 col-md-8">
+                <div class="row" id="row-information">
+                    <div class="col-12 col-sm-12">
+                       <div class="card card-form mt-2 mb-1">
+                          <a href="#collapseInformation" data-toggle="collapse" aria-expanded="true" aria-controls="collapseInformation">
+                             <div class="card-header p-2">
+                                <div class="card-title">Article Information</div>
+                             </div>
+                          </a>
+                          <div id="collapseInformation" class="collapse show">
+                             <div class="card-body p-3">
+                                 <div class="row">
+                                     <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                         <div class="card card-detail mt-2 mb-1">
+                                             <div class="card-body p-0 m-0">
+                                             <p class="context text-truncate">{{article.author}}</p>
+                                             <span class="label">Author</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                         <div class="card card-detail mt-2 mb-1">
+                                         <div class="card-body p-0 m-0">
+                                             <p class="context text-truncate">{{article.date_publish|date:"d F Y h:i A"}}</p>
+                                             <span class="label">Date Requested</span>
+                                         </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                         <div class="card card-detail mt-2 mb-1">
+                                            <div class="card-body p-0 m-0 d-flex align-items-center">
+                                                <div class="mr-auto">
+                                                   <p class="context">{% if article.is_active %} Active {% else %} In Active {% endif %}</p>
+                                                   <span class="label">Is Active</span>
+                                                </div>
+                                                <div class="custom-control custom-switch">
+                                                   <input type="checkbox" class="custom-control-input" id="is_active_switch" {% if article.is_active %} checked {% endif %} >
+                                                   <label class="custom-control-label" for="is_active_switch"></label>
+                                                </div>
+                                            </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                          </div>
+                       </div>   
+                    </div>
+                 </div>
+                <div class="card card-form shadow-sm mt-2 mb-1">
+                    <a href="#collapseDetail" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetail">
+                        <div class="card-header p-2">
+                            <div class="card-title">Article Details</div>
+                        </div>
+                    </a>
+                    <div id="collapseDetail" class="collapse show">
+                        <div class="card-body p-3">
+                            <form>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>Title <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control form-control-sm form-text-required" placeholder="Enter article title" id="txt_title" value="{{article.title}}">
+                                        <small class="error-info" id="title_error"></small>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label>Preface</label>
+                                        <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter article preface" id="txt_preface" value="{{article.preface}}"></textarea>
+                                        <small class="error-info" id="preface_error"></small>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-form shadow-sm mt-2 mb-1">
+                    <a href="#collapseFields" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFields">
+                        <div class="card-header p-2">
+                            <div class="card-title">Content</div>
+                        </div>
+                    </a>
+                    <div id="collapseFields" class="collapse show">
+                        <div class="card-body p-3">
+                            <div id="txt_content"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions mt-3 d-flex flex-row-reverse">
+                    <button type="submit" class="btn btn-sm btn-orange pl-3 pr-3" id="btn_save" data-article-id="{{article.pk}}"><span>Save</span></button>
+                    <button type="submit" class="btn btn-sm btn-orange" id="btn_publish" data-article-id="{{article.pk}}"><span>Save and Publish</span></button>
+                    <a href="{% url 'ticket' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                
+                <div class="card card-form shadow-sm mt-2 mb-1">
+                <a href="#collapseAttachment" data-toggle="collapse" aria-expanded="false" aria-controls="collapseAttachment">
+                    <div class="card-header p-2">
+                        <div class="card-title">Resources</div>
+                    </div>
+                </a>
+                <div id="collapseAttachment" class="collapse show">
+                    <div class="card-body p-3">
+                        <div class="d-flex">
+                            <div>
+                            <label class="btn btn-sm btn-light m-0">
+                                <span><i class="fas fa-sm fa-folder-open"></i> Browse Files</span> 
+                                <input type="file" name="file" id="file_upload" multiple hidden> 
+                            </label>
+                            </div>
+                            <div class="ml-auto"> <a class="btn btn-xs btn-link text-secondary d-none" id="btn_clear"><span>Clear All</span> </a> </div>
+                        </div>           
+                        <div class="list-group file_lists mt-2"></div>
+                    </div>
+                </div>
+                </div>          
+            </div>
+            
+        </div>   
+    </div>
+</section>
+{% endblock %}
+
+{% block extrascript %}
+<script type="text/javascript" src="{% static 'src/js/announcement/article_change.js' %}"></script>
+{% endblock %}

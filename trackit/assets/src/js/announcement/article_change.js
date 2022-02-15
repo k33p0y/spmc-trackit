@@ -3,31 +3,32 @@ $(document).ready(function () {
     // save and publish button
     $('#btn_publish').click(function (e) {
         e.preventDefault();
-
+        const article = $(this).data().articleId;
         let data = new Object();
         data.title = $('#txt_title').val();
         data.preface = $('#txt_preface').val();
         data.content = 'Sample Content';
         data.is_publish = true;
-        postArticle(data);        
+        data.is_active = ($('#is_active_switch').is(":checked")) ? true : false;
+        putArticle(data, article)
     });
 
     // save button 
     $('#btn_save').click(function (e) {
         e.preventDefault();
-
+        const article = $(this).data().articleId;
         let data = new Object();
         data.title = $('#txt_title').val();
         data.preface = $('#txt_preface').val();
         data.content = 'Sample Content';
-        data.is_publish = false;
-        postArticle(data);
+        data.is_active = ($('#is_active_switch').is(":checked")) ? true : false; 
+        putArticle(data, article)
     });
 
-    let postArticle = function(data) {
+    let putArticle = function(data, article) {
         axios({
-            method: 'POST',
-            url: `/api/announcement/all/article/`,
+            method: 'PUT',
+            url: `/api/announcement/all/article/${article}/`,
             data: data,
             headers: axiosConfig,
         }).then(function (res) { // success
