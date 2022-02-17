@@ -83,3 +83,15 @@
 .card-dash table.dataTable tbody tr:hover > .sorting_1 {
    background-color: #ffffff;
  }
+
+/* Carousel */
+.carousel-inner {
+   background-color: #fccfaa75;
+   border-radius: 0.25em;
+}
+.carousel-item {
+   min-height: 18rem;
+   background-color: #fccfaa31;
+   border-radius: 0.25em;
+   padding: 5em 10%;
+}
