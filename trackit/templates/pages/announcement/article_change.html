@@ -1,7 +1,7 @@
 {% extends '../../base.html' %}
 {% load static %}
 
-{% block title %} Create Article | {% endblock %}
+{% block title %} News & Events - Update Article | {% endblock %}
 
 {% block extrastyle %}
 <link rel="stylesheet" href="{% static 'src/css/requests.css' %}">
@@ -76,8 +76,8 @@
                                                   <span class="label">Is Publish</span>
                                                </div>
                                                <div class="custom-control custom-switch">
-                                                  <input type="checkbox" class="custom-control-input" id="is_publish_switch" {% if article.is_publish %} checked {% endif %} >
-                                                  <label class="custom-control-label" for="is_publish_switch"></label>
+                                                  <input type="checkbox" class="custom-control-input" id="is_publish_switch_mobile" {% if article.is_publish %} checked {% endif %} >
+                                                  <label class="custom-control-label" for="is_publish_switch_mobile"></label>
                                                </div>
                                            </div>
                                         </div>
@@ -90,8 +90,8 @@
                                                    <span class="label">Is Active</span>
                                                 </div>
                                                 <div class="custom-control custom-switch">
-                                                   <input type="checkbox" class="custom-control-input" id="is_active_switch" {% if article.is_active %} checked {% endif %} >
-                                                   <label class="custom-control-label" for="is_active_switch"></label>
+                                                   <input type="checkbox" class="custom-control-input" id="is_active_switch_mobile" {% if article.is_active %} checked {% endif %} >
+                                                   <label class="custom-control-label" for="is_active_switch_mobile"></label>
                                                 </div>
                                             </div>
                                          </div>
@@ -146,7 +146,6 @@
                             </div>
                         </div>
                     </div>
-                   
                 </div>
                 <div class="row d-lg-none" id="row-recources">
                     <div class="col-12">

@@ -1,7 +1,7 @@
 {% extends '../../base.html' %}
 {% load static %}
 
-{% block title %} View Request | {% endblock %}
+{% block title %} News & Events - View Article | {% endblock %}
 
 {% block extrastyle %}
 <link rel="stylesheet" href="{% static 'src/css/requests.css' %}">
@@ -33,18 +33,20 @@
       <div class="overlay d-none"></div>
       
       <div class="d-flex flex-row-reverse mb-1">
-        <a href="{% url 'change_article' article.pk %}" class="btn btn-light text-secondary ml-2" data-article-id="{{article.pk}}">
+         <a href="{% url 'change_article' article.pk %}" class="btn btn-light text-secondary ml-2" data-article-id="{{article.pk}}">
             <i class="fas fa-sm fa-pencil-alt"></i> <span>Update Article</span> 
-        </a>
-        <button class="btn btn-light btn-view-logs" data-article-id="{{article.pk}}">
-            {% if article.is_publish %}
-                <i class="fas fa-sm fa-ban"></i> 
-                <span class="d-none d-sm-inline">Unpublish</span>
-            {% else %}
-                <i class="fas fa-sm fa-paper-plane"></i> 
-                <span class="d-none d-sm-inline">Publish</span>
-            {% endif %}
-        </button>
+         </a>
+         {% if article.is_publish %}
+         <button class="btn btn-light" id="btn_unpublish" data-article-id="{{article.pk}}">
+            <i class="fas fa-sm fa-ban"></i> 
+            <span class="d-none d-sm-inline">Unpublish</span>
+         </button>
+         {% else %}
+         <button class="btn btn-light" id="btn_publish" data-article-id="{{article.pk}}">
+            <i class="fas fa-sm fa-paper-plane"></i> 
+            <span class="d-none d-sm-inline">Publish</span>
+         </button>
+         {% endif %}
       </div>
 
       <div class="row">
@@ -258,5 +260,5 @@
 {% endblock %}
 
 {% block extrascript %}
-<script type="text/javascript" src=""></script>
+<script type="text/javascript" src="{% static 'src/js/announcement/article_view.js' %}"></script>
 {% endblock %}
