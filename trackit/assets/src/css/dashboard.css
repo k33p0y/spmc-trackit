@@ -41,6 +41,17 @@
    opacity: 0.1;
 }
 
+
+.card-wrap .card-body .icon-overlay-repeat  {
+   text-decoration: inherit;
+   position: absolute;
+   font-size: 19rem;
+   color: #fd7e14;
+   left: -10px; 
+   transform: rotate(-20deg);
+   opacity: 0.1;
+}
+
 .card-dash .card-title {
    text-transform: capitalize !important;
    color: #3e454d !important;   
@@ -86,12 +97,11 @@
 
 /* Carousel */
 .carousel-inner {
-   background-color: #fccfaa75;
+   background-color: #ffedde;
    border-radius: 0.25em;
 }
 .carousel-item {
-   min-height: 18rem;
-   background-color: #fccfaa31;
+   background-color: transparent;
    border-radius: 0.25em;
    padding: 5em 10%;
 }

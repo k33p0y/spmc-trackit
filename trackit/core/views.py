@@ -8,6 +8,7 @@ from django.template.response import SimpleTemplateResponse
 from core.models import User
 from core.decorators import user_is_verified, user_has_upload_verification
 from config.models import Department
+from announcement.models import Article
 from requests.models import Ticket, RequestForm, Notification
 from easyaudit.models import CRUDEvent
 
@@ -33,8 +34,9 @@ def home(request):
    now = datetime.datetime.now()
    users = User.objects.filter(date_joined__lte=now, is_active=True, is_superuser=False).order_by('-date_joined')[:8]
    tickets = Ticket.objects.filter(date_created__lte=now, is_active=True).order_by('-date_created')[:6]
+   announcement = Article.objects.filter(is_publish=True).order_by('-date_publish')
 
-   context =  {"users": users, "tickets":tickets}
+   context =  {"users": users, "tickets":tickets, "announcement":announcement}
    return render(request, 'pages/index.html', context)
 
 @login_required
