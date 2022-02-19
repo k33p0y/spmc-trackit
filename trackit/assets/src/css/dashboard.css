@@ -41,17 +41,6 @@
    opacity: 0.1;
 }
 
-
-.card-wrap .card-body .icon-overlay-repeat  {
-   text-decoration: inherit;
-   position: absolute;
-   font-size: 19rem;
-   color: #fd7e14;
-   left: -10px; 
-   transform: rotate(-20deg);
-   opacity: 0.1;
-}
-
 .card-dash .card-title {
    text-transform: capitalize !important;
    color: #3e454d !important;   
@@ -100,8 +89,46 @@
    background-color: #ffedde;
    border-radius: 0.25em;
 }
+
+.carousel-inner .icon-overlay-1,
+.carousel-inner .icon-overlay-2,
+.carousel-inner .icon-overlay-3  {
+   text-decoration: inherit;
+   position: absolute;
+   color: #ff9d4e;
+   opacity: 0.1;
+}
+
+.carousel-inner .icon-overlay-1 {
+   right: 0;
+   top: 3rem; 
+   font-size: 16rem;
+   transform: rotate(-20deg);
+}
+.carousel-inner .icon-overlay-2 {
+   left: 0px;
+   top: -10px; 
+   font-size: 12rem;
+   transform: rotate(30deg);
+}
+
 .carousel-item {
    background-color: transparent;
    border-radius: 0.25em;
    padding: 5em 10%;
+}
+
+/* Media */
+@media only screen and (max-device-width: 812px) { 
+   .carousel-inner .icon-overlay-1 {
+      right: -24px;
+      top:0.8em;
+      font-size: 10rem;
+   }
+   .carousel-inner .icon-overlay-2 {
+      font-size: 8em;
+   }   
+   .carousel-item h4 {
+      font-size: 18px !important;
+   }
 }

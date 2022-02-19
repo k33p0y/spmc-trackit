@@ -12,8 +12,9 @@ $(document).ready(function () {
             reverseButtons: true
          }).then((result) => {
             if (result.value) {
-               let eventHandler = $('#btn_publish').prop('disabled', true) // disable button
-               let article = $('#btn_publish').data().articleId;
+               let eventHandler = $('#btn_publish');
+               let article = eventHandler.data().articleId;
+               eventHandler.prop("disabled", true) // disable button
                patchArticle(article, eventHandler);
             }
          });
@@ -33,8 +34,9 @@ $(document).ready(function () {
             reverseButtons: true
          }).then((result) => {
             if (result.value) {
-               let eventHandler = $('#btn_unpublish').prop('disabled', true) // disable button
-               let article = $('#btn_unpublish').data().articleId;
+               let eventHandler = $('#btn_unpublish');
+               let article = eventHandler.data().articleId;
+               eventHandler.prop("disabled", true) // disable button
                patchArticle(article, eventHandler);
             }
          });
@@ -42,17 +44,16 @@ $(document).ready(function () {
 
     let patchArticle = function (article, eventHandler) {
         axios({
-            method: 'PATCH',
-            url: `/api/announcement/all/article/${article}/`,
+            method: 'PUT',
+            url: `/api/news/article/publish/${article}/`,
             headers: axiosConfig,
         }).then(function (res) { // success
             $.when(toastSuccess('Success')).then(() => {
-                $('#btn_save').attr('disabled', false) // enable button
+                eventHandler.prop("disabled", false)  // enable button
                 $(location).attr('href', '/announcement/lists')
             }) // Alert
         }).catch(function (err) { // error
             toastError(err.response.statusText) // alert
-            if (err.response.data.title) showFieldErrors(err.response.data.title, 'title'); else removeFieldErrors('title');
         });
     }
 });

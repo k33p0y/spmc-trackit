@@ -22,7 +22,7 @@
                <li class="breadcrumb-item">Announcement</li>
                <li class="breadcrumb-item"> <a href="{% url 'announcement' %}" class="btn-link-neutral">List</a> </li>
                <li class="breadcrumb-item"> <a href="{% url 'view_article' article.pk %}" class="btn-link-neutral">View</a> </li>
-               <li class="breadcrumb-item active" data-article-id="{{article.id}}">Article: {{article.title}}</li>
+               <li class="breadcrumb-item active" data-article-id="{{article.id}}">Article: {{article.title|truncatechars:25}}</li>
             </ol>
          </div>
       </div>
@@ -68,6 +68,16 @@
                                          </div>
                                          </div>
                                      </div>
+                                     {% if article.modified_at %}
+                                    <div class="col-12">
+                                        <div class="card card-detail mt-2 mb-1">
+                                        <div class="card-body p-0 m-0">
+                                            <p class="context text-truncate">{{article.modified_at|date:"d F Y h:i A"}} | {{article.modified_by}}</p>
+                                            <span class="label">Last Modified</span>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                      <div class="col-12">
                                         <div class="card card-detail mt-2 mb-1">
                                            <div class="card-body p-0 m-0 d-flex align-items-center">
@@ -121,7 +131,7 @@
                                             </div>
                                             <div class="form-group col-md-12">
                                                 <label>Preface</label>
-                                                <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter article preface" id="txt_preface" value="{{article.preface}}"></textarea>
+                                                <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter article preface" id="txt_preface" >{{article.preface}}</textarea>
                                                 <small class="error-info" id="preface_error"></small>
                                             </div>
                                         </div>
@@ -202,6 +212,16 @@
                                          </div>
                                          </div>
                                      </div>
+                                    {% if article.modified_at %}
+                                    <div class="col-12">
+                                        <div class="card card-detail mt-2 mb-1">
+                                        <div class="card-body p-0 m-0">
+                                            <p class="context text-truncate">{{article.modified_at|date:"d F Y h:i A"}} | {{article.modified_by}}</p>
+                                            <span class="label">Last Modified</span>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                      <div class="col-12">
                                         <div class="card card-detail mt-2 mb-1">
                                            <div class="card-body p-0 m-0 d-flex align-items-center">

@@ -29,3 +29,14 @@ class ArticleListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = '__all__'
+
+class ArticlePublishSerializer(serializers.ModelSerializer):
+    def update(self, instance, validated_data):
+        instance.is_publish = True if instance.is_publish == False else False
+        instance.modified_by = self.context['request'].user
+        instance.save()
+        return instance
+
+    class Meta:
+        model = Article
+        fields = ['id', 'is_publish', 'modified_by']

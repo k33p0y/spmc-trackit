@@ -101,6 +101,16 @@
                                     </div>
                                     </div>
                                 </div>
+                                {% if article.modified_at %}
+                                <div class="col-12">
+                                    <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                        <p class="context text-truncate">{{article.modified_at|date:"d F Y h:i A"}} | {{article.modified_by}}</p>
+                                        <span class="label">Last Modified</span>
+                                    </div>
+                                    </div>
+                                </div>
+                                {% endif %}
                                 <div class="col-12">
                                     <div class="card card-detail mt-2 mb-1">
                                        <div class="card-body p-0 m-0">
@@ -211,6 +221,16 @@
                                     </div>
                                     </div>
                                 </div>
+                                {% if article.modified_at %}
+                                <div class="col-12">
+                                    <div class="card card-detail mt-2 mb-1">
+                                    <div class="card-body p-0 m-0">
+                                        <p class="context text-truncate">{{article.modified_at|date:"d F Y h:i A"}} | {{article.modified_by}}</p>
+                                        <span class="label">Last Modified</span>
+                                    </div>
+                                    </div>
+                                </div>
+                                {% endif %}
                                 <div class="col-12">
                                     <div class="card card-detail mt-2 mb-1">
                                        <div class="card-body p-0 m-0">

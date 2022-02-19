@@ -53,6 +53,7 @@
          </div>
       </div>
 
+      {% if announcement %}
       <div class="row">
          <div class="col-12">
             <div class="card card-wrap shadow-sm">
@@ -62,12 +63,13 @@
                         {% for article in announcement %}
                         <li data-target="#carouselIndicators" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %} active {% endif %}"></li>
                         {% endfor %}
-                     </ol>
+                     </ol> 
                      <div class="carousel-inner">
-                        <i class="fas fa-bullhorn icon-overlay-repeat"></i>
+                        <i class="fas fa-bullhorn icon-overlay-1"></i>
+                        <i class="fas fa-newspaper icon-overlay-2"></i>
                         {% for article in announcement %}
-                           <div class="carousel-item {% if forloop.first %} active {% endif %} align-items-center">
-                              <div class="mx-5 text-center">
+                           <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                              <div class="mx-3 mx-lg-5 text-center">
                                  <h4 class="font-weight-bold text-orange">{{ article.title }}</h4>
                                  <p class="text-dark">{{ article.preface }}</p>
                                  <button class="btn btn-sm btn-outline-secondary mt-3 px-4 btn-more" data-article-id="{{article.pk}}"> <span class="text-uppercase text-xs">Read more</span></button>
@@ -84,12 +86,11 @@
                         <span class="sr-only">Next</span>
                      </a>
                   </div>
-
                </div>
             </div>
          </div>
-      </div>     
-
+      </div>
+      {% endif %}
        
       {% if user.is_superuser %}
       <div class="row">
