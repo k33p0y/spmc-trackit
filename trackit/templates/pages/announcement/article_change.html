@@ -4,7 +4,7 @@
 {% block title %} News & Events - Update Article | {% endblock %}
 
 {% block extrastyle %}
-<link rel="stylesheet" href="{% static 'src/css/requests.css' %}">
+<link rel="stylesheet" href="{% static 'src/css/announcement.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -46,10 +46,10 @@
                        <div class="card card-form mt-2 mb-1">
                           <a href="#collapseInformation" data-toggle="collapse" aria-expanded="true" aria-controls="collapseInformation">
                              <div class="card-header p-2">
-                                <div class="card-title">Article Information</div>
+                                <div class="card-title">Details</div>
                              </div>
                           </a>
-                          <div id="collapseInformation" class="collapse show">
+                          <div id="collapseInformation" class="collapse">
                              <div class="card-body p-3">
                                  <div class="row">
                                      <div class="col-12">
@@ -117,7 +117,7 @@
                         <div class="card card-form shadow-sm mt-2 mb-1">
                             <a href="#collapseDetail" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetail">
                                 <div class="card-header p-2">
-                                    <div class="card-title">Article Details</div>
+                                    <div class="card-title">Headline</div>
                                 </div>
                             </a>
                             <div id="collapseDetail" class="collapse show">
@@ -130,7 +130,7 @@
                                                 <small class="error-info" id="title_error"></small>
                                             </div>
                                             <div class="form-group col-md-12">
-                                                <label>Preface</label>
+                                                <label>Preface <span class="text-danger">*</span></label>
                                                 <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter article preface" id="txt_preface" >{{article.preface}}</textarea>
                                                 <small class="error-info" id="preface_error"></small>
                                             </div>
@@ -151,7 +151,7 @@
                             </a>
                             <div id="collapseFields" class="collapse show">
                                 <div class="card-body p-3">
-                                    <div id="txt_content"></div>
+                                    <textarea class="form-control" placeholder="Type the content here!" id="txt_content">{{article.content|safe}}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -190,7 +190,7 @@
                        <div class="card card-form mt-2 mb-1">
                           <a href="#collapseInformation" data-toggle="collapse" aria-expanded="true" aria-controls="collapseInformation">
                              <div class="card-header p-2">
-                                <div class="card-title">Article Information</div>
+                                <div class="card-title">Details</div>
                              </div>
                           </a>
                           <div id="collapseInformation" class="collapse show">
@@ -279,5 +279,7 @@
 {% endblock %}
 
 {% block extrascript %}
+<script type="text/javascript" src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendor/tinymce/jquery.tinymce.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'src/js/announcement/article_change.js' %}"></script>
 {% endblock %}

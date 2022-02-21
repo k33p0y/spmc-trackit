@@ -1,4 +1,17 @@
 $(document).ready(function () {
+
+    // TinyMCE WYSISWYG Editor
+    $('#txt_content').tinymce({
+        height: 500,
+        menubar: true,
+        plugins: [
+          'advlist autolink lists link image charmap print preview anchor',
+          'searchreplace visualblocks code fullscreen',
+          'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | fontselect | fontsizeselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+        content_style: 'body { font-size:12px }'
+    });
     
     // save and publish button
     $('#btn_publish').click(function (e) {
@@ -7,7 +20,7 @@ $(document).ready(function () {
         let data = new Object();
         data.title = $('#txt_title').val();
         data.preface = $('#txt_preface').val();
-        data.content = 'Sample Content';
+        data.content = tinyMCE.activeEditor.getContent();
         data.is_publish = true;
         postArticle(data);        
     });
@@ -19,7 +32,7 @@ $(document).ready(function () {
         let data = new Object();
         data.title = $('#txt_title').val();
         data.preface = $('#txt_preface').val();
-        data.content = 'Sample Content';
+        data.content = tinyMCE.activeEditor.getContent();
         data.is_publish = false;
         postArticle(data);
     });

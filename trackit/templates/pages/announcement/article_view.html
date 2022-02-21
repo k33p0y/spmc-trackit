@@ -4,7 +4,7 @@
 {% block title %} News & Events - View Article | {% endblock %}
 
 {% block extrastyle %}
-<link rel="stylesheet" href="{% static 'src/css/requests.css' %}">
+<link rel="stylesheet" href="{% static 'src/css/announcement.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -51,40 +51,17 @@
 
       <div class="row">
          <div class="col-12 col-sm-12 col-md-12 col-lg-8">
-            <div class="row d-lg-none" id="row-information">
+            <div class="row d-lg-none" id="row-details">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
                      <a href="#collapseInformation" data-toggle="collapse" aria-expanded="true" aria-controls="collapseInformation">
                         <div class="card-header p-2">
-                           <div class="card-title">Article Information</div>
+                           <div class="card-title">details</div>
                         </div>
                      </a>
-                     <div id="collapseInformation" class="collapse show">
+                     <div id="collapseInformation" class="collapse">
                         <div class="card-body p-3">
                             <div class="row">
-                                <div class="col-12"> 
-                                    <div class="card card-detail mt-2 mb-1">
-                                        <div class="card-body p-0 m-0">
-                                            <p class="context">{{article.title}}</p>
-                                            <span class="label">Title</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-12"> 
-                                    <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                        <p class="context">
-                                            {% if article.preface %}
-                                                {{article.preface}}
-                                            {% else %}
-                                                <span style="color: #e3e5ed">The quick brown fox jumps over the lazy dog.</span>
-                                            {% endif %}    
-                                        </p>
-                                        <span class="label">Preface </span>
-                                    </div>
-                                    </div>
-                                </div>
                                 <div class="col-12">
                                     <div class="card card-detail mt-2 mb-1">
                                         <div class="card-body p-0 m-0">
@@ -136,18 +113,38 @@
                      </div>
                   </div>   
                </div>
-            </div>   
-            <div class="row" id="row-content">
+            </div> 
+              <div class="row" id="row-headline">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1 "  style="border-bottom-left-radius: 5px !important;">
                      <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
                         <div class="card-header p-2">
-                           <div class="card-title">Article Content</div>
+                           <div class="card-title">Headline</div>
                         </div>
                      </a>
                      <div id="collapseDetails" class="collapse show">
                         <div class="card-body p-3">
-                            No Content Available
+                           <h6 class="font-weight-bold text-orange m-0"> {{article.title}} </h6>
+                           <hr class="my-2">
+                           <p class="preface m-0">{{ article.preface }}</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>  
+            <div class="row" id="row-content">
+               <div class="col-12 col-sm-12">
+                  <div class="card card-form mt-2 mb-1"  style="border-bottom-left-radius: 5px !important;">
+                     <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
+                        <div class="card-header p-2">
+                           <div class="card-title">Content</div>
+                        </div>
+                     </a>
+                     <div id="collapseDetails" class="collapse show">
+                        <div class="card-body p-3">
+                           <div class="my-3" id="content_preview">
+                              {{article.content|safe}}
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -176,35 +173,12 @@
                   <div class="card card-form mt-2 mb-1">
                      <a href="#collapseInformation" data-toggle="collapse" aria-expanded="true" aria-controls="collapseInformation">
                         <div class="card-header p-2">
-                           <div class="card-title">Article Information</div>
+                           <div class="card-title">details</div>
                         </div>
                      </a>
                      <div id="collapseInformation" class="collapse show">
                         <div class="card-body p-3">
                             <div class="row">
-                                <div class="col-12"> 
-                                    <div class="card card-detail mt-2 mb-1">
-                                        <div class="card-body p-0 m-0">
-                                            <p class="context">{{article.title}}</p>
-                                            <span class="label">Title</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-12"> 
-                                    <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                        <p class="context">
-                                            {% if article.preface %}
-                                                {{article.preface}}
-                                            {% else %}
-                                                <span style="color: #e3e5ed">The quick brown fox jumps over the lazy dog.</span>
-                                            {% endif %}    
-                                        </p>
-                                        <span class="label">Preface </span>
-                                    </div>
-                                    </div>
-                                </div>
                                 <div class="col-12">
                                     <div class="card card-detail mt-2 mb-1">
                                         <div class="card-body p-0 m-0">
@@ -280,5 +254,7 @@
 {% endblock %}
 
 {% block extrascript %}
+<script type="text/javascript" src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendor/tinymce/jquery.tinymce.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'src/js/announcement/article_view.js' %}"></script>
 {% endblock %}

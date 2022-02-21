@@ -72,7 +72,9 @@
                               <div class="mx-3 mx-lg-5 text-center">
                                  <h4 class="font-weight-bold text-orange">{{ article.title }}</h4>
                                  <p class="text-dark">{{ article.preface }}</p>
+                                 {% if article.content %}
                                  <button class="btn btn-sm btn-outline-secondary mt-3 px-4 btn-more" data-article-id="{{article.pk}}"> <span class="text-uppercase text-xs">Read more</span></button>
+                                 {% endif %}
                               </div>
                            </div>
                         {% endfor %}
