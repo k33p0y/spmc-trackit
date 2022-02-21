@@ -8,8 +8,8 @@ def upload_resources_url(instance, filename):
 # Create your models here.
 class Article(models.Model):
     title = models.CharField(max_length=255)
-    preface = models.CharField(max_length=255, blank=True)
-    content = models.TextField()
+    preface = models.CharField(max_length=255)
+    content = models.TextField(blank=True)
     author = models.ForeignKey(User, related_name="articles",  on_delete=models.CASCADE)
     date_publish = models.DateTimeField(auto_now_add=True)
     is_publish = models.BooleanField(default=False)
