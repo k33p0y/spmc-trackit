@@ -163,6 +163,22 @@
 <!-- /.content -->
 {% endblock %}
 
+{% block modal %}
+<div class="modal fade preview-more" id="previewMore" tabindex="-1" role="dialog" aria-labelledby="previewMoreModal"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content text-sm">
+         <div class="modal-header d-flex align-items-center">
+            <h6 class="modal-title">News & Events</h6>
+            <a href="#" class="text-dark" data-dismiss="modal"> <i class="fas fa-times"></i> </a>
+         </div>
+         <div class="modal-body modal-readmore">
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
+
 {% block extrascript %}
 <script type="text/javascript" src="{% static 'src/js/dashboard.js' %}"></script>
 {% endblock %}
