@@ -138,7 +138,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     def validate_first_name(self, firstname):
         if not firstname:
             raise serializers.ValidationError('This field may not be blank.')
-        elif not self.instance.last_name == self.context['request'].data.get('last_name'):
+        if firstname:
+            if not self.instance.first_name == firstname:
+                if User.objects.filter(Q(first_name=firstname) & Q(last_name=self.context['request'].data.get('last_name'))).exists():
+                    raise serializers.ValidationError({'fullname': ['A user with that first name and last name already exists.']})
+        if not self.instance.last_name == self.context['request'].data.get('last_name'):
             if User.objects.filter(Q(first_name=firstname) & Q(last_name=self.context['request'].data.get('last_name'))).exists():
                 raise serializers.ValidationError({'fullname': ['A user with that first name and last name already exists.']})
         return firstname
