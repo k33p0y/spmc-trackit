@@ -72,12 +72,20 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_first_name(self, firstname):
         if not firstname:
             raise serializers.ValidationError('This field may not be blank.')
+        elif self.context['request'].data.get('last_name'):
+            if User.objects.filter(Q(first_name=firstname) & Q(last_name=self.context['request'].data.get('last_name'))).exists():
+                raise serializers.ValidationError({'fullname': ['A user with that first name and last name already exists.']})
         return firstname
 
     def validate_last_name(self, lastname):
         if not lastname:
             raise serializers.ValidationError('This field may not be blank.')
         return lastname
+
+    def validate_email(self, email):
+        if email and User.objects.filter(email=email).exists():
+            raise serializers.ValidationError('A user with that email address already exists.')
+        return email
 
     def validate_department(self, department):
         request = self.context['request']
@@ -130,6 +138,9 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     def validate_first_name(self, firstname):
         if not firstname:
             raise serializers.ValidationError('This field may not be blank.')
+        elif self.context['request'].data.get('last_name'):
+            if User.objects.filter(Q(first_name=firstname) & Q(last_name=self.context['request'].data.get('last_name'))).exists():
+                raise serializers.ValidationError({'fullname': ['A user with that first name and last name already exists.']})
         return firstname
 
     def validate_last_name(self, lastname):
@@ -144,6 +155,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         if not department and not is_superuser:
             raise serializers.ValidationError('This field may not be blank.')
         return department
+
+    def validate_email(self, email):
+        if email and User.objects.filter(email=email).exists():
+            raise serializers.ValidationError('A user with that email address already exists.')
+        return email
 
     def validate_contact_no(self, contact_no):
         if contact_no and not contact_no.isdigit():
