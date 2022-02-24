@@ -75,15 +75,18 @@ $(document).ready(function () {
                 showConfirmButton: false,
                 timer: 1200,
             });
-
-            // form fields errror
-            if (err.response.data.first_name) showFieldErrors(err.response.data.first_name, 'firstname'); else removeFieldErrors('firstname');
+            
             if (err.response.data.last_name) showFieldErrors(err.response.data.last_name, 'lastname'); else removeFieldErrors('lastname');
+            if (err.response.data.first_name) {
+                if (err.response.data.first_name) showFieldErrors(err.response.data.first_name, 'firstname'); else removeFieldErrors('firstname');
+                if (err.response.data.first_name.fullname) showFieldErrors(err.response.data.first_name.fullname, 'fullname'); else removeFieldErrors('fullname');
+            } else removeFieldErrors('firstname');
             if (err.response.data.contact_no) showFieldErrors(err.response.data.contact_no, 'contact'); else removeFieldErrors('contact');
             if (err.response.data.department) showFieldErrors(err.response.data.department, 'department'); else removeFieldErrors('department');
             if (err.response.data.email) showFieldErrors(err.response.data.email, 'email'); else removeFieldErrors('email');
             if (err.response.data.username) showFieldErrors(err.response.data.username, 'username'); else removeFieldErrors('username');
             if (err.response.data.password) showFieldErrors(err.response.data.password, 'password'); else removeFieldErrors('password');
+
         });
     }); // submit form end
 
@@ -96,24 +99,32 @@ $(document).ready(function () {
     }
     // show field errors
     let showFieldErrors = function (obj, field) {
-        if (field === 'password') {
-            $(`#txt_${field}1`).addClass('form-error')
-            $(`#txt_${field}2`).addClass('form-error')
-        } else if (field === 'department') {
-            $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error')
-        } else $(`#txt_${field}`).addClass('form-error');
+        console.log(obj, field)
+
         let errors = ''
         for (i = 0; i < obj.length; i++) errors += `${obj[i]} `;
         $(`#${field}_error`).html(`*${errors}`)
+        
+        if (field === 'password') {
+            $(`#txt_${field}1`).addClass('form-error')
+            $(`#txt_${field}2`).addClass('form-error')
+        } else if (field === 'fullname') {
+            $(`#txt_firstname`).addClass('form-error')
+            $(`#txt_lastname`).addClass('form-error')
+            $(`#firstname_error`).html(`*${errors}`)
+        } else if (field === 'department') {
+            $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error')
+        } else $(`#txt_${field}`).addClass('form-error');  
     };
     // remove field errors
     let removeFieldErrors = function (field) {
+        $(`#${field}_error`).html(``)
         if (field === 'password') {
             $(`#txt_${field}1`).removeClass('form-error')
             $(`#txt_${field}2`).removeClass('form-error')
         } else if (field === 'department') {
             $(`#select2_${field}`).next().find('.select2-selection').removeClass('form-error')
         } else $(`#txt_${field}`).removeClass('form-error');
-        $(`#${field}_error`).html(``)
+        
     };
 })

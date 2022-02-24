@@ -1,8 +1,10 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import Group, Permission
+from django.db.models import Q
 from .models import User, UserVerification
 from .views import create_users_notification
 from config.models import Department
@@ -236,6 +238,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_first_name(self, firstname):
         if not firstname:
             raise serializers.ValidationError('This field may not be blank.')
+        elif self.context['request'].data.get('last_name'):
+            if User.objects.filter(Q(first_name=firstname) & Q(last_name=self.context['request'].data.get('last_name'))).exists():
+                raise serializers.ValidationError({'fullname': ['A user with that first name and last name already exists.']})
         return firstname
 
     def validate_last_name(self, lastname):
@@ -253,6 +258,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_email(self, email):
         if not email:
             raise serializers.ValidationError('This field may not be blank.')
+        else:
+            if User.objects.filter(email=email).exists():
+                raise serializers.ValidationError('A user with that email address already exists.')
         return email
 
     def validate_department(self, department):
@@ -268,6 +276,14 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Password does not match.')
         validate_password(password=password, user=request.user)
         return password
+
+    # def validate(self, data):
+    #     #       Validate first and last name
+    #     #        Pre
+        
+    #     if User.objects.filter(Q(first_name=data['first_name']) & Q(last_name=data['last_name'])).exists():
+            
+    #     return data
 
     class Meta:
         model = User
