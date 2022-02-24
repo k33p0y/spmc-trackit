@@ -1,8 +1,10 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import Group, Permission
+from django.db.models import Q
 from .models import User, UserVerification
 from .views import create_users_notification
 from config.models import Department
@@ -70,12 +72,20 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_first_name(self, firstname):
         if not firstname:
             raise serializers.ValidationError('This field may not be blank.')
+        elif self.context['request'].data.get('last_name'):
+            if User.objects.filter(Q(first_name=firstname) & Q(last_name=self.context['request'].data.get('last_name'))).exists():
+                raise serializers.ValidationError({'fullname': ['A user with that first name and last name already exists.']})
         return firstname
 
     def validate_last_name(self, lastname):
         if not lastname:
             raise serializers.ValidationError('This field may not be blank.')
         return lastname
+
+    def validate_email(self, email):
+        if email and User.objects.filter(email=email).exists():
+            raise serializers.ValidationError('A user with that email address already exists.')
+        return email
 
     def validate_department(self, department):
         request = self.context['request']
@@ -128,6 +138,13 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     def validate_first_name(self, firstname):
         if not firstname:
             raise serializers.ValidationError('This field may not be blank.')
+        if firstname:
+            if not self.instance.first_name == firstname:
+                if User.objects.filter(Q(first_name=firstname) & Q(last_name=self.context['request'].data.get('last_name'))).exists():
+                    raise serializers.ValidationError({'fullname': ['A user with that first name and last name already exists.']})
+        if not self.instance.last_name == self.context['request'].data.get('last_name'):
+            if User.objects.filter(Q(first_name=firstname) & Q(last_name=self.context['request'].data.get('last_name'))).exists():
+                raise serializers.ValidationError({'fullname': ['A user with that first name and last name already exists.']})
         return firstname
 
     def validate_last_name(self, lastname):
@@ -142,6 +159,13 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         if not department and not is_superuser:
             raise serializers.ValidationError('This field may not be blank.')
         return department
+
+    def validate_email(self, email):
+        if email:
+            if not email == self.instance.email:
+                if User.objects.filter(email=email).exists():
+                    raise serializers.ValidationError('A user with that email address already exists.')
+        return email
 
     def validate_contact_no(self, contact_no):
         if contact_no and not contact_no.isdigit():
@@ -236,6 +260,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_first_name(self, firstname):
         if not firstname:
             raise serializers.ValidationError('This field may not be blank.')
+        elif self.context['request'].data.get('last_name'):
+            if User.objects.filter(Q(first_name=firstname) & Q(last_name=self.context['request'].data.get('last_name'))).exists():
+                raise serializers.ValidationError({'fullname': ['A user with that first name and last name already exists.']})
         return firstname
 
     def validate_last_name(self, lastname):
@@ -253,6 +280,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_email(self, email):
         if not email:
             raise serializers.ValidationError('This field may not be blank.')
+        else:
+            if User.objects.filter(email=email).exists():
+                raise serializers.ValidationError('A user with that email address already exists.')
         return email
 
     def validate_department(self, department):

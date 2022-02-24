@@ -46,7 +46,7 @@ class UserListViewSet(viewsets.ModelViewSet):
          qs = User.objects.select_related('department', 'verified_by').prefetch_related('documents').all().order_by('-id')
 
          # Parameters
-         if search: qs = qs.filter(Q(last_name__icontains=search) | Q(first_name__icontains=search) | Q(username__icontains=search))
+         if search: qs = qs.filter(Q(last_name__icontains=search) | Q(first_name__icontains=search) | Q(username__icontains=search) | Q(email__icontains=search))
          if is_staff: qs = qs.filter(is_staff=True, is_superuser=False) if is_staff =='0' else qs.filter(is_staff=False)
          if is_superuser: qs = qs.filter(is_superuser=True) if is_superuser == '0' else qs.filter(is_superuser=False)
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)

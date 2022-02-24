@@ -306,12 +306,16 @@ $(document).ready(function () {
          table.ajax.reload();
       }).catch(function (error) { // error
          if (error.response.data.username) showFieldErrors(error.response.data.username, 'username'); else removeFieldErrors('username');
-         if (error.response.data.first_name) showFieldErrors(error.response.data.first_name, 'firstname'); else removeFieldErrors('firstname');
          if (error.response.data.last_name) showFieldErrors(error.response.data.last_name, 'lastname'); else removeFieldErrors('lastname');
+         if (error.response.data.first_name) {
+            if (error.response.data.first_name) showFieldErrors(error.response.data.first_name, 'firstname'); else removeFieldErrors('firstname');
+            if (error.response.data.first_name.fullname) showFieldErrors(error.response.data.first_name.fullname, 'fullname'); else removeFieldErrors('fullname');
+        } else removeFieldErrors('firstname');
          if (error.response.data.password) showFieldErrors(error.response.data.password, 'password'); else removeFieldErrors('password');
          if (error.response.data.email) showFieldErrors(error.response.data.email, 'email'); else removeFieldErrors('email');
          if (error.response.data.contact_no) showFieldErrors(error.response.data.contact_no, 'contact'); else removeFieldErrors('contact');
          if (error.response.data.department) showFieldErrors(error.response.data.department, 'department'); else removeFieldErrors('department');
+         $("#btn_save").attr('disabled', false)
       });
    }); // submit form end
 
@@ -399,8 +403,6 @@ $(document).ready(function () {
          }
       });
    });
-
-
 
    // Decline User
    $('#decline_user').click(function (e) {
@@ -531,18 +533,24 @@ $(document).ready(function () {
    });
 
    let showFieldErrors = function (obj, field) {
+      let errors = ''
+      for (i = 0; i < obj.length; i++) errors += `${obj[i]} `;
+      $(`#${field}-error`).html(`*${errors}`)
+      
       if (field === 'password') {
          $(`#txt-${field}1`).addClass('form-error')
          $(`#txt-${field}2`).addClass('form-error')
       } else if (field === 'changepassword') {
          $(`#txt-${field}1`).addClass('form-error')
          $(`#txt-${field}2`).addClass('form-error')
+      } else if (field === 'fullname') {
+         $(`#txt-firstname`).addClass('form-error')
+         $(`#txt-lastname`).addClass('form-error')
+         $(`#firstname-error`).html(`*${errors}`)
       } else if (field === 'department') {
          $(`#select2-${field}`).next().find('.select2-selection').addClass('form-error')
       } else $(`#txt-${field}`).addClass('form-error');
-      let errors = ''
-      for (i = 0; i < obj.length; i++) errors += `${obj[i]} `;
-      $(`#${field}-error`).html(`*${errors}`)
+
    };
 
    let removeFieldErrors = function (field) {
@@ -563,6 +571,7 @@ $(document).ready(function () {
       removeFieldErrors('username');
       removeFieldErrors('firstname');
       removeFieldErrors('lastname');
+      removeFieldErrors('email');
       removeFieldErrors('password');
       removeFieldErrors('department');
       removeFieldErrors('contact');
