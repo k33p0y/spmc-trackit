@@ -310,11 +310,6 @@
                                      </div>
                                    {% endfor %}
                                 </div>
-                                {% else %}
-                                <div class="d-flex flex-column text-center">
-                                   <div class="state-icon"><i class="fas fa-file"></i></div>
-                                   <p class="m-0 state-text">No files attached yet</p>
-                                </div>
                                 {% endif %}   
                              </div>
                           </div>
@@ -325,6 +320,32 @@
         </div>   
     </div>
 </section>
+{% endblock %}
+
+{% block modal %}
+<!-- Upload Progress -->
+<div class="modal fade" id="uploadResourceModal" tabindex="-1" role="dialog" aria-labelledby="uploadResourceModal" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-body p-2">
+            <ol class="list-group">
+            <li class="list-group-item d-flex align-items-center border-0 p-2" id="save-data">
+                <div class="p-1 file-icon"><i class="fas fa-lg fa-upload text-secondary"></i></div>
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-1">
+                        <div class="m-0">Uploading Attachments</div>
+                        <div class="ml-auto text-muted" id="resource_percent"></div>
+                    </div>
+                    <div class="progress" style="height: 2px;">
+                        <div class="progress-bar" id="upload_resource_progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </li>
+            </ol>
+        </div>
+    </div>
+</div>
+</div>
 {% endblock %}
 
 {% block extrascript %}

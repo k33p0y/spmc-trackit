@@ -4,11 +4,6 @@ $(document).ready(function () {
     $('#txt_content').tinymce({
         height: 500,
         menubar: true,
-        plugins: [
-          'advlist autolink lists link image charmap print preview anchor',
-          'searchreplace visualblocks code fullscreen',
-          'insertdatetime media table paste code help wordcount'
-        ],
         toolbar: 'undo redo | formatselect | fontselect | fontsizeselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
         content_style: 'body { font-size:12px }'
     });
@@ -30,7 +25,9 @@ $(document).ready(function () {
             url: `/api/announcement/all/article/${article}/`,
             data: data,
             headers: axiosConfig,
-        }).then(function (res) { // success
+        }).then(async function (res) { // success
+            if (file_arr.length > 0) await uploadResources(res.data.id, file_arr)  // upload attachments
+        }).then(function () {
             $.when(toastSuccess('Success')).then(() => {
                 $('#btn_save').attr('disabled', false) // enable button
                 $(location).attr('href', '/announcement/lists')

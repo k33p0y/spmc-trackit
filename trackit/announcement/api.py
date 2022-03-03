@@ -48,18 +48,12 @@ class ResourcesViewSet(viewsets.ModelViewSet):
    def create(self, request):
       file = request.FILES['file']
       data = json.loads(request.FILES['data'].read())    
-
-      try:
-         resource = Resources.objects.create(
-            article_id=data['article'],
-            file=file, 
-            file_name=file.name, 
-            file_type=file.content_type, 
-            uploaded_by=self.request.user
-         )
-         serializer = ResourcesSerializer(resource)
-      except Exception as error:
-         article = Article.objects.get(id=data['article'])
-         article.delete()
-         raise error
+      resource = Resources.objects.create(
+         article_id=data['article'],
+         file=file, 
+         file_name=file.name, 
+         file_type=file.content_type, 
+         uploaded_by=self.request.user
+      )
+      serializer = ResourcesSerializer(resource)
       return Response(serializer.data)
