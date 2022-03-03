@@ -17,7 +17,7 @@ def create_article(request):
 @login_required
 @permission_required('announcement.view_article', raise_exception=True)
 def view_article(request, pk):
-   article = get_object_or_404(Article, pk=pk)
+   article = get_object_or_404(Article.objects.prefetch_related('resources'), pk=pk)
    return render(request, 'pages/announcement/article_view.html', {'article' : article})
 
 @login_required

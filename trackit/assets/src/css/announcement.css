@@ -116,7 +116,28 @@
    top: -5px;
 }
 
+.file-anchor {
+   text-decoration: none;
+   color: unset
+}
+.file-anchor:hover,
+.file-anchor:active {
+   color: #fd7e14;
+}
+.file-anchor:hover .card {
+   background-color: #fff5ee;
+}
+
 .btn-edit:hover {
    color :#e77619 !important;
    cursor: pointer;
+}
+
+.state-icon {
+   font-size: 2em;
+   color: #d8dbe4;
+}
+.state-text {
+   color: #a5a7aa;
+   font-style: italic;
 }

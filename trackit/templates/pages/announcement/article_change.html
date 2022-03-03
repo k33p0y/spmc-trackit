@@ -146,7 +146,7 @@
                         <div class="card card-form shadow-sm mt-2 mb-1">
                             <a href="#collapseFields" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFields">
                                 <div class="card-header p-2">
-                                    <div class="card-title">Content</div>
+                                    <div class="card-title">Body</div>
                                 </div>
                             </a>
                             <div id="collapseFields" class="collapse show">
@@ -173,7 +173,7 @@
                        </div>
                     </div>
                 </div>
-                <div class="row" id="row-actions">
+                <div class="row mb-5" id="row-actions">
                     <div class="col-12">
                         <div class="form-actions mt-3 d-flex flex-row-reverse">
                             <button type="submit" class="btn btn-sm btn-orange pl-3 pr-3" id="btn_save" data-article-id="{{article.pk}}"><span>Save</span></button>
@@ -182,7 +182,6 @@
                         </div>
                     </div>
                 </div>
-                
             </div>
             <div class="col-12 col-md-12 col-lg-4 d-none d-lg-block">
                 <div class="row" id="row-information">
@@ -266,7 +265,57 @@
                           </a>
                           <div id="collapseComment" class="collapse show">
                              <div class="card-body p-3">
-                                 No Content Available
+                                <div class="d-flex">
+                                    <div>
+                                    <label class="btn btn-sm btn-light m-0">
+                                        <span><i class="fas fa-sm fa-folder-open"></i> Browse Files</span> 
+                                        <input type="file" name="file" id="file_upload" multiple hidden> 
+                                    </label>
+                                    </div>
+                                    <div class="ml-auto"> <a class="btn btn-xs btn-link text-secondary d-none" id="btn_clear"><span>Clear All</span> </a> </div>
+                                </div>    
+                                <div class="row file-upload-wrap mt-3 d-none" id="side_upload_wrapper"></div>
+                                {% if article.resources.all|length > 0 %}
+                                <div class="row mt-3">  
+                                   {% for resource in article.resources.all %}
+                                      <div class="col file-item">
+                                         <a href="{{resource.file.url}}" target="_blank" class="file-anchor">
+                                            <div class="card">
+                                               <div class="d-flex flex-row align-items-center p-2">
+                                                    {% comment %}
+                                                        //// create array to check file type for icon display
+                                                    {% endcomment %}
+                                                    {% with text='text/plain' pdf='application/pdf' spreadsheet='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/vnd.ms-excel application/vnd.oasis.opendocument.spreadsheet text/csv' document='application/vnd.openxmlformats-officedocument.wordprocessingml.document application/msword application/vnd.oasis.opendocument.text' presentation='application/vnd.openxmlformats-officedocument.presentationml.presentation application/vnd.ms-powerpoint application/vnd.oasis.opendocument.presentation' image='image/png image/jpeg'%}
+                                                        {% if resource.file_type in text.split %}
+                                                            <div class="far fa-3x fa-file-alt"></div>
+                                                        {% elif resource.file_type in pdf.split %}
+                                                            <div class="far fa-3x fa-file-pdf text-danger"></div>
+                                                        {% elif resource.file_type in spreadsheet.split %}
+                                                            <div class="far fa-3x fa-file-excel text-success"></div>
+                                                        {% elif resource.file_type in document.split %}
+                                                            <div class="far fa-3x fa-file-word text-primary"></div>
+                                                        {% elif resource.file_type in presentation.split %}
+                                                            <div class="far fa-3x fa-file-powerpoint text-orange"></div>
+                                                        {% elif resource.file_type in image.split %}
+                                                            <div class="far fa-3x fa-file-image text-warning"></div>
+                                                        {% endif %}
+                                                    {% endwith %}                                      
+                                                    <div class="card-body p-0 ml-2">
+                                                        <p class="m-0 font-weight-bold">{{resource.file_name}}</p>
+                                                        <small class="text-muted">{{resource.file.size|filesizeformat}}</small>
+                                                    </div>
+                                               </div>
+                                           </div>
+                                        </a>
+                                     </div>
+                                   {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="d-flex flex-column text-center">
+                                   <div class="state-icon"><i class="fas fa-file"></i></div>
+                                   <p class="m-0 state-text">No files attached yet</p>
+                                </div>
+                                {% endif %}   
                              </div>
                           </div>
                        </div>
@@ -282,4 +331,5 @@
 <script type="text/javascript" src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'vendor/tinymce/jquery.tinymce.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'src/js/announcement/article_change.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/announcement/resources.js' %}"></script>
 {% endblock %}
