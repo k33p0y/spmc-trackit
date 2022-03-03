@@ -41,12 +41,11 @@
                 <form id="form-filter">
                     <div class="p-3 scrollable-menu">
                         <div class="form-group mb-1">
-                            <label for="requestform-filter">By Request Form</label>
-                            <select class="form-control form-control-sm select-filter" id="requestform-filter" name="requestform-filter">
+                            <label for="active-filter">By Publish </label>
+                            <select class="form-control form-control-sm select-filter" id="publish-filter" name="publish-filter">
                             <option value="">All</option>
-                            {% for form in forms %}
-                            <option value={{form.id}}>{{form}}</option>
-                            {% endfor %}
+                            <option value="0">Yes</option>
+                            <option value="1">No</option>
                             </select>
                         </div>
                         <div class="form-group mb-1">
@@ -59,11 +58,6 @@
                         </div>
                         <div class="form-group mb-1">
                             <label for="date-filter">By Date Published </label>
-                            <input type="date" class="form-control form-control-sm mb-2" id="date-from-filter" name="date-filter" placeholder="From">
-                            <input type="date" class="form-control form-control-sm" id="date-to-filter" name="date-filter" placeholder="To">
-                        </div>
-                        <div class="form-group mb-1">
-                            <label for="date-filter">By Date Scheduled </label>
                             <input type="date" class="form-control form-control-sm mb-2" id="date-from-filter" name="date-filter" placeholder="From">
                             <input type="date" class="form-control form-control-sm" id="date-to-filter" name="date-filter" placeholder="To">
                         </div>
@@ -100,7 +94,7 @@
                     <table id="dt_articles" class="table table-hover" width="100%">
                         <thead>
                             <tr>
-                            <th data-priority="1">Title</th>
+                            <th data-priority="1">Headline</th>
                             <th data-priority="4">Date Created</th>
                             <th data-priority="4">Author</th>
                             <th data-priority="4">is publish</th>
