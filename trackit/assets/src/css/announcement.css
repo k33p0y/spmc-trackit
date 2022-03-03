@@ -100,3 +100,18 @@
 .tox-menubar > button {
     font-size: 12px !important;
 }
+
+/* recources */
+#upload_wrapper .btn-remove,
+#side_upload_wrapper .btn-remove {
+   padding: 12px;
+   border-radius: 50% !important;
+   height: 16px !important;
+   width: 16px !important;
+   font-size: 10px !important;
+   text-align: center;
+   padding: 0;
+   position: absolute;
+   right: -5px;
+   top: -5px;
+}

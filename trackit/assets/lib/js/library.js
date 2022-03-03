@@ -229,6 +229,45 @@ const uploadAttachment = async function(ticket, array) {
    }  
 }
 
+const uploadResources = async function(article, array) {
+   let files = new Object(array);
+   let percent = 0;
+   let num = 1;
+
+   $('#uploadResourceModal').modal('show'); // Open Modal
+
+   for (const file of files) {
+      // new objcet for file extra data
+      let file_obj = new Object();
+      file_obj.article = article
+
+      // extra data convert to blob
+      let blob = new Blob([JSON.stringify(file_obj)], {type: 'application/json'});
+      
+      // append to formData
+      let form_data = new FormData();
+      form_data.append('file', file.file)
+      form_data.append('data', blob)
+               
+      // post api
+      await axios({
+         method: 'POST',
+         url: '/api/news/resources/',
+         data: form_data,
+         headers: uploadConfig         
+      }).then (function (result) {
+         percent = Math.round(( (num) / files.length) * 100);
+         $('#upload_resource_progress').animate(
+            { "width": `${percent}%`}, 0, function() {
+               $('#resource_percent').html(`${percent}%`);
+               if (percent == 100) $(this).addClass('bg-success');
+            }
+         );
+         num++;
+      });
+   }  
+}
+
 const toastSuccess = async function (title) {
    $('.overlay').removeClass('d-none');
 

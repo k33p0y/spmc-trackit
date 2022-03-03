@@ -4,11 +4,6 @@ $(document).ready(function () {
     $('#txt_content').tinymce({
         height: 500,
         menubar: true,
-        plugins: [
-          'advlist autolink lists link image charmap print preview anchor',
-          'searchreplace visualblocks code fullscreen',
-          'insertdatetime media table paste code help wordcount'
-        ],
         toolbar: 'undo redo | formatselect | fontselect | fontsizeselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
         content_style: 'body { font-size:12px }'
     });
@@ -43,14 +38,16 @@ $(document).ready(function () {
             url: `/api/announcement/all/article/`,
             data: data,
             headers: axiosConfig,
-        }).then(function (res) { // success
-            $.when(toastSuccess('Success')).then(() => $(location).attr('href', '/announcement/lists')) // Alert
+        }).then(async function (res) { // success
+            if (file_arr.length > 0) await uploadResources(res.data.id, file_arr)  // upload attachments
+        }).then(function () {
+            $.when(toastSuccess('Success')).then(() => $(location).attr('href', '/announcement/lists')) // alert
         }).catch(function (err) { // error
-            toastError(err.response.statusText) // alert
+            toastError(err.response.statusText);
             if (err.response.data.title) showFieldErrors(err.response.data.title, 'title'); else removeFieldErrors('title');
+            if (err.response.data.preface) showFieldErrors(err.response.data.preface, 'preface'); else removeFieldErrors('preface');
         });
     };
-
 
     let showFieldErrors = function(obj, field) {
         // Enable button
@@ -58,6 +55,7 @@ $(document).ready(function () {
 
         // Add error class change border color to red
         if (field == 'title') $(`#txt_${field}`).addClass('form-error');
+        if (field == 'preface') $(`#txt_${field}`).addClass('form-error');
 
         // error message
         let msg = '';
@@ -68,6 +66,7 @@ $(document).ready(function () {
     let removeFieldErrors = function(field) {
         // Remove error class for border color
         if (field == 'title') $(`#txt_${field}`).removeClass('form-error');
+        if (field == 'preface') $(`#txt_${field}`).removeClass('form-error');
         $(`#${field}_error`).html('');
     };
 });

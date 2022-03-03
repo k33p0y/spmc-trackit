@@ -10,22 +10,22 @@
 {% block content %}
 <!-- Content Header -->
 <section class="content-header">
-   <div class="container-fluid">
-      <div class="row mb-2">
-         <div class="col-sm-6">
+<div class="container-fluid">
+    <div class="row mb-2">
+        <div class="col-sm-6">
             <h5 class="font-weight-bolder">Create Article</h5>
-         </div>
-         <div class="col-sm-6">
+        </div>
+        <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right text-xs">
-               <li class="breadcrumb-item"><a href="{% url 'home' %}" class="btn-link-orange"><i
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="btn-link-orange"><i
                         class="fas fa-home"></i></a></li>
-               <li class="breadcrumb-item">Announcement</li>
-               <li class="breadcrumb-item"> <a href="{% url 'announcement' %}" class="btn-link-neutral">List</a> </li>
-               <li class="breadcrumb-item active">New</li>
+            <li class="breadcrumb-item">Announcement</li>
+            <li class="breadcrumb-item"> <a href="{% url 'announcement' %}" class="btn-link-neutral">List</a> </li>
+            <li class="breadcrumb-item active">New</li>
             </ol>
-         </div>
-      </div>
-   </div>
+        </div>
+    </div>
+</div>
 </section>
 
 <!-- /.content -->
@@ -88,7 +88,7 @@
                                 </div>
                                 <div class="ml-auto"> <a class="btn btn-xs btn-link text-secondary d-none" id="btn_clear"><span>Clear All</span> </a> </div>
                             </div>           
-                            <div class="list-group file_lists mt-2"></div>
+                            <div class="row file-upload-wrap mt-3 d-none" id="upload_wrapper"></div>  
                         </div>
                     </div>
                 </div>   
@@ -109,14 +109,15 @@
                         <div class="card-body p-3">
                             <div class="d-flex">
                                 <div>
-                                <label class="btn btn-sm btn-light m-0">
-                                    <span><i class="fas fa-sm fa-folder-open"></i> Browse Files</span> 
-                                    <input type="file" name="file" id="file_upload" multiple hidden> 
-                                </label>
+                                    <label class="btn btn-sm btn-light m-0">
+                                        <span><i class="fas fa-sm fa-folder-open"></i> Browse Files</span> 
+                                        <input type="file" name="file" id="side_file_upload" multiple hidden> 
+                                    </label>
                                 </div>
-                                <div class="ml-auto"> <a class="btn btn-xs btn-link text-secondary d-none" id="btn_clear"><span>Clear All</span> </a> </div>
-                            </div>           
-                            <div class="list-group file_lists mt-2"></div>
+                                <div class="ml-auto"> <a class="btn btn-xs btn-link text-secondary d-none" id="side_btn_clear"><span>Clear All</span> </a> </div>
+                            </div>
+                            <div class="row file-upload-wrap mt-3 d-none" id="side_upload_wrapper">
+                            </div>         
                         </div>
                     </div>
                 </div>          
@@ -126,8 +127,35 @@
 </section>
 {% endblock %}
 
+{% block modal %}
+<!-- Upload Progress -->
+<div class="modal fade" id="uploadResourceModal" tabindex="-1" role="dialog" aria-labelledby="uploadResourceModal" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-body p-2">
+            <ol class="list-group">
+            <li class="list-group-item d-flex align-items-center border-0 p-2" id="save-data">
+                <div class="p-1 file-icon"><i class="fas fa-lg fa-upload text-secondary"></i></div>
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-1">
+                        <div class="m-0">Uploading Attachments</div>
+                        <div class="ml-auto text-muted" id="resource_percent"></div>
+                    </div>
+                    <div class="progress" style="height: 2px;">
+                        <div class="progress-bar" id="upload_resource_progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </li>
+            </ol>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
 {% block extrascript %}.
 <script type="text/javascript" src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'vendor/tinymce/jquery.tinymce.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'src/js/announcement/article_new.js' %}"></script>
+<script type="text/javascript" src="{% static 'src/js/announcement/resources.js' %}"></script>
 {% endblock %}

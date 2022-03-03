@@ -40,3 +40,14 @@ class ArticlePublishSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ['id', 'is_publish', 'modified_by']
+
+class ResourcesSerializer(serializers.ModelSerializer):
+   uploaded_by = UserInfoSerializer(read_only=True)
+   file_size = serializers.SerializerMethodField('get_file_size')
+
+   def get_file_size(self, filename):
+      return filename.file.size
+   
+   class Meta:
+      model = Resources
+      fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'article', 'uploaded_at', 'uploaded_by']
