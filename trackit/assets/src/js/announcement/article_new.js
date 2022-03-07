@@ -32,6 +32,16 @@ $(document).ready(function () {
         postArticle(data);
     });
 
+    // character counter
+    $('#txt_preface').on("input", function() {
+        let maxlength = $(this).attr("maxlength");
+        let currentLength = $(this).val().length;
+        $('#char_count').html(currentLength);
+
+        if (currentLength >= maxlength) $('#preface_error').html("You have reached the maximum number of characters.");
+        else $('#preface_error').html("")
+    });
+
     let postArticle = function(data) {
         axios({
             method: 'POST',

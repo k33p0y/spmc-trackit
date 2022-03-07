@@ -1,11 +1,23 @@
 $(document).ready(function () {
 
+    $('#char_count').html($('#txt_preface').val().length);
+
     // TinyMCE WYSISWYG Editor
     $('#txt_content').tinymce({
         height: 500,
         menubar: true,
         toolbar: 'undo redo | formatselect | fontselect | fontsizeselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
         content_style: 'body { font-size:12px }'
+    });
+
+    // character counter
+    $('#txt_preface').on("input", function() {
+        let maxlength = $(this).attr("maxlength");
+        let currentLength = $(this).val().length;
+        $('#char_count').html(currentLength);
+
+        if (currentLength >= maxlength) $('#preface_error').html("You have reached the maximum number of characters.");
+        else $('#preface_error').html("")
     });
     
     // save button 

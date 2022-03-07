@@ -51,8 +51,11 @@
                                     </div>
                                     <div class="form-group col-md-12">
                                         <label>Preface</label>
-                                        <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter article preface" id="txt_preface"></textarea>
-                                        <small class="error-info" id="preface_error"></small>
+                                        <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter article preface" id="txt_preface" maxlength=255></textarea>
+                                        <div class="d-flex">
+                                            <small class="error-info" id="preface_error"></small>
+                                            <small class="text-black-50 ml-auto"><span id="char_count">0</span>/255</small>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -95,7 +98,7 @@
                 <div class="form-actions mt-3 d-flex flex-row-reverse">
                     <button type="submit" class="btn btn-sm btn-orange pl-3 pr-3" id="btn_save"><span>Save</span></button>
                     <button type="submit" class="btn btn-sm btn-orange" id="btn_publish"><span>Save and Publish</span></button>
-                    <a href="{% url 'ticket' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
+                    <a href="{% url 'announcement' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
                 </div>
             </div>
             <div class="col-12 col-md-12 col-lg-4 d-none d-lg-block">
