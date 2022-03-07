@@ -118,6 +118,18 @@
    padding: 5em 10%;
 }
 
+.file-anchor {
+   text-decoration: none;
+   color: unset
+}
+.file-anchor:hover,
+.file-anchor:active {
+   color: #fd7e14;
+}
+.file-anchor:hover .card {
+   background-color: #fff5ee;
+}
+
 /* Media */
 @media only screen and (max-device-width: 812px) { 
    .carousel-inner .icon-overlay-1 {

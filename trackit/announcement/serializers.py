@@ -3,8 +3,20 @@ from rest_framework import serializers
 from .models import Article, Resources
 from core.serializers import UserInfoSerializer
 
+class ResourcesSerializer(serializers.ModelSerializer):
+    uploaded_by = UserInfoSerializer(read_only=True)
+    file_size = serializers.SerializerMethodField('get_file_size')
+
+    def get_file_size(self, filename):
+        return filename.file.size
+    
+    class Meta:
+        model = Resources
+        fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'article', 'uploaded_at', 'uploaded_by']
+
 class ArticleListSerializer(serializers.ModelSerializer):
     author = UserInfoSerializer(read_only=True)
+    resources = ResourcesSerializer(read_only=True, many=True)
 
     def create(self, validated_data):
         article = Article(
@@ -42,12 +54,12 @@ class ArticlePublishSerializer(serializers.ModelSerializer):
         fields = ['id', 'is_publish', 'modified_by']
 
 class ResourcesSerializer(serializers.ModelSerializer):
-   uploaded_by = UserInfoSerializer(read_only=True)
-   file_size = serializers.SerializerMethodField('get_file_size')
+    uploaded_by = UserInfoSerializer(read_only=True)
+    file_size = serializers.SerializerMethodField('get_file_size')
 
-   def get_file_size(self, filename):
-      return filename.file.size
-   
-   class Meta:
-      model = Resources
-      fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'article', 'uploaded_at', 'uploaded_by']
+    def get_file_size(self, filename):
+        return filename.file.size
+    
+    class Meta:
+        model = Resources
+        fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'article', 'uploaded_at', 'uploaded_by']
