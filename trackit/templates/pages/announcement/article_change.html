@@ -183,10 +183,10 @@
                                 {% if article.resources.all|length > 0 %}
                                 <div class="row mt-3">  
                                    {% for resource in article.resources.all %}
-                                      <div class="col file-item">
-                                         <a href="{{resource.file.url}}" target="_blank" class="file-anchor">
-                                            <div class="card">
-                                               <div class="d-flex flex-row align-items-center p-2">
+                                    <div class="col file-item">
+                                        <div class="card">
+                                            <a href="{{resource.file.url}}" target="_blank" class="file-anchor">
+                                                <div class="d-flex flex-row align-items-center p-2">
                                                     {% comment %}
                                                         //// create array to check file type for icon display
                                                     {% endcomment %}
@@ -209,10 +209,11 @@
                                                         <p class="m-0 font-weight-bold">{{resource.file_name}}</p>
                                                         <small class="text-muted">{{resource.file.size|filesizeformat}}</small>
                                                     </div>
-                                               </div>
-                                           </div>
-                                        </a>
-                                     </div>
+                                                </div>
+                                            </a>
+                                            <button class="btn btn-danger btn-block shadow-none p-0 m-0 btn-delete" data-file="{{resource.pk}}"> <small class="text-light">Delete</small></button>
+                                        </div>
+                                    </div>
                                    {% endfor %}
                                 </div>
                                 {% endif %}   
@@ -325,35 +326,36 @@
                                 {% if article.resources.all|length > 0 %}
                                 <div class="row mt-3">  
                                    {% for resource in article.resources.all %}
-                                      <div class="col file-item">
-                                         <a href="{{resource.file.url}}" target="_blank" class="file-anchor">
+                                      <div class="col side-file-item">
                                             <div class="card">
-                                               <div class="d-flex flex-row align-items-center p-2">
-                                                    {% comment %}
-                                                        //// create array to check file type for icon display
-                                                    {% endcomment %}
-                                                    {% with text='text/plain' pdf='application/pdf' spreadsheet='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/vnd.ms-excel application/vnd.oasis.opendocument.spreadsheet text/csv' document='application/vnd.openxmlformats-officedocument.wordprocessingml.document application/msword application/vnd.oasis.opendocument.text' presentation='application/vnd.openxmlformats-officedocument.presentationml.presentation application/vnd.ms-powerpoint application/vnd.oasis.opendocument.presentation' image='image/png image/jpeg'%}
-                                                        {% if resource.file_type in text.split %}
-                                                            <div class="far fa-3x fa-file-alt"></div>
-                                                        {% elif resource.file_type in pdf.split %}
-                                                            <div class="far fa-3x fa-file-pdf text-danger"></div>
-                                                        {% elif resource.file_type in spreadsheet.split %}
-                                                            <div class="far fa-3x fa-file-excel text-success"></div>
-                                                        {% elif resource.file_type in document.split %}
-                                                            <div class="far fa-3x fa-file-word text-primary"></div>
-                                                        {% elif resource.file_type in presentation.split %}
-                                                            <div class="far fa-3x fa-file-powerpoint text-orange"></div>
-                                                        {% elif resource.file_type in image.split %}
-                                                            <div class="far fa-3x fa-file-image text-warning"></div>
-                                                        {% endif %}
-                                                    {% endwith %}                                      
-                                                    <div class="card-body p-0 ml-2">
-                                                        <p class="m-0 font-weight-bold">{{resource.file_name}}</p>
-                                                        <small class="text-muted">{{resource.file.size|filesizeformat}}</small>
+                                                <a href="{{resource.file.url}}" target="_blank" class="file-anchor">
+                                                    <div class="d-flex flex-row align-items-center p-2">
+                                                        {% comment %}
+                                                            //// create array to check file type for icon display
+                                                        {% endcomment %}
+                                                        {% with text='text/plain' pdf='application/pdf' spreadsheet='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/vnd.ms-excel application/vnd.oasis.opendocument.spreadsheet text/csv' document='application/vnd.openxmlformats-officedocument.wordprocessingml.document application/msword application/vnd.oasis.opendocument.text' presentation='application/vnd.openxmlformats-officedocument.presentationml.presentation application/vnd.ms-powerpoint application/vnd.oasis.opendocument.presentation' image='image/png image/jpeg'%}
+                                                            {% if resource.file_type in text.split %}
+                                                                <div class="far fa-3x fa-file-alt"></div>
+                                                            {% elif resource.file_type in pdf.split %}
+                                                                <div class="far fa-3x fa-file-pdf text-danger"></div>
+                                                            {% elif resource.file_type in spreadsheet.split %}
+                                                                <div class="far fa-3x fa-file-excel text-success"></div>
+                                                            {% elif resource.file_type in document.split %}
+                                                                <div class="far fa-3x fa-file-word text-primary"></div>
+                                                            {% elif resource.file_type in presentation.split %}
+                                                                <div class="far fa-3x fa-file-powerpoint text-orange"></div>
+                                                            {% elif resource.file_type in image.split %}
+                                                                <div class="far fa-3x fa-file-image text-warning"></div>
+                                                            {% endif %}
+                                                        {% endwith %}                                      
+                                                        <div class="card-body p-0 ml-2">
+                                                            <p class="m-0 font-weight-bold">{{resource.file_name}}</p>
+                                                            <small class="text-muted">{{resource.file.size|filesizeformat}}</small>
+                                                        </div>
                                                     </div>
-                                               </div>
+                                                </a>
+                                               <button class="btn btn-danger btn-block shadow-none p-0 m-0 btn-delete" data-file="{{resource.pk}}"> <small class="text-light">Delete</small></button>
                                            </div>
-                                        </a>
                                      </div>
                                    {% endfor %}
                                 </div>

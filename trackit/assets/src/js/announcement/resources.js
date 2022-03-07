@@ -49,13 +49,11 @@ $(document).ready(function () {
     // remove attachment
     $('.file-upload-wrap').on('click', '.btn-remove', function () {
         let file = $(this).data().file;
-
         // loop through the files array and check if the file id of that file matches data-file-id
         // and get the index of the match
         for (var i = 0; i < file_arr.length; ++i) {
             if (file == file_arr[i].id) file_arr.splice(i, 1);
         };
-
         // remove to appended div
         $(`button[data-file='${file}']`).parents("div.file-item").remove();
     });
@@ -68,4 +66,37 @@ $(document).ready(function () {
         $('#btn_clear, #side_btn_clear').addClass('d-none');
         $('#upload_wrapper, #side_upload_wrapper').addClass('d-none'); 
     });
+
+    // delete attachment
+    $('.file-item, .side-file-item').on('click', '.btn-delete', function () {
+        let file = $(this).data().file;
+
+        Swal.fire({
+            title: 'Delete Attachment',
+            html: '<p class="m-0">This will remove from the lists.</p>',
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Delete',
+            confirmButtonColor: '#c44a56',
+            reverseButtons: true
+         }).then((result) => {
+            if (result.value) {
+                $(this).attr('disabled', true);     
+
+                axios({
+                    method: 'DELETE',
+                    url: `/api/news/resources/${file}/`,
+                    headers: axiosConfig
+                }).then(function (response) {
+                    $.when(toastSuccess('Success')).then(function () {
+                        location.reload();
+                    });
+                }).catch(function (error) {
+                    toastError(error);
+                });
+            }
+        });
+    });
+
 });
