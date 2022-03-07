@@ -25,8 +25,8 @@ $(document).ready(function () {
                 file_lists.append(
                     `<div class="col file-item">
                         <div class="card">
-                            <button class="btn btn-danger btn-remove" data-file="file_${file.name}">
-                                <i class="fas fa-minus"></i>
+                            <button class="btn btn-orange btn-remove" data-file="file_${file.name}">
+                                <i class="fas fa-times"></i>
                             </button>
                             <div class="d-flex flex-row align-items-center p-2">
                                 <div class="far fa-3x ${type}"></div>

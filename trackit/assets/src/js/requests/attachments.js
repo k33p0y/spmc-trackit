@@ -183,12 +183,13 @@ $(document).ready(function () {
 
       Swal.fire({
          title: 'Delete Attachment',
-         html: '<p class="m-0">This will remove from the lists. Continue?</p>',
-         icon: 'question',
+         html: '<p class="m-0">This will remove from the lists.</p>',
+         icon: 'warning',
          showCancelButton: true,
-         cancelButtonText: 'No',
-         confirmButtonText: 'Yes',
-         confirmButtonColor: '#17a2b8',
+         cancelButtonText: 'Cancel',
+         confirmButtonText: 'Delete',
+         confirmButtonColor: '#c44a56',
+         reverseButtons: true
       }).then((result) => {
          if (result.value) {
             $(this).attr('disabled', true);

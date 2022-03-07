@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_datatables',
     'crispy_forms',
     'easyaudit',
+    'django_cleanup.apps.CleanupConfig',
     
     # Django Apps
     'announcement',
