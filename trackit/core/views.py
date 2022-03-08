@@ -34,7 +34,7 @@ def home(request):
    now = datetime.datetime.now()
    users = User.objects.filter(date_joined__lte=now, is_active=True, is_superuser=False).order_by('-date_joined')[:8]
    tickets = Ticket.objects.filter(date_created__lte=now, is_active=True).order_by('-date_created')[:6]
-   announcement = Article.objects.filter(is_publish=True).order_by('-date_publish')
+   announcement = Article.objects.filter(is_active=True).order_by('-date_publish')
 
    context =  {"users": users, "tickets":tickets, "announcement":announcement}
    return render(request, 'pages/index.html', context)

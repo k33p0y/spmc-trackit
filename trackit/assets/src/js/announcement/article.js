@@ -2,7 +2,6 @@ $(document).ready(function () {
    
    var searchInput = function() { return $('#search-input').val(); }
    var activeFilter = function() { return $('#active-filter').val(); }
-   var publishFilter = function() { return $('#publish-filter').val(); }
    var dateFromFilter = function() { return $('#date-from-filter').val(); }
    var dateToFilter = function() { return $('#date-to-filter').val(); }
 
@@ -20,7 +19,6 @@ $(document).ready(function () {
       type: "GET",
       data: {
          "search": searchInput,
-         "is_publish": publishFilter,
          "is_active": activeFilter,
          "date_from": dateFromFilter,
          "date_to": dateToFilter,
@@ -51,13 +49,6 @@ $(document).ready(function () {
          data: "author",
          render: function (data, type, row) {
             if (type == 'display') data = `${row.author.name}`;
-            return data
-         },
-      },
-      {
-         data: "is_publish",
-         render: function (data, type, row) {
-            data = (row.is_publish) ? "<i class='fas fa-thumbtack text-orange'></i>" : "<i class='fas fa-thumbtack text-black-50' ></i>";
             return data
          },
       },

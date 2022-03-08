@@ -36,17 +36,6 @@
          <a href="{% url 'change_article' article.pk %}" class="btn btn-light text-secondary ml-2" data-article-id="{{article.pk}}">
             <i class="fas fa-sm fa-pencil-alt"></i> <span>Update Article</span> 
          </a>
-         {% if article.is_publish %}
-         <button class="btn btn-light" id="btn_unpublish" data-article-id="{{article.pk}}">
-            <i class="fas fa-sm fa-ban"></i> 
-            <span class="d-none d-sm-inline">Unpublish</span>
-         </button>
-         {% else %}
-         <button class="btn btn-light" id="btn_publish" data-article-id="{{article.pk}}">
-            <i class="fas fa-sm fa-paper-plane"></i> 
-            <span class="d-none d-sm-inline">Publish</span>
-         </button>
-         {% endif %}
       </div>
 
       <div class="row">
@@ -88,25 +77,15 @@
                                     </div>
                                 </div>
                                 {% endif %}
-                                <div class="col-12">
+                                 <div class="col-12">
                                     <div class="card card-detail mt-2 mb-1">
                                        <div class="card-body p-0 m-0">
                                        <div class="mr-auto">
-                                          <p class="context">{% if article.is_publish %} Published {% else %} Unpublished {% endif %}</p>
-                                          <span class="label">Is Publish</span>
+                                          <p class="context">{% if article.is_active %} Active {% else %} In Active {% endif %}</p>
+                                          <span class="label">Is Active</span>
                                        </div>
                                        </div>
                                     </div>
-                                 </div>
-                                 <div class="col-12">
-                                       <div class="card card-detail mt-2 mb-1">
-                                          <div class="card-body p-0 m-0">
-                                          <div class="mr-auto">
-                                             <p class="context">{% if article.is_active %} Active {% else %} In Active {% endif %}</p>
-                                             <span class="label">Is Active</span>
-                                          </div>
-                                          </div>
-                                       </div>
                                  </div>
                             </div>
                         </div>
@@ -116,7 +95,7 @@
             </div> 
               <div class="row" id="row-headline">
                <div class="col-12 col-sm-12">
-                  <div class="card card-form mt-2 mb-1 "  style="border-bottom-left-radius: 5px !important;">
+                  <div class="card card-form mt-2 mb-1"  style="border-bottom-left-radius: 5px !important;">
                      <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
                         <div class="card-header p-2">
                            <div class="card-title">Headline</div>
@@ -252,16 +231,6 @@
                                     </div>
                                 </div>
                                 {% endif %}
-                                <div class="col-12">
-                                    <div class="card card-detail mt-2 mb-1">
-                                       <div class="card-body p-0 m-0">
-                                       <div class="mr-auto">
-                                          <p class="context">{% if article.is_publish %} Published {% else %} Unpublished {% endif %}</p>
-                                          <span class="label">Is Publish</span>
-                                       </div>
-                                       </div>
-                                    </div>
-                                 </div>
                                  <div class="col-12">
                                        <div class="card card-detail mt-2 mb-1">
                                           <div class="card-body p-0 m-0">
