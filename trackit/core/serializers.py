@@ -9,7 +9,6 @@ from .models import User, UserVerification
 from .views import create_users_notification
 from config.models import Department
 
-
 import datetime
 
 class DepartmentReadOnlySerializer(serializers.ModelSerializer):
@@ -95,11 +94,6 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('This field may not be blank.')
         return department
 
-    def validate_contact_no(self, contact_no):
-        if contact_no and not contact_no.isdigit():
-            raise serializers.ValidationError('This field must be numeric.')
-        return contact_no
-
     def to_representation(self, instance):
         self.fields['department'] =  DepartmentReadOnlySerializer(read_only=True)
         return super(UserSerializer, self).to_representation(instance)
@@ -167,11 +161,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError('A user with that email address already exists.')
         return email
 
-    def validate_contact_no(self, contact_no):
-        if contact_no and not contact_no.isdigit():
-            raise serializers.ValidationError('This field must be numeric.')
-        return contact_no
-
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'middle_name', 'last_name', 'suffix', 'email', 'contact_no', 'department', 'license_no', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
@@ -186,11 +175,6 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
         instance.save() 
         create_users_notification(str(instance.pk), instance, 'client')  # Create notification instance
         return instance
-    
-    def validate_contact_no(self, contact_no):
-        if contact_no and not contact_no.isdigit():
-            raise serializers.ValidationError('This field must be numeric.')
-        return contact_no
 
     class Meta:
         model = User
@@ -273,8 +257,6 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_contact_no(self, contact_no):
         if not contact_no:
             raise serializers.ValidationError('This field may not be blank.')
-        if contact_no and not contact_no.isdigit():
-            raise serializers.ValidationError('This field must be numeric.')
         return contact_no
 
     def validate_email(self, email):
