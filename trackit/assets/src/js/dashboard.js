@@ -19,19 +19,19 @@ $(document).ready(function () {
             let resources = '';
             let content = '';
             // if has body 
-            if (res.data.content) content = `<div class="mb-4">${res.data.content}</div>`
+            if (res.data.content) content = `<div class="border p-4 mb-3">${res.data.content}</div>`
             // if has resources
             if (res.data.resources) {
                res.data.resources.forEach(resource => {
                   let file_url = (window.location.protocol == "https:") ? resource.file.replace("http://", "https://") : resource.file;
                   let file = (file_url.includes('socket')) ? file_url.replace('socket', window.location.host) : file_url;
 
-                  resources += `<div class="col-2 mb-2">
+                  resources += `<div class="col-4 mb-2">
                      <a href="${file}" target="_blank" class="file-anchor" data-toggle="tooltip" title="${resource.file_name}">
                         <div class="card border shadow-sm resource-item m-0">
                            <div class="d-flex flex-row align-items-center px-2 py-1">
-                              <div class="far fa-sm ${fileType(resource.file_type, media_type)}"></div>         
-                              <div class="card-body p-0 ml-1 text-truncate text-secondary">
+                              <div class="far ${fileType(resource.file_type, media_type)}"></div>         
+                              <div class="card-body p-0 ml-2 text-secondary">
                                  <small class="m-0 text-secondary">${resource.file_name}</small>
                               </div>
                            </div>
