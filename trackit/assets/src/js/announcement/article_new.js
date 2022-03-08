@@ -11,30 +11,6 @@ $(document).ready(function () {
         ],
         toolbar: 'undo redo | formatselect | fontselect | fontsizeselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
     });
-    
-    // save and publish button
-    $('#btn_publish').click(function (e) {
-        e.preventDefault();
-
-        let data = new Object();
-        data.title = $('#txt_title').val();
-        data.preface = $('#txt_preface').val();
-        data.content = tinyMCE.activeEditor.getContent();
-        data.is_publish = true;
-        postArticle(data);        
-    });
-
-    // save button 
-    $('#btn_save').click(function (e) {
-        e.preventDefault();
-
-        let data = new Object();
-        data.title = $('#txt_title').val();
-        data.preface = $('#txt_preface').val();
-        data.content = tinyMCE.activeEditor.getContent();
-        data.is_publish = false;
-        postArticle(data);
-    });
 
     // character counter
     $('#txt_preface').on("input", function() {
@@ -45,23 +21,35 @@ $(document).ready(function () {
         if (currentLength >= maxlength) $('#preface_error').html("You have reached the maximum number of characters.");
         else $('#preface_error').html("")
     });
+    
+    // save article 
+    $('#btn_save').click(function (e) {
+        e.preventDefault();
+        $(this).attr('disabled', true) //  disable button
 
-    let postArticle = function(data) {
+        let data = new Object();
+        data.title = $('#txt_title').val();
+        data.preface = $('#txt_preface').val();
+        data.content = tinyMCE.activeEditor.getContent();
+
         axios({
             method: 'POST',
-            url: `/api/announcement/all/article/`,
+            url: `/api/announcement/article/`,
             data: data,
             headers: axiosConfig,
         }).then(async function (res) { // success
             if (file_arr.length > 0) await uploadResources(res.data.id, file_arr)  // upload attachments
         }).then(function () {
-            $.when(toastSuccess('Success')).then(() => $(location).attr('href', '/announcement/lists')) // alert
+            $.when(toastSuccess('Success')).then(() => {
+                $(location).attr('href', '/announcement/lists')
+                $('#btn_save').attr('disabled', false) // enable button
+            }) // alert
         }).catch(function (err) { // error
             toastError(err.response.statusText);
             if (err.response.data.title) showFieldErrors(err.response.data.title, 'title'); else removeFieldErrors('title');
             if (err.response.data.preface) showFieldErrors(err.response.data.preface, 'preface'); else removeFieldErrors('preface');
         });
-    };
+    });
 
     let showFieldErrors = function(obj, field) {
         // Enable button

@@ -31,7 +31,7 @@ $(document).ready(function () {
                         <div class="card border shadow-sm resource-item m-0">
                            <div class="d-flex flex-row align-items-center px-2 py-1">
                               <div class="far ${fileType(resource.file_type, media_type)}"></div>         
-                              <div class="card-body p-0 ml-2 text-secondary">
+                              <div class="card-body p-0 ml-2 text-truncate text-secondary">
                                  <small class="m-0 text-secondary">${resource.file_name}</small>
                               </div>
                            </div>

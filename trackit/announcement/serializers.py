@@ -18,13 +18,19 @@ class ArticleListSerializer(serializers.ModelSerializer):
     author = UserInfoSerializer(read_only=True)
     resources = ResourcesSerializer(read_only=True, many=True)
 
+    class Meta:
+        model = Article
+        fields = '__all__'
+
+class ArticleCRUDSerializer(serializers.ModelSerializer):
+    author = UserInfoSerializer(read_only=True)
+
     def create(self, validated_data):
         article = Article(
             title = validated_data['title'],
             preface = validated_data['preface'],
             content = validated_data['content'],
             author = self.context['request'].user,
-            is_publish = validated_data['is_publish']
         )
         article.save()
         return article
@@ -33,7 +39,6 @@ class ArticleListSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get('title', instance.title)
         instance.preface = validated_data.get('preface', instance.preface)
         instance.content = validated_data.get('content', instance.content)
-        instance.is_publish = validated_data.get('is_publish', instance.is_publish)
         instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.save()
         return instance
@@ -41,17 +46,6 @@ class ArticleListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = '__all__'
-
-class ArticlePublishSerializer(serializers.ModelSerializer):
-    def update(self, instance, validated_data):
-        instance.is_publish = True if instance.is_publish == False else False
-        instance.modified_by = self.context['request'].user
-        instance.save()
-        return instance
-
-    class Meta:
-        model = Article
-        fields = ['id', 'is_publish', 'modified_by']
 
 class ResourcesSerializer(serializers.ModelSerializer):
     uploaded_by = UserInfoSerializer(read_only=True)

@@ -38,7 +38,7 @@ $(document).ready(function () {
         
         axios({
             method: 'PUT',
-            url: `/api/announcement/all/article/${article}/`,
+            url: `/api/announcement/article/${article}/`,
             data: data,
             headers: axiosConfig,
         }).then(async function (res) { // success

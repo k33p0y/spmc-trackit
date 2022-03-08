@@ -15,7 +15,7 @@ $(document).ready(function () {
       "processing": true,
       "pageLength": 15,
       "ajax": {
-      url: '/api/announcement/all/article/?format=datatables',
+      url: '/api/announcement/article/?format=datatables',
       type: "GET",
       data: {
          "search": searchInput,
