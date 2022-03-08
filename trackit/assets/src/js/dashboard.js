@@ -26,7 +26,7 @@ $(document).ready(function () {
                   let file_url = (window.location.protocol == "https:") ? resource.file.replace("http://", "https://") : resource.file;
                   let file = (file_url.includes('socket')) ? file_url.replace('socket', window.location.host) : file_url;
 
-                  resources += `<div class="col-4 mb-2">
+                  resources += `<div class="col-3 mb-2">
                      <a href="${file}" target="_blank" class="file-anchor" data-toggle="tooltip" title="${resource.file_name}">
                         <div class="card border shadow-sm resource-item m-0">
                            <div class="d-flex flex-row align-items-center px-2 py-1">
