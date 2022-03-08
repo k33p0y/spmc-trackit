@@ -16,6 +16,7 @@ class ResourcesSerializer(serializers.ModelSerializer):
 
 class ArticleListSerializer(serializers.ModelSerializer):
     author = UserInfoSerializer(read_only=True)
+    modified_by = UserInfoSerializer(read_only=True)
     resources = ResourcesSerializer(read_only=True, many=True)
 
     class Meta:
@@ -40,6 +41,7 @@ class ArticleCRUDSerializer(serializers.ModelSerializer):
         instance.preface = validated_data.get('preface', instance.preface)
         instance.content = validated_data.get('content', instance.content)
         instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.modified_by = self.context['request'].user
         instance.save()
         return instance
 

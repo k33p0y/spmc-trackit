@@ -32,11 +32,13 @@
    <div class="container-fluid">
       <div class="overlay d-none"></div>
       
+      {% if perms.announcement.add_article and perms.announcement.change_article %}
       <div class="d-flex flex-row-reverse mb-1">
          <a href="{% url 'change_article' article.pk %}" class="btn btn-light text-secondary ml-2" data-article-id="{{article.pk}}">
             <i class="fas fa-sm fa-pencil-alt"></i> <span>Update Article</span> 
          </a>
       </div>
+      {% endif %}
 
       <div class="row">
          <div class="col-12 col-sm-12 col-md-12 col-lg-8">
@@ -71,7 +73,7 @@
                                 <div class="col-12">
                                     <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                        <p class="context text-truncate">{{article.modified_at|date:"d F Y h:i A"}} | {{article.modified_by}}</p>
+                                        <p class="context text-truncate">{{article.modified_at|date:"d F Y h:i A"}} {% if article.modified_by %} | {{article.modified_by}} {% endif %}</p>
                                         <span class="label">Last Modified</span>
                                     </div>
                                     </div>
@@ -225,7 +227,7 @@
                                 <div class="col-12">
                                     <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                        <p class="context text-truncate">{{article.modified_at|date:"d F Y h:i A"}} | {{article.modified_by}}</p>
+                                        <p class="context text-truncate">{{article.modified_at|date:"d F Y h:i A"}} {% if article.modified_by %} | {{article.modified_by}} {% endif %}</p>
                                         <span class="label">Last Modified</span>
                                     </div>
                                     </div>
