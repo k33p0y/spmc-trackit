@@ -150,11 +150,12 @@ def create_remark(object_id, ticket):
 # Generate reference no
 def generate_reference(form):
    year = datetime.datetime.now().year
-   ticket = Ticket.objects.filter(request_form=form, date_created__year=year).exclude(reference_no__exact='').order_by('-reference_no').first()
+   ticket = Ticket.objects.filter(request_form=form).exclude(reference_no__exact='').order_by('-reference_no').first()
    
    if ticket:
       ref_no = ticket.reference_no.split('-')
-      num_series = int(ref_no[2])+1
+      # check if instance reference no is in the same year.
+      num_series = int(ref_no[2])+1 if int(ref_no[1]) == year else "00001"
       reference_no = (str(ticket.request_form.prefix)+"-"+str(year)+"-"+str(num_series).zfill(5))
    else:
       form = RequestForm.objects.get(id=form)
