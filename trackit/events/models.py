@@ -1,4 +1,5 @@
 from django.db import models
+from core.models import User
 from requests.models import Ticket, RequestForm
 
 # Create your models here.
@@ -6,6 +7,8 @@ class Event(models.Model):
     title = models.CharField(max_length=155)
     subject = models.CharField(max_length=255, blank=True)
     event_for = models.ForeignKey(RequestForm, related_name='events', on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, related_name="event_creator", on_delete=models.CASCADE)
+    modified_by = models.ForeignKey(User, related_name="event_modifier", on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
