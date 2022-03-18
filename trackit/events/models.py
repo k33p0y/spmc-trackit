@@ -32,6 +32,6 @@ class EventDate(models.Model):
 
 class EventTicket(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, related_name='participants', on_delete=models.CASCADE)
+    scheduled_event = models.ForeignKey(EventDate, related_name='participants', on_delete=models.CASCADE)
     attended = models.BooleanField(default=False)
     remarks = models.CharField(max_length=100, null=True, blank=True)

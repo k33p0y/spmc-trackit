@@ -180,8 +180,8 @@
                {% endif %}
             {% endif %}
 
-            <li class="nav-item">
-               <a href="#" class="nav-link">
+            <li class="nav-item {% if url == 'event' or url == 'event_calendar' %} menu-open {% endif %}">
+               <a href="#" class="nav-link {% if url == 'event' or url == 'event_calendar' %} active {% endif %}">
                   <i class="nav-icon fas fa-calendar-alt"></i>
                   <p>
                      Events
@@ -190,15 +190,15 @@
                </a>
                <ul class="nav nav-treeview">
                   <li class="nav-item">
-                     <a href="#"
-                        class="nav-link">
+                     <a href="{% url 'event_calendar' %}"
+                        class="nav-link {% if url == 'event_calendar' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p>Calendar</p>
                      </a>
                   </li>
                   <li class="nav-item">
-                     <a href="#"
-                        class="nav-link">
+                     <a href="{% url 'event' %}"
+                        class="nav-link {% if url == 'event' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p>Manage</p>
                      </a>
