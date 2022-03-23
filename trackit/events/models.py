@@ -7,6 +7,7 @@ class Event(models.Model):
     title = models.CharField(max_length=155)
     subject = models.CharField(max_length=255, blank=True)
     event_for = models.ForeignKey(RequestForm, related_name='events', on_delete=models.CASCADE)
+    highlight = models.CharField(max_length=50, blank=True)
     created_by = models.ForeignKey(User, related_name="event_creator", on_delete=models.CASCADE)
     modified_by = models.ForeignKey(User, related_name="event_modifier", on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
