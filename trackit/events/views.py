@@ -10,3 +10,7 @@ def event(request):
 @login_required
 def event_calendar(request):
    return render(request, 'pages/events/calendar.html', {})
+
+@login_required
+def create_event(request):
+   return render(request, 'pages/events/event_new.html', {})

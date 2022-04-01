@@ -74,7 +74,7 @@
             </div>
             {% if perms.events.add_event %}
             <div class="ml-auto">
-                <a href="#" class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-list"><i class="fas fa-xs fa-plus"></i> <span class="d-none d-sm-inline ml-1">Schedule Event</span></a>
+                <a href="{% url 'create_event' %}" class="btn btn-xs btn-orange btn-new shadow-sm" id="btn-create-list"><i class="fas fa-xs fa-plus"></i> <span class="d-none d-sm-inline ml-1">Schedule Event</span></a>
             </div>
             {% endif %}
         </div>
