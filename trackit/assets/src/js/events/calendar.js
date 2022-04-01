@@ -1,5 +1,5 @@
 // Fullcalendar plugin
-document.addEventListener('DOMContentLoaded', function() {
+$(function() {
     var draggableEl = document.getElementById('event_lists');
     var draggable = new FullCalendar.Draggable(draggableEl, {
         itemSelector: '.event-card',
@@ -17,10 +17,29 @@ document.addEventListener('DOMContentLoaded', function() {
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-          },
-          editable: true,
-          droppable: true, // this allows things to be dropped onto the calendar
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        themeSystem: 'bootstrap',
+        editable: true,
+        droppable: true, // this allows things to be dropped onto the calendar
+        events: function(info, successCallback, failureCallback) {
+            axios.get('/api/events/eventdate').then(response => {
+                let events = new Array()
+                
+                response.data.results.forEach(event => {
+                    events.push({
+                        title: event.event.title,
+                        start: `${event.date} ${event.time_start}`,
+                        end: `${event.date} ${event.time_end}`,
+                        id: event.event.id,
+                        color: event.event.highlight
+                    })
+                });
+                successCallback(events)
+            }).catch(error => {
+                console.log(error);
+            })
+        },
     });
     calendar.render();
 });

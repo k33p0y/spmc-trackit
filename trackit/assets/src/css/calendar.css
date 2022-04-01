@@ -100,4 +100,42 @@
     box-shadow: none;
     color:#fff;
 }
- 
+
+/* Full Calendar */
+.fc-header-toolbar {
+    padding: 10px !important;
+}
+.fc-toolbar .fc-toolbar-chunk .btn,
+.fc-toolbar .fc-toolbar-chunk .btn.group .btn {
+    font-size: 12px !important;
+    padding: 8px 12px;
+    background-color: #FD7E14 !important;
+    border-radius: .25rem !important;
+    border:0;
+}
+.fc-toolbar .fc-toolbar-chunk .btn:hover,
+.fc-toolbar .fc-toolbar-chunk .btn-group .btn:hover,
+.fc-toolbar .fc-toolbar-chunk .btn-group .btn.active  {
+    background-color: #e77619 !important;
+}
+.fc-toolbar .fc-toolbar-chunk .btn-group > .btn:not(:first-child),
+.fc-toolbar .fc-toolbar-chunk .btn-group > .btn:not(:last-child) {
+    border-radius: 0 !important;
+}
+.fc-toolbar .fc-toolbar-chunk .btn-group .btn:first-child {
+    border-top-left-radius: .25rem !important;
+    border-bottom-left-radius: .25rem!important;
+}
+.fc-toolbar .fc-toolbar-chunk .btn-group .btn:last-child {
+    border-top-right-radius: .25rem!important;
+    border-bottom-right-radius: .25rem!important;
+}
+
+.fc-toolbar .fc-toolbar-chunk .fc-toolbar-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.fc-day-today {
+    background-color: #fff5ee !important;
+}
