@@ -84,13 +84,13 @@
             <div class="col-12">
                 <div class="card shadow-sm mt-2 mb-2">
                 <div class="card-body p-0">
-                    <table id="dt_articles" class="table table-hover" width="100%">
+                    <table id="dt_events" class="table table-hover" width="100%">
                         <thead>
                             <tr>
                             <th>Event</th>
                             <th>Event For</th>
                             <th>Participants</th>
-                            <th>Inclusive Date</th>
+                            <th>Scheduled Date</th>
                             <th>is Active</th>
                             </tr>
                         </thead>
@@ -104,4 +104,5 @@
 {% endblock %}
 
 {% block extrascript %}
+<script type="text/javascript" src="{% static 'src/js/events/events.js' %}"></script>
 {% endblock %}
