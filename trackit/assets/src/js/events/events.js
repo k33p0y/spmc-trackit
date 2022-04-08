@@ -28,18 +28,14 @@ $(document).ready(function() {
                 },
             },
             {
-                data: "participants",
-            },
-            {
-                data: "scheduled_dates",
+                data: "highlight",
                 render: function (data, type, row) {
-                    let dates = new Array()
-                    if (row.scheduled_dates.length > 0){
-                        row.scheduled_dates.forEach(date => dates.push(date.date))
-                    }
-                    if (type == 'display') data = dates
+                    if (type == 'display') data = `<div class= "circle" style="background-color:${row.highlight};" ></div>`;
                     return data
                 },
+            },
+            {
+                data: "participants",
             },
             {
                 data: "is_active",

@@ -1,8 +1,10 @@
 from rest_framework import serializers
+from django.db import transaction
 from .models import Event, EventDate, EventTicket
 from core.serializers import UserInfoSerializer
 from requests.serializers import RequestFormReadOnlySerializer
-from .models import Event, EventDate, EventTicket
+
+import datetime
 
 class EventListSerializer(serializers.ModelSerializer):
     created_by = UserInfoSerializer(read_only=True)
@@ -24,6 +26,29 @@ class EventListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class EventCRUDSerializer(serializers.ModelSerializer):
+    created_by = UserInfoSerializer(read_only=True)
+    modified_by = UserInfoSerializer(read_only=True)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        schedules = self.context['request'].data['schedule']
+        event = Event(
+            title = validated_data['title'],
+            subject = validated_data['subject'],
+            highlight = validated_data['highlight'],
+            event_for = validated_data['event_for'],
+            created_by = self.context['request'].user,
+            modified_by =  self.context['request'].user
+        )
+        event.save()
+        for schedule in schedules:
+            EventDate.objects.create(
+                date=schedule['date'],
+                time_start=schedule['time_start'],
+                time_end=schedule['time_end'],
+                event=event
+            )
+        return event
 
     class Meta:
         model = Event

@@ -90,53 +90,21 @@
     margin-left: 6px;
  }
 
-/* tinymce */
-.tox-tinymce {
-    border-color: #ced4da !important;
-    border-radius: 0.2rem !important;
-}
-
-.tox-tbtn,
-.tox-menubar > button {
-    font-size: 12px !important;
-}
-
-/* recources */
-#upload_wrapper .btn-remove,
-#side_upload_wrapper .btn-remove {
-   padding: 12px;
-   border-radius: 50% !important;
-   height: 16px !important;
-   width: 16px !important;
-   font-size: 10px !important;
-   text-align: center;
-   padding: 0;
-   position: absolute;
-   right: -5px;
-   top: -5px;
-}
-
-.file-item .btn-delete,
-.side-file-item .btn-delete {
-   border-radius: 0 0 0.25rem 0.25rem !important;
-}
-
-.file-anchor {
-   text-decoration: none;
-   color: unset
-}
-.file-anchor:hover,
-.file-anchor:active {
+#btn_add,
+.btn-remove {
+   font-size: 12px !important;
    color: #fd7e14;
 }
-.file-anchor:hover,
-.file-anchor:hover .card {
-   background-color: #fff5ee;
+ 
+#btn_add:hover,
+.btn-remove:hover  {
+   color: #e46e0f;
 }
 
-.btn-edit:hover {
-   color :#e77619 !important;
-   cursor: pointer;
+.circle {
+   height: 12px !important;
+   width: 12px !important;
+   border-radius: 15px;
 }
 
 .state-icon {
@@ -178,7 +146,8 @@
 .peanut {background-color: #946e38;}
 .coffee {background-color: #C0A080;}
 .sunflower {background-color: #f2a500;}
-.peach {background-color: #DE834D;}
+.peach {background-color: #f6a192;}
+.default {background-color: #fd7e14;}
 .dark {background-color: #595959;}
 .stone {background-color: #7e7e7e;}
 .maroon {background-color: #781D42;}
@@ -186,4 +155,3 @@
 .redwood {background-color: #bd5f5f;}
 .grape {background-color: #6b5892;}
 .royal {background-color: #9067bb;}
-.royal {background-color: #8D8DAA;}

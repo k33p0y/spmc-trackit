@@ -33,7 +33,7 @@
    <div class="container-fluid">
         <div class="overlay d-none"></div>
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-4">
+            <div class="col-12 col-md-12 col-xl-5">
                 <div class="card card-form shadow-sm mt-2 mb-1">
                     <a href="#collapseDetail" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetail">
                         <div class="card-header p-2">
@@ -45,9 +45,9 @@
                             <form>
                                 <div class="form-row">
                                     <div class="form-group col-md-12"> <!-- Color -->
-                                        <label>Highlight </label>
-                                        <div class="d-flex flex-wrap mb-2 mb-lg-0">
-                                            <button type="button" class="btn color-palette pine mr-1 mb-1 active"></button>
+                                        <label>Highlight <span class="text-danger">*</span> </label>
+                                        <div class="d-flex flex-wrap mb-2 mb-lg-0" id="color_picker">
+                                            <button type="button" class="btn color-palette pine mr-1 mb-1"></button>
                                             <button type="button" class="btn color-palette jungle mr-1 mb-1"></button>
                                             <button type="button" class="btn color-palette moss mr-1 mb-1"></button>
                                             <button type="button" class="btn color-palette yale mr-1 mb-1"></button>
@@ -61,6 +61,7 @@
                                             <button type="button" class="btn color-palette coffee mr-1 mb-1"></button>
                                             <button type="button" class="btn color-palette cider mr-1 mb-1"></button>
                                             <button type="button" class="btn color-palette sunflower mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette default mr-1 mb-1 active"></button>
                                             <button type="button" class="btn color-palette peach mr-1 mb-1"></button>
                                             <button type="button" class="btn color-palette dark mr-1 mb-1"></button>
                                             <button type="button" class="btn color-palette stone mb-1"></button>
@@ -69,22 +70,25 @@
                                     </div>
                                     <div class="form-group col-md-12">
                                         <label>Title <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control form-control-sm form-text-required" placeholder="Enter article title" id="txt_title">
+                                        <input type="text" class="form-control form-control-sm form-text-required" placeholder="Enter event title" id="txt_title">
                                         <small class="error-info" id="title_error"></small>
                                     </div>
                                     <div class="form-group col-md-12">
-                                        <label>Subject <span class="text-danger">*</span></label>
-                                        <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter article preface" id="txt_preface" maxlength=255></textarea>
+                                        <label>Subject</label>
+                                        <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter subject" id="txt_subject" maxlength=255></textarea>
                                         <div class="d-flex">
-                                            <small class="error-info" id="preface_error"></small>
+                                            <small class="error-info" id="subject_error"></small>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-12">
                                         <label>Event For <span class="text-danger">*</span></label>
                                         <select class="form-control form-control-sm form-select-required" id="select2_eventfor" style="width: 100%">
                                             <option></option>
+                                            {% for form in forms %}
+                                            <option value={{form.id}}>{{form.name}}</option>
+                                            {% endfor %}
                                         </select>
-                                        <small class="error-info" id="requestform-error"></small>
+                                        <small class="error-info" id="eventfor_error"></small>
                                     </div>
                                     
                                 </div>
@@ -92,8 +96,9 @@
                         </div>
                     </div>
                 </div>
+                
             </div>
-            <div class="col-12 col-md-12 col-lg-8 d-none d-lg-block">
+            <div class="col-12 col-md-12 col-xl-7">
                 <div class="card card-form shadow-sm mt-2 mb-1">
                     <a href="#collapseAttachment" data-toggle="collapse" aria-expanded="false" aria-controls="collapseAttachment">
                         <div class="card-header p-2">
@@ -111,28 +116,34 @@
                         <div class="form-wrapper">
                             <div class="form-row">
                                 <div class="form-group col">
-                                    <input type="date" class="form-control form-control-sm" id="chk_is_client" />
-                                    <small class="error-info status-error"></small>
+                                    <input type="date" class="form-control form-control-sm txt-date"/>
+                                    <small class="error-info date-error"></small>
                                 </div>
                                 <div class="form-group col">
-                                    <input type="time" class="form-control form-control-sm" id="chk_is_client" />
-                                    <small class="error-info name-error"></small>
+                                    <input type="time" class="form-control form-control-sm txt-start"/>
+                                    <small class="error-info start-error"></small>
                                 </div>
                                 <div class="form-group col">
-                                    <input type="time" class="form-control form-control-sm" id="chk_is_client" />
-                                    <small class="error-info name-error"></small>
+                                    <input type="time" class="form-control form-control-sm txt-end"/>
+                                    <small class="error-info end-error"></small>
                                 </div>
                                 <div class="form-group col-1">
-                                   asdasd
+                                   {% comment %} <button type="button" class="btn btn-sm btn-block btn-remove">
+                                        <i class="fas fa-times"></i>
+                                    </button> {% endcomment %}
                                 </div>
-                            </div>
-                            <button type="button" class="btn btn-link" id="btn_add">
-                                <i class="fas fa-xs fa-plus"></i>
-                                <span>Add a another status/step</span>
-                            </button>
+                            </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
                         </div>
+                        <button type="button" class="btn btn-link p-0" id="btn_add">
+                            <i class="fas fa-xs fa-plus"></i>
+                            <span>Add another schedule</span>
+                        </button>
                     </div>
-                </div>          
+                </div>     
+            </div>
+            <div class="form-actions mt-3 d-flex flex-row-reverse">
+                <button type="submit" class="btn btn-sm btn-orange pl-3 pr-3" id="btn_save"><span>Save</span></button>
+                <a href="{% url 'event' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
             </div>
         </div>
     </div>
