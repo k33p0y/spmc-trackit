@@ -16,7 +16,7 @@ $(document).ready(function() {
                 data: "title",
                 render: function (data, type, row) {
                     let headline_html = `<div><p class="title text-nowrap m-0">${row.title}</p><span class="sub-title text-muted">${row.subject}</span></div>`;
-                    if (type == 'display') data = `<a href='/announcement/article/${row.id}/view' class='text-orange btn-edit'> ${headline_html} </a>`
+                    if (type == 'display') data = `<a href='/events/event/${row.id}/view' class='text-orange btn-edit'> ${headline_html} </a>`
                     return data
                 },
             },

@@ -15,5 +15,9 @@ def event_calendar(request):
 @login_required
 def create_event(request):
    forms = RequestForm.objects.filter(is_active=True)
-   context = {'forms' : forms}
-   return render(request, 'pages/events/event_new.html', context)
+   return render(request, 'pages/events/event_new.html', {'forms' : forms})
+
+@login_required
+def view_event(request, pk):
+   event = get_object_or_404(Event.objects.prefetch_related('dates'), pk=pk)
+   return render(request, 'pages/events/event_view.html', {'event' : event})

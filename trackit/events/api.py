@@ -25,3 +25,9 @@ class EventDateViewSet(viewsets.ModelViewSet):
    serializer_class = EventDateSerializer
    queryset = EventDate.objects.all()
 
+   def get_queryset(self):
+      event = self.request.query_params.get("event", None)
+      qs = EventDate.objects.all()
+      if event: qs = qs.filter(event__id=event)
+      return qs
+
