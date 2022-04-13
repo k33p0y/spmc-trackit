@@ -1,5 +1,5 @@
 $(document).ready(function () {
-   $('#select2_categprytype').select2();
+   $('#select2_categorytype').select2();
    $('#select2_category').select2();
    $('.form-select').select2();
    $('.form-datetime').datetimepicker({
@@ -21,8 +21,8 @@ $(document).ready(function () {
    });
 
    // SElECT ON CHANGE EVENT
-   $('#select2_categprytype').on('change', function () { // category type dropdown
-      category_type = $("#select2_categprytype option:selected").val();
+   $('#select2_categorytype').on('change', function () { // category type dropdown
+      category_type = $("#select2_categorytype option:selected").val();
 
       axios.get('/api/config/list/category', {
          params: {
