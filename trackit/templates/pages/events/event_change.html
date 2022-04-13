@@ -1,0 +1,153 @@
+{% extends '../../base.html' %}
+{% load static %}
+
+{% block title %} Events | {% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'src/css/event.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Content Header -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h5 class="font-weight-bolder">Update Event</h5>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right text-xs">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-orange"><i
+                            class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item">Events</li>
+                <li class="breadcrumb-item"><a href="{% url 'event' %}" class="btn-link-neutral">List</a> </li>
+                <li class="breadcrumb-item active">New</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- /.content -->
+<section class="content">
+   <div class="container-fluid">
+        <div class="overlay d-none"></div>
+        <div class="row">
+            <div class="col-12 col-md-12 col-xl-5">
+                <div class="card card-form shadow-sm mt-2 mb-1">
+                    <a href="#collapseDetail" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetail">
+                        <div class="card-header p-2">
+                            <div class="card-title">Event</div>
+                        </div>
+                    </a>
+                    <div id="collapseDetail" class="collapse show">
+                        <div class="card-body p-3">
+                            <form>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12"> <!-- Color -->
+                                        <label>Highlight <span class="text-danger">*</span> </label>
+                                        <div class="d-flex flex-wrap mb-2 mb-lg-0" id="color_picker" data-highlight="{{event.highlight}}">
+                                            <button type="button" class="btn color-palette pine mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette jungle mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette moss mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette yale mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette sky mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette teal mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette grape mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette royal mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette redwood mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette persian mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette peanut mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette coffee mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette cider mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette sunflower mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette default mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette peach mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette dark mr-1 mb-1"></button>
+                                            <button type="button" class="btn color-palette stone mb-1"></button>
+                                        </div>
+                                        <small class="error-info" id="color_error"></small>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label>Title <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control form-control-sm form-text-required" placeholder="Enter event title" id="txt_title" value="{{event.title}}"> 
+                                        <small class="error-info" id="title_error"></small>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label>Subject</label>
+                                        <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter subject" id="txt_subject" maxlength=255>{{event.subject}}</textarea>
+                                        <div class="d-flex">
+                                            <small class="error-info" id="subject_error"></small>
+                                        </div>
+                                    </div>        
+                                    <div class="form-group col-md-12">
+                                        <label>Event For <span class="text-danger">*</span></label>
+                                        <select class="form-control form-control-sm form-select-required" id="select2_eventfor" style="width: 100%">
+                                            <option></option>
+                                            {% for form in forms %}
+                                            <option value={{form.id}} {% if form.id == event.event_for.id %} selected {% endif %}>{{form.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <small class="error-info" id="eventfor_error"></small>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-12 col-md-12 col-xl-7">
+                <div class="card card-form shadow-sm mt-2 mb-1">
+                    <a href="#collapseAttachment" data-toggle="collapse" aria-expanded="false" aria-controls="collapseAttachment">
+                        <div class="card-header p-2">
+                            <div class="card-title">Schedule</div>
+                        </div>
+                    </a>
+                    <div id="collapseAttachment" class="collapse show">
+                        <div class="card-body p-3">
+                            <div class="form-row">
+                            <div class="col"><label>Date <span class="text-danger">*</span></label></div>
+                            <div class="col"> <label>Time Start <span class="text-danger">*</span></label></div>
+                            <div class="col"> <label>Time End <span class="text-danger">*</span></label></div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="form-wrapper">
+                        {% for schedule in event.dates.all %}
+                            <div class="form-row" data-event-id={{schedule.pk}}>
+                                <div class="form-group col">
+                                    <input type="date" class="form-control form-control-sm txt-date" value="{{schedule.date|date:"Y-m-d"}}"/>
+                                    <small class="error-info date-error"></small>
+                                </div>
+                                <div class="form-group col">
+                                    <input type="time" class="form-control form-control-sm txt-start" value="{{schedule.time_start|time:"H:i"}}"/>
+                                    <small class="error-info start-error"></small>
+                                </div>
+                                <div class="form-group col">
+                                    <input type="time" class="form-control form-control-sm txt-end" value="{{schedule.time_end|time:"H:i"}}"/>
+                                    <small class="error-info end-error"></small>
+                                </div>
+                                <div class="form-group col-1">
+                                </div>
+                            </div> 
+                        {% endfor %}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                        </div>
+                        <button type="button" class="btn btn-link p-0" id="btn_add">
+                            <i class="fas fa-xs fa-plus"></i>
+                            <span>Add another schedule</span>
+                        </button>
+                    </div>
+                </div>     
+            </div>
+            <div class="form-actions mt-3 d-flex flex-row-reverse">
+                <button type="submit" class="btn btn-sm btn-orange pl-3 pr-3" id="btn_save" data-event-id={{event.pk}} ><span>Save</span></button>
+                <a href="{% url 'event' %}" class="btn btn-sm btn-light" id="btn_back"><span>Back</span></a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extrascript %}
+<script type="text/javascript" src="{% static 'src/js/events/event_change.js' %}"></script>
+{% endblock %}

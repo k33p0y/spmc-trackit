@@ -21,3 +21,9 @@ def create_event(request):
 def view_event(request, pk):
    event = get_object_or_404(Event.objects.prefetch_related('dates'), pk=pk)
    return render(request, 'pages/events/event_view.html', {'event' : event})
+
+@login_required
+def change_event(request, pk):
+   event = get_object_or_404(Event.objects.prefetch_related('dates'), pk=pk)
+   forms = RequestForm.objects.all()
+   return render(request, 'pages/events/event_change.html', {'event' : event, 'forms' : forms})

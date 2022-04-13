@@ -1,8 +1,16 @@
 $(document).ready(function () {
     $('#select2_eventfor').select2({
         placeholder: 'Select Form'
-    })
+    });
+
+    // highlight active state 
+    $('#color_picker .color-palette').each(function () {
+        if ($(this).css('background-color') == $('#color_picker').data().highlight) {
+            $(this).addClass('active')
+        }
+    });
     
+    // color picker
     $('#color_picker').on('click', '.color-palette', function() {
         $('.color-palette').removeClass('active');
         $(this).addClass('active')
@@ -38,13 +46,13 @@ $(document).ready(function () {
 
     $('#btn_save').click(function (e) {
         e.preventDefault();
-
+       
         if (validateShedule()) {
             $(this).attr('disabled', true) //  disable button
             
             axios({
-                method: 'POST',
-                url: '/api/events/event/',
+                method: 'PUT',
+                url: `/api/events/event/${$(this).data().eventId}/`,
                 data: {
                     title : $('#txt_title').val(),
                     subject : $('#txt_subject').val(),
@@ -66,19 +74,20 @@ $(document).ready(function () {
             });
         }
     });
-    
 
     let getSchedule = function() {
         let schedules = new Array()
         let form_row = $('.form-wrapper div.form-row')
         
         form_row.each(function () {
+            const id = $(this).data().eventId;
             const date = $(this).find('div.form-group input.txt-date');
             const time_start = $(this).find('div.form-group input.txt-start');
             const time_end = $(this).find('div.form-group input.txt-end');
 
             if (date.val() && time_start.val() && time_end.val()) {
                 schedules.push({
+                    'id' : (id) ? id : null,
                     'date': date.val(),
                     'time_start': time_start.val() + ':00',
                     'time_end' : time_end.val() + ':00',

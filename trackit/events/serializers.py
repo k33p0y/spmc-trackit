@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from .models import Event, EventDate, EventTicket
 from core.serializers import UserInfoSerializer
 from requests.serializers import RequestFormReadOnlySerializer
@@ -49,6 +50,34 @@ class EventCRUDSerializer(serializers.ModelSerializer):
                 event=event
             )
         return event
+    
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.subject = validated_data.get('subject', instance.title)
+        instance.highlight = validated_data.get('highlight', instance.highlight)
+        instance.event_for = validated_data.get('event_for', instance.event_for)
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.modified_by = self.context['request'].user
+        instance.save()
+
+        schedules = self.context['request'].data['schedule']
+        for schedule in schedules:
+            if schedule['id']: 
+                eventdate = get_object_or_404(EventDate, pk=schedule['id'])
+                eventdate.date = schedule['date']
+                eventdate.time_start = schedule['time_start']
+                eventdate.time_end = schedule['time_end']
+                eventdate.save()
+            else:
+                EventDate.objects.create(
+                    date=schedule['date'],
+                    time_start=schedule['time_start'],
+                    time_end=schedule['time_end'],
+                    event=instance
+                )
+
+        return instance
 
     class Meta:
         model = Event

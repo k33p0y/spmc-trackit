@@ -18,8 +18,9 @@ $(document).ready(function() {
             {
                 data: "date",
                 render: function (data, type, row) {
-                    var date = moment(row.date).format('DD MMMM YYYY');
-                    return date
+                    let date = moment(row.date).format('DD MMMM YYYY');
+                    data = `<a href='#' class='btn-link-orange action-link'> ${date} </a>`
+                    return data
                 },
             },
             {
