@@ -26,17 +26,52 @@ $(document).ready(function () {
          "width": "30%"
       }]
    });
-
+   
    // Deparments Select2 Config
+   let formatResult = function(state) {
+      let data = $(state.element).data()
+      let option = $(`<div><div class="font-weight-bold">${state.text}</div> ${data ? `<div class='text-xs'>Head: ${data.head}</div>`: ''}</div>`);
+      return option;
+   } 
+   let formatSelection = function(state) {
+      let data = $(state.element).data()
+      let option = $(`<div>${state.text} ${data ? `(Head: ${data.head})</div>`: ''}`);
+      if (!state.id) return 'Select department';
+      return option;
+   } 
+
+   let stringMatch = function(term, candidate) {
+      return candidate && candidate.toLowerCase().indexOf(term.toLowerCase()) >= 0;
+   }
+
+   let customMatch = function(params, data) {
+      // If there are no search terms, return all of the data
+      if ($.trim(params.term) === '') {
+          return data;
+      }
+      // Do not display the item if there is no 'text' property
+      if (typeof data.text === 'undefined') {
+          return null;
+      }
+      // Match text of option
+      if (stringMatch(params.term, data.text)) {
+          return data;
+      }
+      // Match attribute "data-foo" of option
+      if (stringMatch(params.term, $(data.element).attr('data-head'))) {
+          return data;
+      }
+      // Return `null` if the term should not be displayed
+      return null;
+   }
+    
    $('#select2-department').select2({
       allowClear: true,
       placeholder: 'Select department',
       cache: true,
-   });
-
-   // SElECT ON CHANGE EVENT
-   $('#select2-department').on('change', function () { // department dropdown
-      department = $("#select2-department option:selected").val();
+      matcher: customMatch,
+      templateResult: formatResult,
+      templateSelection: formatSelection
    });
 
    // Edit Profile Modal
@@ -70,6 +105,7 @@ $(document).ready(function () {
       let data = new Object()
       data.email = $('#txt-email').val();
       data.license_no = $('#txt-license').val();
+      data.department = $("#select2-department").val();
       data.contact_no = $('#txt-contact').val();
 
       // axios put
@@ -89,6 +125,7 @@ $(document).ready(function () {
       }).catch(err => { // error
          if (err.response.data.email) showFieldErrors(err.response.data.email, 'email'); else removeFieldErrors('email');
          if (err.response.data.contact_no) showFieldErrors(err.response.data.contact_no, 'contact'); else removeFieldErrors('contact');
+         if (err.response.data.department) showFieldErrors(err.response.data.department, 'department'); else removeFieldErrors('department');
       }) 
    });
 
@@ -277,7 +314,9 @@ $(document).ready(function () {
       }  else if (field === 'new_password') {
          $(`#txt-${field}1`).addClass('form-error').val('')
          $(`#txt-${field}2`).addClass('form-error').val('')
-      }  else $(`#txt-${field}`).addClass('form-error');
+      }  else if (field === 'department') {
+         $(`#select2-${field}`).next().find('.select2-selection').addClass('form-error')
+      } else $(`#txt-${field}`).addClass('form-error');
       let errors = ''
       for (i=0; i<obj.length; i++) errors += `${obj[i]} `;
       $(`#${field}-error`).html(`*${errors}`)
@@ -289,7 +328,9 @@ $(document).ready(function () {
       } else if (field === 'new_password') {
          $(`#txt-${field}1`).removeClass('form-error')
          $(`#txt-${field}2`).removeClass('form-error')
-      }  else $(`#txt-${field}`).removeClass('form-error');
+      }  else if (field === 'department') {
+         $(`#select2-${field}`).next().find('.select2-selection').removeClass('form-error')
+      } else $(`#txt-${field}`).removeClass('form-error');
       $(`#${field}-error`).html(``)
    };
 

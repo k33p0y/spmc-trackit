@@ -397,7 +397,7 @@
                                  name="departmentHelp">
                                  <option></option>
                                  {% for department in select_departments %}
-                                 <option value={{department.id}}>{{department}}</option>
+                                 <option value={{department.id}} data-head="{{department.department_head}}">{{department}}</option>
                                  {% endfor %}
                               </select>
                               <small class="text-muted d-block help-text">Required. For superuser account you may leave

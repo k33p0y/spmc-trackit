@@ -111,8 +111,9 @@
                               </li>
                               <li class="list-group-item d-flex p-2 pt-3 pb-3">
                                  <div class="mr-auto">Department</div>
-                                 <div class="font-weight-bold" style="width: 60% !important;">
-                                    <p class="p-0 m-0 text-right">{{user.department}}</p>
+                                 <div style="width: 60% !important;">
+                                    <p class="p-0 m-0 text-right font-weight-bold">{{user.department}}</p>
+                                    <p class="p-0 m-0 text-right">Head: {{user.department.department_head}}</p>
                                  </div>
                               </li>
                               <li class="list-group-item d-flex p-2 pt-3 pb-3">
@@ -250,6 +251,18 @@
                   <input type="text" class="form-control form-control-sm" id="txt-contact"
                      aria-describedby="contactHelp" placeholder="Enter Mobile and Local No">
                   <small class="error-info" id="contact-error"></small>
+               </div>
+               <!-- DEPARTMENT -->
+               <div class="form-group name-group">
+                  <label for="departmentHelp">Department <span class="text-danger">*</span> </label>
+                  <select class="form-control form-control-sm" id="select2-department"
+                     name="departmentHelp">
+                     <option></option>
+                     {% for department in departments %}
+                     <option data-head="{{department.department_head}}" value={{department.id}} {% if department == user.department %} selected {% endif %}>{{department}}</option>
+                     {% endfor %}
+                  </select>
+                  <small class="error-info" id="department-error"></small>
                </div>
                <!-- LICENSE NO -->
                <div class="form-group name-group">
