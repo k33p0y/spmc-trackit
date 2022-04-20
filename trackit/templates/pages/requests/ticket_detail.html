@@ -180,7 +180,9 @@
                                  <label>Category Type  <span class="text-danger">*</span></label>
                                  <select class="form-control form-control-sm form-select-required" id="select2_categorytype" style="width: 100%">
                                     {% for type in types %}
-                                    <option value={{type.id}} >{{type}}</option>
+                                       {% for ticket_category in ticket_categories %}
+                                          <option value={{type.id}} {% if ticket_category.category_type.id == type.id %} selected {% endif %}>{{type}}</option>
+                                       {% endfor %}
                                     {% endfor %}
                                  </select>
                                  <small class="error-info" id="categorytype-error"></small>

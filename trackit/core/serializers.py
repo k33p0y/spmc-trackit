@@ -171,14 +171,20 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
         instance.email = validated_data.get('email', instance.email)
         instance.contact_no = validated_data.get('contact_no', instance.contact_no)
         instance.license_no = validated_data.get('license_no', instance.license_no)
+        instance.department = validated_data.get('department', instance.department)
         instance.modified_by = self.context['request'].user
         instance.save() 
         create_users_notification(str(instance.pk), instance, 'client')  # Create notification instance
         return instance
 
+    def validate_department(self, department):
+        if not department:
+            raise serializers.ValidationError('This field may not be blank.')
+        return department
+
     class Meta:
         model = User
-        fields =  ('id', 'email', 'contact_no', 'license_no')
+        fields =  ('id', 'email', 'contact_no', 'license_no', 'department')
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
     current_password = serializers.CharField(max_length=128, write_only=True, required=True)

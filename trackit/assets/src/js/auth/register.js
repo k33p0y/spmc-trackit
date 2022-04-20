@@ -22,10 +22,52 @@ $(document).ready(function () {
         });
     })
 
-    // select2 config
+    let formatResult = function(state) {
+        let data = $(state.element).data()
+        let option = $(`<div><div class="font-weight-bold">${state.text}</div> ${data ? `<div class='text-xs'>Head: ${data.head}</div>`: ''}</div>`);
+        return option;
+     } 
+     let formatSelection = function(state) {
+        let data = $(state.element).data()
+        let option = $(`<div>${state.text} ${data ? `(Head: ${data.head})</div>`: ''}`);
+        
+        if (!state.id) return 'Department *';
+        return option;
+     } 
+  
+     let stringMatch = function(term, candidate) {
+        return candidate && candidate.toLowerCase().indexOf(term.toLowerCase()) >= 0;
+     }
+  
+     let customMatch = function(params, data) {
+        // If there are no search terms, return all of the data
+        if ($.trim(params.term) === '') {
+            return data;
+        }
+        // Do not display the item if there is no 'text' property
+        if (typeof data.text === 'undefined') {
+            return null;
+        }
+        // Match text of option
+        if (stringMatch(params.term, data.text)) {
+            return data;
+        }
+        // Match attribute "data-foo" of option
+        if (stringMatch(params.term, $(data.element).attr('data-head'))) {
+            return data;
+        }
+        // Return `null` if the term should not be displayed
+        return null;
+    }
+      
     $('#select2_department').select2({
-        placeholder: 'Department *',
         allowClear: true,
+        cache: true,
+        placeholder: 'Department *',
+        matcher: customMatch,
+        templateResult: formatResult,
+        templateSelection: formatSelection,
+        sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
     });
 
     // autofill username

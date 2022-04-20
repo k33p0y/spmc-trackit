@@ -55,7 +55,7 @@
                      <select class="form-control" id="select2_department" style="width: 100%">
                         <option></option>
                         {% for department in departments %}
-                        <option value={{department.id}}>{{department.name}}</option>
+                        <option value={{department.id}} data-head="{{department.department_head}}">{{department.name}}</option>
                         {% endfor %}
                      </select>
                      <small class="error-info" id="department_error"></small>
