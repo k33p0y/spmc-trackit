@@ -8,11 +8,10 @@ $(document).ready(function () {
    let action_type, url;
    let alert_msg = '';
 
-   // Colors
-   $('.color-palette').click(function () {
-      let bg_color = $(this).css('background-color');
-      let hex = rgb2hex(bg_color);
-      $('#txt_color').val(hex).css('background-color', bg_color).addClass('text-light')
+   // color on change
+   $('#color_picker').on('click', '.color-palette', function() {
+      $('.color-palette').removeClass('active');
+      $(this).addClass('active')
    });
 
    // Status Select2 Config
@@ -119,11 +118,6 @@ $(document).ready(function () {
       "order": [[ 3, "desc" ]],
    });
 
-   // Get Checkbox State
-   $('#chk_status').click(function () {
-      chk_status = ($(this).prop("checked") == true) ? true : false;
-   });
-
    $('#btn_add').click(function () {
       let counter = $('.form-wrapper .form-row').length + 1;
       addStatusRow(counter);
@@ -171,7 +165,16 @@ $(document).ready(function () {
       resetForm();
       $('#txt_typename').val(dt_data['name']);
       $('#txt_prefix').val(dt_data['prefix']);
-      $('#txt_color').val(dt_data['color']).css('background-color', dt_data['color']).addClass('text-light');
+      // color field
+      $('#color_picker').data('color', dt_data['color']); 
+      $('#color_picker').attr('data-color', dt_data['color']); 
+      $('#color_picker .color-palette').each(function () {
+         let color_pallete = $(this).css('background-color');
+         let color_data = $('#color_picker').data().color
+         if (color_pallete == color_data || rgb2hex(color_pallete) == color_data) {
+            $(this).addClass('active')
+         }
+      });
       $('#select2-groups').val(groups).trigger('change');
       $('#select2-types').val(types).trigger('change');
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
@@ -186,56 +189,31 @@ $(document).ready(function () {
    $("#btn_save").click(function (e) {
       e.preventDefault();
 
-      // Variables
-      let success = validateForms();
-      if (success == 1) {
-         const data = new Object()
-         data.name = $('#txt_typename').val();
-         data.prefix = $('#txt_prefix').val();
-         data.color = $('#txt_color').val();
-         data.groups = $('#select2-groups').val();
-         data.category_types = $('#select2-types').val();
-         data.status = getStatusRowValues();
-         data.fields = JSON.parse($('#txt_json').val());
-         data.is_active = chk_status;
-
-         axios({
-            method: action_type,
-            url: url,
-            data: data,
-            headers: axiosConfig,
-         }).then(function (response) { // success
-            toastSuccess('Success');
-            $('#formModal').modal('toggle');
-            $("#form").trigger("reset");
-            $('#select2_groups').val([]).trigger('change');
-            $('#select2_status').val([]).trigger('change');
-            table.ajax.reload();
-         }).catch(function (error) { // error
-            if (error.response.data.name) {
-               $('#txt_typename').addClass('form-error');
-               $('#name_error').html(`* ${error.response.data.name}`)
-            } else {
-               $('#txt_typename').removeClass('form-error');
-               $('#name_error').html('')
-            }
-            if (error.response.data.prefix) {
-               $('#txt_prefix').addClass('form-error');
-               $('#prefix_error').html(`* ${error.response.data.name}`)
-            } else {
-               $('#txt_prefix').removeClass('form-error');
-               $('#prefix_error').html('')
-            }
-            if (error.response.data.color) {
-               $('#txt_color').addClass('form-error');
-               $('#color_error').html(`* ${error.response.data.color}`)
-            } else {
-               $('#txt_color').removeClass('form-error');
-               $('#color_error').html('')
-            }
-            toastError(error);
-         });
-      } 
+      const data = new Object()
+      data.name = $('#txt_typename').val();
+      data.prefix = $('#txt_prefix').val();
+      data.color = $('#color_picker .active').css('background-color'),
+      data.groups = $('#select2-groups').val();
+      data.category_types = $('#select2-types').val();
+      data.status = getStatusRowValues();
+      data.fields = JSON.parse($('#txt_json').val());
+      data.is_active = ($('#chk_status').prop("checked") == true) ? true : false;
+      
+      axios({
+         method: action_type,
+         url: url,
+         data: data,
+         headers: axiosConfig,
+      }).then(function (response) { // success
+         toastSuccess('Success');
+         $('#formModal').modal('toggle');
+         $("#form").trigger("reset");
+         $('#select2_groups').val([]).trigger('change');
+         $('#select2_status').val([]).trigger('change');
+         table.ajax.reload();
+      }).catch(function (error) { // error
+         toastError(error);
+      });
    });
 
    //Modal Cancel
@@ -302,6 +280,7 @@ $(document).ready(function () {
          const is_head = $(this).find('div.form-group input.head-box');
          const has_approving = $(this).find('div.form-group input.approving-box');
          const has_pass_fail = $(this).find('div.form-group input.pass-fail-box');
+         const has_event = $(this).find('div.form-group input.event-box');
    
          if (status.val() != '' && order.val() != '') {
             arr.push({
@@ -311,6 +290,7 @@ $(document).ready(function () {
                'is_head' : (is_head.is(":checked")) ? true : false,
                'has_approving' : (has_approving.is(":checked")) ? true : false,
                'has_pass_fail' : (has_pass_fail.is(":checked")) ? true : false,
+               'has_event' : (has_event.is(":checked")) ? true : false
             });
    
             $(this).find('div.form-group').removeClass('has-error');;
@@ -322,7 +302,6 @@ $(document).ready(function () {
             $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank');
          }
       });
-      
       return arr
    };
 
@@ -335,7 +314,7 @@ $(document).ready(function () {
          $(`#chk_is_head_${counter}`).prop("checked", stat.is_head_step);
          $(`#chk_has_approving_${counter}`).prop("checked", stat.has_approving);
          $(`#chk_has_pass_fail_${counter}`).prop("checked", stat.has_pass_fail);
-   
+         $(`#chk_has_event_${counter}`).prop("checked", stat.has_pass_fail);
          counter++;
       });
    };
@@ -417,7 +396,9 @@ $(document).ready(function () {
 
       $('#txt_typename').removeClass('form-error').val('');
       $('#txt_prefix').removeClass('form-error').val('');
-      $('#txt_color').removeClass('form-error').val('').css('background-color', 'unset').removeClass('text-light');
+      $('#color_picker').attr('data-color', null);
+      $('#color_picker').removeData('color');
+      $('.color-palette').removeClass('active');
       $("#select2-groups").val([]).trigger('change');
       $("#select2-types").val([]).trigger('change');
       $('#chk_status').prop("checked", true);

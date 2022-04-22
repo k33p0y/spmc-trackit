@@ -127,6 +127,30 @@
 
                <div class="tab-content" id="nav-tabContent">
                   <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="nav-home-tab">
+                     <div class="form-group"> <!-- Color -->
+                        <label>Highlight <span class="text-danger">*</span> </label>
+                        <div class="d-flex flex-wrap mb-2 mb-lg-0" id="color_picker">
+                           <button type="button" class="btn color-palette pine mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette jungle mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette moss mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette yale mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette sky mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette teal mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette grape mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette royal mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette redwood mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette persian mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette peanut mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette coffee mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette cider mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette sunflower mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette default mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette peach mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette dark mr-1 mb-1"></button>
+                           <button type="button" class="btn color-palette stone mb-1"></button>
+                        </div>
+                        <small class="error-info" id="color_error"></small>
+                     </div>
                      <div class="form-row">
                         <div class="form-group col-lg-9"> <!-- Name -->
                            <label>Name <span class="text-danger">*</span></label>
@@ -140,30 +164,6 @@
                            <small class="error-info" id="prefix_error"></small>
                         </div>  
                      </div>          
-                     <div class="form-group"> <!-- Color -->
-                        <label>Color <span class="text-danger">*</span></label>
-                        <div class="row d-flex align-items-center"> 
-                           <div class="col-12 col-lg order-1 order-lg-0"> <input type="text" class="form-control form-control-sm" id="txt_color" placeholder="Choose color"> </div>
-                           <div class="col-12 col-lg order-0 order-lg-1">
-                              <div class="d-flex mb-2 mb-lg-0">
-                                 <button type="button" class="btn color-palette pine mr-1"></button>
-                                 <button type="button" class="btn color-palette jungle mr-1"></button>
-                                 <button type="button" class="btn color-palette yale mr-1" ></button>
-                                 <button type="button" class="btn color-palette sky mr-1"></button>
-                                 <button type="button" class="btn color-palette grape mr-1"></button>
-                                 <button type="button" class="btn color-palette royal mr-1"></button>
-                                 <button type="button" class="btn color-palette redwood mr-1"></button>
-                                 <button type="button" class="btn color-palette persian mr-1"></button>
-                                 <button type="button" class="btn color-palette peanut mr-1"></button>
-                                 <button type="button" class="btn color-palette cider mr-1"></button>
-                                 <button type="button" class="btn color-palette sunflower mr-1"></button>
-                                 <button type="button" class="btn color-palette dark mr-1"></button>
-                                 <button type="button" class="btn color-palette stone mr-1"></button>
-                              </div>
-                           </div>
-                        </div>
-                        <small class="error-info" id="color_error"></small>
-                     </div>
                      <div class="form-group"> <!-- Category Types -->
                         <label>Category Types</label>
                         <select class="form-control form-control-sm" id="select2-types" style="width: 100%" multiple>
@@ -198,7 +198,8 @@
                         <div class="col text-center"> <label>Is Client Step</label></div>
                         <div class="col text-center"> <label>Is Head Step</label></div>
                         <div class="col text-center"> <label>Has Approving</label></div>
-                        <div class="col text-center"> <label>Has Pass & Fail</label></div>
+                        <div class="col text-center"> <label>Has Pass/Fail</label></div>
+                        <div class="col text-center"> <label>Has Event</label></div>
                         <div class="col-1"></div>
                      </div>
                      <div class="form-wrapper">
@@ -242,7 +243,12 @@
                                  <label for="chk_has_pass_fail"></label>
                               </div>
                            </div>
-                           
+                           <div class="form-group col">
+                              <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
+                                 <input type="checkbox" class="event-box" id="chk_has_event"/>
+                                 <label for="chk_has_event"></label>
+                              </div>
+                           </div>
                            <div class="form-group col-1"></div>
                         </div>
                      </div>
@@ -316,7 +322,12 @@
                <label for="chk_has_pass_fail_${count}"></label>
             </div>
          </div>
-
+         <div class="form-group col">
+            <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
+               <input type="checkbox" class="event-box" id="chk_has_event_${count}"/>
+               <label for="chk_has_event_${count}"></label>
+            </div>
+         </div>
          <div class="form-group col-1">
             <button type="button" class="btn btn-sm btn-block btn-remove">
                <i class="fas fa-times"></i>
@@ -369,7 +380,13 @@
                      <input type="checkbox" class="pass-fail-box" id="chk_has_pass_fail_${counter}"/>
                      <label for="chk_has_pass_fail_${counter}"></label>
                   </div>
-               </div>       
+               </div>   
+               <div class="form-group col">
+                  <div class="icheck-material-orange mt-1 mb-0 d-flex justify-content-center">
+                     <input type="checkbox" class="event-box" id="chk_has_event_${counter}"/>
+                     <label for="chk_has_event_${counter}"></label>
+                  </div>
+               </div>    
                <div class="form-group col-1">
                   <button type="button" class="btn btn-sm btn-block btn-remove">
                      <i class="fas fa-times"></i>

@@ -64,6 +64,7 @@ class RequestFormStatus(models.Model):
     is_head_step =  models.BooleanField(default=False)
     has_pass_fail = models.BooleanField(default=False)
     has_approving = models.BooleanField(default=False)
+    has_event = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 

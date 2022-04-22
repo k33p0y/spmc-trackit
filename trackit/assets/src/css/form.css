@@ -1,6 +1,6 @@
 .circle {
    height: 12px !important;
-   width: 50px !important;
+   width: 12px !important;
    border-radius: 15px;
 }
 
@@ -61,23 +61,37 @@
    height: 25px;
    transition: all 0.1s ease-in-out;
 }
-
+.color-palette.active:before {
+   display: flex;
+   vertical-align: middle;
+   justify-content: center;
+   align-items: center;
+   line-height: 1;
+   color: #fff;
+   content: "\2713";
+   font-weight: bold;
+}
 .color-palette:hover {
    filter: brightness(85%);
    transform: rotate(-10deg);
 }
 
 .yale {background-color: #225da0;}
-.sapphire {background-color: #0B54BC;}
 .sky {background-color: #2b84bf;}
 .maya {background-color: #73C2FB;}
+.teal {background-color: #61A4BC;}
 .jungle {background-color: #29AB89;}
 .pine {background-color: #0e8076;}
+.moss {background-color: #8B9A46;}
 .cider {background-color: #B4652A;}
 .peanut {background-color: #946e38;}
+.coffee {background-color: #C0A080;}
 .sunflower {background-color: #f2a500;}
+.peach {background-color: #f6a192;}
+.default {background-color: #fd7e14;}
 .dark {background-color: #595959;}
 .stone {background-color: #7e7e7e;}
+.maroon {background-color: #781D42;}
 .persian {background-color: #cf4949;}
 .redwood {background-color: #bd5f5f;}
 .grape {background-color: #6b5892;}
