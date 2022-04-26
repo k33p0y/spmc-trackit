@@ -4,9 +4,7 @@ $(document).ready(function () {
    var activeFilter = function() { return $('#active-filter').val(); }
 
    // Local Variables
-   let chk_status = true;
    let action_type, url;
-   let alert_msg = '';
 
    // color on change
    $('#color_picker').on('click', '.color-palette', function() {
@@ -22,14 +20,14 @@ $(document).ready(function () {
    });
 
    // Status Select2 Config
-   $('#select2-types').select2({
+   $('#select2_types').select2({
       allowClear: true,
       placeholder: 'Select category type',
       // cache: true,
    });
 
    // Groups Select2 Config
-   $('#select2-groups').select2({
+   $('#select2_groups').select2({
       allowClear: true,
       placeholder: 'Select groups',
       cache: true,
@@ -44,6 +42,54 @@ $(document).ready(function () {
    $('.form-wrapper').on('click', '.btn-remove', function () {
       $(this).parents("div.form-row").remove()
    });
+
+   
+   //Modal Cancel
+   $('#btn_cancel').click(function () {
+      resetForm()
+   });
+
+   // // //  Filters
+   // Select2 config
+   $('.select-filter').select2();
+
+   // Search Bar onSearch Event
+   $("#search-input").on('search', function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Search Bar onClick Event
+   $("#execute-search").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Apply Filter
+   $("#btn_apply").click(function () {
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+
+   // Clear Filter
+   $("#btn_clear").click(function () {
+      $('#form-filter').trigger("reset");
+      $('#form-filter select').trigger("change");
+      table.ajax.reload();
+      return false; // prevent refresh
+   });
+   
+   // Close Dropdown 
+   $('#close_dropdown').click(function (){ toggleFilter() });
+
+   // Close Dropdown When Click Outside 
+   $(document).on('click', function (e) { toggleFilter() });
+
+   // Dropdown Prevent From closing
+   $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
+      if (e.clickEvent) e.preventDefault();      
+   });
+   
 
    // RETRIEVE / GET
    // List Table
@@ -140,15 +186,8 @@ $(document).ready(function () {
 
    // UPDATE / PUT
    $('#dt_forms tbody').on('click', '.btn_edit', function () {
-      const groups = new Array();
-      const types = new Array();
-
       const dt_data = table.row($(this).parents('tr')).data();
       const id = dt_data['id'];
-      const status = dt_data['status'];
-      
-      dt_data['group'].forEach( group => groups.push(group.id));
-      dt_data['category_types'].forEach( type => types.push(type.id));
       
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
@@ -159,11 +198,11 @@ $(document).ready(function () {
       $("#formModal").modal();
       $(".modal-title").text('Update Form');
       $('.form-wrapper').empty();
-      updateStatusOrder(status);
+      updateStatusOrder(dt_data['status']);
 
       // Populate Fields
       resetForm();
-      $('#txt_typename').val(dt_data['name']);
+      $('#txt_name').val(dt_data['name']);
       $('#txt_prefix').val(dt_data['prefix']);
       // color field
       $('#color_picker').data('color', dt_data['color']); 
@@ -175,11 +214,11 @@ $(document).ready(function () {
             $(this).addClass('active')
          }
       });
-      $('#select2-groups').val(groups).trigger('change');
-      $('#select2-types').val(types).trigger('change');
+      $('#select2_groups').val(dt_data['group']).trigger('change');
+      $('#select2_types').val(dt_data['category_types']).trigger('change');
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
       $('#chk_status').prop("checked", dt_data['is_active']);
-      setStatusOrder(status)
+      setStatusOrder(dt_data['status'])
 
       // Format Textarea value to JSON
       prettyPrint();
@@ -188,85 +227,72 @@ $(document).ready(function () {
    // Submit Form
    $("#btn_save").click(function (e) {
       e.preventDefault();
-
-      const data = new Object()
-      data.name = $('#txt_typename').val();
-      data.prefix = $('#txt_prefix').val();
-      data.color = $('#color_picker .active').css('background-color'),
-      data.groups = $('#select2-groups').val();
-      data.category_types = $('#select2-types').val();
-      data.status = getStatusRowValues();
-      data.fields = JSON.parse($('#txt_json').val());
-      data.is_active = ($('#chk_status').prop("checked") == true) ? true : false;
+      $(this).prop('disabled', false); // disable button      
       
-      axios({
-         method: action_type,
-         url: url,
-         data: data,
-         headers: axiosConfig,
-      }).then(function (response) { // success
-         toastSuccess('Success');
-         $('#formModal').modal('toggle');
-         $("#form").trigger("reset");
-         $('#select2_groups').val([]).trigger('change');
-         $('#select2_status').val([]).trigger('change');
-         table.ajax.reload();
-      }).catch(function (error) { // error
-         toastError(error);
-      });
+      if (validateForm()) {
+         axios({
+            method: action_type,
+            url: url,
+            data: {
+               name : $('#txt_name').val(),
+               prefix : $('#txt_prefix').val(),
+               color : $('#color_picker .active').css('background-color'),
+               group : $('#select2_groups').val(),
+               category_types : $('#select2_types').val(),
+               status : getStatusRowValues(),
+               fields : JSON.parse($('#txt_json').val()),
+               is_active : ($('#chk_status').prop("checked") == true) ? true : false,
+            },
+            headers: axiosConfig,
+         }).then(function (response) { // success
+            toastSuccess('Success');
+            $("#btn_submit").prop('disabled', false); // enable button
+            $('#formModal').modal('toggle');
+            table.ajax.reload();
+         }).catch(function (error) { // error
+            toastError(error.response.statusText);
+            if (error.response.data.name) showFieldErrors(error.response.data.name, 'name'); else removeFieldErrors('name');
+            if (error.response.data.prefix) showFieldErrors(error.response.data.prefix, 'prefix'); else removeFieldErrors('prefix');
+            if (error.response.data.color) showFieldErrors(error.response.data.color, 'color'); else removeFieldErrors('color');
+         });
+      }
    });
 
-   //Modal Cancel
-   $('#btn_cancel').click(function () {
-      resetForm()
-   });
+   let showFieldErrors = function(obj, field) {
+      $("#btn_submit").prop('disabled', false); // enable button
 
-   // // //  Filters
-   // Select2 config
-   $('.select-filter').select2();
+      // Get error message
+      let msg = '';
+      obj.forEach(error => {msg += `${error} `});
+      $(`#${field}_error`).html(`*${msg} `) // display message
 
-   // Search Bar onSearch Event
-   $("#search-input").on('search', function () {
-      table.ajax.reload();
-      return false; // prevent refresh
-   });
+      // Add error class change border color to red
+      $(`#txt_${field}`).addClass('form-error');
+   };
 
-   // Search Bar onClick Event
-   $("#execute-search").click(function () {
-      table.ajax.reload();
-      return false; // prevent refresh
-   });
+   let removeFieldErrors = function(field) {
+      // Remove error class for border color
+      $(`#txt_${field}`).removeClass('form-error');
+      $(`#${field}-error`).html('');
+   };
 
-   // Apply Filter
-   $("#btn_apply").click(function () {
-      table.ajax.reload();
-      return false; // prevent refresh
-   });
-
-   // Clear Filter
-   $("#btn_clear").click(function () {
-      $('#form-filter').trigger("reset");
-      $('#form-filter select').trigger("change");
-      table.ajax.reload();
-      return false; // prevent refresh
-   });
-   
-   // Close Dropdown 
-   $('#close_dropdown').click(function (){ toggleFilter() });
-
-   // Close Dropdown When Click Outside 
-   $(document).on('click', function (e) { toggleFilter() });
-
-   // Dropdown Prevent From closing
-   $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
-      if (e.clickEvent) e.preventDefault();      
-   });
-   
    var prettyPrint = function () {
       // prettify textarea to JSON format Fn
       let obj = JSON.parse($('#txt_json').val());
       let pretty = JSON.stringify(obj, undefined, 4);
       $('#txt_json').val(pretty);
+   };
+
+   var addStatusRow = function(count) {
+      let row = formStatusRow(count);
+      $(".form-wrapper").append(row)
+
+      // Select2 Config
+      $('.select2_status').select2({
+         allowClear: true,
+         placeholder: 'Select status',
+         // cache: true,
+      });
    };
 
    var getStatusRowValues = function() {
@@ -292,15 +318,7 @@ $(document).ready(function () {
                'has_pass_fail' : (has_pass_fail.is(":checked")) ? true : false,
                'has_event' : (has_event.is(":checked")) ? true : false
             });
-   
-            $(this).find('div.form-group').removeClass('has-error');;
-            $(this).find('.txt_order').removeClass('form-error');
-            $(this).find('div.form-group').find('.status-error').html('');
-         } else {
-            $(this).find('div.form-group').addClass('has-error');
-            $(this).find('.txt_order').addClass('form-error');
-            $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank');
-         }
+         } 
       });
       return arr
    };
@@ -314,43 +332,40 @@ $(document).ready(function () {
          $(`#chk_is_head_${counter}`).prop("checked", stat.is_head_step);
          $(`#chk_has_approving_${counter}`).prop("checked", stat.has_approving);
          $(`#chk_has_pass_fail_${counter}`).prop("checked", stat.has_pass_fail);
-         $(`#chk_has_event_${counter}`).prop("checked", stat.has_pass_fail);
+         $(`#chk_has_event_${counter}`).prop("checked", stat.has_event);
          counter++;
       });
    };
 
-   var validateForms = function() {
-      var success = 1;
+   var validateForm = function() {
+      var success = true;
+      const form_row = $(".form-wrapper div.form-row");
 
-      // Validate Request Details
-      if ($('#txt_typename').val() == '') {
-         $('#txt_typename').addClass('form-error');
-         $('#name_error').html('*This field may not be blank')
-         success--;
-      } else {
-         $('#txt_typename').removeClass('form-error');
+      if ($('#txt_name').val()) {
+         $('#txt_name').removeClass('form-error');
          $('#name_error').html('');
+      } else {
+         $('#txt_name').addClass('form-error');
+         $('#name_error').html('*This field may not be blank.')
+         success = false;
       }
       
-      if ($('#txt_prefix').val() == '') {
-         $('#txt_prefix').addClass('form-error');
-         $('#prefix_error').html('*This field may not be blank')
-         success--;
-      } else {
+      if ($('#txt_prefix').val()) {
          $('#txt_prefix').removeClass('form-error');
          $('#prefix_error').html('');
-      }
-   
-      if ($('#txt_color').val() == '') {
-         $('#txt_color').addClass('form-error');
-         $('#color_error').html('*This field may not be blank')
-         success--;
       } else {
-         $('#txt_color').removeClass('form-error');
-         $('#color_error').html('');
+         $('#txt_prefix').addClass('form-error');
+         $('#prefix_error').html('*This field may not be blank.')
+         success = false;
       }
    
-      const form_row = $(".form-wrapper div.form-row");
+      if ($('.color-palette').hasClass('active')) {
+         $('#color_error').html('');
+      } else {
+         $('#color_error').html('**This field is required.')
+         success = false;
+      }
+      
       form_row.each(function () {
          const status = $(this).find('div.form-group select');
          const order = $(this).find('div.form-group input');
@@ -362,8 +377,8 @@ $(document).ready(function () {
          } else {
             $(this).find('div.form-group').addClass('has-error');
             $(this).find('.txt_order').addClass('form-error');
-            $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank');
-            success--;
+            $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank.');
+            success = false;
          }
       });
    
@@ -394,13 +409,13 @@ $(document).ready(function () {
          "is_multi_field": false,
       }]
 
-      $('#txt_typename').removeClass('form-error').val('');
+      $('#txt_name').removeClass('form-error').val('');
       $('#txt_prefix').removeClass('form-error').val('');
       $('#color_picker').attr('data-color', null);
       $('#color_picker').removeData('color');
       $('.color-palette').removeClass('active');
-      $("#select2-groups").val([]).trigger('change');
-      $("#select2-types").val([]).trigger('change');
+      $("#select2_groups").val([]).trigger('change');
+      $("#select2_types").val([]).trigger('change');
       $('#chk_status').prop("checked", true);
       
       $(".select2_status").val([]).trigger('change');
@@ -411,17 +426,5 @@ $(document).ready(function () {
       $('.pass-fail-box').prop("checked", false);
 
       $('#txt_json').val(JSON.stringify(samp_json));
-   };
-
-   var addStatusRow = function(count) {
-      let row = formStatusRow(count);
-      $(".form-wrapper").append(row)
-
-      // Select2 Config
-      $('.select2_status').select2({
-         allowClear: true,
-         placeholder: 'Select status',
-         // cache: true,
-      });
    };
 });

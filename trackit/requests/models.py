@@ -17,7 +17,7 @@ def upload_file_url(instance, filename):
 class RequestForm(models.Model):
     name =  models.CharField(max_length=255)
     prefix = models.CharField(max_length=5)
-    color = models.CharField(max_length=10, blank=True)
+    color = models.CharField(max_length=50, blank=True)
     status = models.ManyToManyField(Status, related_name='forms', blank=True, through='RequestFormStatus')
     fields = JSONField()
     group = models.ManyToManyField(Group, related_name='groups', blank=True)

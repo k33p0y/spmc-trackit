@@ -20,17 +20,86 @@ class RequestFormStatusSerializer(serializers.ModelSerializer):
 
    class Meta: 
       model = RequestFormStatus
-      fields = ('id', 'name', 'order', 'is_client_step', 'is_head_step', 'has_approving', 'has_pass_fail')
+      fields = ('id', 'name', 'order', 'is_client_step', 'is_head_step', 'has_approving', 'has_pass_fail', 'has_event')
 
 class RequestFormSerializer(serializers.ModelSerializer):
-   color = serializers.CharField(required=True, max_length=10)
+   color = serializers.CharField(required=True)
    status = RequestFormStatusSerializer(source="requestformstatus_set", many=True, read_only=True)
-   group = GroupReadOnlySerializer(many=True, read_only=True)
+   # group = GroupReadOnlySerializer(many=True)
+
+   @transaction.atomic
+   def create(self, validated_data):     
+      request_form = RequestForm.objects.create(
+         name = validated_data['name'],
+         prefix = validated_data['prefix'],
+         color = validated_data['color'],
+         fields = validated_data['fields'],
+         is_active = validated_data['is_active']
+      )
+      request_form.save()
+      request_form.group.add(*validated_data['group'])
+      request_form.category_types.add(*validated_data['category_types'])
+
+      # create status
+      for status in self.context['request'].data['status']:
+         RequestFormStatus.objects.create(
+            status_id = status['status'], 
+            order = status['order'], 
+            is_client_step = status['is_client'],
+            is_head_step = status['is_head'],
+            has_approving = status['has_approving'],
+            has_pass_fail = status['has_pass_fail'],
+            has_event = status['has_event'],
+            form = request_form
+         )
+
+      return request_form
+
+   @transaction.atomic
+   def update(self, instance, validated_data):
+      instance.name = validated_data.get('name', instance.name)
+      instance.prefix = validated_data.get('prefix', instance.prefix)
+      instance.color = validated_data.get('color', instance.color)
+      instance.fields = validated_data.get('fields', instance.fields)
+      instance.is_active = validated_data.get('is_active', instance.is_active)
+
+      instance.group.clear() # clear form groups
+      instance.category_types.clear() # clear form category types
+      if validated_data.get('group', instance.group): # if there is submitted groups from form
+         instance.group.add(*validated_data.get('group', instance.group)) # add selected groups to  request form
+      if validated_data.get('category_types', instance.category_types): # if there is submitted category types from form
+         instance.category_types.add(*validated_data.get('category_types', instance.category_types)) # add selected category types to request form
+      instance.save()
+
+      # update status
+      RequestFormStatus.objects.filter(form=instance).delete()
+      for status in self.context['request'].data['status']:
+         RequestFormStatus.objects.create(
+            status_id = status['status'], 
+            order = status['order'], 
+            is_client_step = status['is_client'],
+            is_head_step = status['is_head'],
+            has_approving = status['has_approving'],
+            has_pass_fail = status['has_pass_fail'],
+            has_event = status['has_event'],
+            form = instance
+         )
+   
+      return instance
+
+   def validate_name(self, name):
+      if not name:
+         raise serializers.ValidationError('This field may not be blank.')
+      return name
+
+   def validate_prefix(self, prefix):
+      if not prefix:
+         raise serializers.ValidationError('This field may not be blank.')
+      return prefix
 
    class Meta:
       model = RequestForm
       fields = ['id', 'name', 'prefix', 'color', 'date_created', 'date_modified', 'fields', 'is_active', 'status', 'group', 'category_types']
-      depth = 1
 
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):
    class Meta:
