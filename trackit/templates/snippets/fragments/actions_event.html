@@ -21,6 +21,21 @@
                            {% endfor %}
                         </select>
                    </div>
+                   <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
+                      <label>Event</label>
+                      <select class="form-control form-control-sm" id="select2_event" style="width: 100%">
+                         <option></option>
+                         {% for event in events %}
+                           <option value="{{event.id}}" >{{event}}</option>
+                         {% endfor %}
+                      </select>
+                   </div>
+                   <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
+                      <label>Schedule</label>
+                      <select class="form-control form-control-sm" id="select2_schedule" style="width: 100%">
+                        <option></option>
+                      </select>
+                   </div>
                    <div class="form-group">
                       <label>Remarks</label>
                       <textarea class="form-control" id="txtarea-remark" rows="2" placeholder="Write your remarks here"></textarea>

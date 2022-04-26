@@ -6,6 +6,7 @@ from django.db.models import Q
 from config.models import Category, CategoryType, Department, Status, Remark
 from easyaudit.models import CRUDEvent
 from .models import Ticket, RequestForm, Attachment, RequestFormStatus, Notification, Comment
+from events.models import Event, EventDate, EventTicket
 from core.decorators import user_is_verified
 
 import json, uuid, datetime
@@ -81,27 +82,35 @@ def view_ticket(request, ticket_id):
    categories = ticket.category.all()
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
-
-   remark = None
+   events = Event.objects.filter(event_for=ticket.request_form) # events
 
    for step in steps:
+      last_step = steps.latest('order')
+
       # Get current step in ticket
       if step.status == ticket.status: 
-         curr_step = steps.get(status_id=ticket.status) 
+         curr_step = steps.get(status_id=ticket.status)
+         next_step = steps.get(order=curr_step.order+1) if not curr_step.status == last_step.status else curr_step
 
       # Get remark if has approving and is head step 
       remarks = ticket.remarks.filter(ticket_id=ticket_id, status_id=step.status_id, is_approve=True) 
       if step.is_head_step and step.has_approving:
          remark = remarks.earliest('id') if remarks else None
 
+   remark = None
+   progress = round((curr_step.order / len(steps)) * 100) # get progress value
+
    context = {
       'ticket': ticket, 
       'categories' : categories,
       'attachments':attachments, 
+      'events' : events,
       'steps':steps, 
       'curr_step':curr_step, 
-      'last_step':steps.latest('order'), 
-      'remark': remark
+      'next_step':next_step,
+      'last_step':last_step, 
+      'remark': remark,
+      'progress' : progress
    }
    return render(request, 'pages/requests/ticket_view.html', context)
       

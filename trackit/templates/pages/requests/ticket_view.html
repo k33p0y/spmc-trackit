@@ -257,6 +257,12 @@
                   {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser %} 
                      {% include '../../snippets/fragments/actions_pass_fail.html' %} 
                   {% endif %}
+               {% elif curr_step.has_event %}
+                  {% if curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %} 
+                     {% include '../../snippets/fragments/actions_event.html' %}
+                  {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser %} 
+                     {% include '../../snippets/fragments/actions_event.html' %} 
+                  {% endif %}
                {% elif curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %}
                   {% include '../../snippets/fragments/actions_default.html' %} 
                {% else %}

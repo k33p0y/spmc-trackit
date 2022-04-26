@@ -1,18 +1,20 @@
 $(document).ready(function () {
-   // Select2 Action Steps
-   $('#dd_steps').select2();
+   
+   $('#select2_nextstep').select2(); // select2 steps
+   $('#select2_event').select2({placeholder: 'Select Event'}); // select2 events
+   $('#select2_schedule').select2({placeholder: 'Select Date'}); // select2 schedule
 
    // On Change Event Select 2
    var step;
-   $('#dd_steps').on('change', function () { 
-      step = $("#dd_steps option:selected").val();
+   $('#select2_nextstep').on('change', function () { 
+      step = $("#select2_nextstep option:selected").val();
    });    
    
    // Accept action 
    $('.btn-accept').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
-      var next_step = $("#dd_steps option:selected").next().val()
+      var next_step = $("#select2_nextstep option:selected").next().val()
       let status = (typeof step === "undefined") ? next_step : step;
 
       let remark = $('#txtarea-remark').val();
@@ -26,7 +28,7 @@ $(document).ready(function () {
    $('.btn-refuse').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
-      let prev_step = $("#dd_steps option:selected").prev().val();
+      let prev_step = $("#select2_nextstep option:selected").prev().val();
       let status = (typeof step === "undefined") ? prev_step : step;
 
       let remark = $('#txtarea-remark').val();
@@ -36,7 +38,7 @@ $(document).ready(function () {
 
       // If head disapprove set status to close
       if ($(this).data().headDisapprove) {
-         status = $('#dd_steps option:last-child').val();
+         status = $('#select2_nextstep option:last-child').val();
       }
 
       if (validateRemark()){
@@ -67,7 +69,7 @@ $(document).ready(function () {
          data.remark = remark;
          data.is_approve = is_approve;
          data.is_pass = is_pass;
-         data.status = $("#dd_steps option:selected").val();
+         data.status = $("#select2_nextstep option:selected").val();
    
          axios({
             method: 'POST',

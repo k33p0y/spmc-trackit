@@ -195,4 +195,10 @@
 /* Progress */
 .progress-bar {
    color: white !important;
+   font-size: 10px !important;
+}
+
+.progress-action  {
+   height: 14px;
+   border-radius: .2rem;
 }
