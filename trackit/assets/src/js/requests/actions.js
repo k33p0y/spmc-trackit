@@ -1,8 +1,16 @@
 $(document).ready(function () {
-   
    $('#select2_nextstep').select2(); // select2 steps
    $('#select2_event').select2({placeholder: 'Select Event'}); // select2 events
    $('#select2_schedule').select2({placeholder: 'Select Date'}); // select2 schedule
+
+   // select2_event on change
+   $('#select2_event').on('change', function () {
+      let date = moment().format('YYYY-MM-DD');
+      let event = $("#select2_event").val();
+      let url = `/api/events/eventdate/?date=${date}&event=${event}`
+      $("#select2_schedule").empty().append('<option></option>').removeAttr('disabled'); 
+      getEventDatesAPI(url, event)
+   });
 
    // On Change Event Select 2
    var step;
@@ -10,7 +18,7 @@ $(document).ready(function () {
       step = $("#select2_nextstep option:selected").val();
    });    
    
-   // Accept action 
+   // accept action 
    $('.btn-accept').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
@@ -24,7 +32,7 @@ $(document).ready(function () {
       if (validateRemark()) postAction(ticket_id, status, remark, is_approve, is_pass);
    });
 
-   // Refuse action
+   // refuse action
    $('.btn-refuse').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
@@ -34,7 +42,6 @@ $(document).ready(function () {
       let remark = $('#txtarea-remark').val();
       let is_approve = ($(this).data().approve == false) ? false : '';
       let is_pass = ($(this).data().pass == false) ? false : '';
-   
 
       // If head disapprove set status to close
       if ($(this).data().headDisapprove) {
@@ -56,40 +63,55 @@ $(document).ready(function () {
       }
    });
 
-    // Post Action
+   // post action
    const postAction = function(ticket, status, remark, is_approve, is_pass) {
+      let data = new Object();
+      data.ticket = ticket
+      data.remark = remark;
+      data.is_approve = is_approve;
+      data.is_pass = is_pass;
+      data.status = status;
+      data.event_date = ($('#current_step').data().hasEvent) ? $("#select2_schedule").val() : '';
+      
       axios({
-         url:`/api/requests/ticket/status/${ticket}/`,
-         method: "PATCH",
-         data: {status: status},
+         method: 'POST',
+         url:`/api/requests/ticket/actions/`,
+         data: data, 
          headers: axiosConfig,
-      }).then(function (response) { // success
-         let data = new Object();
-         data.ticket = ticket
-         data.remark = remark;
-         data.is_approve = is_approve;
-         data.is_pass = is_pass;
-         data.status = $("#select2_nextstep option:selected").val();
-   
-         axios({
-            method: 'POST',
-            url:`/api/requests/ticket/actions/`,
-            data: data,
-            headers: axiosConfig,
-         }).then(function (res) {
-            socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: res.data.ticket, notification_type: 'ticket'}}))
-            $.when(toastSuccess('Success')).then(function () {
-               location.reload();
-            });
+      }).then(res => {
+         socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: res.data.ticket, notification_type: 'ticket'}}))
+         $.when(toastSuccess('Success')).then(function () {
+            location.reload();
          });
-   
-      }).catch(function (error) { // error
-         toastError(error.response.statusText);
+      }).catch(err => {
+         toastError(err.response.statusText)
       });
    }; 
 
    const validateRemark = function() {
       is_valid = true;
+
+      if($('#current_step').data().hasEvent) { // validate events dropdown
+         // event select2
+         if($('#select2_event').val()) { 
+            $('#select2_event').next().find('.select2-selection').removeClass('form-error');
+            $('#event_error').html('');
+         } else {
+            $('#select2_event').next().find('.select2-selection').addClass('form-error');
+            $('#event_error').html('*This field is required.');
+            is_valid = false;
+         }
+
+         // schedule select2
+         if($('#select2_schedule').val()) { 
+            $('#select2_schedule').next().find('.select2-selection').removeClass('form-error');
+            $('#schedule_error').html('');
+         } else {
+            $('#select2_schedule').next().find('.select2-selection').addClass('form-error');
+            $('#schedule_error').html('*This field is required.');
+            is_valid = false;
+         }
+      }
 
       if ($('#txtarea-remark').val()) {
          if ($('#txtarea-remark').val().length > 100) {
@@ -103,6 +125,20 @@ $(document).ready(function () {
       } 
 
       return is_valid
-   }
+   };
+
+   const getEventDatesAPI = function(url, event) {
+      axios.get(url, axiosConfig).then(res => {      
+         res.data.results.forEach(schedule => {
+            const date = moment(schedule.date).format("MMMM DD, YYYY (ddd)");
+            const start = moment(schedule.date + ' ' + schedule.time_start).format("h:mm A");
+            const end = moment(schedule.date + ' ' + schedule.time_end).format("h:mm A");
+            $("#select2_schedule").append(`<option value='${schedule.id}'>${date} ${start} - ${end}</option>`)
+         });
+
+         console.log(res.data)
+         if (res.data.next) getEventDates(res.data.next, event)
+      });
+   };
 });
 

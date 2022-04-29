@@ -1,15 +1,16 @@
 from rest_framework import serializers
+from django.db import transaction
+from django.shortcuts import get_object_or_404
 
-from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from .views import create_notification, create_remark
+from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from config.models import Department, Status, Remark
 from core.models import User
+from events.models import EventTicket
+from easyaudit.models import CRUDEvent
 
 from core.serializers import GroupReadOnlySerializer
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer, CategoryTypeReadOnlySerializer
-
-from django.db import transaction
-from easyaudit.models import CRUDEvent
 
 import json, uuid
 
@@ -253,10 +254,19 @@ class TicketStatusSerializer(serializers.ModelSerializer):
 
 class TicketActionSerializer(serializers.ModelSerializer):
 
+   @transaction.atomic
    def create(self, validated_data):
-      log = CRUDEvent.objects.filter(object_id=validated_data['ticket']).latest('datetime')
+      # update ticket status first
+      ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(validated_data['ticket'])))
+      ticket.status = validated_data['status']
+      ticket.save()
+      
+      # get log from easyaudit
+      log = CRUDEvent.objects.filter(object_id=validated_data['ticket']).latest('datetime') 
+
+      # post action Remark
       action = Remark(
-         ticket = validated_data['ticket'],
+         ticket_id = ticket.ticket_id,
          remark = validated_data['remark'],
          status = validated_data['status'],
          is_approve = validated_data['is_approve'],
@@ -265,6 +275,12 @@ class TicketActionSerializer(serializers.ModelSerializer):
          log = log
       )
       action.save()
+      
+      # post EventTicket if action has_event
+      event_date = self.context['request'].data['event_date'] # event_date request obj
+      if event_date: 
+         EventTicket.objects.create(ticket_id=ticket.ticket_id, scheduled_event_id=event_date)
+         
       return action
     
    class Meta:

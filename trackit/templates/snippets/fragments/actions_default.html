@@ -13,7 +13,7 @@
                </div>
                 <form class="form-actions">
                    <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
-                        <label class="m-0">Current Step: <small class="text-orange font-weight-bold">{{ticket.status }}</small> </label> <br>
+                        <label class="m-0" data-has-event="false" id="current_step">Current Step: <small class="text-orange font-weight-bold">{{ticket.status }}</small> </label> <br>
                         <label>Next Step:</label> 
                         <select class="form-control form-control-sm" id="select2_nextstep" style="width: 100%">
                            {% for step in steps %}
