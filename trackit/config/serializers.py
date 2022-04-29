@@ -108,6 +108,12 @@ class CategoryReadOnlySerializer(serializers.BaseSerializer):
             'category_type_name': instance.category_type.name
         }
 
+class CategoryTypeReadOnlySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CategoryType
+        fields = ['id', 'name',]
+
 class StatusSerializer(serializers.ModelSerializer):
     
     class Meta:

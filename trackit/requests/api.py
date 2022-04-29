@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-from .serializers import RequestFormSerializer, RequestFormStatusSerializer, TicketCRUDSerializer, TicketListSerializer, TicketReferenceSerializer, TicketStatusSerializer, TicketActionSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
+from .serializers import RequestFormListSerializer, RequestFormCRUDSerializer, RequestFormStatusSerializer, TicketCRUDSerializer, TicketListSerializer, TicketReferenceSerializer, TicketStatusSerializer, TicketActionSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from .views import create_notification, create_remark, generate_reference
 from .permissions import CanGenerateReference
@@ -17,8 +17,9 @@ from core.models import User
 import json, uuid, datetime
 
 class RequestFormViewSet(viewsets.ModelViewSet):    
-   serializer_class = RequestFormSerializer
+   serializer_class = RequestFormListSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   http_method_names = ['get', 'head']
 
    def get_queryset(self):
       # Search & Filter Parameters
@@ -36,6 +37,11 @@ class RequestFormViewSet(viewsets.ModelViewSet):
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
 
          return qs
+
+class RequestFormCRUDViewSet(viewsets.ModelViewSet):    
+   serializer_class = RequestFormCRUDSerializer
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   queryset = RequestForm.objects.all()
 
 class TicketViewSet(viewsets.ReadOnlyModelViewSet):
    serializer_class = TicketListSerializer

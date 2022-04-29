@@ -5,6 +5,8 @@ from django.db.models import Q
 from .serializers import EventListSerializer, EventCRUDSerializer, EventDateSerializer
 from .models import Event, EventDate, EventTicket
 
+import datetime
+
 # viewsets
 class EventListViewSet(viewsets.ModelViewSet):    
    serializer_class = EventListSerializer
@@ -27,7 +29,12 @@ class EventDateViewSet(viewsets.ModelViewSet):
 
    def get_queryset(self):
       event = self.request.query_params.get("event", None)
+      date = self.request.query_params.get("date", None)
+      time_start = self.request.query_params.get("time_start", None)
+
       qs = EventDate.objects.all()
       if event: qs = qs.filter(event__id=event)
+      if date: qs = qs.filter(date__gte=date)
+      if time_start: qs = qs.filter(time_start__gte=time_start)
       return qs
 

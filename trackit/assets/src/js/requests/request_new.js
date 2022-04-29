@@ -28,7 +28,7 @@ $(document).ready(function () {
 
       axios({
          method: 'GET',
-         url: `/api/requests/forms/${request_form}`,
+         url: `/api/requests/forms/all/${request_form}`,
          headers: axiosConfig,
       }).then(function (response) { // clear and setup elements
          $('.body-info').remove();

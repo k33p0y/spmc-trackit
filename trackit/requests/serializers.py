@@ -6,7 +6,7 @@ from config.models import Department, Status, Remark
 from core.models import User
 
 from core.serializers import GroupReadOnlySerializer
-from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer
+from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer, CategoryTypeReadOnlySerializer
 
 from django.db import transaction
 from easyaudit.models import CRUDEvent
@@ -22,13 +22,20 @@ class RequestFormStatusSerializer(serializers.ModelSerializer):
       model = RequestFormStatus
       fields = ('id', 'name', 'order', 'is_client_step', 'is_head_step', 'has_approving', 'has_pass_fail', 'has_event')
 
-class RequestFormSerializer(serializers.ModelSerializer):
-   color = serializers.CharField(required=True)
+class RequestFormListSerializer(serializers.ModelSerializer):
    status = RequestFormStatusSerializer(source="requestformstatus_set", many=True, read_only=True)
-   # group = GroupReadOnlySerializer(many=True)
+   group = GroupReadOnlySerializer(many=True, read_only=True)
+
+   class Meta:
+      model = RequestForm
+      fields = ['id', 'name', 'prefix', 'color', 'date_created', 'date_modified', 'fields', 'is_active', 'status', 'group', 'category_types']
+      depth = 1
+
+class RequestFormCRUDSerializer(serializers.ModelSerializer):
+   color = serializers.CharField(required=True)
 
    @transaction.atomic
-   def create(self, validated_data):     
+   def create(self, validated_data):
       request_form = RequestForm.objects.create(
          name = validated_data['name'],
          prefix = validated_data['prefix'],
@@ -99,7 +106,7 @@ class RequestFormSerializer(serializers.ModelSerializer):
 
    class Meta:
       model = RequestForm
-      fields = ['id', 'name', 'prefix', 'color', 'date_created', 'date_modified', 'fields', 'is_active', 'status', 'group', 'category_types']
+      fields = '__all__'
 
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):
    class Meta:

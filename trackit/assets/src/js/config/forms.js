@@ -102,7 +102,7 @@ $(document).ready(function () {
       "processing": true,
       "pageLength": 20,
       "ajax": {
-         url: '/api/requests/forms/?format=datatables',
+         url: '/api/requests/forms/all/?format=datatables',
          type: "GET",
          data: {
             "search": searchInput,
@@ -173,7 +173,7 @@ $(document).ready(function () {
    $('#btn-create-form').on('click', function () {
       // Assign AJAX Action Type and URL
       action_type = 'POST';
-      url = '/api/requests/forms/';
+      url = '/api/requests/forms/crud/';
 
       $("#formModal").modal();
       $(".modal-title").text('Add Form');
@@ -188,10 +188,15 @@ $(document).ready(function () {
    $('#dt_forms tbody').on('click', '.btn_edit', function () {
       const dt_data = table.row($(this).parents('tr')).data();
       const id = dt_data['id'];
+
+      const groups = new Array();
+      const types = new Array();
+      dt_data['group'].forEach( group => groups.push(group.id));
+      dt_data['category_types'].forEach( type => types.push(type.id));
       
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
-      url = `/api/requests/forms/${id}/`;
+      url = `/api/requests/forms/crud/${id}/`;
 
       // Open Modal
       // Modal Config
@@ -214,8 +219,8 @@ $(document).ready(function () {
             $(this).addClass('active')
          }
       });
-      $('#select2_groups').val(dt_data['group']).trigger('change');
-      $('#select2_types').val(dt_data['category_types']).trigger('change');
+      $('#select2_groups').val(groups).trigger('change');
+      $('#select2_types').val(types).trigger('change');
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
       $('#chk_status').prop("checked", dt_data['is_active']);
       setStatusOrder(dt_data['status'])
