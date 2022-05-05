@@ -30,6 +30,7 @@ class EventDate(models.Model):
     date = models.DateField(null=False, blank=False)
     time_start = models.TimeField(null=False, blank=False)
     time_end = models.TimeField(null=False, blank=False)
+    is_active = models.BooleanField(default=True)
 
 class EventTicket(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
