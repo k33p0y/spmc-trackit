@@ -136,8 +136,7 @@ $(document).ready(function () {
             $("#select2_schedule").append(`<option value='${schedule.id}'>${date} ${start} - ${end}</option>`)
          });
 
-         console.log(res.data)
-         if (res.data.next) getEventDates(res.data.next, event)
+         if (res.data.next) getEventDatesAPI(res.data.next, event)
       });
    };
 });

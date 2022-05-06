@@ -1,11 +1,6 @@
-.container-fluid,
-.modal-attachment .modal-body {
+.container-fluid {
    color: #59626b;
    font-size: 12px;
-}
-
-.modal-attachment .modal-md {
-   max-width: 600px !important;
 }
 
 .card-form .card-header {
@@ -155,3 +150,48 @@
 .redwood {background-color: #bd5f5f;}
 .grape {background-color: #6b5892;}
 .royal {background-color: #9067bb;}
+
+
+/* Modals */
+.modal-attendance .modal-body {
+   max-height: 40em;
+   min-height: 10em;
+}
+.card-heading {
+   padding: 0;
+   margin: 0;
+   border-bottom: 1px solid rgba(0,0,0,.1);
+}
+.card-heading div.col {
+   font-size:10px;
+   font-weight: 700;
+   text-transform: uppercase;
+   border: none;
+   padding:8px 24px 8px 14px;
+   color : #717c87 ;
+   white-space:nowrap;
+}
+.card-attendance {
+   display: flex;
+   align-items: center;
+   margin: 10px 0;
+   border-radius: 0.25rem;
+   box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%);
+}
+.card-attendance div.col {
+   font-size: 11px;
+   font-weight:600;
+   padding:14px;
+   color: #59626b;
+   line-height: 14px; 
+}
+
+.attendance-check > input:first-child + label::before {
+   height: 14px !important;
+   width: 14px !important;
+}
+
+.attendance-check > .attendance-box:first-child:checked + label::after {
+   height: 8px !important;
+   transform: translate(8px,5.5px) rotate(45deg) !important;
+}

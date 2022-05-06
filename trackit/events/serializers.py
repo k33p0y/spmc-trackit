@@ -2,8 +2,10 @@ from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from .models import Event, EventDate, EventTicket
+from requests.models import Ticket
+
 from core.serializers import UserInfoSerializer
-from requests.serializers import RequestFormReadOnlySerializer
+from requests.serializers import RequestFormReadOnlySerializer, StatusReadOnlySerializer
 
 import datetime
 
@@ -91,7 +93,26 @@ class EventReadOnlySerializer(serializers.ModelSerializer):
 
 class EventDateSerializer(serializers.ModelSerializer):
     event = EventReadOnlySerializer(read_only=True)
+    attendance = serializers.SerializerMethodField('get_attendance')
+
+    def get_attendance(self, obj):
+        return obj.participants.all().count()
 
     class Meta:
         model = EventDate
+        fields = '__all__'
+
+class TicketReadOnlySerializer(serializers.ModelSerializer):
+    status = StatusReadOnlySerializer(read_only=True)
+    requested_by = UserInfoSerializer(read_only=True)
+
+    class Meta:
+        model = Ticket
+        fields = ('ticket_no', 'requested_by', 'status')
+
+class EventTicketSerializer(serializers.ModelSerializer):
+    ticket = TicketReadOnlySerializer(read_only=True)
+
+    class Meta:
+        model = EventTicket
         fields = '__all__'
