@@ -165,8 +165,9 @@
                <div class="col col-3">Ticket</div>
                <div class="col col-3">Requestor</div>
                <div class="col col-3">Status</div>
-               <div class="col">Attended</div>
-               <div class="col">Remove</div>
+               <div class="col">Present</div>
+               <div class="col">Absent</div>
+               {% comment %} <div class="col">Remove</div> {% endcomment %}
             </div>
             <div class="attandance-wrap">
             </div>
@@ -182,4 +183,4 @@
 
 {% block extrascript %}
 <script type="text/javascript" src="{% static 'src/js/events/event_view.js' %}"></script>
-{% endblock %}
+{% endblock %} 

@@ -2,12 +2,14 @@ from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from .models import Event, EventDate, EventTicket
-from requests.models import Ticket
+from config.models import Remark
+from requests.models import Ticket, RequestFormStatus
+from easyaudit.models import CRUDEvent
 
 from core.serializers import UserInfoSerializer
 from requests.serializers import RequestFormReadOnlySerializer, StatusReadOnlySerializer
 
-import datetime
+import datetime, uuid
 
 class EventListSerializer(serializers.ModelSerializer):
     created_by = UserInfoSerializer(read_only=True)
@@ -116,3 +118,42 @@ class EventTicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventTicket
         fields = '__all__'
+
+
+class AttendanceSerializer(serializers.ModelSerializer):
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+
+        if not validated_data.get('attended'):
+            # get status event form 
+            status = RequestFormStatus.objects.get(form=instance.scheduled_event.event.event_for, has_event=True)
+
+            # update ticket status first
+            ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(instance.ticket.ticket_id)))
+            # ticket = get_object_or_404(Ticket, pk=instance.ticket)
+            ticket.status = status.status
+            ticket.save()
+
+            # get log from easyaudit
+            log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
+
+            # post action Remark
+            action = Remark(
+                ticket_id = ticket.pk,
+                status = status.status,
+                action_officer = self.context['request'].user,
+                log = log
+            )
+            action.save()
+
+        instance.attended = validated_data.get('attended', instance.attended)
+        instance.remarks = validated_data.get('remarks', instance.remarks)
+        instance.save()
+
+        return instance
+
+    class Meta:
+        model = EventTicket
+        fields = '__all__'
+        read_only_fields = ['ticket', 'scheduled_event']

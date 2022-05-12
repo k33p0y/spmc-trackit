@@ -75,12 +75,14 @@ $(document).ready(function() {
         e.preventDefault();
         let scheduled_event = $(this).data().scheduledEvent;
         
-        $('.card-attendance').each(function(i, e) { // iterate rows
-            const attendance = $(this).find('div.col .attendance-box');
-            const attended = attendance.is(':checked');
-            const id = attendance.data().attendanceId;
+        $('.card-attendance').each(function() { // iterate rows
+            const id = $(this).data().attendanceId; // row id
+            const present = $(this).find('div.col .present-box');
+            const absent = $(this).find('div.col .absent-box');
 
-            axios.patch(`/api/events/eventticket/${id}/`, {attended: attended}, {headers: axiosConfig});
+            let attended = present.is(":checked"); // get present bool value
+            
+            axios.patch(`/api/events/attendance/${id}/`, {attended: attended}, {headers: axiosConfig});
         });
 
         $.when(toastSuccess('Success')).then(() => location.reload());
@@ -91,18 +93,21 @@ $(document).ready(function() {
             $('.spinner').addClass('d-none');
             res.data.results.forEach(obj => {
                 $('.attandance-wrap').append(
-                    `<div class="card-attendance row">
+                    `<div class="card-attendance row" data-attendance-id=${obj.id}>
                         <div class="col col-3">${obj.ticket.ticket_no}</div>
                         <div class="col col-3">${obj.ticket.requested_by.name}</div>
                         <div class="col col-3">${obj.ticket.status.name}</div>
                         <div class="col">
-                            <div class="icheck-material-orange m-0 attendance-check">
-                                <input type="checkbox" class="attendance-box m-0 p-0" id="chk_attendance_${obj.id}" ${obj.attended ? 'checked' : ''} data-attendance-id=${obj.id} />
-                                <label for="chk_attendance_${obj.id}" class="m-0"></label>
+                            <div class="icheck-material-orange m-0">
+                            <input type="radio" class="present-box" id="present_${obj.id}" name="attendance_${obj.id}" ${obj.attended ? 'checked' : ''}/>
+                            <label for="present_${obj.id}"></label>
                             </div>
                         </div>
                         <div class="col">
-                            <button type="submit" class="btn btn-sm btn-link p-0" id="btn_save"><i class="fas fa-trash-alt text-danger"></i></button>
+                            <div class="icheck-material-orange">
+                                <input type="radio" class="absent-box" id="absent_${obj.id}" name="attendance_${obj.id}" ${obj.attended === false ? 'checked' : ''}/>
+                                <label for="absent_${obj.id}"></label>
+                            </div>
                         </div>
                     </div>`
                 )

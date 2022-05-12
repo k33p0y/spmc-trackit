@@ -185,13 +185,3 @@
    color: #59626b;
    line-height: 14px; 
 }
-
-.attendance-check > input:first-child + label::before {
-   height: 14px !important;
-   width: 14px !important;
-}
-
-.attendance-check > .attendance-box:first-child:checked + label::after {
-   height: 8px !important;
-   transform: translate(8px,5.5px) rotate(45deg) !important;
-}
