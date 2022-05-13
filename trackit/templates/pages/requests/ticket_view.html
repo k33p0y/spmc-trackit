@@ -166,6 +166,8 @@
                   </div>   
                </div>
             </div>
+
+            {% comment %} REQUEST DETAILS {% endcomment %}
             <div class="row" id="row-details">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1 "  style="border-bottom-left-radius: 5px !important;">
@@ -209,6 +211,8 @@
                   </div>
                </div>
             </div>
+
+            {% comment %} ATTACHMENTS {% endcomment %}
             <div class="row" id="row-attachment">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
@@ -242,6 +246,7 @@
             </div>
          </div>
          <div class="col-12 col-sm-12 col-md-12 col-lg-3">
+            {% comment %} ACTIONS SECTION {% endcomment %}
             {% if curr_step.status != last_step.status or user.is_superuser %}
                {% if curr_step.has_approving %}
                   {% if curr_step.is_head_step and ticket.department.department_head == user or user.is_superuser %} 
@@ -269,7 +274,54 @@
                   {% if user.is_staff and not curr_step.is_client_step %} {% include '../../snippets/fragments/actions_default.html' %} {% endif %}
                {% endif %}
             {% endif %}
-                     
+            
+            
+            {% comment %} ATTENDANCE SECTION {% endcomment %}
+            <div class="row" id="row-comments">
+               <div class="col-12 col-sm-12">
+                  <div class="card card-form mt-2 mb-1">
+                     <a href="#collapseAttendance" data-toggle="collapse" aria-expanded="true" aria-controls="collapseAttendance">
+                        <div class="card-header p-2">
+                           <div class="card-title">attendance</div>
+                        </div>
+                     </a>
+                     <div id="collapseAttendance" class="collapse show">
+                        <div class="card-body p-3">
+                           {% if scheduled_event %}
+                           <div class="card card-schedule p-3 mb-3">
+                              <div class="d-flex flex-column">
+                                 <p class="font-weight-bold text-uppercase m-0" style="color:{{scheduled_event.scheduled_event.event.highlight}}; font-size:14px !important;"> 
+                                    {{scheduled_event.scheduled_event.date}} {{ scheduled_event.scheduled_event.time_start|time:"g:i A"}} - {{ scheduled_event.scheduled_event.time_end|time:"g:i A"}}
+                                 </p>
+                                 <small class="text-secondary"> {{scheduled_event.scheduled_event.event}}</small>
+                                 <div class="mt-2">
+                                    <button type="button" class="btn btn-outline-success btn-block btn-sm m-0 mt-1"> <span> Present </span> </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-block btn-sm m-0 mt-1"><span> Absent </span> </button>
+                                 </div>
+                              </div>
+                           </div>
+                         
+                           {% endif %}
+                           <ul class="list-group list-group-flush history">
+                              {% for event_ticket in event_tickets %}
+                                 <li class="list-group-item d-flex text-muted p-1">
+                                    <div class="mr-auto">{{ event_ticket.scheduled_event.date }} {{ event_ticket.scheduled_event.time_start }} - {{ event_ticket.scheduled_event.time_end }}</div>
+                                    <div style="width: 30% !important;">
+                                       {% if event_ticket.attended %} <p class="p-0 m-0 text-right font-weight-bold text-success">Attended </p>
+                                       {% else %} <p class="p-0 m-0 text-right font-weight-bold text-secondary">Missed </p>
+                                       {% endif %}
+                                    </div>
+                                 </li>
+                              {% endfor %}
+                           </ul>
+                          
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            {% comment %} COMMMENTS SECTION {% endcomment %}
             {% if user == ticket.requested_by or user == ticket.department.department_head or user.is_staff or user.is_superuser  %}
             <div class="row" id="row-comments">
                <div class="col-12 col-sm-12">
@@ -304,6 +356,7 @@
                </div>
             </div>
             {% endif %}
+
          </div>
       </div>
    </div>

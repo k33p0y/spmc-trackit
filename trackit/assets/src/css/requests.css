@@ -134,6 +134,10 @@
    font-size: x-large !important;
 }
 
+.list-group-flush.history .list-group-item,
+.list-group-flush.history .list-group-item div p {
+   font-size: 11px !important;
+}
 .list-group-flush .list-group-item{
    border-style: dashed;
    color: #59626b;

@@ -42,7 +42,7 @@ def detail_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
    ticket_categories = ticket.category.all()
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') 
-   
+
    if steps.latest('order').status.id != ticket.status.id or request.user.is_superuser:
       forms = RequestForm.objects.prefetch_related('status', 'group', 'category_types').filter(is_active=True).order_by('name')
       categories = Category.objects.filter(category_type=ticket_categories[0].category_type, is_active=True).order_by('name')
@@ -82,7 +82,10 @@ def view_ticket(request, ticket_id):
    categories = ticket.category.all()
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
+
+   # Events
    events = Event.objects.filter(event_for=ticket.request_form) # events
+   event_tickets = EventTicket.objects.select_related('scheduled_event').filter(ticket=ticket).order_by('-scheduled_event__date')   # events ticket
 
    for step in steps:
       last_step = steps.latest('order')
@@ -110,7 +113,9 @@ def view_ticket(request, ticket_id):
       'next_step':next_step,
       'last_step':last_step, 
       'remark': remark,
-      'progress' : progress
+      'progress' : progress,
+      'event_tickets' : event_tickets.filter(attended__isnull=False),
+      'scheduled_event' : event_tickets.filter(attended__isnull=True).first()
    }
    return render(request, 'pages/requests/ticket_view.html', context)
       
