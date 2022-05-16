@@ -133,7 +133,14 @@ $(document).ready(function () {
             data: "status",
             render: function (data, type, row) {
                if (type == 'display') {
-                  data = row.status.name
+                  template = `
+                     <div> 
+                     ${row.status.name}
+                     <div class="progress progress-table mt-1">
+                        <div class="progress-bar bg-orange" role="progressbar" style="width: ${row.progress}%;" aria-valuenow="${row.progress}" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                     </div>`
+                  data = template
                }
                return data
             },

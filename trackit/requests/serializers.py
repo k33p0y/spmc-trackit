@@ -125,6 +125,13 @@ class TicketListSerializer(serializers.ModelSerializer):
    request_form = RequestFormReadOnlySerializer(read_only=True)
    department = DepartmentSerializer(read_only=True)
    category = CategoryReadOnlySerializer(many=True, read_only=True)
+   progress = serializers.SerializerMethodField()
+
+   def get_progress(self, instance):
+      steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=instance.request_form).order_by('order')
+      for step in steps: curr_step = steps.get(status_id=instance.status)
+      progress = round((curr_step.order / len(steps)) * 100) # get progress value
+      return progress
 
    class Meta:
       model = Ticket
