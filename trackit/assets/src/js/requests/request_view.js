@@ -10,6 +10,13 @@ $(document).ready(function () {
         
     });
 
+    // character counter
+    $('#txtarea-comment').on("input", function() {
+        let currentLength = $(this).val().length;
+        $('#char_count_comment').html(`${currentLength > 0 ? currentLength : ''}`);
+    });
+
+
     // get ticket number in localStorage if available
     if (localStorage.getItem('ticketNumber')){
         localStorage.removeItem('ticketNumber');

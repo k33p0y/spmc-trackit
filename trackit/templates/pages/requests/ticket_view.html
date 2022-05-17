@@ -338,9 +338,10 @@
                            <form id="form-comment"> <!-- FORM -->
                               <div class="d-flex flex-row align-items-start"> <!-- COMMENT TEXTAREA -->
                                  <textarea class="form-control shadow-none textarea" id="txtarea-comment" rows="3" placeholder="Write a comment..."></textarea>
-                              </div> <!-- COMMENT TEXTAREA END -->
-                              <div class="mt-2 text-right">
-                                 <button class="btn btn-light btn-xs" type="button" id="btn-post-comment" data-ticket-id="{{ticket.ticket_id}}"> <span>Post Comment</span></button>
+                              </div> <!-- COMMENT TEXTAREA END -->                              
+                              <div class="d-flex mt-0">
+                                 <small class="text-black-50"><span id="char_count_comment"></span></small>
+                                 <button class="btn btn-light btn-xs ml-auto mt-2" type="button" id="btn-post-comment" data-ticket-id="{{ticket.ticket_id}}"> <span>Post Comment</span></button>
                               </div>
                            </form> <!-- FORM END -->
                            {% endif %}

@@ -3,6 +3,18 @@ $(document).ready(function () {
    $('#select2_event').select2({placeholder: 'Select Event'}); // select2 events
    $('#select2_schedule').select2({placeholder: 'Select Date'}); // select2 schedule
 
+   // character counter
+   $('#txtarea-remark').on("input", function() {
+      let maxlength = $(this).attr("maxlength");
+      let currentLength = $(this).val().length;
+      $('#char_count').html(currentLength);
+
+
+      if (currentLength >= maxlength)$('#error-info-remark').html("You have reached the maximum number of characters.");
+      else $('#error-info-remark').html('Optional, Maximum of 100 characters only')
+  });
+  
+
    // select2_event on change
    $('#select2_event').on('change', function () {
       let date = moment().format('YYYY-MM-DD');
@@ -11,20 +23,13 @@ $(document).ready(function () {
       $("#select2_schedule").empty().append('<option></option>').removeAttr('disabled'); 
       getEventDatesAPI(url, event)
    });
-
-   // On Change Event Select 2
-   var step;
-   $('#select2_nextstep').on('change', function () { 
-      step = $("#select2_nextstep option:selected").val();
-   });    
    
    // accept action 
    $('.btn-accept').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
-      var next_step = $("#select2_nextstep option:selected").next().val()
-      let status = (typeof step === "undefined") ? next_step : step;
-
+      var status = $("#select2_nextstep").val()
+      // let status = (typeof step === "undefined") ? next_step : step;
       let remark = $('#txtarea-remark').val();
       let is_approve = ($(this).data().approve) ? true : '';
       let is_pass = ($(this).data().pass) ? true : '';
@@ -36,9 +41,7 @@ $(document).ready(function () {
    $('.btn-refuse').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
-      let prev_step = $("#select2_nextstep option:selected").prev().val();
-      let status = (typeof step === "undefined") ? prev_step : step;
-
+      let status = $("#select2_nextstep").val();
       let remark = $('#txtarea-remark').val();
       let is_approve = ($(this).data().approve == false) ? false : '';
       let is_pass = ($(this).data().pass == false) ? false : '';
@@ -70,7 +73,7 @@ $(document).ready(function () {
       data.remark = remark;
       data.is_approve = is_approve;
       data.is_pass = is_pass;
-      data.status = status;
+      data.status = status;   
       data.event_date = ($('#current_step').data().hasEvent) ? $("#select2_schedule").val() : '';
       
       axios({

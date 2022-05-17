@@ -47,11 +47,11 @@
    font-style: italic;
 }
 
-.container-fluid .form-actions .btn {
+/* .container-fluid .form-actions .btn {
    padding-left: 12px;
    padding-right: 12px;
    margin-left: 6px;
-}
+} */
 
 /* Overlay */
 .overlay {
@@ -210,4 +210,11 @@
 .progress-table {
    height: 5px;
    border-radius: .2rem;
+}
+
+.current-status {
+   font-size: 14px !important;
+   font-weight: bold;
+   text-transform: uppercase;
+   margin:0
 }
