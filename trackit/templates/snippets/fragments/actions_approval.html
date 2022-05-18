@@ -11,11 +11,13 @@
                <div class="progress progress-action mb-2">
                   <div class="progress-bar bg-orange" role="progressbar" style="width: {{progress}}%;" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">{{progress}}%</div>
                </div>
-               <form class="form-actions">
-                  <div class="form-group">
-                     <label class="m-0" data-has-event="false" id="current_step">Current Step: </label>
-                     <p class="current-status text-orange">{{ticket.status }}</p> 
+               <div class="card card-schedule py-2 px-3 mb-2">
+                  <div class="d-flex flex-column">
+                     <p class="current-status text-orange" data-has-event="false" id="current_step"> {{ticket.status }}</p>
+                     <small class="text-secondary">Current Step</small>
                   </div>
+               </div>
+               <form class="form-actions">
                   <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
                         <label>Next Step:</label> 
                         <select class="form-control form-control-sm" id="select2_nextstep" style="width: 100%">
@@ -36,7 +38,7 @@
                   {% if curr_step.status != last_step.status or user.is_superuser %}
                   <div class="mt-3">
                      <button class="btn btn-block btn-outline-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}" data-approve="true"><span>Approve</span></button>
-                     <button class="btn btn-block btn-outline-danger btn-xs btn-refuse mt-1" type="button" data-ticket-id="{{ticket.ticket_id}}" data-approve="false" {% if curr_step.is_head_step and curr_step.has_approving %} data-head-disapprove="true" {% endif%}><span>Disapprove</span></button>
+                     <button class="btn btn-block btn-outline-danger btn-xs btn-refuse mt-1" type="button" data-ticket-id="{{ticket.ticket_id}}" data-approve="false" data-prev-step="{{prev_step.status.pk}}" data-next-step="{{next_step.status.pk}}" {% if curr_step.is_head_step and curr_step.has_approving %} data-head-disapprove="true" {% endif%}><span>Disapprove</span></button>
                   </div>
                   {% endif %}
                </form>

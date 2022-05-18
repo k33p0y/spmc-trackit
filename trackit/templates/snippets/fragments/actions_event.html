@@ -11,11 +11,13 @@
                <div class="progress progress-action mb-2">
                   <div class="progress-bar bg-orange" role="progressbar" style="width: {{progress}}%;" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">{{progress}}%</div>
                </div>
-                <form class="form-actions">
-                  <div class="form-group">
-                     <label class="m-0" data-has-event="false" id="current_step">Current Step: </label>
-                     <p class="current-status text-orange">{{ticket.status }}</p> 
+               <div class="card card-schedule py-2 px-3 mb-2">
+                  <div class="d-flex flex-column">
+                     <p class="current-status text-orange" data-has-event="false" id="current_step"> {{ticket.status }}</p>
+                     <small class="text-secondary">Current Step</small>
                   </div>
+               </div>
+                <form class="form-actions">
                    <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
                         <label>Next Step:</label> 
                         <select class="form-control form-control-sm" id="select2_nextstep" style="width: 100%">

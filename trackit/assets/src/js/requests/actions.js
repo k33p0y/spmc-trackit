@@ -9,11 +9,9 @@ $(document).ready(function () {
       let currentLength = $(this).val().length;
       $('#char_count').html(currentLength);
 
-
       if (currentLength >= maxlength)$('#error-info-remark').html("You have reached the maximum number of characters.");
       else $('#error-info-remark').html('Optional, Maximum of 100 characters only')
   });
-  
 
    // select2_event on change
    $('#select2_event').on('change', function () {
@@ -41,7 +39,7 @@ $(document).ready(function () {
    $('.btn-refuse').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
-      let status = $("#select2_nextstep").val();
+      let status = ($(this).data().nextStep == $("#select2_nextstep").val()) ? $(this).data().prevStep : $("#select2_nextstep").val();
       let remark = $('#txtarea-remark').val();
       let is_approve = ($(this).data().approve == false) ? false : '';
       let is_pass = ($(this).data().pass == false) ? false : '';
@@ -54,6 +52,7 @@ $(document).ready(function () {
       if (validateRemark()){
          Swal.fire({
             title: 'Are you sure?',
+            html: '<p class="m-0">This will allow access to the end-user if they have been given any permission.</p>',
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'OK',

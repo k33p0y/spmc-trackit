@@ -47,6 +47,7 @@
       </div>
       <div class="row">
          <div class="col-12 col-sm-12 col-md-12 col-lg-9">
+            {% comment %} TICKET INFORMATION {% endcomment %}
             <div class="row" id="row-information">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
@@ -166,11 +167,10 @@
                   </div>   
                </div>
             </div>
-
             {% comment %} REQUEST DETAILS {% endcomment %}
             <div class="row" id="row-details">
                <div class="col-12 col-sm-12">
-                  <div class="card card-form mt-2 mb-1 "  style="border-bottom-left-radius: 5px !important;">
+                  <div class="card card-form mt-2 mb-1" style="border-bottom-left-radius: 5px !important;">
                      <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
                         <div class="card-header p-2">
                            <div class="card-title">Request Details</div>
@@ -211,7 +211,6 @@
                   </div>
                </div>
             </div>
-
             {% comment %} ATTACHMENTS {% endcomment %}
             <div class="row" id="row-attachment">
                <div class="col-12 col-sm-12">
@@ -274,8 +273,6 @@
                   {% if user.is_staff and not curr_step.is_client_step %} {% include '../../snippets/fragments/actions_default.html' %} {% endif %}
                {% endif %}
             {% endif %}
-            
-            
             {% comment %} ATTENDANCE SECTION {% endcomment %}
             <div class="row" id="row-comments">
                <div class="col-12 col-sm-12">
@@ -320,7 +317,6 @@
                   </div>
                </div>
             </div>
-
             {% comment %} COMMMENTS SECTION {% endcomment %}
             {% if user == ticket.requested_by or user == ticket.department.department_head or user.is_staff or user.is_superuser  %}
             <div class="row" id="row-comments">

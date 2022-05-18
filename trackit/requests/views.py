@@ -89,11 +89,13 @@ def view_ticket(request, ticket_id):
 
    for step in steps:
       last_step = steps.latest('order')
+      first_step = steps.first()
 
       # Get current step in ticket
       if step.status == ticket.status: 
          curr_step = steps.get(status_id=ticket.status)
          next_step = steps.get(order=curr_step.order+1) if not curr_step.status == last_step.status else curr_step
+         prev_step = steps.get(order=curr_step.order-1) if not curr_step.status == first_step.status else curr_step
 
       # Get remark if has approving and is head step 
       remarks = ticket.remarks.filter(ticket_id=ticket_id, status_id=step.status_id, is_approve=True) 
@@ -109,6 +111,7 @@ def view_ticket(request, ticket_id):
       'attachments':attachments, 
       'events' : events,
       'steps':steps, 
+      'prev_step':prev_step,
       'curr_step':curr_step, 
       'next_step':next_step,
       'last_step':last_step, 
