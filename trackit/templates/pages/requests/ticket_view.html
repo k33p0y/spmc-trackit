@@ -274,7 +274,8 @@
                {% endif %}
             {% endif %}
             {% comment %} ATTENDANCE SECTION {% endcomment %}
-            <div class="row" id="row-comments">
+            {% if event_tickets %}
+            <div class="row" id="row-attendance">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
                      <a href="#collapseAttendance" data-toggle="collapse" aria-expanded="true" aria-controls="collapseAttendance">
@@ -292,12 +293,11 @@
                                  </p>
                                  <small class="text-secondary"> {{scheduled_event.scheduled_event.event}}</small>
                                  <div class="mt-2">
-                                    <button type="button" class="btn btn-outline-success btn-block btn-sm m-0 mt-1"> <span> Present </span> </button>
-                                    <button type="button" class="btn btn-outline-secondary btn-block btn-sm m-0 mt-1"><span> Absent </span> </button>
+                                    <button type="button" class="btn btn-outline-success btn-block btn-sm m-0 mt-1" id="btn_present" data-attended="true" data-schedule-id="{{scheduled_event.pk}}"> <span> Present </span> </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-block btn-sm m-0 mt-1" id="btn_absent" data-attended="false" data-schedule-id="{{scheduled_event.pk}}"><span> Absent </span> </button>
                                  </div>
                               </div>
                            </div>
-                         
                            {% endif %}
                            <ul class="list-group list-group-flush history">
                               {% for event_ticket in event_tickets %}
@@ -311,12 +311,12 @@
                                  </li>
                               {% endfor %}
                            </ul>
-                          
                         </div>
                      </div>
                   </div>
                </div>
             </div>
+            {% endif %}
             {% comment %} COMMMENTS SECTION {% endcomment %}
             {% if user == ticket.requested_by or user == ticket.department.department_head or user.is_staff or user.is_superuser  %}
             <div class="row" id="row-comments">

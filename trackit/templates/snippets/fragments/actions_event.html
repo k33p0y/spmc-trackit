@@ -13,7 +13,7 @@
                </div>
                <div class="card card-schedule py-2 px-3 mb-2">
                   <div class="d-flex flex-column">
-                     <p class="current-status text-orange" data-has-event="false" id="current_step"> {{ticket.status }}</p>
+                     <p class="current-status text-orange" data-has-event="true" id="current_step"> {{ticket.status }}</p>
                      <small class="text-secondary">Current Step</small>
                   </div>
                </div>
@@ -53,7 +53,7 @@
                    </div>
                    {% if curr_step.status != last_step.status or user.is_superuser %}
                    <div class="mt-3">
-                        <button class="btn btn-block btn-outline-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}" data-pass="true"><span>Proceed</span></button>
+                        <button class="btn btn-block btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}" data-pass="true"><span>Proceed</span></button>
                    </div>
                    {% endif %}
                 </form>

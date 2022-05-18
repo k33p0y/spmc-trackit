@@ -52,7 +52,6 @@ $(document).ready(function () {
       if (validateRemark()){
          Swal.fire({
             title: 'Are you sure?',
-            html: '<p class="m-0">This will allow access to the end-user if they have been given any permission.</p>',
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'OK',

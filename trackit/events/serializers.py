@@ -119,7 +119,6 @@ class EventTicketSerializer(serializers.ModelSerializer):
         model = EventTicket
         fields = '__all__'
 
-
 class AttendanceSerializer(serializers.ModelSerializer):
 
     @transaction.atomic

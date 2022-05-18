@@ -85,7 +85,7 @@ def view_ticket(request, ticket_id):
 
    # Events
    events = Event.objects.filter(event_for=ticket.request_form) # events
-   event_tickets = EventTicket.objects.select_related('scheduled_event').filter(ticket=ticket).order_by('-scheduled_event__date')   # events ticket
+   event_tickets = EventTicket.objects.select_related('scheduled_event').filter(ticket=ticket).order_by('-scheduled_event__date', '-id')   # events ticket
 
    for step in steps:
       last_step = steps.latest('order')

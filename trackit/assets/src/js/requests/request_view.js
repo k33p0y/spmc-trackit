@@ -6,8 +6,7 @@ $(document).ready(function () {
         const date_str = $(`#${e.id}`).text();
         const date = moment(new Date(date_str)).format("MMMM DD, YYYY hh:mm A");
         
-        if (date_str) $(`#${e.id}`).text(date); else '' 
-        
+        if (date_str) $(`#${e.id}`).text(date); else ''
     });
 
     // character counter
@@ -15,7 +14,6 @@ $(document).ready(function () {
         let currentLength = $(this).val().length;
         $('#char_count_comment').html(`${currentLength > 0 ? currentLength : ''}`);
     });
-
 
     // get ticket number in localStorage if available
     if (localStorage.getItem('ticketNumber')){
@@ -45,15 +43,32 @@ $(document).ready(function () {
             setTimeout(function() { 
                 $(".ref-spinner").addClass('d-none');
                 $("#ref_context").removeClass('text-muted').html(response.data.reference_no);
-                $("#btn_generate").remove()
+                $("#btn_generate").remove();
             }, 800);
         }).catch(function (error) {
-            toastError(error.response.data)
+            toastError(error.response.data);
         });
     });
 
     $('.btn-view-logs').click(function(){
         // set ticket number in localStorage
         localStorage.setItem('ticket-number', $(this).data('ticket-number'));
+    });
+
+    // Attendance 
+    $('#btn_present, #btn_absent').click(function () {
+        $(this).attr("disabled", true) // disable button
+        let attended = $(this).data().attended;
+        let schedule_id =  $(this).data().scheduleId;
+
+        axios.patch(`/api/events/attendance/${schedule_id}/`, 
+            {attended: attended}, 
+            {headers: axiosConfig}
+        ).then(res => {
+            $.when(toastSuccess('Success')).then(() => location.reload());
+        }).catch(err => {
+            toastError(err.response.statusText);
+            $(this).attr("disabled", false) // enable button
+        });
     });
 });

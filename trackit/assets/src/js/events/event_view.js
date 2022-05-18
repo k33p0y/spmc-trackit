@@ -4,7 +4,7 @@ $(document).ready(function() {
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false, 
-        "serverside": false,
+        "serverside": true,
         "processing": true,
         "pageLength": 15,
         "ajax": {
@@ -48,9 +48,13 @@ $(document).ready(function() {
                     else data = "<i class='fas fa-times-circle text-secondary'></i>";
                     return data
                 },
-            }
+            },
+            {
+                data: "id",
+                visible: false
+            },
         ],
-        "order": [[0, "asc"]],
+        "order": [[5, "desc"]],
     }); // table end
 
     // // view date
