@@ -141,8 +141,8 @@
                {% endif %}
 
                {% if perms.requests.add_ticket or perms.requests.view_ticket %}
-                  <li class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} menu-open {% endif %}">
-                     <a href="#" class="nav-link {% if url == 'ticket' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
+                  <li class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' or  url == 'ticket_log_list' %} menu-open {% endif %}">
+                     <a href="#" class="nav-link {% if url == 'ticket' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' or  url == 'ticket_log_list' %} active {% endif %}">
                         <i class="nav-icon fas fa-pen"></i>
                         <p>
                            Request
@@ -180,8 +180,8 @@
                {% endif %}
             {% endif %}
 
-            <li class="nav-item {% if url == 'event' or url == 'event_calendar' %} menu-open {% endif %}">
-               <a href="#" class="nav-link {% if url == 'event' or url == 'event_calendar' %} active {% endif %}">
+            <li class="nav-item {% if url == 'event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} menu-open {% endif %}">
+               <a href="#" class="nav-link {% if url == 'event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
                   <i class="nav-icon fas fa-calendar-alt"></i>
                   <p>
                      Events
@@ -191,14 +191,14 @@
                <ul class="nav nav-treeview">
                   <li class="nav-item">
                      <a href="{% url 'event_calendar' %}"
-                        class="nav-link {% if url == 'event_calendar' %} active {% endif %}">
+                        class="nav-link {% if url == 'event_calendar'  %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p>Calendar</p>
                      </a>
                   </li>
                   <li class="nav-item">
                      <a href="{% url 'event' %}"
-                        class="nav-link {% if url == 'event' %} active {% endif %}">
+                        class="nav-link {% if url == 'event' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
                         <i class="nav-icon far fa-circle"></i>
                         <p>Manage</p>
                      </a>
