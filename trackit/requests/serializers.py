@@ -136,7 +136,7 @@ class TicketListSerializer(serializers.ModelSerializer):
    class Meta:
       model = Ticket
       exclude = ['form_data']
-      datatables_always_serialize = ('ticket_id',)
+      datatables_always_serialize = ('ticket_id', 'progress')
 
 class TicketCRUDSerializer(serializers.ModelSerializer):
    requested_by = UserSerializer(read_only=True)

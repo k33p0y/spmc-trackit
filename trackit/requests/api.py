@@ -84,7 +84,7 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
          if status: qs = qs.filter(status_id__exact=status)
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
 
-         return qs
+         return qs.order_by('-ticket_id')
 
 class TicketCRUDViewSet(viewsets.ModelViewSet):    
    serializer_class = TicketCRUDSerializer

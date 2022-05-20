@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+   // RETRIEVE / GET
    var searchInput = function() { return $('#search-input').val(); }
    var formFilter = function() { return $('#requestform-filter').val(); }
    var typeFilter = function() { return $('#type-filter').val(); }
@@ -10,16 +10,18 @@ $(document).ready(function () {
    var dateToFilter = function() { return $('#date-to-filter').val(); }
    var activeFilter = function() { return $('#active-filter').val(); }
 
-   // RETRIEVE / GET
    // List Table
    let table = $('#dt_requests').DataTable({
       "searching": false,
       "responsive": true,
       "lengthChange": false,
       "autoWidth": false,
-      "serverside": true,
+      "serverSide": true,
+      "language": {
+         processing: $('#table_spinner').html()
+      },
       "processing": true,
-      "pageLength": 25,
+      "pageLength": 15,
       "ajax": {
          url: '/api/requests/ticket/all/?format=datatables',
          type: "GET",
@@ -33,7 +35,7 @@ $(document).ready(function () {
             "date_from": dateFromFilter,
             "date_to": dateToFilter,
             "is_active": activeFilter
-         },
+         }
       },
       "columns": [
          { 
@@ -106,20 +108,6 @@ $(document).ready(function () {
                return data
             },
          }, // Date Create
-         { 
-            data: "date_modified",
-            visible : false,
-            searchable : false,
-            render: function (data, type, row) {
-               if (type == 'display') {
-                  var date = moment(row.date_modified).format('DD MMMM YYYY');
-                  var time = moment(row.date_modified).format('h:mm:ss a');
-
-                  data = `<p class="title mb-1">${date}</p><span class="sub-title">${time}</span>`
-               }
-               return data
-            },
-         }, // Date Update
          {
             data: "requested_by",
             render: function (data, type, row) {
@@ -132,13 +120,12 @@ $(document).ready(function () {
          {
             data: "status",
             render: function (data, type, row) {
+               // console.log(row)
                if (type == 'display') {
-                  template = `
-                     <div> 
-                     ${row.status.name}
-                     <div class="progress progress-table mt-1">
-                        <div class="progress-bar bg-orange" role="progressbar" style="width: ${row.progress}%;" aria-valuenow="${row.progress}" aria-valuemin="0" aria-valuemax="100"></div>
-                     </div>
+                  template = `<div> ${row.status.name}
+                        <div class="progress progress-table mt-1">
+                           <div class="progress-bar bg-orange" role="progressbar" style="width: ${row.progress}%;" aria-valuenow="${row.progress}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
                      </div>`
                   data = template
                }
@@ -160,18 +147,6 @@ $(document).ready(function () {
                return data
             }
          }, // Is Active
-         // {
-         //    data: "null",
-         //    render: function (data, type, row) {
-         //       var id = row.ticket_id;
-         //       data = '';
-         //       data = data + `<a href='/requests/${id}/view' class='text-info action-link btn_view'> <i class='fas fa-eye'></i> </a>`;
-         //       if($('#changeTicketHidden').val() == 'true') {
-         //          data = data + `<a href='/requests/${id}/detail' class='text-warning action-link btn_edit'> <i class='fas fa-pen'></i> </a>`;
-         //       }
-         //       return data;
-         //    },
-         // } // Action
       ],
       "order": [[ 6, "desc" ]],
    });

@@ -130,6 +130,13 @@
          <div class="col-12 col-sm-12 m-0">
             <div class="card shadow-sm mt-2 mb-2">
                <div class="card-body p-0">
+                  <template id="table_spinner">
+                     <div class="d-flex justify-content-center align-items-center">
+                        <div class="spinner-border text-orange mr-2" style="width: 1.2rem; height: 1.2rem;" role="status">
+                        </div>
+                        <span class="text-secondary">Fetching...</span>
+                     </div>
+                  </template>
                   <table id="dt_requests" class="table table-hover m-0" width="100%">
                      <thead>
                         <tr>
@@ -140,7 +147,6 @@
                            <th>Reference No</th>
                            <th>Department</th>
                            <th>Date Requested</th>
-                           <th>Date Modified</th>
                            <th data-priority="3">Requested By</th>
                            <th data-priority="4">Status</th>
                            <th>Is active</th>
