@@ -22,6 +22,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = '__all__'
+        datatables_always_serialize = ('id', 'preface')
 
 class ArticleCRUDSerializer(serializers.ModelSerializer):
     author = UserInfoSerializer(read_only=True)

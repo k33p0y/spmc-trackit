@@ -98,8 +98,11 @@ $(document).ready(function () {
       "responsive": true,
       "lengthChange": false,
       "autoWidth": false,
-      "serverside": true,
+      "serverSide": true,
       "processing": true,
+      "language": {
+         processing: $('#table_spinner').html()
+      },
       "pageLength": 20,
       "ajax": {
          url: '/api/requests/forms/all/?format=datatables',
@@ -119,7 +122,9 @@ $(document).ready(function () {
                return data
             },
          }, // Name
-         { data: "prefix" }, // Name
+         { 
+            data: "prefix" 
+         }, // Prefix
          {
             data: "color",
             render: function (data, type, row) {
@@ -138,7 +143,7 @@ $(document).ready(function () {
             },
          }, // Date Create
          {
-            data: 'date_created',
+            data: 'date_modified',
             render: function (data, type, row) {
                if (type == 'display') {
                   var datetime = moment(row.date_modified).format('MMM DD, YYYY h:mm:ss a');

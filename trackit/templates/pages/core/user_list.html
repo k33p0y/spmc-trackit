@@ -230,6 +230,13 @@
          <div class="col-12">
             <div class="card shadow-sm mt-2 mb-2">
                <div class="card-body p-0">
+                  <template id="table_spinner">
+                     <div class="d-flex justify-content-center align-items-center">
+                        <div class="spinner-border text-orange mr-2" style="width: 1.2rem; height: 1.2rem;" role="status">
+                        </div>
+                        <span class="text-secondary">Fetching...</span>
+                     </div>
+                  </template>
                   <table id="dt_user" class="table table-hover" width="100%">
                      <thead>
                         <tr>
@@ -532,6 +539,13 @@
                   </div>
                   <!-- Activity Tab -->
                   <div class="tab-pane fade" id="activity" role="tabpanel" aria-labelledby="nav-activity-tab">
+                     <template id="table_spinner">
+                        <div class="d-flex justify-content-center align-items-center">
+                           <div class="spinner-border text-orange mr-2" style="width: 1.2rem; height: 1.2rem;" role="status">
+                           </div>
+                           <span class="text-secondary">Fetching...</span>
+                        </div>
+                     </template>
                      <table class="table table-sm table-activity">
                         <thead>
                           <tr>

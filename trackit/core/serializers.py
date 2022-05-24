@@ -223,6 +223,7 @@ class GroupSerializer(serializers.ModelSerializer):
    class Meta:
       model = Group
       fields = ['id', 'name', 'permissions', 'user_count']
+      datatables_always_serialize = ('id', 'permissions',)
 
 class GroupReadOnlySerializer(serializers.ModelSerializer):
 
@@ -324,6 +325,7 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ['password']
+        datatables_always_serialize = ('id', 'first_name', 'last_name', 'middle_name', 'suffix', 'contact_no', 'license_no', 'email', 'is_staff', 'last_login', 'date_joined', 'modified_by', 'verified_by', 'verified_at', 'created_by', 'documents', 'remarks', 'user_permissions')
 
 class VerifyUserSerializer(serializers.ModelSerializer):
 

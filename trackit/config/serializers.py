@@ -119,3 +119,5 @@ class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
         fields = ['id', 'name', 'is_active', 'forms']
+        datatables_always_serialize = ('id',)
+        

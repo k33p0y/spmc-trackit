@@ -41,8 +41,11 @@ $(document).ready(function () {
       "responsive": true,
       "lengthChange": false,
       "autoWidth": false,
-      "serverside": true,
+      "serverSide": true,
       "processing": true,
+      "language": {
+         processing: $('#table_spinner').html()
+      },
       "pageLength": 15,
       "ajax": {
          url: '/api/core/all/user/?format=datatables',
@@ -61,8 +64,9 @@ $(document).ready(function () {
       },
       "columns": [
          {
-            data: "first_name",
+            data: "username",
             render: function (data, type, row) {
+               console.log(row)
                if (type == 'display') {
                   let name_template = `<div class="d-flex align-items-center" id="name_profile">
                      <div class="profile-img">${row.first_name.charAt(0)}${row.last_name.charAt(0)}</div>
@@ -76,16 +80,16 @@ $(document).ready(function () {
                }
                return data
             },
-         },
+         }, // Names
          {
             data: "department",
             render: function (data, type, row) {
                if (type == 'display') data = (row.department) ? `${row.department.name}` : '';
                return data
             },
-         },
+         }, // Department
          {
-            data: "null",
+            data: "is_superuser",
             render: function (data, type, row) {
                data = '';
                if (row.is_staff) data = "<span class='text-nowrap'><i class='fas fa-user-tie text-info mr-1'></i>Staff</span>";
@@ -93,7 +97,7 @@ $(document).ready(function () {
                if (!row.is_superuser && !row.is_staff) data = "<span class='text-nowrap'><i class='fas fa-user mr-1'></i>Member</span>";
                return data
             },
-         },
+         }, // Permission
          {
             data: "groups",
             render: function (data, type, row) {
@@ -105,7 +109,7 @@ $(document).ready(function () {
                }
                return data
             },
-         },
+         }, // Groups
          {
             data: "modified_at",
             render: function (data, type, row) {
@@ -117,9 +121,9 @@ $(document).ready(function () {
                }
                return data
             },
-         },
+         }, // Modified At
          {
-            data: "verified_at",
+            data: "is_verified",
             render: function (data, type, row) {
                data = '';
                if (row.is_verified) data = "<div class='badge badge-primary text-uppercase d-inline-flex align-items-center p-1'> <span> Verified </span> </div>";
@@ -127,7 +131,7 @@ $(document).ready(function () {
                else if (row.is_verified == false) data = "<div class='badge badge-danger text-uppercase d-inline-flex align-items-center p-1'> <span> Declined </span> </div>";
                return data
             },
-         },
+         }, // Verification
          {
             data: "is_active",
             render: function (data, type, row) {
@@ -135,7 +139,7 @@ $(document).ready(function () {
                else data = "<i class='fas fa-times-circle text-secondary'></i>";
                return data
             },
-         }
+         } // Is Active
       ],
       "order": [[4, "desc"]],
    }); // table end
@@ -652,7 +656,7 @@ $(document).ready(function () {
          "responsive": true,
          "lengthChange": false,
          "autoWidth": false,
-         "serverside": true,
+         "serverSide": false,
          "pageLength" : 10,
          "info" : false,
          "ajax": {

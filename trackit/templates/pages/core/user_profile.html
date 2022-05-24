@@ -183,37 +183,28 @@
                                  </span></a></div>
                         </div>
                         <div class="card-body p-0">
+                           <template id="table_spinner">
+                              <div class="d-flex justify-content-center align-items-center">
+                                 <div class="spinner-border text-orange mr-2" style="width: 1.2rem; height: 1.2rem;" role="status">
+                                 </div>
+                                 <span class="text-secondary">Fetching...</span>
+                              </div>
+                           </template>
                            <table id="dt_requests" class="table" width="100%">
                               <thead>
                                  <tr>
                                     <th>Ticket No</th>
                                     <th>Request Type</th>
                                     <th>Description</th>
-                                    <th>Category</th>
                                     <th>Status</th>
+                                    <th>Category</th>
+                                    <th>Date Requested</th>
                                  </tr>
                               </thead>
-                              <tbody>
-                                 {% for ticket in tickets %}
-                                 <tr>
-                                    <td> <a href="{% url 'view_ticket'  ticket_id=ticket.ticket_id %}"
-                                          class="btn-link-orange">{{ticket.ticket_no}}</a> </td>
-                                    <td>
-                                       <h6 class="m-0"><span class="badge text-light p-1"
-                                             style="background-color:{{ticket.request_form.color}}">{{ticket.request_form}}</span>
-                                       </h6>
-                                    </td>
-                                    <td>{{ticket.description}}</td>
-                                    <td>{{ticket.category}}</td>
-                                    <td>{{ticket.status}}</td>
-                                 </tr>
-                                 {% endfor %}
-                              </tbody>
                            </table>
                         </div>
                         <div class="card-footer d-flex justify-content-end">
-                           <a href="{% url 'ticket' %}" class="text-xs text-secondary align-self-center"> View All <i
-                                 class="fas fa-caret-right"></i></a>
+                           <a href="{% url 'ticket' %}" class="text-xs text-secondary align-self-center"> View All <i class="fas fa-caret-right"></i></a>
                         </div>
                      </div>
                   </div>

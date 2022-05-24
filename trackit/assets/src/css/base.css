@@ -720,3 +720,10 @@ table.dataTable tbody tr:hover {
 .verification-status > i {
    vertical-align: middle;
 }
+
+/* Progresss */
+
+.progress-table {
+   height: 5px;
+   border-radius: .2rem;
+}

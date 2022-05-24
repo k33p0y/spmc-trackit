@@ -85,6 +85,12 @@
             <div class="col-12">
                 <div class="card shadow-sm mt-2 mb-2">
                 <div class="card-body p-0">
+                    <template id="table_spinner">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="spinner-border text-orange mr-2" style="width: 1.2rem; height: 1.2rem;" role="status"></div>
+                            <span class="text-secondary">Fetching...</span>
+                        </div>
+                    </template>
                     <table id="dt_events" class="table table-hover" width="100%">
                         <thead>
                             <tr>

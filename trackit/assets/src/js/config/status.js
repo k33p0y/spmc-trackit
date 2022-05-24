@@ -15,8 +15,11 @@ $(document).ready(function () {
       "responsive": true,
       "lengthChange": false,
       "autoWidth": false,
-      "serverside": true,
+      "serverSide": true,
       "processing": true,
+      "language": {
+         processing: $('#table_spinner').html()
+      },
       "pageLength": 20,
       "ajax": {
          url: '/api/config/status/?format=datatables',
@@ -35,7 +38,7 @@ $(document).ready(function () {
                }
                return data
             },
-         },
+         }, // Name
          {
             data: "is_active",
             render: function (data, type, row) {
@@ -48,7 +51,7 @@ $(document).ready(function () {
                }
                return data
             }
-         }
+         } // Is Active
       ],
       "order": [[0, "asc"]],
    });

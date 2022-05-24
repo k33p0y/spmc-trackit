@@ -16,8 +16,11 @@ $(document).ready(function () {
       "responsive": true,
       "lengthChange": false,
       "autoWidth": false,
-      "serverside": true,
+      "serverSide": true,
       "processing": true,
+      "language": {
+         processing: $('#table_spinner').html()
+      },
       "pageLength": 20,
       "ajax": {
          url: '/api/config/department/?format=datatables',
@@ -36,9 +39,9 @@ $(document).ready(function () {
                }
                return data
             },
-         },
+         }, // Name
          {
-            data: null,
+            data: "department_head",
             render: function (data, type, row) {
                if (type == 'display') {
                   if (row.department_head === null) {
@@ -49,9 +52,9 @@ $(document).ready(function () {
                }
                return data
             }
-         },
+         }, // Department_Head
          {
-            data: null,
+            data: "is_active",
             render: function (data, type, row) {
                if (type == 'display') {
                   data = '';
@@ -63,7 +66,7 @@ $(document).ready(function () {
                }
                return data
             }
-         }
+         } // Is Active
       ],
    });
 

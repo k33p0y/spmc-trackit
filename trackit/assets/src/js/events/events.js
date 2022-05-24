@@ -4,8 +4,11 @@ $(document).ready(function() {
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false, 
-        "serverside": false,
+        "serverSide": true,
         "processing": true,
+        "language": {
+            processing: $('#table_spinner').html()
+         },
         "pageLength": 15,
         "ajax": {
             url: '/api/events/all/?format=datatables',
@@ -19,24 +22,24 @@ $(document).ready(function() {
                     if (type == 'display') data = `<a href='/events/event/${row.id}/view' class='text-orange btn-edit'> ${headline_html} </a>`
                     return data
                 },
-            },
+            }, // Title
             {
                 data: "event_for",
                 render: function (data, type, row) {
                     if (type == 'display') data = row.event_for.name;
                     return data
                 },
-            },
+            }, // Event For
             {
                 data: "highlight",
                 render: function (data, type, row) {
                     if (type == 'display') data = `<div class= "circle" style="background-color:${row.highlight};" ></div>`;
                     return data
                 },
-            },
+            }, // Highlight
             {
                 data: "participants",
-            },
+            }, // Participants
             {
                 data: "is_active",
                 render: function (data, type, row) {
@@ -44,7 +47,7 @@ $(document).ready(function() {
                 else data = "<i class='fas fa-times-circle text-secondary'></i>";
                 return data
                 },
-            }
+            } // Is Active
         ],
         "order": [[4, "desc"]],
     }); // table end

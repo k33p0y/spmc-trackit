@@ -1,6 +1,21 @@
 from django.urls import path
 from rest_framework import routers
-from .api import RequestFormViewSet, RequestFormCRUDViewSet, TicketViewSet, TicketCRUDViewSet, TicketGenerateReferenceViewSet, TicketStatusViewSet, TicketActionViewSet, RequestFormStatusViewSet, CRUDEventList, NotificationViewSet, AttachmentViewSet, CommentListCreateAPIView
+from .api import (
+   AttachmentViewSet, 
+   CommentListCreateAPIView,
+   CRUDEventList, 
+   NotificationViewSet, 
+   RequestFormCRUDViewSet, 
+   RequestFormStatusViewSet, 
+   RequestFormViewSet, 
+   TicketActionViewSet, 
+   TicketCRUDViewSet, 
+   TicketDashboardViewSet,
+   TicketGenerateReferenceViewSet,
+   TicketProfileViewSet, 
+   TicketStatusViewSet, 
+   TicketViewSet, 
+)
 from . import views
 
 router = routers.DefaultRouter()
@@ -8,6 +23,8 @@ router.register('api/requests/forms/crud', RequestFormCRUDViewSet, basename='Req
 router.register('api/requests/forms/all', RequestFormViewSet, basename='RequestFormList')
 router.register('api/requests/ticket/crud', TicketCRUDViewSet, basename='Ticket')
 router.register('api/requests/ticket/all', TicketViewSet, basename='TicketList')
+router.register('api/requests/ticket/myrequests', TicketProfileViewSet, basename='TicketProfile')
+router.register('api/requests/ticket/latest', TicketDashboardViewSet, basename='TicketDashboard')
 router.register('api/requests/ticket/generate_reference', TicketGenerateReferenceViewSet, basename='TicketGenerateReference')
 router.register('api/requests/ticket/status', TicketStatusViewSet, basename='TicketStatus')
 router.register('api/requests/ticket/actions', TicketActionViewSet, basename='TicketAction')

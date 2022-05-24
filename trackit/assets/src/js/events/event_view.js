@@ -4,9 +4,12 @@ $(document).ready(function() {
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false, 
-        "serverside": true,
+        "serverSide": true,
         "processing": true,
-        "pageLength": 15,
+        "language": {
+            processing: $('#table_spinner').html()
+        },
+        "pageLength": 10,
         "ajax": {
             url: '/api/events/eventdate/?format=datatables',
             type: "GET",
@@ -22,25 +25,25 @@ $(document).ready(function() {
                     data = `<a href='#' class='btn-link-orange action-link view-schdule'> ${date} </a>`
                     return data
                 },
-            },
+            }, // Date
             {
                 data: "time_start",
                 render: function (data, type, row) {
                     return moment(row.date + ' ' + row.time_start).format('h:mm:ss a')
                 },
-            },
+            }, // Time Start
             {
                 data: "time_end",
                 render: function (data, type, row) {
                     return moment(row.date + ' ' + row.time_end).format('h:mm:ss a')
                 },
-            },
+            }, // Time End
             {
-                data: "atttendance",
+                data: "attendance",
                 render: function (data, type, row) {
                     return row.attendance;
                 },
-            },
+            }, // Attendance
             {
                 data: "is_active",
                 render: function (data, type, row) {
@@ -48,11 +51,11 @@ $(document).ready(function() {
                     else data = "<i class='fas fa-times-circle text-secondary'></i>";
                     return data
                 },
-            },
+            }, // Is Active
             {
                 data: "id",
                 visible: false
-            },
+            }, // Id
         ],
         "order": [[5, "desc"]],
     }); // table end

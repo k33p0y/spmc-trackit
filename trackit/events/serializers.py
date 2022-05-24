@@ -29,6 +29,8 @@ class EventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = '__all__'
+        datatables_always_serialize = ('id', 'subject')
+
 
 class EventCRUDSerializer(serializers.ModelSerializer):
     created_by = UserInfoSerializer(read_only=True)
@@ -103,6 +105,7 @@ class EventDateSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventDate
         fields = '__all__'
+        datatables_always_serialize = ('id',)
 
 class TicketReadOnlySerializer(serializers.ModelSerializer):
     status = StatusReadOnlySerializer(read_only=True)

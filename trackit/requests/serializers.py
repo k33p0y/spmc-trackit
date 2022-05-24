@@ -31,6 +31,7 @@ class RequestFormListSerializer(serializers.ModelSerializer):
       model = RequestForm
       fields = ['id', 'name', 'prefix', 'color', 'date_created', 'date_modified', 'fields', 'is_active', 'status', 'group', 'category_types']
       depth = 1
+      datatables_always_serialize = ('id', 'fields', 'status', 'group', 'category_types')
 
 class RequestFormCRUDSerializer(serializers.ModelSerializer):
    color = serializers.CharField(required=True)
@@ -136,6 +137,40 @@ class TicketListSerializer(serializers.ModelSerializer):
    class Meta:
       model = Ticket
       exclude = ['form_data']
+      datatables_always_serialize = ('ticket_id', 'progress')
+
+class TicketProfileSerializer(serializers.ModelSerializer):
+   status = StatusReadOnlySerializer(read_only=True)
+   request_form = RequestFormReadOnlySerializer(read_only=True)
+   category = CategoryReadOnlySerializer(many=True, read_only=True)
+   progress = serializers.SerializerMethodField()
+
+   def get_progress(self, instance):
+      steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=instance.request_form).order_by('order')
+      for step in steps: curr_step = steps.get(status_id=instance.status)
+      progress = round((curr_step.order / len(steps)) * 100) # get progress value
+      return progress
+
+   class Meta:
+      model = Ticket
+      fields = ('ticket_id', 'ticket_no', 'request_form', 'description', 'requested_by', 'category', 'status', 'progress', 'date_created')
+      datatables_always_serialize = ('ticket_id', 'progress')
+
+class TicketDashboardSerializer(serializers.ModelSerializer):
+   status = StatusReadOnlySerializer(read_only=True)
+   request_form = RequestFormReadOnlySerializer(read_only=True)
+   requested_by = UserSerializer(read_only=True)
+   progress = serializers.SerializerMethodField()
+
+   def get_progress(self, instance):
+      steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=instance.request_form).order_by('order')
+      for step in steps: curr_step = steps.get(status_id=instance.status)
+      progress = round((curr_step.order / len(steps)) * 100) # get progress value
+      return progress
+
+   class Meta:
+      model = Ticket
+      fields = ('ticket_id', 'ticket_no', 'request_form', 'description', 'requested_by', 'status', 'progress', 'date_created')
       datatables_always_serialize = ('ticket_id', 'progress')
 
 class TicketCRUDSerializer(serializers.ModelSerializer):

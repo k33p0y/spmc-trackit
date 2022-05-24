@@ -207,11 +207,6 @@
    border-radius: .2rem;
 }
 
-.progress-table {
-   height: 5px;
-   border-radius: .2rem;
-}
-
 .current-status {
    font-size: 14px !important;
    font-weight: bold;

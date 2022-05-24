@@ -85,14 +85,21 @@
             <div class="col-12">
                 <div class="card shadow-sm mt-2 mb-2">
                 <div class="card-body p-0">
+                     <template id="table_spinner">
+                        <div class="d-flex justify-content-center align-items-center">
+                           <div class="spinner-border text-orange mr-2" style="width: 1.2rem; height: 1.2rem;" role="status">
+                           </div>
+                           <span class="text-secondary">Fetching...</span>
+                        </div>
+                     </template>
                     <table id="dt_articles" class="table table-hover" width="100%">
                         <thead>
-                            <tr>
-                            <th data-priority="1">Headline</th>
-                            <th data-priority="4">Date Created</th>
-                            <th data-priority="4">Author</th>
-                            <th>is Active</th>
-                            </tr>
+                           <tr>
+                              <th data-priority="1">Headline</th>
+                              <th data-priority="4">Date Created</th>
+                              <th data-priority="4">Author</th>
+                              <th>is Active</th>
+                           </tr>
                         </thead>
                     </table>
                 </div>

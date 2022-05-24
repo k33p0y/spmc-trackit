@@ -1,13 +1,28 @@
-from rest_framework import generics, viewsets, permissions, serializers, status
+from rest_framework import generics, permissions, serializers, status, viewsets
 from rest_framework.response import Response
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-from .serializers import RequestFormListSerializer, RequestFormCRUDSerializer, RequestFormStatusSerializer, TicketCRUDSerializer, TicketListSerializer, TicketReferenceSerializer, TicketStatusSerializer, TicketActionSerializer, CRUDEventSerializer, NotificationSerializer, AttachmentSerializer, CommentSerializer
-from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
+from .models import Attachment, Comment, Notification, RequestForm, RequestFormStatus, Ticket
+from .serializers import (
+   AttachmentSerializer, 
+   CommentSerializer,
+   CRUDEventSerializer,
+   NotificationSerializer, 
+   RequestFormCRUDSerializer, 
+   RequestFormListSerializer, 
+   RequestFormStatusSerializer,
+   TicketActionSerializer,
+   TicketCRUDSerializer, 
+   TicketDashboardSerializer, 
+   TicketListSerializer, 
+   TicketProfileSerializer, 
+   TicketReferenceSerializer, 
+   TicketStatusSerializer,)
 from .views import create_notification, create_remark, generate_reference
 from .permissions import CanGenerateReference
 from easyaudit.models import CRUDEvent
@@ -51,6 +66,7 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
       # Search & Filter Parameters
       search = self.request.query_params.get('search', None)
       request_form = self.request.query_params.get('request_form', None)
+      requested_by = self.request.query_params.get('requested_by', None)
       category_type = self.request.query_params.get('category_type', None)
       category = self.request.query_params.get('category', None)
       department = self.request.query_params.get('department', None)
@@ -85,6 +101,22 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
 
          return qs.order_by('-ticket_id')
+
+class TicketProfileViewSet(viewsets.ReadOnlyModelViewSet):
+   serializer_class = TicketProfileSerializer
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   http_method_names = ['get', 'head']
+
+   def get_queryset(self):
+      my_requests = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(requested_by=self.request.user)
+      return my_requests
+
+class TicketDashboardViewSet(viewsets.ReadOnlyModelViewSet):
+   serializer_class = TicketDashboardSerializer
+   queryset = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').order_by('-date_created')
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   pagination_class = LimitOffsetPagination
+   http_method_names = ['get', 'head']
 
 class TicketCRUDViewSet(viewsets.ModelViewSet):    
    serializer_class = TicketCRUDSerializer

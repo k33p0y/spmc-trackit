@@ -11,11 +11,14 @@ $(document).ready(function () {
       "responsive": true,
       "lengthChange": false,
       "autoWidth": false,
-      "serverside": true,
+      "serverSide": true,
       "processing": true,
+      "language": {
+         processing: $('#table_spinner').html()
+      },
       "pageLength": 15,
       "ajax": {
-      url: '/api/announcement/article/?format=datatables',
+      url: '/api/announcement/all/article/?format=datatables',
       type: "GET",
       data: {
          "search": searchInput,
@@ -28,11 +31,12 @@ $(document).ready(function () {
       {
          data: "title",
          render: function (data, type, row) {
+            console.log(row)
             let headline_html = `<div><p class="title text-nowrap m-0">${row.title}</p><span class="sub-title text-muted">${row.preface}</span></div>`;
             if (type == 'display') data = `<a href='/announcement/article/${row.id}/view' class='text-orange btn-edit'> ${headline_html} </a>`
             return data
          },
-      },
+      }, // Title
       {
          data: "date_publish",
          render: function (data, type, row) {
@@ -44,23 +48,23 @@ $(document).ready(function () {
             }
             return data
          },
-      },
+      }, // Date Publish
       {
          data: "author",
          render: function (data, type, row) {
             if (type == 'display') data = `${row.author.name}`;
             return data
          },
-      },
+      }, // Author
       {
          data: "is_active",
          render: function (data, type, row) {
             data = (row.is_active) ? "<i class='fas fa-check-circle text-success'></i>" : "<i class='fas fa-times-circle text-secondary'></i>";
             return data
          },
-      }
+      } // Is_active
    ],
-   // "order": [[4, "desc"]],
+   "order": [[1, "desc"]],
    }); // table end
 
    // // //  Filters

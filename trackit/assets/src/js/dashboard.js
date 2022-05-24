@@ -3,15 +3,71 @@ $(document).ready(function () {
    let table = $('#dt_requests').DataTable({
       "searching": false,
       "responsive": true,
+      "lengthChange": false,
       "autoWidth": false,
-      "paging": false,
+      "serverSide": true,
+      "processing": true,
+      "paging" : false,
+      "ordering": false,
       "info": false,
-      "columnDefs": [{
-         "targets": [0,1,2,3,4],
-         "orderable": false
-      }]
+      "language": {
+         processing: $('#table_spinner').html()
+      },
+      "ajax": {
+         url: '/api/requests/ticket/latest/?limit=6&format=datatables',
+         type: "GET",
+      },
+      "columns": [
+         { 
+            data: "ticket_no",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = `<a href='/requests/${row.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket_no} </a>`
+               }
+               return data
+            }
+         }, // Ticket No
+         {
+            data: "request_form",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = `<span class="td-badge text-light text-truncate" style="background-color:${row.request_form.color}">${row.request_form.prefix}</span>`
+               }
+               return data
+            },
+         }, // Request Type
+         { 
+            data: "description",
+            render: $.fn.dataTable.render.ellipsis(50, true),
+         }, // Description
+         { 
+            data: "status",
+            render: function (data, type, row) {
+               // console.log(row)
+               if (type == 'display') {
+                  template = `<div> ${row.status.name}
+                        <div class="progress progress-table mt-1">
+                           <div class="progress-bar bg-orange" role="progressbar" style="width: ${row.progress}%;" aria-valuenow="${row.progress}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                     </div>`
+                  data = template
+               }
+               return data
+            },
+         }, // Status
+         {
+            data: "requested_by",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = `${row.requested_by.first_name} ${row.requested_by.last_name}`
+               }
+               return data
+            },
+         }, // Requested By
+      ],
    });
 
+   // Announcement
    $('.carousel-inner').on('click', '.btn-more', function() {
       axios
          .get(`/api/announcement/all/article/${$(this).data().articleId}/`)

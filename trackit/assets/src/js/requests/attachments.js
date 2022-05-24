@@ -11,7 +11,12 @@ $(document).ready(function () {
       "searching": false,
       "responsive": true,
       "lengthChange": false,
+      "serverSide" : true,
+      "processing": true,
       "pageLength": 10,
+      "language": {
+         processing: $('#table_spinner').html()
+      },
       "ajax": {
          url: '/api/requests/attachments/?format=datatables',
          type: "GET",

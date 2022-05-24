@@ -106,6 +106,13 @@
                   </div>
                </div>
                <div class="card-body p-0">
+                  <template id="table_spinner">
+                     <div class="d-flex justify-content-center align-items-center">
+                        <div class="spinner-border text-orange mr-2" style="width: 1.2rem; height: 1.2rem;" role="status">
+                        </div>
+                        <span class="text-secondary">Fetching...</span>
+                     </div>
+                  </template>
                   <table id="dt_requests" class="table" width="100%">
                      <thead>
                         <tr>
@@ -116,17 +123,6 @@
                            <th>Requested By</th>
                         </tr>
                      </thead>
-                     <tbody>
-                        {% for ticket in tickets %}
-                        <tr>
-                           <td> <a href="{% url 'view_ticket' ticket.ticket_id %}" class='btn-link-orange action-link btn_view'>{{ticket.ticket_no}}</a></td>
-                           <td><h6 class="m-0"><span class="badge text-light p-1" style="background-color:{{ticket.request_form.color}}">{{ticket.request_form}}</span></h6></td>
-                           <td>{{ticket.description}}</td>
-                           <td>{{ticket.status}}</td>
-                           <td>{{ticket.requested_by}}</td>
-                        </tr>
-                        {% endfor %}
-                     </tbody>
                   </table>
                </div>
                <div class="card-footer d-flex justify-content-end pt-2 pb-2">

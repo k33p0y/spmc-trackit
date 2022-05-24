@@ -14,17 +14,87 @@ $(document).ready(function () {
       localStorage.removeItem('notification-id');
    }
 
+   // datatable
    let table = $('#dt_requests').DataTable({
       "searching": false,
       "responsive": true,
+      "lengthChange": false,
       "autoWidth": false,
-      "paging": false,
-      "info": false,
-      "columnDefs": [{
-         "targets": [2],
-         "render": $.fn.dataTable.render.ellipsis(60, true),
-         "width": "30%"
-      }]
+      "serverSide": true,
+      "processing": true,
+      "language": {
+         processing: $('#table_spinner').html()
+      },
+      "pageLength": 5,
+      "ajax": {
+         url: '/api/requests/ticket/myrequests/?format=datatables',
+         type: "GET",
+      },
+      "columns": [
+         { 
+            data: "ticket_no",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = `<a href='/requests/${row.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket_no} </a>`
+               }
+               return data
+            }
+         }, // Ticket No
+         {
+            data: "request_form",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  data = `<span class="td-badge text-light text-truncate" style="background-color:${row.request_form.color}">
+                     <span class="d-inline d-md-none">${row.request_form.prefix} </span>
+                     <span class="d-none d-md-inline">${row.request_form.name} </span>   
+                  </span>`
+               }
+               return data
+            },
+         }, // Request Type
+         { 
+            data: "description",
+            render: $.fn.dataTable.render.ellipsis(60, true),
+         }, // Description
+         { 
+            data: "status",
+            render: function (data, type, row) {
+               // console.log(row)
+               if (type == 'display') {
+                  template = `<div> ${row.status.name}
+                        <div class="progress progress-table mt-1">
+                           <div class="progress-bar bg-orange" role="progressbar" style="width: ${row.progress}%;" aria-valuenow="${row.progress}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                     </div>`
+                  data = template
+               }
+               return data
+            },
+         }, // Status
+         {
+            data: "category",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  const categories = row.category.map((category) => {return category.name});
+                  const type = row.category.map((category) => {return category.category_type_name});                     
+                  data = `<p class="title">${categories.join(', ')}</p> <span class="sub-title">${type[0]}</span>`
+               }
+               return data
+            },            
+         }, // Category
+         {
+            data: 'date_created',
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  var date = moment(row.date_created).format('DD MMMM YYYY');
+                  var time = moment(row.date_created).format('h:mm:ss a');
+
+                  data = `<p class="title mb-0">${date}</p><span class="sub-title">${time}</span>`
+               }
+               return data
+            },
+         }, // Date Create
+      ],
    });
    
    // Deparments Select2 Config

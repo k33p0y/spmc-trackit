@@ -17,8 +17,11 @@ $(document).ready(function () {
       "responsive": true,
       "lengthChange": false,
       "autoWidth": false,
-      "serverside": true,
+      "serverSide": true,
       "processing": true,
+      "language": {
+         processing: $('#table_spinner').html()
+      },
       "pageLength": 10,
       "ajax": {
          url: '/api/core/group/?format=datatables',
@@ -36,8 +39,10 @@ $(document).ready(function () {
                }
                return data
             },
-         },
-         { data: "user_count" },
+         }, // Name
+         { 
+            data: "user_count" 
+         }, // Count
       ],
    });
    

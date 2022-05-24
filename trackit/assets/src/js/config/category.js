@@ -21,8 +21,11 @@ $(document).ready(function () {
       "responsive": true,
       "lengthChange": false,
       "autoWidth": false,
-      "serverside": true,
+      "serverSide": true,
       "processing": true,
+      "language": {
+         processing: $('#table_spinner').html()
+      },
       "pageLength": 20,
       "ajax": {
          url: '/api/config/list/category/?format=datatables',
@@ -43,7 +46,7 @@ $(document).ready(function () {
                }
                return data
             },
-         }, 
+         }, // Name
          { 
             data: "groups",
             render: function (data, type, row) {
@@ -57,10 +60,12 @@ $(document).ready(function () {
                }
                return data
             }
-         },
-         { data: "category_type.name" },
+         }, // Groups
+         { 
+            data: "category_type.name" 
+         },  // Category Type
          {
-            data: null,
+            data: "is_active",
             render: function (data, type, row) {
                if (type == 'display') {
 
@@ -72,7 +77,7 @@ $(document).ready(function () {
                }
                return data
             }
-         }
+         }  // Is Active
       ],
    });
 
