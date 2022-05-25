@@ -281,7 +281,6 @@
                {% endif %}
             {% endif %}
             {% comment %} ATTENDANCE SECTION {% endcomment %}
-            {% if event_tickets %}
             <div class="row" id="row-attendance">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
@@ -299,17 +298,20 @@
                                     {{scheduled_event.scheduled_event.date}} {{ scheduled_event.scheduled_event.time_start|time:"g:i A"}} - {{ scheduled_event.scheduled_event.time_end|time:"g:i A"}}
                                  </p>
                                  <small class="text-secondary"> {{scheduled_event.scheduled_event.event}}</small>
+                                 {% if user.is_staff or user.is_superuser %}
                                  <div class="mt-2">
                                     <button type="button" class="btn btn-outline-success btn-block btn-sm m-0 mt-1" id="btn_present" data-attended="true" data-schedule-id="{{scheduled_event.pk}}"> <span> Present </span> </button>
                                     <button type="button" class="btn btn-outline-secondary btn-block btn-sm m-0 mt-1" id="btn_absent" data-attended="false" data-schedule-id="{{scheduled_event.pk}}"><span> Absent </span> </button>
                                  </div>
+                                 {% endif %}
                               </div>
                            </div>
                            {% endif %}
                            <ul class="list-group list-group-flush history">
+                              {% if event_tickets %}
                               {% for event_ticket in event_tickets %}
                                  <li class="list-group-item d-flex text-muted p-1">
-                                    <div class="mr-auto">{{ event_ticket.scheduled_event.date }} {{ event_ticket.scheduled_event.time_start }} - {{ event_ticket.scheduled_event.time_end }}</div>
+                                    <div class="mr-auto text-truncate">{{ event_ticket.scheduled_event.date }} {{ event_ticket.scheduled_event.time_start }} - {{ event_ticket.scheduled_event.time_end }} ({{ event_ticket.scheduled_event.event }})</div>
                                     <div style="width: 30% !important;">
                                        {% if event_ticket.attended %} <p class="p-0 m-0 text-right font-weight-bold text-success">Attended </p>
                                        {% else %} <p class="p-0 m-0 text-right font-weight-bold text-secondary">Missed </p>
@@ -317,13 +319,17 @@
                                     </div>
                                  </li>
                               {% endfor %}
+                              {% else %}
+                              <li class="list-group-item d-flex text-muted p-1">
+                                 <div class="mr-auto font-italic">No Recents</div>
+                              </li>
+                              {% endif %}
                            </ul>
                         </div>
                      </div>
                   </div>
                </div>
             </div>
-            {% endif %}
             {% comment %} COMMMENTS SECTION {% endcomment %}
             {% if user == ticket.requested_by or user == ticket.department.department_head or user.is_staff or user.is_superuser  %}
             <div class="row" id="row-comments">

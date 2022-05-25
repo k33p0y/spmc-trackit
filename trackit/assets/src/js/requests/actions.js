@@ -29,8 +29,8 @@ $(document).ready(function () {
       var status = $("#select2_nextstep").val()
       // let status = (typeof step === "undefined") ? next_step : step;
       let remark = $('#txtarea-remark').val();
-      let is_approve = ($(this).data().approve) ? true : '';
-      let is_pass = ($(this).data().pass) ? true : '';
+      let is_approve = ($(this).data().approve) ? true : null;
+      let is_pass = ($(this).data().pass) ? true : null;
       
       if (validateRemark()) postAction(ticket_id, status, remark, is_approve, is_pass);
    });
@@ -41,8 +41,8 @@ $(document).ready(function () {
       let ticket_id = $(this).data().ticketId;
       let status = ($(this).data().nextStep == $("#select2_nextstep").val()) ? $(this).data().prevStep : $("#select2_nextstep").val();
       let remark = $('#txtarea-remark').val();
-      let is_approve = ($(this).data().approve == false) ? false : '';
-      let is_pass = ($(this).data().pass == false) ? false : '';
+      let is_approve = ($(this).data().approve == false) ? false : null;
+      let is_pass = ($(this).data().pass == false) ? false : null;
 
       // If head disapprove set status to close
       if ($(this).data().headDisapprove) {
