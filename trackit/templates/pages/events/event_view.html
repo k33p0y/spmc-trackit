@@ -33,11 +33,13 @@
    <div class="container-fluid">
       <div class="overlay d-none"></div>
       
+      {% if perms.events.add_event and perms.events.change_event %}
       <div class="d-flex flex-row-reverse mb-1">
          <a href="{% url 'change_event' event.pk %}" class="btn btn-light text-secondary ml-2" data-article-id="{{event.pk}}">
             <i class="fas fa-sm fa-pencil-alt"></i> <span>Update Event</span> 
          </a>
       </div>
+      {% endif %}
 
       <div class="row">
          <div class="col-12 col-sm-12 col-md-12 col-lg-4">                     

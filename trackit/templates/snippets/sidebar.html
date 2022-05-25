@@ -47,6 +47,7 @@
             </li>
             
             {% if user.is_verified %}
+               <!-- // // // // USERS AND GROUPS MODULE --> 
                {% if request.user.is_superuser or request.user.is_staff %}
                   {% if perms.auth.view_group or perms.core.view_user %}
                   <li
@@ -81,6 +82,7 @@
                   {% endif %}
                {% endif %}               
 
+               <!-- // // // // CONFIG MODULE --> 
                {% if request.user.is_superuser or request.user.is_staff %}
                   {% if perms.config.view_department or perms.config.view_category or perms.config.view_categorytype or perms.requests.view_requestform or perms.config.view_status %}
                   <li
@@ -140,6 +142,7 @@
                   {% endif %}
                {% endif %}
 
+               <!-- // // // // REQUESTS MODULE --> 
                {% if perms.requests.add_ticket or perms.requests.view_ticket %}
                   <li class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' or  url == 'ticket_log_list' %} menu-open {% endif %}">
                      <a href="#" class="nav-link {% if url == 'ticket' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' or  url == 'ticket_log_list' %} active {% endif %}">
@@ -180,32 +183,38 @@
                {% endif %}
             {% endif %}
 
-            <li class="nav-item {% if url == 'event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} menu-open {% endif %}">
-               <a href="#" class="nav-link {% if url == 'event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
-                  <i class="nav-icon fas fa-calendar-alt"></i>
-                  <p>
-                     Events
-                     <i class="right fas fa-angle-left"></i>
-                  </p>
-               </a>
-               <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                     <a href="{% url 'event_calendar' %}"
-                        class="nav-link {% if url == 'event_calendar'  %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Calendar</p>
-                     </a>
-                  </li>
-                  <li class="nav-item">
-                     <a href="{% url 'event' %}"
-                        class="nav-link {% if url == 'event' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
-                        <i class="nav-icon far fa-circle"></i>
-                        <p>Manage</p>
-                     </a>
-                  </li>
-               </ul>
-            </li>
+            <!-- // // // // EVENTS MODULE --> 
+            {% if request.user.is_superuser or request.user.is_staff %}
+               {% if perms.events.view_event %}
+               <li class="nav-item {% if url == 'event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} menu-open {% endif %}">
+                  <a href="#" class="nav-link {% if url == 'event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
+                     <i class="nav-icon fas fa-calendar-alt"></i>
+                     <p>
+                        Events
+                        <i class="right fas fa-angle-left"></i>
+                     </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                     <li class="nav-item">
+                        <a href="{% url 'event_calendar' %}"
+                           class="nav-link {% if url == 'event_calendar'  %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>Calendar</p>
+                        </a>
+                     </li>
+                     <li class="nav-item">
+                        <a href="{% url 'event' %}"
+                           class="nav-link {% if url == 'event' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
+                           <i class="nav-icon far fa-circle"></i>
+                           <p>Manage</p>
+                        </a>
+                     </li>
+                  </ul>
+               </li>
+               {% endif %}
+            {% endif %}
 
+            <!-- // // // // ANNOUNCEMENT MODULE --> 
             {% if request.user.is_superuser or request.user.is_staff %}
                {% if perms.announcement.view_article %}
                <li class="nav-item">
@@ -216,6 +225,8 @@
                </li>
                {% endif %}
             {% endif %}
+
+            <!-- // // // // USER GUIDE MODULE --> 
             <li class="nav-item">
                <a href="{% static 'user_guide.pdf' %}"
                   class="nav-link" target="_blank">

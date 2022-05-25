@@ -13,6 +13,17 @@ def user_is_verified(function):
     wrap.__name__ = function.__name__
     return wrap
 
+def user_is_staff_member(function):
+    def wrap(request, *args, **kwargs):
+        user = User.objects.get(pk=request.user.id)
+        if user.is_staff:
+            return function(request, *args, **kwargs)
+        else:
+            raise PermissionDenied
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
+
 def user_has_upload_verification(function):
     def wrap(request, *args, **kwargs):
         user = User.objects.get(pk=request.user.id)

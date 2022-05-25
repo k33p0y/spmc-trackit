@@ -11,6 +11,7 @@ import datetime
 class EventListViewSet(viewsets.ModelViewSet):    
    serializer_class = EventListSerializer
    queryset = Event.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
    http_method_names = ['get', 'head']
 
    def get_queryset(self):
@@ -22,10 +23,12 @@ class EventListViewSet(viewsets.ModelViewSet):
 class EventCRUDViewSet(viewsets.ModelViewSet):    
    serializer_class = EventCRUDSerializer
    queryset = Event.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
 class EventDateViewSet(viewsets.ModelViewSet):    
    serializer_class = EventDateSerializer
    queryset = EventDate.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
       event = self.request.query_params.get("event", None)
@@ -41,6 +44,7 @@ class EventDateViewSet(viewsets.ModelViewSet):
 class EventTicketViewSet(viewsets.ModelViewSet):    
    serializer_class = EventTicketSerializer
    queryset = EventTicket.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
       schedule = self.request.query_params.get("schedule", None)
@@ -51,11 +55,11 @@ class EventTicketViewSet(viewsets.ModelViewSet):
       if ticket: qs = qs.filter(ticket__id=ticket)
       return qs
 
-
 class AttedanceViewSet(viewsets.ModelViewSet):    
    serializer_class = AttendanceSerializer
    queryset = EventTicket.objects.all()
    http_method_names = ['get', 'put', 'patch']
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
 
 

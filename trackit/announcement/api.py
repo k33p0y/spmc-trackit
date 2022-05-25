@@ -9,12 +9,13 @@ import json, datetime
 class ArticleListViewSet(viewsets.ModelViewSet):    
    serializer_class = ArticleListSerializer
    queryset = Article.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
    http_method_names = ['get', 'head']
 
 class ArticleCRUDViewSet(viewsets.ModelViewSet):    
    serializer_class = ArticleCRUDSerializer
    queryset = Article.objects.all()
-   permission_classes = [permissions.IsAuthenticated]
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def get_queryset(self):
       # Search & Filter Parameters
@@ -40,7 +41,7 @@ class ArticleCRUDViewSet(viewsets.ModelViewSet):
 class ResourcesViewSet(viewsets.ModelViewSet):    
    serializer_class = ResourcesSerializer
    queryset = Resources.objects.all()
-   permission_classes = [permissions.IsAuthenticated]
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
    def create(self, request):
       file = request.FILES['file']

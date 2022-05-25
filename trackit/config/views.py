@@ -6,11 +6,12 @@ from .models import CategoryType, Status
 from core.models import User
 from requests.models import RequestForm
 
-from core.decorators import user_is_verified
+from core.decorators import user_is_verified, user_is_staff_member
 
 # Create your views here.
 @login_required
 @user_is_verified
+@user_is_staff_member
 @permission_required('config.view_department', raise_exception=True)
 def department(request):
    users = User.objects.filter(is_active=True).order_by('first_name')
@@ -19,6 +20,7 @@ def department(request):
 
 @login_required
 @user_is_verified
+@user_is_staff_member
 @permission_required('config.view_category', raise_exception=True)
 def category(request):
    types = CategoryType.objects.all().order_by('name')
@@ -29,12 +31,14 @@ def category(request):
 
 @login_required
 @user_is_verified
+@user_is_staff_member
 @permission_required('config.view_categorytype', raise_exception=True)
 def types(request):
    return render(request, 'pages/config/types.html')
 
 @login_required
 @user_is_verified
+@user_is_staff_member
 @permission_required('requests.view_requestform', raise_exception=True)
 def forms(request):
    statuses = Status.objects.filter(is_active=True).order_by('name')
@@ -45,6 +49,7 @@ def forms(request):
 
 @login_required
 @user_is_verified
+@user_is_staff_member
 @permission_required('config.view_status', raise_exception=True)
 def status_list(request):
    return render(request, 'pages/config/status.html')
