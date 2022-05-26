@@ -80,24 +80,24 @@ def detail_ticket(request, ticket_id):
 def view_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
    categories = ticket.category.all()
-   steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order')   
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
 
-   # Events
+   ### events
    events = Event.objects.filter(event_for=ticket.request_form) # events
    event_tickets = EventTicket.objects.select_related('scheduled_event').filter(ticket=ticket).order_by('-scheduled_event__date', '-id')   # events ticket
 
+   ### form status
+   steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') # get all steps from ticket request form
+   last_step = steps.latest('order') # get last step
+   first_step = steps.first() # get first step
+   curr_step = steps.get(status_id=ticket.status) # get current step
+   next_step = steps.get(order=curr_step.order+1) if not curr_step.status == last_step.status else curr_step # next current step
+   prev_step = steps.get(order=curr_step.order-1) if not curr_step.status == first_step.status else curr_step # prev current step
+   has_event_form = True if steps.filter(has_event=True) else False  # check if statuses has event
+
+   ### iterate steps/status
    for step in steps:
-      last_step = steps.latest('order')
-      first_step = steps.first()
-
-      # Get current step in ticket
-      if step.status == ticket.status: 
-         curr_step = steps.get(status_id=ticket.status)
-         next_step = steps.get(order=curr_step.order+1) if not curr_step.status == last_step.status else curr_step
-         prev_step = steps.get(order=curr_step.order-1) if not curr_step.status == first_step.status else curr_step
-
-      # Get remark if has approving and is head step 
+      # get remark if has approving and is head step 
       remarks = ticket.remarks.filter(ticket_id=ticket_id, status_id=step.status_id, is_approve=True) 
       if step.is_head_step and step.has_approving:
          remark = remarks.earliest('id') if remarks else None
@@ -118,7 +118,8 @@ def view_ticket(request, ticket_id):
       'remark': remark,
       'progress' : progress,
       'event_tickets' : event_tickets.filter(attended__isnull=False),
-      'scheduled_event' : event_tickets.filter(attended__isnull=True).first()
+      'scheduled_event' : event_tickets.filter(attended__isnull=True).first(),
+      'has_event_form' : has_event_form,
    }
    return render(request, 'pages/requests/ticket_view.html', context)
       
