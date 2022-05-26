@@ -295,22 +295,21 @@ class TicketStatusSerializer(serializers.ModelSerializer):
       read_only_fields = ['ticket_no']
 
 class TicketActionSerializer(serializers.ModelSerializer):
-
-   @transaction.atomic
+   
    def create(self, validated_data):
       # update ticket status first
       ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(validated_data['ticket'])))
       ticket.status = validated_data['status']
       ticket.save()
-      
-      # get log from easyaudit
-      log = CRUDEvent.objects.filter(object_id=validated_data['ticket']).latest('datetime') 
 
+      # get log from easyaudit
+      log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
+   
       # post action Remark
       action = Remark(
          ticket_id = ticket.ticket_id,
+         status = ticket.status,
          remark = validated_data['remark'],
-         status = validated_data['status'],
          is_approve = validated_data['is_approve'],
          is_pass = validated_data['is_pass'],
          action_officer = self.context['request'].user,
@@ -322,7 +321,7 @@ class TicketActionSerializer(serializers.ModelSerializer):
       event_date = self.context['request'].data['event_date'] # event_date request obj
       if event_date: 
          EventTicket.objects.create(ticket_id=ticket.ticket_id, scheduled_event_id=event_date)
-         
+      
       return action
     
    class Meta:

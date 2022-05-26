@@ -124,16 +124,14 @@ class EventTicketSerializer(serializers.ModelSerializer):
 
 class AttendanceSerializer(serializers.ModelSerializer):
 
-    @transaction.atomic
     def update(self, instance, validated_data):
-
+        # if attended is False/Absent
         if not validated_data.get('attended'):
             # get status event form 
             status = RequestFormStatus.objects.get(form=instance.scheduled_event.event.event_for, has_event=True)
-
+    
             # update ticket status first
             ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(instance.ticket.ticket_id)))
-            # ticket = get_object_or_404(Ticket, pk=instance.ticket)
             ticket.status = status.status
             ticket.save()
 
@@ -149,6 +147,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
             )
             action.save()
 
+        # if attended is True
         instance.attended = validated_data.get('attended', instance.attended)
         instance.remarks = validated_data.get('remarks', instance.remarks)
         instance.save()
