@@ -186,8 +186,8 @@
             <!-- // // // // EVENTS MODULE --> 
             {% if request.user.is_superuser or request.user.is_staff %}
                {% if perms.events.view_event %}
-               <li class="nav-item {% if url == 'event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} menu-open {% endif %}">
-                  <a href="#" class="nav-link {% if url == 'event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
+               <li class="nav-item {% if url == 'event' or  url == 'create_event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} menu-open {% endif %}">
+                  <a href="#" class="nav-link {% if url == 'event' or  url == 'create_event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
                      <i class="nav-icon fas fa-calendar-alt"></i>
                      <p>
                         Events
@@ -204,7 +204,7 @@
                      </li>
                      <li class="nav-item">
                         <a href="{% url 'event' %}"
-                           class="nav-link {% if url == 'event' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
+                           class="nav-link {% if url == 'event' or  url == 'create_event' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
                            <i class="nav-icon far fa-circle"></i>
                            <p>Manage</p>
                         </a>

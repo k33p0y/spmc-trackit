@@ -42,15 +42,16 @@
 
       <div class="row">
          <div class="col-12 col-sm-12 col-md-12 col-lg-8">
-            <div class="row d-lg-none" id="row-details">
+            <div class="row d-lg-none" id="row-details-mobile">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseInformation" data-toggle="collapse" aria-expanded="true" aria-controls="collapseInformation">
-                        <div class="card-header p-2">
-                           <div class="card-title">details</div>
+                     <div class="card-header d-flex align-items-center px-2 py-1">
+                        <div class="card-title">Details</div>
+                        <div class="card-tools ml-auto">
+                           <button type="button" class="btn btn-tool btn-minimize" data-toggle="collapse" data-target="#collapseDetails" aria-expanded="false" aria-controls="collapseDetails"></button>
                         </div>
-                     </a>
-                     <div id="collapseInformation" class="collapse">
+                     </div>
+                     <div id="collapseDetails" class="collapse show">
                         <div class="card-body p-3">
                             <div class="row">
                                 <div class="col-12">
@@ -98,12 +99,13 @@
               <div class="row" id="row-headline">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1"  style="border-bottom-left-radius: 5px !important;">
-                     <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
-                        <div class="card-header p-2">
-                           <div class="card-title">Headline</div>
+                     <div class="card-header d-flex align-items-center px-2 py-1">
+                        <div class="card-title">Headline</div>
+                        <div class="card-tools ml-auto">
+                              <button type="button" class="btn btn-tool btn-minimize" data-toggle="collapse" data-target="#collapseHeadline" aria-expanded="false" aria-controls="collapseHeadline"></button>
                         </div>
-                     </a>
-                     <div id="collapseDetails" class="collapse show">
+                     </div>
+                     <div id="collapseHeadline" class="collapse show">
                         <div class="card-body p-3">
                            <h6 class="font-weight-bold text-orange m-0"> {{article.title}} </h6>
                            <hr class="my-2">
@@ -113,15 +115,16 @@
                   </div>
                </div>
             </div>  
-            <div class="row" id="row-content">
+            <div class="row" id="row-body">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1"  style="border-bottom-left-radius: 5px !important;">
-                     <a href="#collapseDetails" data-toggle="collapse" aria-expanded="true" aria-controls="collapseDetails">
-                        <div class="card-header p-2">
-                           <div class="card-title">Body</div>
+                     <div class="card-header d-flex align-items-center px-2 py-1">
+                        <div class="card-title">Body</div>
+                        <div class="card-tools ml-auto">
+                              <button type="button" class="btn btn-tool btn-minimize" data-toggle="collapse" data-target="#collapseBody" aria-expanded="false" aria-controls="collapseBody"></button>
                         </div>
-                     </a>
-                     <div id="collapseDetails" class="collapse show">
+                     </div>
+                     <div id="collapseBody" class="collapse show">
                         <div class="card-body p-3">
                            {% if article.content %}
                            <div id="content_preview">
@@ -138,15 +141,19 @@
                   </div>
                </div>
             </div>
-            <div class="row d-lg-none" id="row-recources">
+            <div class="row d-lg-none" id="row-recources-mobile">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseComment" data-toggle="collapse" aria-expanded="true" aria-controls="collapseComment">
-                        <div class="card-header p-2">
-                           <div class="card-title">Resources</div>
+                     <div class="card-header d-flex align-items-center px-2 py-1">
+                        <div class="card-title d-flex align-items-center"> 
+                           <span>Resources</span> 
+                           <span class="badge badge-secondary mx-1">{{article.resources.count}}</span>
                         </div>
-                     </a>
-                     <div id="collapseComment" class="collapse show">
+                        <div class="card-tools ml-auto">
+                              <button type="button" class="btn btn-tool btn-minimize" data-toggle="collapse" data-target="#collapseResources" aria-expanded="false" aria-controls="collapseResources"></button>
+                        </div>
+                     </div>
+                     <div id="collapseResources" class="collapse show">
                         <div class="card-body p-3">
                            {% if article.resources.all|length > 0 %}
                            <div class="row file-upload-wrap" id="upload_wrapper">
@@ -196,15 +203,16 @@
             </div>
          </div>
          <div class="col-12 col-sm-12 col-md-12 col-lg-4 d-none d-lg-block">                     
-            <div class="row" id="row-information">
+            <div class="row" id="row-details">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseInformation" data-toggle="collapse" aria-expanded="true" aria-controls="collapseInformation">
-                        <div class="card-header p-2">
-                           <div class="card-title">details</div>
+                     <div class="card-header d-flex align-items-center px-2 py-1">
+                        <div class="card-title">Details</div>
+                        <div class="card-tools ml-auto">
+                           <button type="button" class="btn btn-tool btn-minimize" data-toggle="collapse" data-target="#collapseDetails" aria-expanded="false" aria-controls="collapseDetails"></button>
                         </div>
-                     </a>
-                     <div id="collapseInformation" class="collapse show">
+                     </div>
+                     <div id="collapseDetails" class="collapse show">
                         <div class="card-body p-3">
                             <div class="row">
                                 <div class="col-12">
@@ -252,12 +260,16 @@
             <div class="row" id="row-recources">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
-                     <a href="#collapseComment" data-toggle="collapse" aria-expanded="true" aria-controls="collapseComment">
-                        <div class="card-header p-2">
-                           <div class="card-title">Resources</div>
+                     <div class="card-header d-flex align-items-center px-2 py-1">
+                        <div class="card-title d-flex align-items-center"> 
+                           <span>Resources</span> 
+                           <span class="badge badge-secondary mx-1">{{article.resources.count}}</span>
                         </div>
-                     </a>
-                     <div id="collapseComment" class="collapse show">
+                        <div class="card-tools ml-auto">
+                           <button type="button" class="btn btn-tool btn-minimize" data-toggle="collapse" data-target="#collapseResources" aria-expanded="false" aria-controls="collapseResources"></button>
+                        </div>
+                     </div>
+                     <div id="collapseResources" class="collapse show">
                         <div class="card-body p-3">
                            {% if article.resources.all|length > 0 %}
                            <div class="row file-upload-wrap" id="side_upload_wrapper">
