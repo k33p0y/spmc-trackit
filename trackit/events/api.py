@@ -12,12 +12,14 @@ class EventListViewSet(viewsets.ModelViewSet):
    serializer_class = EventListSerializer
    queryset = Event.objects.all()
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
-   http_method_names = ['get', 'head']
+   http_method_names = ['get', 'head',]
 
    def get_queryset(self):
       search = self.request.query_params.get("search", None)
-      qs = Event.objects.filter(is_active=True).order_by('-id')
+      is_active = self.request.query_params.get("is_active", None)
+      qs = Event.objects.order_by('-id')
       if search: qs = qs.filter(Q(title__icontains=search) | Q(subject__icontains=search))
+      if is_active: qs = qs.filter(is_active=True)
       return qs
 
 class EventCRUDViewSet(viewsets.ModelViewSet):    

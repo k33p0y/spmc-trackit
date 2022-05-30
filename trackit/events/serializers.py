@@ -31,7 +31,6 @@ class EventListSerializer(serializers.ModelSerializer):
         fields = '__all__'
         datatables_always_serialize = ('id', 'subject')
 
-
 class EventCRUDSerializer(serializers.ModelSerializer):
     created_by = UserInfoSerializer(read_only=True)
     modified_by = UserInfoSerializer(read_only=True)

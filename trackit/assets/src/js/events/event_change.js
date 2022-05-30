@@ -58,6 +58,7 @@ $(document).ready(function () {
                     subject : $('#txt_subject').val(),
                     highlight : $('#color_picker .active').css('background-color'),
                     event_for : $('#select2_eventfor').val(),
+                    is_active :  $('#chk_status').is(':checked'),
                     schedule : getSchedule()
                 },
                 headers: axiosConfig,

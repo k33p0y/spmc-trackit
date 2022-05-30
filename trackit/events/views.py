@@ -19,7 +19,8 @@ def event(request):
 @user_is_staff_member
 @permission_required('events.view_event', raise_exception=True)
 def event_calendar(request):
-   return render(request, 'pages/events/calendar.html', {})
+   forms = RequestForm.objects.all()
+   return render(request, 'pages/events/calendar.html', {'forms' : forms})
 
 @login_required
 @user_is_verified
