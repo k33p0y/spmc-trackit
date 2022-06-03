@@ -11,7 +11,7 @@ $(document).ready(function() {
         },
         "pageLength": 10,
         "ajax": {
-            url: '/api/events/eventdate/?format=datatables',
+            url: '/api/events/eventdate/all/?format=datatables',
             type: "GET",
             data: {
                 "event": $('#event_id').data().eventId,

@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django.db.models import Q
-from .serializers import EventListSerializer, EventCRUDSerializer, EventDateSerializer, EventTicketSerializer, AttendanceSerializer
+from .serializers import EventListSerializer, EventCRUDSerializer, EventDateSerializer, EventDateCRUDSerializer, EventTicketSerializer, AttendanceSerializer
 from .models import Event, EventDate, EventTicket
 
 import datetime
@@ -42,6 +42,17 @@ class EventDateViewSet(viewsets.ModelViewSet):
       if date: qs = qs.filter(date__gte=date)
       if time_start: qs = qs.filter(time_start__gte=time_start)
       return qs
+ 
+class EventDateCalendarViewSet(viewsets.ReadOnlyModelViewSet):    
+   serializer_class = EventDateSerializer
+   queryset = EventDate.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   paginator = None
+
+class EventDateCRUDViewSet(viewsets.ModelViewSet):    
+   serializer_class = EventDateCRUDSerializer
+   queryset = EventDate.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
 class EventTicketViewSet(viewsets.ModelViewSet):    
    serializer_class = EventTicketSerializer

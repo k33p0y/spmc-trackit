@@ -628,12 +628,12 @@ table.dataTable tbody tr:hover {
 .swal2-title {
    font-size: 16px !important;
 }
-
-
 .swal2-content {
    padding: 4px !important;
 }
-
+.swal2-actions {
+   margin-top: 12px !important;
+}
 .swal2-confirm,
 .swal2-cancel {
    font-size: 12px !important;

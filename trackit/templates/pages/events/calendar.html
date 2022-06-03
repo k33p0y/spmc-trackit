@@ -97,7 +97,7 @@
 
 
 {% block modal %}
-<!-- Create -->
+<!-- update event -->
 <div class="modal fade" id="modalChangeEvent" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content text-sm">
@@ -168,6 +168,26 @@
                <span>Cancel</span>
             </button>
             <button type="submit" class="btn btn-sm btn-orange m-0" id="btn_save"><span>Save</span></button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- view event -->
+<div class="modal fade" id="modalViewEvent" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content text-sm">
+         <div class="modal-header" id="event_header"></div>
+         <div class="modal-body">
+            <small class="text-muted">Title</small>
+            <h6 class="font-weight-bold" id="event_title"></h6>
+            <small class="text-muted">Schedule</small>
+            <h6 class="font-weight-bold" id="event_schedule"></h6>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-light m-0" id="btn_cancel" data-dismiss="modal">
+               <span>Close</span>
+            </button>
          </div>
       </div>
    </div>

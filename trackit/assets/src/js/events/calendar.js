@@ -1,14 +1,16 @@
 // Fullcalendar plugin
 $(function() {
+    var viewModal = new bootstrap.Modal(document.getElementById("modalViewEvent"), {});
     var draggableEl = document.getElementById('event_lists');
     var draggable = new FullCalendar.Draggable(draggableEl, {
         itemSelector: '.event-card',
         eventData: function(eventEl) {
-        return {
-            title: eventEl.querySelector('.event-title').innerText,
-            backgroundColor: eventEl.dataset.color,
-            borderColor: eventEl.dataset.color
-        };
+            return {
+                id: eventEl.dataset.event,
+                title: eventEl.querySelector('.event-title').innerText,
+                backgroundColor: eventEl.dataset.color,
+                borderColor: eventEl.dataset.color
+            };
         }
     });
 
@@ -19,61 +21,144 @@ $(function() {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         },
+        views: {
+            month: { 
+                editable: false
+            }
+        },
         themeSystem: 'bootstrap',
         editable: true,
         droppable: true, // this allows things to be dropped onto the calendar
-        events: function(info, successCallback, failureCallback) {
-            axios.get('/api/events/eventdate').then(response => {
-                let events = new Array()
-                
-                response.data.results.forEach(event => {
-                    events.push({
-                        title: event.event.title,
-                        start: `${event.date} ${event.time_start}`,
-                        end: `${event.date} ${event.time_end}`,
-                        id: event.event.id,
-                        color: event.event.highlight
-                    })
-                });
-                successCallback(events)
-            }).catch(error => {
-                console.log(error);
-            })
+        nowIndicator : true,
+        lazyFetching : true,
+        allDaySlot: false,
+        fixedWeekCount: false,
+        // slotDuration : '00:15:00', // 15 min interaval
+        // slotMinTime: '06:00:00',
+        // slotMaxTime: '20:00:00',
+        eventMaxStack : '4',
+        dayMaxEvents: true,
+        // contentHeight: 'auto',
+        events: function(info, successCallback, failureCallback) { // fetch events via ajax
+            $.ajax({
+                url: '/api/events/eventdate/calendar',
+                success: function(response) {
+                    let events = new Array()
+                    response.forEach(event => {
+                        events.push({
+                            title: event.event.title,
+                            start: `${event.date} ${event.time_start}`,
+                            end: `${event.date} ${event.time_end}`,
+                            eventid: event.event.id,
+                            id: event.id,
+                            color: event.event.highlight,
+                        })
+                    });
+                    successCallback(events)
+                }
+            });
         },
-        eventReceive: function (event) {
-            var date_start = moment(event.event._instance.range.start).format('DD MMMM YYYY h:mm:ss a');
-            var date_end = moment(event.event._instance.range.end).format('DD MMMM YYYY h:mm:ss a');
-            console.log(date_start, date_end)
-            // Swal.fire({
-            //     title: 'Are you sure?',
-            //     icon: 'question',
-            //     showCancelButton: true,
-            //     confirmButtonText: 'OK',
-            //     confirmButtonColor: '#17a2b8',
-            // }).then((result) => {
-            //     if (result.isConfirmed) {
-            //         toastSuccess('Success');
-            //     } else {
-            //         event.revert();
-            //     }
-            // })
-        }
+        eventReceive: function(info) { // when external event dropped receive
+            if (info.event.allDay) info.revert();
+            else {
+                Swal.fire({
+                    title: 'Review changes',
+                    html: `<p class="mb-1"> <b>Event:</b> ${info.event.title}</p>
+                        <p class="mb-1"> <b>Date Start: </b> ${moment(info.event.start).format('MMM DD, YYYY hh:mm:ss a')}</p>
+                        <p class="mb-1"> <b>Date End:</b> ${moment(info.event.start).format('MMM DD, YYYY hh:mm:ss a')}</p>`,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Save',
+                    cancelButtonText: 'Discard',
+                    confirmButtonColor: '#17a2b8',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let method = 'PUT'; // update event
+                        let url = `/api/events/eventdate/schedule/${parseInt(info.event.id)}/`; // update request url
+                        saveEvent(info, method, url);
+                    } else info.revert();
+                });
+            }
+            
+        },
+        eventResize: function(info) { // when event dropped resize
+            Swal.fire({
+                title: 'Review changes',
+                html: `<p class="mb-1"> <b>Event:</b> ${info.event.title}</p>
+                    <p class="mb-1"> <b>Date Start: </b> ${moment(info.event.start).format('MMM DD, YYYY hh:mm:ss a')}</p>
+                    <p class="mb-1"> <b>Date End:</b> ${moment(info.event.end).format('MMM DD, YYYY hh:mm:ss a')}</p>`,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                cancelButtonText: 'Discard',
+                confirmButtonColor: '#17a2b8',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let method = 'POST'; // post event
+                    let url = `/api/events/eventdate/schedule/`; // post request url
+                    saveEvent(info, method, url);
+                } else info.revert();
+            });
+        },
+        eventDrop: function(info) { // when event dropped dragged
+            Swal.fire({
+                title: 'Review changes',
+                html: `<p class="mb-1"> <b>Event:</b> ${info.event.title}</p>
+                    <p class="mb-1"> <b>Date Start: </b> ${moment(info.event.start).format('MMM DD, YYYY hh:mm:ss a')}</p>
+                    <p class="mb-1"> <b>Date End:</b> ${moment(info.event.end).format('MMM DD, YYYY hh:mm:ss a')}</p>`,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                confirmButtonColor: '#17a2b8',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let method = 'PUT'; // update event
+                    let url = `/api/events/eventdate/schedule/${parseInt(info.event.id)}/`; // update request url
+                    saveEvent(info, method, url);
+                } else info.revert();
+            });
+        },
+        eventClick: function(info) {  // when event is clicked
+            let date = moment(info.event.start).format('dddd, MMMM Do YYYY h:mm a');
+            let time_end = moment(info.event.end).format('h:mm a');
+            let participants = new Array();
+
+            viewModal.show();
+            document.getElementById('event_title').innerHTML = info.event.title;
+            document.getElementById('event_schedule').innerHTML = `${date} ${time_end}`;
+        },
     });
     calendar.render();
+
+    // save events fn
+    const saveEvent = function(info, method, url) {
+        let eventdateObj = new Object();
+        eventdateObj.date = moment(info.event.start).format('YYYY-MM-DD');
+        eventdateObj.time_start = moment(info.event.start).format('HH:mm:ss'); // 24 hr format
+        eventdateObj.time_end = (info.event.end) ? moment(info.event.end).format('HH:mm:ss') : eventdateObj.time_start; // 24 hr format
+        eventdateObj.event = info.event.extendedProps.eventid;
+
+        axios({
+            method: method,
+            url: url,
+            data: {
+                date : eventdateObj.date,
+                time_start : eventdateObj.time_start,
+                time_end : eventdateObj.time_end,
+                event : eventdateObj.event
+            },
+            headers: axiosConfig,
+        }).then(function (response) { // success
+            calendar.render();
+            toastSuccess('Success');
+        }).catch(function (error) { // error
+            toastError(error.response.statusText);
+        });
+    }
 });
 
 // jquery
 $(document).ready(function() {
-
-    $('#select2_eventfor').select2({
-        placeholder: 'Select Form'
-    })
-
-    $('#color_picker').on('click', '.color-palette', function() {
-        $('.color-palette').removeClass('active');
-        $(this).addClass('active')
-    });
-    
     // events
     const getEvents = function (page, lookup) {
         let url = (page) ? page : '/api/events/all/?is_active=True';
@@ -92,7 +177,7 @@ $(document).ready(function() {
                 $('.event-lists-wrapper').removeClass('d-none'); // show list wrapper
                 $('#event_lists').empty(); // empty lists
                 events.forEach(event => {
-                    $('#event_lists').append(
+                    $('#event_lists').append( // render template
                         `<div class="card event-card mt-2 mb-1" style="border-left-color:${event.highlight}" data-color="${event.highlight}" data-event="${event.id}">
                             <div class="d-flex flex-row align-items-center event-card-wrap">
                                 <div class="d-flex-inline mr-auto">
@@ -176,6 +261,15 @@ $(document).ready(function() {
         getEvents(page)
     });
 
+    $('#select2_eventfor').select2({
+        placeholder: 'Select Form'
+    })
+
+    $('#color_picker').on('click', '.color-palette', function() {
+        $('.color-palette').removeClass('active');
+        $(this).addClass('active')
+    });
+    
     // Search Bar onSearch Event
     $("#search-input").on('search', function () {
         let lookup = $('#search-input').val();

@@ -106,6 +106,29 @@ class EventDateSerializer(serializers.ModelSerializer):
         fields = '__all__'
         datatables_always_serialize = ('id',)
 
+class EventDateCRUDSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        eventdate = EventDate(
+            date = validated_data['date'],
+            time_start = validated_data['time_start'],
+            time_end = validated_data['time_end'],
+            event = validated_data['event']
+        )
+        eventdate.save()
+        return eventdate
+
+    def update(self, instance, validated_data):
+        instance.date = validated_data.get('date', instance.date)
+        instance.time_start = validated_data.get('time_start', instance.time_start)
+        instance.time_end = validated_data.get('time_end', instance.time_end)
+        instance.event = validated_data.get('event', instance.event)
+        instance.save()
+        return instance
+
+    class Meta:
+        model = EventDate
+        fields = '__all__'
+
 class TicketReadOnlySerializer(serializers.ModelSerializer):
     status = StatusReadOnlySerializer(read_only=True)
     requested_by = UserInfoSerializer(read_only=True)
