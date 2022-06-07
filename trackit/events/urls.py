@@ -1,6 +1,15 @@
 from django.urls import path
 from rest_framework import routers
-from .api import EventListViewSet, EventCRUDViewSet, EventDateViewSet, EventDateCalendarViewSet, EventDateCRUDViewSet, EventTicketViewSet, AttedanceViewSet
+from .api import (
+    AttedanceViewSet,
+    EventCRUDViewSet, 
+    EventDateCalendarViewSet, 
+    EventDateCRUDViewSet, 
+    EventDatePartialViewSet, 
+    EventDateViewSet, 
+    EventListViewSet, 
+    EventTicketViewSet,
+)
 from . import views
 
 router = routers.DefaultRouter()
@@ -9,6 +18,7 @@ router.register('api/events/event', EventCRUDViewSet)
 router.register('api/events/eventdate/all', EventDateViewSet)
 router.register('api/events/eventdate/calendar', EventDateCalendarViewSet)
 router.register('api/events/eventdate/schedule', EventDateCRUDViewSet)
+router.register('api/events/eventdate/partial', EventDatePartialViewSet)
 router.register('api/events/eventticket', EventTicketViewSet)
 router.register('api/events/attendance', AttedanceViewSet)
 

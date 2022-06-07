@@ -177,17 +177,44 @@
 <div class="modal fade" id="modalViewEvent" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
    <div class="modal-dialog" role="document">
       <div class="modal-content text-sm">
-         <div class="modal-header" id="event_header"></div>
+         <div class="modal-header" id="event_header">Details</div>
          <div class="modal-body">
-            <small class="text-muted">Title</small>
-            <h6 class="font-weight-bold" id="event_title"></h6>
-            <small class="text-muted">Schedule</small>
-            <h6 class="font-weight-bold" id="event_schedule"></h6>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex p-2 pt-3 pb-3"> 
+                    <div class="mr-auto list-modal-key">Event Title</div>
+                    <div class="font-weight-bold" style="width: 60% !important;">
+                        <p class="p-0 m-0 text-right" id="event_title"></p>
+                    </div>
+                </li>
+                <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                    <div class="mr-auto list-modal-key">Event Subject</div>
+                    <div class="font-weight-bold" style="width: 60% !important;">
+                    <p class="p-0 m-0 text-right" id="event_subject"></p>
+                    </div>
+                </li>
+                 <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                    <div class="mr-auto list-modal-key">Attendance</div>
+                    <div class="font-weight-bold" style="width: 60% !important;">
+                    <p class="p-0 m-0 text-right" id="event_attendance"></p>
+                    </div>
+                </li>
+                <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                    <div class="mr-auto list-modal-key">Date Start</div>
+                    <div class="font-weight-bold" style="width: 60% !important;">
+                    <p class="p-0 m-0 text-right" id="event_date_start"></p>
+                    </div>
+                </li>
+                <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                    <div class="mr-auto list-modal-key">Date End</div>
+                    <div class="font-weight-bold" style="width: 60% !important;">
+                    <p class="p-0 m-0 text-right" id="event_date_end"></p>
+                    </div>
+                </li>
+            </ul>
          </div>
          <div class="modal-footer">
-            <button type="button" class="btn btn-sm btn-light m-0" id="btn_cancel" data-dismiss="modal">
-               <span>Close</span>
-            </button>
+            <a class="mr-auto m-0 p-0 text-xs text-danger" id="btn_delete"> Remove? </a>
+            <button type="button" class="btn btn-sm btn-light m-0" id="btn_cancel" data-dismiss="modal"><span>Close</span></button>
          </div>
       </div>
    </div>

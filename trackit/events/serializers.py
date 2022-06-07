@@ -129,6 +129,13 @@ class EventDateCRUDSerializer(serializers.ModelSerializer):
         model = EventDate
         fields = '__all__'
 
+class EventDatePartialSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = EventDate
+        fields = ['id', 'is_active']
+        read_only_fields = ['id']
+
 class TicketReadOnlySerializer(serializers.ModelSerializer):
     status = StatusReadOnlySerializer(read_only=True)
     requested_by = UserInfoSerializer(read_only=True)

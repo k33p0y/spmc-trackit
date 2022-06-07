@@ -180,3 +180,16 @@
 .redwood {background-color: #bd5f5f;}
 .grape {background-color: #6b5892;}
 .royal {background-color: #9067bb;}
+
+.list-group-flush.history .list-group-item,
+.list-group-flush.history .list-group-item div p {
+   font-size: 11px !important;
+}
+.list-group-flush .list-group-item{
+   border-style: dashed;
+   color: #59626b;
+}
+
+.list-modal-key {
+   font-size: 12px !important;
+}

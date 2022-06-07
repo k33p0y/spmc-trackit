@@ -1,6 +1,6 @@
 // Fullcalendar plugin
 $(function() {
-    var viewModal = new bootstrap.Modal(document.getElementById("modalViewEvent"), {});
+    var viewModalEl = new bootstrap.Modal(document.getElementById("modalViewEvent"), {});
     var draggableEl = document.getElementById('event_lists');
     var draggable = new FullCalendar.Draggable(draggableEl, {
         itemSelector: '.event-card',
@@ -46,12 +46,15 @@ $(function() {
                     let events = new Array()
                     response.forEach(event => {
                         events.push({
-                            title: event.event.title,
+                            id: event.id,
+                            // title: event.event.title,
+                            title: `${event.event.title} ${event.id}`,
                             start: `${event.date} ${event.time_start}`,
                             end: `${event.date} ${event.time_end}`,
-                            eventid: event.event.id,
-                            id: event.id,
                             color: event.event.highlight,
+                            event_id: event.event.id,
+                            event_subject: event.event.subject,
+                            attendance: event.attendance,
                         })
                     });
                     successCallback(events)
@@ -73,13 +76,13 @@ $(function() {
                     confirmButtonColor: '#17a2b8',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        let method = 'PUT'; // update event
-                        let url = `/api/events/eventdate/schedule/${parseInt(info.event.id)}/`; // update request url
-                        saveEvent(info, method, url);
+                        let method = 'POST'; // post event
+                        let url = `/api/events/eventdate/schedule/`; // update request url
+                        let event = info.event.id;
+                        saveEvent(info, event, method, url);
                     } else info.revert();
                 });
             }
-            
         },
         eventResize: function(info) { // when event dropped resize
             Swal.fire({
@@ -94,9 +97,10 @@ $(function() {
                 confirmButtonColor: '#17a2b8',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    let method = 'POST'; // post event
-                    let url = `/api/events/eventdate/schedule/`; // post request url
-                    saveEvent(info, method, url);
+                    let method = 'PUT';
+                    let url = `/api/events/eventdate/schedule/${parseInt(info.event.id)}/`; // update request url
+                    let event = info.event.extendedProps.event_id;
+                    saveEvent(info, event, method, url);
                 } else info.revert();
             });
         },
@@ -114,29 +118,34 @@ $(function() {
                 if (result.isConfirmed) {
                     let method = 'PUT'; // update event
                     let url = `/api/events/eventdate/schedule/${parseInt(info.event.id)}/`; // update request url
-                    saveEvent(info, method, url);
+                    let event = info.event.extendedProps.event_id;
+                    saveEvent(info, event, method, url);
                 } else info.revert();
             });
         },
         eventClick: function(info) {  // when event is clicked
-            let date = moment(info.event.start).format('dddd, MMMM Do YYYY h:mm a');
-            let time_end = moment(info.event.end).format('h:mm a');
-            let participants = new Array();
+            let date = moment(info.event.start).format('ddd, MMMM Do YYYY');
+            let time_start = moment(info.event.start).format('h:mm a');
+            let time_end = (info.event.end) ? moment(info.event.end).format('h:mm a') : time_start;
 
-            viewModal.show();
+            viewModalEl.show();
             document.getElementById('event_title').innerHTML = info.event.title;
-            document.getElementById('event_schedule').innerHTML = `${date} ${time_end}`;
+            document.getElementById('event_subject').innerHTML = (info.event.extendedProps.event_subject) ? info.event.extendedProps.event_subject : '-';
+            document.getElementById('event_date_start').innerHTML = `${date} ${time_start}`;
+            document.getElementById('event_date_end').innerHTML = `${date} ${time_end}`;
+            document.getElementById('event_attendance').innerHTML = info.event.extendedProps.attendance;
+            document.getElementById('btn_delete').setAttribute('schedule', info.event.id)
         },
     });
     calendar.render();
 
     // save events fn
-    const saveEvent = function(info, method, url) {
+    const saveEvent = function(info, event, method, url) {
         let eventdateObj = new Object();
         eventdateObj.date = moment(info.event.start).format('YYYY-MM-DD');
         eventdateObj.time_start = moment(info.event.start).format('HH:mm:ss'); // 24 hr format
         eventdateObj.time_end = (info.event.end) ? moment(info.event.end).format('HH:mm:ss') : eventdateObj.time_start; // 24 hr format
-        eventdateObj.event = info.event.extendedProps.eventid;
+        eventdateObj.event = event;
 
         axios({
             method: method,
@@ -148,13 +157,33 @@ $(function() {
                 event : eventdateObj.event
             },
             headers: axiosConfig,
-        }).then(function (response) { // success
+        }).then(res => { // success
             calendar.render();
             toastSuccess('Success');
-        }).catch(function (error) { // error
-            toastError(error.response.statusText);
+        }).catch(err => { // error
+            toastError(err.response.statusText);
         });
     }
+
+    // remove event using jQuery
+    $('#btn_delete').click(function() { 
+       let schedule = $(this).attr('schedule');
+
+       axios({
+            method: 'PATCH',
+            url: `/api/events/eventdate/partial/${schedule}/`,
+            data: {
+                is_active : false
+            },
+            headers: axiosConfig,
+        }).then(res => { // success
+            calendar.refetchEvents();
+            viewModalEl.hide();
+            toastSuccess('Success');
+        }).catch(err => { // error
+            toastError(err.response.statusText);
+        });
+    });
 });
 
 // jquery
@@ -181,7 +210,7 @@ $(document).ready(function() {
                         `<div class="card event-card mt-2 mb-1" style="border-left-color:${event.highlight}" data-color="${event.highlight}" data-event="${event.id}">
                             <div class="d-flex flex-row align-items-center event-card-wrap">
                                 <div class="d-flex-inline mr-auto">
-                                    <p class="event-title">${event.title}</p>
+                                    <p class="event-title">${event.title} ${event.id}</p>
                                     <span class="event-subject">${event.subject}</span>
                                 </div>
                                 <button type="button" class="btn btn-link btn-link-orange p-0 ml-2 event-edit" data-event="${event.id}"><i class="fas fa-sm fa-edit"></i></button>
@@ -200,7 +229,7 @@ $(document).ready(function() {
             (event_api.next) ? $('#page_next').removeClass('disabled').data('pageturn', event_api.next) : $('#page_next').addClass('disabled');
             (event_api.previous) ? $('#page_previous').removeClass('disabled').data('pageturn', event_api.previous) : $('#page_previous').addClass('disabled');
         }).catch(error => { // error
-            console.log(error);
+            toastError(error.response.statusText);
         });
     }
     getEvents(null, null);
@@ -254,7 +283,7 @@ $(document).ready(function() {
             if (error.response.data.event_for) showFieldErrors(error.response.data.event_for, 'eventfor'); else removeFieldErrors('eventfor');
         });
     });
-    
+
     // pages
     $('#event_pagination li').on('click', function() {
         let page = $(this).data().pageturn;
