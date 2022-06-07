@@ -392,8 +392,8 @@
                <ul class="list-group list-group-flush">
                   <li class="list-group-item d-flex p-2 pt-3 pb-3"> 
                      <div class="mr-auto">File Name</div>
-                     <div class="font-weight-bold" style="width: 60% !important;">
-                         <p class="p-0 m-0 text-right" id="txt-file"></p>
+                     <div class="font-weight-bold " style="width: 60% !important;">
+                         <p class="p-0 m-0 text-right text-truncate" id="txt-file"></p>
                      </div>
                  </li>
                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
@@ -432,10 +432,10 @@
          </div>
          <div class="modal-footer">
             {% if perms.requests.delete_attachment %}
-            <button class="btn btn-sm btn-danger mr-auto m-0" id="btn_delete"><i class="fas fa-sm fa-trash"></i></button>
+            <a href="#" class="mr-auto m-0 p-0 text-xs text-danger" id="btn_delete"> Remove? </a>
             {% endif %}
             <button type="button" class="btn btn-sm btn-light m-0 mr-2" id="btn_close" data-dismiss="modal"><span>Close</span> </button>
-            <a class="btn btn-sm btn-orange text-white m-0 mr-2" id="btn_download"><span>Download</span></a>
+            <button class="btn btn-sm btn-orange m-0 mr-2" id="btn_download"><span>Download</span></button>
             <button class="btn btn-sm btn-orange m-0" id="btn_save"><span>Save</span></button>
          </div>
       </div>

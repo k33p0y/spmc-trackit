@@ -1,5 +1,14 @@
 $(document).ready(function () {
-    const ticket = $(".ticket-no").data().ticketId;
+    // get ticket number in localStorage if available
+    if (localStorage.getItem('ticketNumber')){
+        localStorage.removeItem('ticketNumber');
+    }
+
+    // set notification instance to unread = False
+    if (localStorage.getItem('notification-id')){
+        axios.delete(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {headers: axiosConfig})
+        localStorage.removeItem('notification-id');
+    }
 
     // humanize date
     $('.list-datetime').each((i, e) => {
@@ -14,17 +23,6 @@ $(document).ready(function () {
         let currentLength = $(this).val().length;
         $('#char_count_comment').html(`${currentLength > 0 ? currentLength : ''}`);
     });
-
-    // get ticket number in localStorage if available
-    if (localStorage.getItem('ticketNumber')){
-        localStorage.removeItem('ticketNumber');
-    }
-
-    // set notification instance to unread = False
-    if (localStorage.getItem('notification-id')){
-        axios.delete(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {headers: axiosConfig})
-        localStorage.removeItem('notification-id');
-    }
 
     // Generate Reference No
     $('#btn_generate').click(function() {
