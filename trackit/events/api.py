@@ -45,7 +45,7 @@ class EventDateViewSet(viewsets.ModelViewSet):
       date = self.request.query_params.get("date", None)
       time_start = self.request.query_params.get("time_start", None)
 
-      qs = EventDate.objects.all()
+      qs = EventDate.objects.filter(is_active=True).order_by('date', 'time_start')
       if event: qs = qs.filter(event__id=event)
       if date: qs = qs.filter(date__gte=date)
       if time_start: qs = qs.filter(time_start__gte=time_start)

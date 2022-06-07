@@ -46,7 +46,6 @@ $(document).ready(function () {
 
     $('#btn_save').click(function (e) {
         e.preventDefault();
-       
         if (validateShedule()) {
             $(this).attr('disabled', true) //  disable button
             
@@ -62,12 +61,12 @@ $(document).ready(function () {
                     schedule : getSchedule()
                 },
                 headers: axiosConfig,
-            }).then(function (response) { // success
+            }).then(response => { // success
                 $.when(toastSuccess('Success')).then(() => {
-                    $(location).attr('href', '/events/lists')
+                    $(location).attr('href', `/events/event/${response.data.id}/view`)
                     $('#btn_save').attr('disabled', false) // enable button
                 }) // alert
-            }).catch(function (error) { // error
+            }).catch(error => { // error
                 toastError(error.response.statusText);
                 $("#btn_save").prop('disabled', false); // enable button
                 if (error.response.data.title) showFieldErrors(error.response.data.title, 'title'); else removeFieldErrors('title');
@@ -85,6 +84,7 @@ $(document).ready(function () {
             const date = $(this).find('div.form-group input.txt-date');
             const time_start = $(this).find('div.form-group input.txt-start');
             const time_end = $(this).find('div.form-group input.txt-end');
+            const is_active = $(this).find('div.form-group input.chk-status');
 
             if (date.val() && time_start.val() && time_end.val()) {
                 schedules.push({
@@ -92,6 +92,7 @@ $(document).ready(function () {
                     'date': date.val(),
                     'time_start': time_start.val() + ':00',
                     'time_end' : time_end.val() + ':00',
+                    'is_active' : is_active.is(':checked'),
                 });
             }
         });

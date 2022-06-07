@@ -57,7 +57,7 @@ $(document).ready(function() {
                 visible: false
             }, // Id
         ],
-        "order": [[5, "desc"]],
+        "order": [[0, "desc"], [1, "desc"]],
     }); // table end
 
     // // view date

@@ -80,6 +80,7 @@ $(function() {
                         let url = `/api/events/eventdate/schedule/`; // update request url
                         let event = info.event.id;
                         saveEvent(info, event, method, url);
+                        info.revert();
                     } else info.revert();
                 });
             }
@@ -158,9 +159,10 @@ $(function() {
             },
             headers: axiosConfig,
         }).then(res => { // success
-            calendar.render();
+            calendar.refetchEvents();
             toastSuccess('Success');
         }).catch(err => { // error
+            info.revert();
             toastError(err.response.statusText);
         });
     }

@@ -73,6 +73,7 @@ class EventCRUDSerializer(serializers.ModelSerializer):
                 eventdate.date = schedule['date']
                 eventdate.time_start = schedule['time_start']
                 eventdate.time_end = schedule['time_end']
+                eventdate.is_active = schedule['is_active']
                 eventdate.save()
             else:
                 EventDate.objects.create(
@@ -81,7 +82,6 @@ class EventCRUDSerializer(serializers.ModelSerializer):
                     time_end=schedule['time_end'],
                     event=instance
                 )
-
         return instance
 
     class Meta:
