@@ -20,7 +20,7 @@
                   </div>
                </div>
                <div id="compressAction" class="collapse show">
-                  <form class="form-actions">
+                  <form class="form-actions mt-2">
                      <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
                         <label>Next Step: <span class="font-italic text-muted"> (Prev: {{prev_step.status}})</span></label> 
                         <select class="form-control form-control-sm" id="select2_nextstep" style="width: 100%">
