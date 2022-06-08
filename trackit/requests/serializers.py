@@ -302,6 +302,9 @@ class TicketActionSerializer(serializers.ModelSerializer):
       ticket.status = validated_data['status']
       ticket.save()
 
+      # Create notification instance
+      create_notification(str(ticket.ticket_id), ticket, 'ticket')  
+
       # get log from easyaudit
       log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
    
