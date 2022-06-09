@@ -1,5 +1,9 @@
 {% load static %}
 
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'src/css/navbar.css' %}">
+{% endblock %}
+
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
    <!-- Left navbar links -->
    <ul class="navbar-nav">
@@ -7,7 +11,7 @@
          <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-         <a href="{% url 'home' %}" class="nav-link">Home</a>
+         <a href="{% url 'home' %}" class="nav-link"><i class="fas fa-home"></i></a>
       </li>
    </ul>
 
@@ -34,9 +38,22 @@
             <span class="badge badge-danger navbar-badge new-notifications-count"></span>
          </a>
          <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right dropdown-notifications-div">
-            <div class="dropdown-item dropdown-header dropdown-notifications-title d-flex align-items-center shadow-sm">
-               <span class="font-weight-bold">Notifications</span>
-               <span class="ml-auto"> <button class="btn btn-xs btn-link btn-link-orange m-0 p-0" id="clear-all-notifications">Clear all</button> </span>
+            <div class="dropdown-item dropdown-header dropdown-notifications-title shadow-sm">
+               <div class="d-flex align-items-center">
+                  <p class="font-weight-bold text-sm m-0">Notifications</p>
+                  <span class="ml-auto"> <button class="btn btn-xs btn-link btn-link-orange m-0 p-0" id="clear-all-notifications">Clear all</button> </span>
+               </div>
+               <div class="mt-2">
+                 <nav>
+                  <!-- Navigation -->
+                  <div class="nav nav-pills" id="nav-tab" role="tablist">
+                     <a class="nav-item nav-link active d-flex align-items-center" id="nav-personal-tab" data-toggle="tab" href="#all"
+                        role="tab" aria-controls="nav-personal" aria-selected="true">All 
+                        <span class="badge badge-notification new-notifications-count ml-1"></span> 
+                     </a>
+                  </div>
+               </nav>
+               </div>
             </div>
             <div class="dropdown-body p-1"></div>
          </div>

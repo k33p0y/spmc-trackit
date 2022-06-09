@@ -1,0 +1,139 @@
+/* Notification */
+.navbar-badge {
+    right: 4px;
+    top: 0px !important;
+}
+.dropdown-notifications-div .dropdown-notifications-title {
+    border:0 !important;
+    color: #3e454d;
+    padding: 12px 14px;
+}
+ 
+.dropdown-notifications-div .dropdown-notifications-title:hover {
+    background-color: unset;
+    color: #3e454d;
+}
+ 
+.dropdown-notifications-div .dropdown-notifications-title button {
+    font-size: 10px !important;
+ }
+ 
+.dropdown-notifications-div .dropdown-body {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+/* nav-pills */
+.dropdown-notifications-div  .nav.nav-tabs {
+    border-bottom: 0;
+}
+.dropdown-notifications-div  .nav .nav-item {
+    margin-bottom: -2px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #95a4b5;
+    border:none;   
+    transition: ease-in-out;
+    height: auto;
+    border-radius: 15px;
+}
+.dropdown-notifications-div  .nav .nav-item .badge-notification {
+    background-color: #FD7E14;
+    color: #fff
+}
+.dropdown-notifications-div .nav .nav-item.active {
+    background-color: #fdf1e9;
+    color: #FD7E14;
+}
+ 
+.dropdown-notifications-div .dropdown-body .dropdown-notification-item {
+    padding: 10px !important;
+    border-radius: .25rem;
+ }
+ 
+.dropdown-notifications-div .dropdown-body .dropdown-notification-item:hover {
+    background-color: #fff5ee;
+    color: #3e454d;
+ }
+ 
+.dropdown-notifications-div .dropdown-body a.dropdown-notification-item:active {
+    background-color: #fdf1e9;
+    color: #3e454d;
+ }
+ 
+.dropdown-notifications-div .dropdown-notification-item .notification-content > div > p,
+.dropdown-notifications-div .dropdown-notification-item .notification-content > p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+    font-size: 11px !important;
+    color: #3e454d !important;
+    padding-right: 10px;
+ }
+ 
+.dropdown-notifications-div .dropdown-notification-item .notification-content .notification-overview {
+    font-size: 10px !important;
+ }
+ 
+.dropdown-notifications-div .dropdown-notification-item .notification-content .notification-time {
+    font-size: 9px !important;
+ }
+ 
+.dropdown-notifications-div .dropdown-notification-item .notification-status > i  {
+    font-size: 12px !important;
+ }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle {
+    position: relative;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #fccfaa;
+ }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name {
+    position: relative;
+    width: 100%;
+    height: 100%;
+ 
+    font-size: 12px;
+    font-weight: bold;
+    color: #997867;
+    text-transform: uppercase;
+ 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+ }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-icon {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    font-size: 0.5em !important;
+ 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    border-radius: 50%;
+ 
+    top: -2.2em;
+    left: 3.2em;
+    bottom:0;
+    right: 0;
+ }
+ 
+ /* Scrollbar */
+ /* width */
+.dropdown-notifications-div ::-webkit-scrollbar {
+    width: 7px;
+ }
+  
+  /* Track */
+.dropdown-notifications-div::-webkit-scrollbar-track {
+    background-color: #f9f9fc;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
