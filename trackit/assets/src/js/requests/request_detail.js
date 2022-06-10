@@ -188,10 +188,4 @@ $(document).ready(function () {
       });
       return form_data;
    }
-
-   // character counter
-   $('#txtarea-comment').on("input", function() {
-      let currentLength = $(this).val().length;
-      $('#char_count_comment').html(`${currentLength > 0 ? currentLength : ''}`);
-   });
 });

@@ -18,12 +18,6 @@ $(document).ready(function () {
         if (date_str) $(`#${e.id}`).text(date); else ''
     });
 
-    // character counter
-    $('#txtarea-comment').on("input", function() {
-        let currentLength = $(this).val().length;
-        $('#char_count_comment').html(`${currentLength > 0 ? currentLength : ''}`);
-    });
-
     // Generate Reference No
     $('#btn_generate').click(function() {
         let id = $(this).data().ticketId;

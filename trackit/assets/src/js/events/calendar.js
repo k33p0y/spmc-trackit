@@ -47,8 +47,7 @@ $(function() {
                     response.forEach(event => {
                         events.push({
                             id: event.id,
-                            // title: event.event.title,
-                            title: `${event.event.title} ${event.id}`,
+                            title: event.event.title,
                             start: `${event.date} ${event.time_start}`,
                             end: `${event.date} ${event.time_end}`,
                             color: event.event.highlight,
@@ -212,7 +211,7 @@ $(document).ready(function() {
                         `<div class="card event-card mt-2 mb-1" style="border-left-color:${event.highlight}" data-color="${event.highlight}" data-event="${event.id}">
                             <div class="d-flex flex-row align-items-center event-card-wrap">
                                 <div class="d-flex-inline mr-auto">
-                                    <p class="event-title">${event.title} ${event.id}</p>
+                                    <p class="event-title">${event.title}</p>
                                     <span class="event-subject">${event.subject}</span>
                                 </div>
                                 <button type="button" class="btn btn-link btn-link-orange p-0 ml-2 event-edit" data-event="${event.id}"><i class="fas fa-sm fa-edit"></i></button>

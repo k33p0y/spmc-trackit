@@ -17,6 +17,7 @@ $(function(){
             let comment_id = response.data.id
             socket_comment.send(JSON.stringify({comment_id: comment_id}))
             socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: comment_id, notification_type: 'comment'}}))
+            $('#char_count_comment').html('');
         }).catch(function (error) { // error
             toastError('Error in creating comment.');
         });
@@ -29,6 +30,12 @@ $(function(){
                 getComments($('#btn-post-comment').data().ticketId, $('#comment-nextpage-url').val());
             }
         }
+    });
+
+    // character counter
+    $('#txtarea-comment').on("input", function() {
+        let currentLength = $(this).val().length;
+        $('#char_count_comment').html(`${currentLength > 0 ? currentLength : ''}`);
     });
 
     // Load Comments
