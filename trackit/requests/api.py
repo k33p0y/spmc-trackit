@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions, serializers, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
@@ -238,15 +239,21 @@ class CRUDEventList(generics.ListAPIView):
          
 class NotificationViewSet(viewsets.ModelViewSet):
    serializer_class = NotificationSerializer
+   permission_classes = [permissions.IsAuthenticated]
 
    def get_queryset(self):
       return Notification.objects.select_related('user').filter(user__id=self.request.user.pk).order_by('-unread', '-log__datetime')
 
-   # disable pagination, show all rows
-   def paginate_queryset(self, queryset):
-        if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
-            return None
-        return super().paginate_queryset(queryset)
+class NotificationDeleteViewSet(viewsets.ModelViewSet):
+   serializer_class = NotificationSerializer
+   permission_classes = [permissions.IsAuthenticated]
+   queryset = Ticket.objects.all()
+
+   @action(methods=['delete'], detail=False)
+   def destroy(self, request, *args, **kwargs):
+      notification = Notification.objects.filter(user__id=self.request.user.pk)
+      self.perform_destroy(notification)
+      return Response(status=status.HTTP_204_NO_CONTENT)
 
 class CommentListCreateAPIView(generics.ListCreateAPIView):
    serializer_class = CommentSerializer

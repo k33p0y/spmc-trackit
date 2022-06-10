@@ -45,8 +45,9 @@ const Toast = Swal.mixin({
 });
 
 // Notifications
-const getUserNotifications = function (){
-   return axios.get('/api/user/notifications/',).then(response=>response.data).catch(response=>response.data)
+const getUserNotifications = function (page){
+   let url = (page) ? page : '/api/user/notifications/';
+   return axios.get(url).then(response=>response.data).catch(response=>response.data)
 };
 
 // MIME TYPES REGISTER

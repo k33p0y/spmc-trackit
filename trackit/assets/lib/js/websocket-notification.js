@@ -21,23 +21,31 @@ socket_notification.onerror = function (event) {
     console.log('something went wrong')
 }
 
-let getAllNotifications = function () {
-    getUserNotifications().then(data => {
-        let notifications = data
-        unread_count = notifications.filter(obj => obj.unread == true).length
+let getAllNotifications = function (page) {
+    getUserNotifications(page).then(data => {
+        let notifications = data.results;
+        let next_page_url = data.next;
 
-        if (notifications.length) { // if notification is available
-            if (unread_count > 0) {
-                $('.new-notifications-count').html(unread_count); // display unread notification to bell
+        if (next_page_url) { // check if there is next page to comment list API
+           if (next_page_url.includes('socket')){ // check if host == socket
+              if (wsStart == 'wss://') next_page_url = next_page_url.replace('http://', 'https://');
+              $('#notification-nextpage-url').val(next_page_url.replace('socket', window.location.host)); // change socket host to window.location.host
+           } else $('#notification-nextpage-url').val(next_page_url);
+        } else $('#notification-nextpage-url').val(null);
+
+        if (data.count) { // if notification is available
+            if (data.count > 0) {
+                $('.new-notifications-count, .notifications-count').html(data.count); // display unread notification to bell
                 $('#clear-all-notifications').removeClass('d-none')
             }
             // var saveDropdown = $('.dropdown-notifications-div .dropdown-body').detach();
-            $('.dropdown-notifications-div .dropdown-body').empty();
+            if (!page) $('.dropdown-notifications-div .dropdown-body').empty();
             for (i = 0; i < notifications.length; i++) {
                 let model = JSON.parse(notifications[i].log.object_json_repr)
-                if (JSON.parse(model[0].model == 'requests.ticket')) displayTicketNotification(notifications[i]);
-                if (JSON.parse(model[0].model == 'requests.comment')) displayCommentNotification(notifications[i]);
-                if (JSON.parse(model[0].model == 'core.user')) displayUserNotification(notifications[i]);
+
+                if (model[0].model === 'requests.ticket') displayTicketNotification(notifications[i]);
+                if (model[0].model === 'requests.comment') displayCommentNotification(notifications[i]);
+                if (model[0].model === 'core.user') displayUserNotification(notifications[i]);
             }
             $('.dropdown-notifications-div .dropdown-body a').click(function () {
                 localStorage.setItem("ticketNumber", $(this).attr('data-ticket-no'));
@@ -45,9 +53,10 @@ let getAllNotifications = function () {
                 localStorage.setItem("user-id", $(this).attr('data-user-id'));
             })
         } else {
-            $('.dropdown-body').html('<p class="text-center text-muted p-2">No new notifications</p>')
+            displayEmptyNotification();
             $('#clear-all-notifications').addClass('d-none')
             $('.new-notifications-count').html('');
+            $('.notifications-count').html(data.count);
         }
     });
 };
@@ -219,16 +228,9 @@ let displayUserNotification = function (notification) {
     )
 };
 
-// Clear all notifications
-$('#clear-all-notifications').click(function () {
-    let notifications = $('.dropdown-body').children();
-
-    $.each(notifications, function (index, value) {
-        const notification_id = $(this).data().notificationId;
-        axios.delete(`/api/user/notifications/${notification_id}/`, { headers: axiosConfig }).then(res => {
-            $(this).fadeOut("fast", "linear", function () { $(this).remove(); });
-        })
-        getAllNotifications();
-    });
-    return false;
-})
+let displayEmptyNotification = function () {
+    $('.dropdown-body').html(`<div class="d-flex flex-column text-center my-2">
+        <div class="state-icon"><i class="fas fa-bell"></i></div>
+        <p class="m-0 state-text">No new notifications</p>
+    </div>`)
+}

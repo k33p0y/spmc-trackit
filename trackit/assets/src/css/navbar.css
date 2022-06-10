@@ -1,6 +1,5 @@
 /* Notification */
 .navbar-badge {
-    right: 4px;
     top: 0px !important;
 }
 .dropdown-notifications-div .dropdown-notifications-title {
@@ -19,7 +18,7 @@
  }
  
 .dropdown-notifications-div .dropdown-body {
-    max-height: 350px;
+    max-height: 300px;
     overflow-y: auto;
 }
 
@@ -137,3 +136,12 @@
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
 }
+
+.state-icon {
+    font-size: 1.2em;
+    color: #d8dbe4;
+ }
+ .state-text {
+    color: #a5a7aa;
+    font-style: italic;
+ }

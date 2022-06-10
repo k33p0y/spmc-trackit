@@ -4,6 +4,7 @@ from .api import (
    AttachmentViewSet, 
    CommentListCreateAPIView,
    CRUDEventList, 
+   NotificationDeleteViewSet,
    NotificationViewSet, 
    RequestFormCRUDViewSet, 
    RequestFormStatusViewSet, 
@@ -41,6 +42,7 @@ urlpatterns = [
 
    path('api/ticket/logs/', CRUDEventList.as_view()), # easyaudit_crudevent api
    path('api/requests/comments/', CommentListCreateAPIView.as_view(), name='list-create-comment'), # list/create comment api
+   path('api/user/notifications/delete/', NotificationDeleteViewSet.as_view({'delete' : 'destroy'})), # easyaudit_crudevent api
 ]
 
 urlpatterns += router.urls
