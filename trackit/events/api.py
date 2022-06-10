@@ -24,10 +24,15 @@ class EventListViewSet(viewsets.ModelViewSet):
 
    def get_queryset(self):
       search = self.request.query_params.get("search", None)
+      event_for = self.request.query_params.get("event_for", None)
       is_active = self.request.query_params.get("is_active", None)
+
       qs = Event.objects.order_by('-id')
+
       if search: qs = qs.filter(Q(title__icontains=search) | Q(subject__icontains=search))
+      if event_for: qs = qs.filter(event_for=event_for)
       if is_active: qs = qs.filter(is_active=is_active)
+
       return qs
 
 class EventCRUDViewSet(viewsets.ModelViewSet):    

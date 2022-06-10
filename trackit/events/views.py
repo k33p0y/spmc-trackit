@@ -12,7 +12,8 @@ from core.decorators import user_is_verified, user_is_staff_member
 @user_is_staff_member
 @permission_required('events.view_event', raise_exception=True)
 def event(request):
-   return render(request, 'pages/events/manage.html', {})
+   forms = RequestForm.objects.filter(is_active=True)
+   return render(request, 'pages/events/manage.html', {'forms': forms})
 
 @login_required
 @user_is_verified
