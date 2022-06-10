@@ -137,7 +137,12 @@ $(document).ready(function () {
             $("#select2_schedule").append(`<option value='${schedule.id}'>${date} ${start} - ${end}</option>`)
          });
 
-         if (res.data.next) getEventDatesAPI(res.data.next, event)
+         if (res.data.next) { // check if there is next page to API
+            if (res.data.next.includes('socket')){ // check if host == socket
+               let url = res.data.next.replace('socket', window.location.host)
+               getEventDatesAPI(url, event)
+            } else getEventDatesAPI(res.data.next, event)
+         } 
       });
    };
 });

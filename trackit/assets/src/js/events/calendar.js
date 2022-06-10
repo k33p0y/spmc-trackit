@@ -228,8 +228,22 @@ $(document).ready(function() {
                 $('.event-lists-wrapper').addClass('d-none'); // hide list wrapper
             }
 
-            (event_api.next) ? $('#page_next').removeClass('disabled').data('pageturn', event_api.next) : $('#page_next').addClass('disabled');
-            (event_api.previous) ? $('#page_previous').removeClass('disabled').data('pageturn', event_api.previous) : $('#page_previous').addClass('disabled');
+            // next page
+            if (event_api.next) { // check if there is next page API
+                if (event_api.next.includes('socket')){ // check if host == socket
+                   let url = event_api.next.replace('socket', window.location.host)
+                   $('#page_next').removeClass('disabled').data('pageturn', url) 
+                } else $('#page_next').removeClass('disabled').data('pageturn', event_api.next) 
+            } else $('#page_next').addClass('disabled');
+
+            // prev page
+            if (event_api.previous) { // check if there is next page API
+                if (event_api.previous.includes('socket')){ // check if host == socket
+                   let url = event_api.previous.replace('socket', window.location.host)
+                   $('#page_previous').removeClass('disabled').data('pageturn', url) 
+                } else $('#page_previous').removeClass('disabled').data('pageturn', event_api.previous) 
+            } else $('#page_previous').addClass('disabled');
+
         }).catch(error => { // error
             toastError(error.response.statusText);
         });
