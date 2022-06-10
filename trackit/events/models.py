@@ -31,6 +31,9 @@ class EventDate(models.Model):
     time_start = models.TimeField(null=False, blank=False)
     time_end = models.TimeField(null=False, blank=False)
     is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        unique_together = [['event', 'date', 'time_start', 'time_end']]
 
 class EventTicket(models.Model):
     ticket = models.ForeignKey(Ticket, related_name="events", on_delete=models.CASCADE)
