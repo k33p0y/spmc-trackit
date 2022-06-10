@@ -83,7 +83,7 @@ def view_ticket(request, ticket_id):
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
 
    ### events
-   events = Event.objects.filter(event_for=ticket.request_form) # events
+   events = Event.objects.filter(event_for=ticket.request_form, is_active=True) # events
    event_tickets = EventTicket.objects.select_related('scheduled_event').filter(ticket=ticket).order_by('-scheduled_event__date', '-id')   # events ticket
 
    ### form status
