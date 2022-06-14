@@ -85,6 +85,8 @@ def view_ticket(request, ticket_id):
    ### events
    events = Event.objects.filter(event_for=ticket.request_form, is_active=True) # events
    event_tickets = EventTicket.objects.select_related('scheduled_event').filter(ticket=ticket).order_by('-scheduled_event__date', '-id')   # events ticket
+   scheduled_event = event_tickets.filter(attended__isnull=True).first()
+   is_schedule_open = True if str(datetime.datetime.now().replace(microsecond=0)) >= scheduled_event.scheduled_event.date_start() else False
 
    ### form status
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') # get all steps from ticket request form
@@ -118,8 +120,9 @@ def view_ticket(request, ticket_id):
       'remark': remark,
       'progress' : progress,
       'event_tickets' : event_tickets.filter(attended__isnull=False),
-      'scheduled_event' : event_tickets.filter(attended__isnull=True).first(),
+      'scheduled_event' : scheduled_event,
       'has_event_form' : has_event_form,
+      'is_schedule_open' : is_schedule_open,
    }
    return render(request, 'pages/requests/ticket_view.html', context)
       

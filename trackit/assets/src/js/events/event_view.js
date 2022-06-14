@@ -67,14 +67,14 @@ $(document).ready(function() {
         let date = moment(dt_data['date']).format('DD MMMM YYYY');
         let time_start = moment(dt_data['date'] + ' ' + dt_data['time_start']).format('h:mm:ss a')
         let time_end = moment(dt_data['date'] + ' ' + dt_data['time_end']).format('h:mm:ss a')
+        let event_date = moment(dt_data['date'] + ' ' + dt_data['time_start'])
         
         $("#viewSchedule").modal(); // open modal
         $("#viewSchedule .title-date").text(date); // title date
         $("#viewSchedule .title-time").text(`${time_start} - ${time_end}`); // tile time
         $('.attandance-wrap').empty(); // clear rows
-        $('#btn_save').attr('data-scheduled-event', `${dt_data['id']}`); // set data value to button
-        
-        getEventTicket(`/api/events/eventticket/?schedule=${dt_data['id']}`)
+        $('#btn_save').attr('data-scheduled-event', `${dt_data['id']}`); // set data value to button        
+        getEventTicket(`/api/events/eventticket/?schedule=${dt_data['id']}`, event_date)
     });
 
     // // save attendance
@@ -95,31 +95,49 @@ $(document).ready(function() {
         $.when(toastSuccess('Success')).then(() => location.reload());
     });
 
-    let getEventTicket = function(url) {
+    let getEventTicket = function(url, event_date) {
         axios.get(url, axiosConfig).then(res => {
-            $('.spinner').addClass('d-none');
-            res.data.results.forEach(obj => {
-                $('.attandance-wrap').append(
-                    `<div class="card-attendance row" data-attendance-id=${obj.id}>
-                        <div class="col col-3">${obj.ticket.ticket_no}</div>
-                        <div class="col col-3">${obj.ticket.requested_by.name}</div>
-                        <div class="col col-3">${obj.ticket.status.name}</div>
-                        <div class="col">
-                            <div class="icheck-material-orange m-0">
-                            <input type="radio" class="present-box" id="present_${obj.id}" name="attendance_${obj.id}" ${obj.attended ? 'checked' : ''}/>
-                            <label for="present_${obj.id}"></label>
+            if (res.data.count > 0 ) { // if response has data
+                $('#state_display').addClass('d-none'); // hide "No attendance yet" content
+                $('#attendance_table').removeClass('d-none'); // show row heading
+                // show save button if todate get passed event date else hide
+                (moment() >= event_date) ? $('#btn_save').removeClass('d-none') : $('#btn_save').addClass('d-none'); 
+
+                // iterate event tickets
+                res.data.results.forEach(obj => {
+                    $('.attandance-wrap').append(
+                        `<div class="card-attendance row" data-attendance-id=${obj.id}>
+                            <div class="col col-3">${obj.ticket.ticket_no}</div>
+                            <div class="col col-3">${obj.ticket.requested_by.name}</div>
+                            <div class="col col-3">${obj.ticket.status.name}</div>
+                            <div class="col">
+                                <div class="icheck-material-orange m-0">
+                                    ${moment() >= event_date ? 
+                                        `<input type="radio" class="present-box" id="present_${obj.id}" name="attendance_${obj.id}" ${obj.attended ? 'checked' : ''} />` :
+                                        `<input type="radio" disabled/>`  
+                                    }
+                                    <label for="present_${obj.id}"></label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col">
-                            <div class="icheck-material-orange">
-                                <input type="radio" class="absent-box" id="absent_${obj.id}" name="attendance_${obj.id}" ${obj.attended === false ? 'checked' : ''}/>
-                                <label for="absent_${obj.id}"></label>
+                            <div class="col">
+                                <div class="icheck-material-orange">
+                                    ${moment() >= event_date ? 
+                                        `<input type="radio" class="absent-box" id="absent_${obj.id}" name="attendance_${obj.id}" ${obj.attended === false ? 'checked' : ''} />` :
+                                        `<input type="radio" disabled />`  
+                                    }
+                                    <label for="absent_${obj.id}"></label>
+                                </div>
                             </div>
-                        </div>
-                    </div>`
-                )
-            });
-            if (res.data.next) getEventTicket(res.data.next);
+                        </div>`
+                    )
+                });
+                if (res.data.next) getEventTicket(res.data.next);
+            } else {
+           
+                $('#state_display').removeClass('d-none'); // show "No attendance yet" content
+                $('#attendance_table').addClass('d-none'); // hide row heading
+                $('#btn_save').addClass('d-none'); // hide save button
+            }            
         });
     }
 });

@@ -309,8 +309,8 @@
                                  <small class="text-secondary"> {{scheduled_event.scheduled_event.event}}</small>
                                  {% if user.is_staff or user.is_superuser %}
                                  <div class="mt-2">
-                                    <button type="button" class="btn btn-outline-success btn-block btn-sm m-0 mt-1" id="btn_present" data-attended="true" data-schedule-id="{{scheduled_event.pk}}"> <span> Present </span> </button>
-                                    <button type="button" class="btn btn-outline-secondary btn-block btn-sm m-0 mt-1" id="btn_absent" data-attended="false" data-schedule-id="{{scheduled_event.pk}}"><span> Absent </span> </button>
+                                    <button type="button" class="btn btn-outline-success btn-block btn-sm m-0 mt-1" id="btn_present" data-attended="true" data-schedule-id="{{scheduled_event.pk}}" {% if not is_schedule_open  %} disabled {% endif %}> <span> Present </span> </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-block btn-sm m-0 mt-1" id="btn_absent" data-attended="false" data-schedule-id="{{scheduled_event.pk}}" {% if not is_schedule_open %} disabled {% endif %} ><span> Absent </span> </button>
                                  </div>
                                  {% endif %}
                               </div>

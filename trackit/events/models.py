@@ -31,6 +31,12 @@ class EventDate(models.Model):
     time_start = models.TimeField(null=False, blank=False)
     time_end = models.TimeField(null=False, blank=False)
     is_active = models.BooleanField(default=True)
+
+    def date_start(self):
+        return '%s %s' % (self.date, self.time_start)
+
+    def date_end(self):
+        return '%s %s' % (self.date, self.time_end)
     
     class Meta:
         unique_together = [['event', 'date', 'time_start', 'time_end']]
