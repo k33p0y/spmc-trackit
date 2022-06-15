@@ -41,6 +41,7 @@
                      <div class="mt-3">
                         <button class="btn btn-block btn-orange btn-xs btn-accept mt-1" type="button" data-ticket-id="{{ticket.ticket_id}}" data-pass="true"><span>Pass</span></button>
                         <button class="btn btn-block btn-danger btn-xs btn-refuse mt-1" type="button" data-ticket-id="{{ticket.ticket_id}}" data-pass="false" data-prev-step="{{prev_step.status.pk}}" data-next-step="{{next_step.status.pk}}"><span>Fail</span></button>
+                        <small class="text-danger error-action"></small>
                      </div>
                      {% endif %}
                   </form>

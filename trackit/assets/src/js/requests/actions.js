@@ -87,6 +87,7 @@ $(document).ready(function () {
          });
       }).catch(err => {
          toastError(err.response.statusText)
+         if (err.response.data.ticket.attendance) $('.error-action').html(`*${err.response.data.ticket.attendance}`); else $('.error-action').html();
       });
    }; 
 

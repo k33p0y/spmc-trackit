@@ -57,6 +57,7 @@
                      {% if curr_step.status != last_step.status or user.is_superuser %}
                      <div class="mt-3">
                         <button class="btn btn-block btn-orange btn-xs btn-accept" type="button" data-ticket-id="{{ticket.ticket_id}}"><span>Proceed</span></button>
+                        <small class="text-danger error-action"></small>
                      </div>
                      {% endif %}
                   </form>
