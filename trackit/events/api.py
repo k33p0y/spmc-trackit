@@ -13,7 +13,7 @@ from .serializers import (
 )
 from .models import Event, EventDate, EventTicket
 
-import datetime
+import datetime, json
 
 # viewsets
 class EventListViewSet(viewsets.ModelViewSet):    
@@ -49,16 +49,18 @@ class EventDateViewSet(viewsets.ModelViewSet):
       event = self.request.query_params.get("event", None)
       date = self.request.query_params.get("date", None)
       time_start = self.request.query_params.get("time_start", None)
+      is_active = self.request.query_params.get("is_active", None)
 
       qs = EventDate.objects.order_by('date', 'time_start')
       if event: qs = qs.filter(event__id=event)
       if date: qs = qs.filter(date__gte=date)
       if time_start: qs = qs.filter(time_start__gte=time_start)
+      if is_active: qs = qs.filter(is_active=json.loads(is_active))
       return qs
  
 class EventDateCalendarViewSet(viewsets.ReadOnlyModelViewSet):    
    serializer_class = EventDateSerializer
-   queryset = EventDate.objects.filter(is_active=True)
+   queryset = EventDate.objects.filter(is_active=True, event__is_active=True)
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
    paginator = None
 
