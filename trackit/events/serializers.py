@@ -154,14 +154,14 @@ class EventTicketSerializer(serializers.ModelSerializer):
 class AttendanceSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
-        # if attended is False/Absent
-        if not validated_data.get('attended'):
-            # get status event form 
-            status = RequestFormStatus.objects.get(form=instance.scheduled_event.event.event_for, has_event=True)
-    
-            # update ticket status first
-            ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(instance.ticket.ticket_id)))
-            ticket.status = status.status
+        ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(instance.ticket.ticket_id))) # get ticket queryset
+        steps = RequestFormStatus.objects.select_related('form', 'status').filter(form=instance.scheduled_event.event.event_for).order_by('order')  # get status queryset
+        curr_step = steps.get(status_id=ticket.status)
+        next_step = steps.get(order=curr_step.order+1)
+        prev_step = steps.get(order=curr_step.order-1)
+
+        if not validated_data.get('attended'): # if attended is False/Absent
+            ticket.status = prev_step.status
             ticket.save()
 
             # get log from easyaudit
@@ -169,14 +169,33 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
             # post action Remark
             action = Remark(
+                remark = 'Absent',
                 ticket_id = ticket.pk,
-                status = status.status,
+                status = ticket.status,
                 action_officer = self.context['request'].user,
+                is_pass = False,
                 log = log
             )
             action.save()
 
-        # if attended is True
+        else: # if attended is True
+            ticket.status = next_step.status
+            ticket.save()
+
+            # get log from easyaudit
+            log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
+
+            # post action Remark
+            action = Remark(
+                remark = 'Present',
+                ticket_id = ticket.pk,
+                status = ticket.status,
+                action_officer = self.context['request'].user,
+                is_pass = True,
+                log = log
+            )
+            action.save()
+        
         instance.attended = validated_data.get('attended', instance.attended)
         instance.remarks = validated_data.get('remarks', instance.remarks)
         instance.save()
