@@ -86,9 +86,9 @@ def view_ticket(request, ticket_id):
    events = Event.objects.filter(event_for=ticket.request_form, is_active=True) # events
    event_tickets = EventTicket.objects.select_related('scheduled_event').filter(ticket=ticket).order_by('-scheduled_event__date', '-id')   # events ticket
    is_schedule_open = None
-   if event_tickets:
-      scheduled_event = event_tickets.filter(attended__isnull=True).first()
-      is_schedule_open = True if str(datetime.datetime.now().replace(microsecond=0)) >= scheduled_event.scheduled_event.date_start() else False
+   event_schedule = None
+   if event_tickets: event_schedule = event_tickets.filter(attended__isnull=True).first()
+   if event_schedule: is_schedule_open = True if str(datetime.datetime.now().replace(microsecond=0)) >= event_schedule.scheduled_event.date_start() else False
 
    ### form status
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') # get all steps from ticket request form
