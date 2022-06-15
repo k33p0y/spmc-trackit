@@ -47,16 +47,17 @@ class EventDateViewSet(viewsets.ModelViewSet):
 
    def get_queryset(self):
       event = self.request.query_params.get("event", None)
-      date = self.request.query_params.get("date", None)
+      dates = self.request.query_params.get("dates", None)
       time_start = self.request.query_params.get("time_start", None)
       is_active = self.request.query_params.get("is_active", None)
-
+      now = datetime.datetime.now()
+      
       qs = EventDate.objects.order_by('date', 'time_start')
       if event: qs = qs.filter(event__id=event)
-      if date: qs = qs.filter(date__gte=date)
-      if time_start: qs = qs.filter(time_start__gte=time_start)
       if is_active: qs = qs.filter(is_active=json.loads(is_active))
+      if dates: qs = qs.filter((Q(date__gte=now.strftime('%Y-%m-%d')) & Q(time_start__gte=now.strftime('%H:%M:%S'))) | Q(date__gt=now.strftime('%Y-%m-%d')))
       return qs
+      
  
 class EventDateCalendarViewSet(viewsets.ReadOnlyModelViewSet):    
    serializer_class = EventDateSerializer

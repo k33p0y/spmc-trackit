@@ -15,10 +15,8 @@ $(document).ready(function () {
 
    // select2_event on change
    $('#select2_event').on('change', function () {
-      let date = moment().format('YYYY-MM-DD');
-      let time_start = moment().format('HH:mm:ss')
       let event = $("#select2_event").val();
-      let url = `/api/events/eventdate/all/?date=${date}&event=${event}&time_start=${time_start}&is_active=${true}`
+      let url = `/api/events/eventdate/all/?event=${event}&is_active=${true}&dates=${true}`
       $("#select2_schedule").empty().append('<option></option>').removeAttr('disabled'); 
       getEventDatesAPI(url, event)
    });
