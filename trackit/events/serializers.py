@@ -154,51 +154,54 @@ class EventTicketSerializer(serializers.ModelSerializer):
 class AttendanceSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
-        ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(instance.ticket.ticket_id))) # get ticket queryset
-        steps = RequestFormStatus.objects.select_related('form', 'status').filter(form=instance.scheduled_event.event.event_for).order_by('order')  # get status queryset
-        curr_step = steps.get(status_id=ticket.status)
-        next_step = steps.get(order=curr_step.order+1)
-        prev_step = steps.get(order=curr_step.order-1)
+        # perform save if instance is not equal to request
+        if not instance.attended == validated_data.get('attended'):
+            ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(instance.ticket.ticket_id))) # get ticket queryset
+            steps = RequestFormStatus.objects.select_related('form', 'status').filter(form=instance.scheduled_event.event.event_for).order_by('order')  # get status queryset
+            last_step = steps.latest('order') # get last step
+            first_step = steps.first() # get first step
+            curr_step = steps.get(status_id=ticket.status)
+            next_step = steps.get(order=curr_step.order+1) if not curr_step.status == last_step.status else curr_step # next current step
+            prev_step = steps.get(order=curr_step.order-1) if not curr_step.status == first_step.status else curr_step # prev current step
 
-        if not validated_data.get('attended'): # if attended is False/Absent
-            ticket.status = prev_step.status
-            ticket.save()
+            if not validated_data.get('attended'): # if attended is False/Absent
+                ticket.status = prev_step.status
+                ticket.save()
 
-            # get log from easyaudit
-            log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
+                # get log from easyaudit
+                log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
 
-            # post action Remark
-            action = Remark(
-                remark = 'Absent',
-                ticket_id = ticket.pk,
-                status = ticket.status,
-                action_officer = self.context['request'].user,
-                is_pass = False,
-                log = log
-            )
-            action.save()
+                # post action Remark
+                action = Remark(
+                    remark = 'Absent',
+                    ticket_id = ticket.pk,
+                    status = ticket.status,
+                    action_officer = self.context['request'].user,
+                    is_pass = False,
+                    log = log
+                )
+                action.save()
+            else: # if attended is True
+                ticket.status = next_step.status
+                ticket.save()
 
-        else: # if attended is True
-            ticket.status = next_step.status
-            ticket.save()
+                # get log from easyaudit
+                log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
 
-            # get log from easyaudit
-            log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
-
-            # post action Remark
-            action = Remark(
-                remark = 'Present',
-                ticket_id = ticket.pk,
-                status = ticket.status,
-                action_officer = self.context['request'].user,
-                is_pass = True,
-                log = log
-            )
-            action.save()
-        
-        instance.attended = validated_data.get('attended', instance.attended)
-        instance.remarks = validated_data.get('remarks', instance.remarks)
-        instance.save()
+                # post action Remark
+                action = Remark(
+                    remark = 'Present',
+                    ticket_id = ticket.pk,
+                    status = ticket.status,
+                    action_officer = self.context['request'].user,
+                    is_pass = True,
+                    log = log
+                )
+                action.save()
+            
+            instance.attended = validated_data.get('attended', instance.attended)
+            instance.remarks = validated_data.get('remarks', instance.remarks)
+            instance.save()
 
         return instance
 
