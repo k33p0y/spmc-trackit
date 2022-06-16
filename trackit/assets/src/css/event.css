@@ -185,6 +185,9 @@
    color: #59626b;
    line-height: 14px; 
 }
+.row-error {
+   border: 1px solid #dc3546a2 !important;
+}
 
 #schedule_wrapper {
    max-height: 40rem;

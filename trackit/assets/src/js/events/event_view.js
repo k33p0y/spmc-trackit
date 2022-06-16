@@ -80,19 +80,27 @@ $(document).ready(function() {
     // // save attendance
     $('#btn_save').click(function(e) {
         e.preventDefault();
-        let scheduled_event = $(this).data().scheduledEvent;
-        
-        $('.card-attendance').each(function() { // iterate rows
-            const id = $(this).data().attendanceId; // row id
-            const present = $(this).find('div.col .present-box');
-            const absent = $(this).find('div.col .absent-box');
 
-            let attended = present.is(":checked"); // get present bool value
+        if (validateAttendance()) {
+            $('#alert_error').addClass('d-none')
+            $('#alert_error small').html('')
+            $(this).prop('disabled', true)
             
-            axios.patch(`/api/events/attendance/${id}/`, {attended: attended}, {headers: axiosConfig});
-        });
+            $('.card-attendance').each(function() { // iterate rows
+                const id = $(this).data().attendanceId; // row id
+                const present = $(this).find('div.col .present-box');
+                const absent = $(this).find('div.col .absent-box');
 
-        $.when(toastSuccess('Success')).then(() => location.reload());
+                let attended = present.is(":checked"); // get present bool value
+                axios.patch(`/api/events/attendance/${id}/`, {attended: attended}, {headers: axiosConfig});
+            });
+
+            $.when(toastSuccess('Success')).then(() => location.reload());
+        } else {
+            $('#alert_error').removeClass('d-none')
+            $('#alert_error small').html('*Please select an option.')
+        }
+        $(this).prop('disabled', false)
     });
 
     let getEventTicket = function(url, event_date) {
@@ -110,8 +118,8 @@ $(document).ready(function() {
                             <div class="col col-3">${obj.ticket.ticket_no}</div>
                             <div class="col col-3">${obj.ticket.requested_by.name}</div>
                             <div class="col col-3">${obj.ticket.status.name}</div>
-                            <div class="col">
-                                <div class="icheck-material-orange m-0">
+                                <div class="col">
+                            <div class="icheck-material-orange m-0">
                                     ${moment() >= event_date ? 
                                         `<input type="radio" class="present-box" id="present_${obj.id}" name="attendance_${obj.id}" ${obj.attended ? 'checked' : ''} />` :
                                         `<input type="radio" disabled/>`  
@@ -122,7 +130,7 @@ $(document).ready(function() {
                             <div class="col">
                                 <div class="icheck-material-orange">
                                     ${moment() >= event_date ? 
-                                        `<input type="radio" class="absent-box" id="absent_${obj.id}" name="attendance_${obj.id}" ${obj.attended === false ? 'checked' : ''} />` :
+                                        `<input type="radio" class="absent-box" id="absent_${obj.id}" name="attendance_${obj.id}" ${obj.attended == false ? 'checked' : ''} />` :
                                         `<input type="radio" disabled />`  
                                     }
                                     <label for="absent_${obj.id}"></label>
@@ -133,11 +141,26 @@ $(document).ready(function() {
                 });
                 if (res.data.next) getEventTicket(res.data.next);
             } else {
-           
                 $('#state_display').removeClass('d-none'); // show "No attendance yet" content
                 $('#attendance_table').addClass('d-none'); // hide row heading
                 $('#btn_save').addClass('d-none'); // hide save button
             }            
         });
+    }
+    
+    let validateAttendance = function() {
+        var success = true;
+        $('.card-attendance').each(function() { // iterate rows
+            const present = $(this).find('div.col .present-box');
+            const absent = $(this).find('div.col .absent-box');
+
+            if (present.is(":checked") || absent.is(":checked")) {
+                $(this).removeClass('row-error');
+            } else {
+                $(this).addClass('row-error');
+                success = false;
+            }
+        });
+        return success;
     }
 });

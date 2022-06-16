@@ -177,12 +177,15 @@
                   <p class="m-0 state-text">No attendance yet</p>
                </div>
             </div>
+            <div class="alert bg-danger py-1 px-2 d-none" id="alert_error">
+               <small class="m-0 text-light"></small>
+            </div>
             <div class="card-heading row d-none" id="attendance_table">
                <div class="col col-3">Ticket</div>
                <div class="col col-3">Requestor</div>
                <div class="col col-3">Status</div>
-               <div class="col">Present</div>
-               <div class="col">Absent</div>
+               <div class="col">Present <span class="text-danger">*</span></div>
+               <div class="col">Absent <span class="text-danger">*</span></div>
                {% comment %} <div class="col">Remove</div> {% endcomment %}
             </div>
             <div class="attandance-wrap">
