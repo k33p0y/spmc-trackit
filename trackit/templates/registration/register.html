@@ -105,7 +105,11 @@
    </div>
 
    <!-- Scripts Dependencies -->
-   {% include "snippets/scripts.html" %}
+   {% comment %} {% include "snippets/scripts.html" %} {% endcomment %}
+   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script> <!-- JQuery -->
+   <script src="{% static 'vendor/axios/axios.min.js' %}"></script> <!-- Axios -->
+   <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>  <!-- Boostrap -->
+   <script src="{% static 'vendor/select2/js/select2.full.min.js' %}"></script> <!-- Select2 -->
    <script type="text/javascript" src="{% static 'src/js/auth/register.js' %}"></script>
 </body>
 

@@ -10,7 +10,7 @@
    <!-- Sidebar -->
    <div class="sidebar">
       {% with request.resolver_match.url_name as url %}
-      <a href="{% url 'user_profile' pk=user.id %}"> 
+      <a href="{% url 'user_profile' pk=user.id %}" id="intro_profile"> 
          <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
             <div class="mx-2">
                <div class="img-circle">{{user.first_name|make_list|first}}{{user.last_name|make_list|first}}</div>
@@ -39,7 +39,7 @@
             data-accordion="false">
 
             {% comment %} <li class="nav-header text-muted">NAVIGATION</li> {% endcomment %}
-            <li class="nav-item">
+            <li class="nav-item" id="intro_dashboard">
                <a href="{% url 'home' %}" class="nav-link {% if url == 'home' %} active {% endif %}">
                   <i class="nav-icon fas fa-rocket"></i>
                   <p> Dashboard</p>
@@ -144,7 +144,7 @@
 
                <!-- // // // // REQUESTS MODULE --> 
                {% if perms.requests.add_ticket or perms.requests.view_ticket %}
-                  <li class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' or  url == 'ticket_log_list' %} menu-open {% endif %}">
+                  <li class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' or  url == 'ticket_log_list' %} menu-open {% endif %}" id="intro_request">
                      <a href="#" class="nav-link {% if url == 'ticket' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' or  url == 'ticket_log_list' %} active {% endif %}">
                         <i class="nav-icon fas fa-pen"></i>
                         <p>
@@ -227,7 +227,7 @@
             {% endif %}
 
             <!-- // // // // USER GUIDE MODULE --> 
-            <li class="nav-item">
+            <li class="nav-item" id="intro_guide">
                <a href="{% static 'user_guide_2_0.pdf' %}"
                   class="nav-link" target="_blank">
                   <i class="nav-icon fas fa-book"></i>

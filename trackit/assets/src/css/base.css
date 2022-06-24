@@ -647,6 +647,51 @@ table.dataTable tbody tr:hover {
    content: "\f424";  
 }
 
-
-
-
+/* Tour JS */
+/* .introjs-tooltip {
+   min-width: 280px !important;
+   max-width: 310px !important;
+} */
+.introjs-tooltip-header {
+   display:flex;
+   align-items: center;
+}
+.introjs-skipbutton {
+   font-size: 10px;
+   padding: 0;
+   margin-left: auto;
+   /* text-decoration: underline !important;
+   color: #fd7e14 !important; */
+}
+.introjs-tooltip-title {
+   font-size: 16px;
+}
+.introjs-tooltiptext {
+   font-size: 12px;
+}
+.introjs-button {
+   padding: 6px 16px;
+   font-size: 12px;
+}
+.introjs-nextbutton,
+.introjs-donebutton {
+   background-color: #FD7E14 !important;
+   border-color: #e77619 !important;
+   color:#fff !important;
+   text-shadow: none;
+}
+.introjs-nextbutton:hover,
+.introjs-donebutton:hover {
+   background-color: #e77619 !important;
+   color:#e3E5ED !important;
+}
+.introjs-nextbutton:active, .introjs-donebutton:active {
+   background-color: #d36c19 !important;
+   /* box-shadow: none, 0 0 0 0 #fd7d145d !important; */
+}
+.introjs-nextbutton:focus, .introjs-donebutton:focus {
+   box-shadow: 0 0 0 0.2rem #fd7d145d !important;
+}
+.introjs-disabled { 
+   display: none !important;
+}

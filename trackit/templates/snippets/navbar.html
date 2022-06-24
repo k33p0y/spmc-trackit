@@ -10,8 +10,11 @@
       <li class="nav-item">
          <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-         <a href="{% url 'home' %}" class="nav-link"><i class="fas fa-home"></i></a>
+      <li class="nav-item">
+         <a href="#" class="nav-link tour-me" id="intro_explore"><i class="far fa-question-circle"></i></a>
+      </li>
+      <li class="nav-item">
+         <a href="{% url 'home' %}" class="nav-link">Home</a>
       </li>
    </ul>
 
@@ -32,7 +35,7 @@
 
    <!-- Right navbar links -->
    <ul class="navbar-nav ml-auto ">
-      <li class="nav-item dropdown">
+      <li class="nav-item dropdown intro-nav-notification" id="intro_notification">
          <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="far fa-bell"></i>
             <span class="badge badge-danger navbar-badge new-notifications-count"></span>
@@ -59,8 +62,7 @@
             <input type="hidden" id="notification-nextpage-url"> <!-- Hidden input for infinite notification scroll -->
          </div>
       </li>
-
-      <li class="nav-item">
+      <li class="nav-item intro-nav-logout" id="intro_logout">
          <a href="{% url 'logout' %}" class="nav-link nav-user" data-user-id="{{request.user.id}}" data-user-fullname="{{request.user.get_full_name}}">
             <span class="d-none d-sm-inline ml-1">Sign out</span> <i class="fas fa-sign-out-alt"></i>
          </a>

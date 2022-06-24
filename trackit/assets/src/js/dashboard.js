@@ -111,4 +111,10 @@ $(document).ready(function () {
             console.log(err)
          })
    });
+
+   // click explore
+   $('.tour-me').click(function() {
+      localStorage.setItem('explore_main', false);
+      exploreTrackit();
+   });
 });
