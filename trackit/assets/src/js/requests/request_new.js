@@ -453,4 +453,10 @@ $(document).ready(function () {
       });
       return form_fields_obj;
    }
+
+   // click explore
+   $('.tour-me').click(function() {
+      localStorage.setItem('explore_main', false);
+      exploreRequestNew();
+   });
 });

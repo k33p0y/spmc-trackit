@@ -212,4 +212,10 @@ $(document).ready(function () {
    $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
       if (e.clickEvent) e.preventDefault();      
    });
+
+   // click explore
+   $('.tour-me').click(function() {
+      localStorage.setItem('explore_main', false);
+      exploreRequestTable();
+   });
 });
