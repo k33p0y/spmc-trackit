@@ -196,5 +196,78 @@ const exploreRequestNew = function() {
     .start()
 }
 
+const exploreRequestView = function() {
+    introJs()
+    .setOptions({
+        disableInteraction: true,
+        exitOnEsc: false, // prevent user to exit tour when pressing Esc button
+        exitOnOverlayClick: false, // prevent user to exit tour when clicking overlay
+        scrollToElement: true,
+        showBullets: true, // steps bullets indicators
+        // showProgress: true,
+        skipLabel: 'Skip',
+        steps: [{
+            title: 'Information',
+            element: '#intro_information',
+            intro: "This panel displays the <b class='text-orange'>specifics of your request</b>. The ticket number, the reference number, the date requested, the status, and so on."
+        },
+        {
+            title: 'Details',
+            element: '#intro_details',
+            intro: "This is an <b class='text-orange'>overview of your request</b> based on the information provided on the request form.",
+            position: 'right',
+        },
+        {
+            title: 'Event',
+            element: '#intro_event',
+            intro: "Select an <b class='text-orange'>event</b> for this current status. This field may not be in another status or step.",
+            position: 'left',
+        },
+        {
+            title: 'Schedule',
+            element: '#intro_schedule',
+            intro: "Select a <b class='text-orange'>schedule</b> from the event you've chosen. The dates in this dropdown may differ depending on the event selected. This field may not be in another status or step.",
+            position: 'left',
+        },
+        {
+            title: 'Remarks',
+            element: '#intro_remarks',
+            intro: "Before performing an action, you may leave a <b class='text-orange'>remark</b> for the current status.",
+            position: 'left',
+        },
+        {
+            title: 'Action',
+            element: '#intro_action',
+            intro: "If the status or step ever needs to be <b class='text-orange'>changed</b>. This is where you go. <br> The orange button advances one step, while the red button reverses. This button may differ from other steps. <i>(i.e., Approve & Disapprove, Pass & Fail, and Proceed)</i>.",
+            position: 'left',
+        },
+        {
+            title: 'Comment',
+            element: '#intro_comment',
+            intro: "You can leave a <b class='text-orange'>comment</b> here if you ever need an update on your request.",
+            position: 'left',
+        },
+        {
+            title: 'Logs',
+            element: '#intro_logs',
+            intro: "If you need to see the <b class='text-orange'>previous actions</b> of your request, this is where you go.",
+            position: 'left',
+        },
+        {
+            title: 'Update',
+            element: '#intro_update',
+            intro: "To <b class='text-orange'>change</b> the details of your request, click this to go to the update page.",
+            position: 'left',
+        }].filter(function (obj) {
+            return document.querySelector(obj.element) !== null;
+        }),
+    })
+    .onexit(function(element) {  
+    })
+    .oncomplete(function(element) {  
+    })
+    .start()
+}
+
 // const intro = JSON.parse(localStorage.getItem('explore_main'));
 // if (intro == false) exploreTrackit()

@@ -63,4 +63,10 @@ $(document).ready(function () {
             $(this).attr("disabled", false) // enable button
         });
     });
+
+    // click explore
+    $('.tour-me').click(function() {
+        // localStorage.setItem('explore_main', false);
+        exploreRequestView();
+    });
 });
