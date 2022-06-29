@@ -413,4 +413,9 @@ $(document).ready(function () {
       removeFieldErrors('current_password');
       removeFieldErrors('new_password');  
    }
+
+   // click explore
+   $('.tour-me').click(function() {
+      exploreProfile();
+   });
 });

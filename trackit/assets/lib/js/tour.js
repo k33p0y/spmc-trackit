@@ -325,5 +325,54 @@ const exploreRequestDetail = function() {
     .start()
 }
 
+const exploreProfile = function() {
+    introJs()
+    .setOptions({
+        // disableInteraction: true,
+        exitOnEsc: false, // prevent user to exit tour when pressing Esc button
+        exitOnOverlayClick: false, // prevent user to exit tour when clicking overlay
+        scrollToElement: true,
+        showBullets: true, // steps bullets indicators
+        // showProgress: true,
+        skipLabel: 'Skip',
+        steps: [{
+            title: 'Change Password',
+            element: '#btn-change-password',
+            intro: "If you need to <b class='text-orange'>change your password</b>, this is where you go.",
+            position: 'right',
+        },
+        {
+            title: 'About',
+            element: '#btn-edit-profile',
+            intro: "Click this to <b class='text-orange'>make changes</b> to your information. Only the email address, phone number, department, and license number can be changed.",
+            position: 'top',
+        },
+        {
+            title: 'Finalize',
+            element: '#btn_update',
+            intro: "To <b class='text-orange'>save your changes</b>, click this button.",
+            position: 'left',
+        },
+        {
+            title: 'Comment',
+            element: '#intro_comment',
+            intro: "You can also leave a <b class='text-orange'>comment</b> here if you ever need an update on your request.",
+            position: 'left',
+        },
+        {
+            title: 'View As',
+            element: '#btn_view',
+            intro: "To view your request in the <b class='text-orange'>view page</b>. You can go here.",
+            position: 'left',
+        }].filter(function (obj) {
+            return document.querySelector(obj.element) !== null;
+        }),
+    })
+    .onexit(function(element) {  
+    })
+    .oncomplete(function(element) {  
+    })
+    .start()
+}
 // const intro = JSON.parse(localStorage.getItem('explore_main'));
 // if (intro == false) exploreTrackit()
