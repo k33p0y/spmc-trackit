@@ -188,4 +188,9 @@ $(document).ready(function () {
       });
       return form_data;
    }
+
+   // click explore
+   $('.tour-me').click(function() {
+      exploreRequestDetail();
+   });
 });

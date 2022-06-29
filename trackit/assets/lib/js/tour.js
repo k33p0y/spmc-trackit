@@ -149,7 +149,7 @@ const exploreRequestNew = function() {
         {
             title: 'Attachments',
             element: document.getElementById('intro_browse'),
-            intro: "Click this option to access <b class='text-orange'>files</b> from your computer if you have supporting documentation for your request. <i>JPG, PDF, DOC, XLS,</i> and other file kinds are accepted; the largest file size allowed is 25 MB.",
+            intro: "Click this option to access <b class='text-orange'>files</b> from your device if you have supporting documentation for your request. <i>JPG, PDF, DOC, XLS,</i> and other file kinds are accepted; the largest file size allowed is 25 MB.",
             position: 'top',
         },
         {
@@ -257,6 +257,62 @@ const exploreRequestView = function() {
             title: 'Update',
             element: '#intro_update',
             intro: "To <b class='text-orange'>change</b> the details of your request, click this to go to the update page.",
+            position: 'left',
+        }].filter(function (obj) {
+            return document.querySelector(obj.element) !== null;
+        }),
+    })
+    .onexit(function(element) {  
+    })
+    .oncomplete(function(element) {  
+    })
+    .start()
+}
+
+const exploreRequestDetail = function() {
+    introJs()
+    .setOptions({
+        disableInteraction: true,
+        exitOnEsc: false, // prevent user to exit tour when pressing Esc button
+        exitOnOverlayClick: false, // prevent user to exit tour when clicking overlay
+        scrollToElement: true,
+        showBullets: true, // steps bullets indicators
+        // showProgress: true,
+        skipLabel: 'Skip',
+        steps: [{
+            title: 'Details',
+            element: '#intro_details1',
+            intro: "These are the only fields that can be <b class='text-orange'>modified</b>. Asterisk-marked (<span class='text-danger'>*</span>) fields must be completed.",
+            position: 'right',
+        },
+        {
+            title: 'Details',
+            element: '#intro_details2',
+            intro: "These are the only fields that can be <b class='text-orange'>modified</b>. Asterisk-marked (<span class='text-danger'>*</span>) fields must be completed.",
+            position: 'right',
+        },
+        {
+            title: 'Attachment',
+            element: '#intro_browse',
+            intro: "Click this option to access <b class='text-orange'>files</b> from your device if you have supporting documentation for your request. <i>JPG, PDF, DOC, XLS,</i> and other file kinds are accepted; the largest file size allowed is 25 MB.",
+            position: 'top',
+        },
+        {
+            title: 'Finalize',
+            element: '#btn_update',
+            intro: "To <b class='text-orange'>save your changes</b>, click this button.",
+            position: 'left',
+        },
+        {
+            title: 'Comment',
+            element: '#intro_comment',
+            intro: "You can also leave a <b class='text-orange'>comment</b> here if you ever need an update on your request.",
+            position: 'left',
+        },
+        {
+            title: 'View As',
+            element: '#btn_view',
+            intro: "To view your request in the <b class='text-orange'>view page</b>. You can go here.",
             position: 'left',
         }].filter(function (obj) {
             return document.querySelector(obj.element) !== null;
