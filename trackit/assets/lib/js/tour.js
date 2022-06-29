@@ -76,27 +76,35 @@ const exploreRequestTable = function() {
         skipLabel: 'Skip',
         steps: [{
             title: 'Filter',
-            element: document.getElementById('intro_filter'),
+            element: '#intro_filter',
             intro: 'You can <b class="text-orange">filter rows</b> by form, category, department, status, and date.'
         },
         {
             title: 'Search',
-            element: document.getElementById('intro_search'),
+            element: '#intro_search',
             intro: 'You can <b class="text-orange">search</b> by ticket number, reference number and description.',
             position: 'right',
         },
         {
             title: 'Sort',
-            element: document.getElementById('intro_tablehead'),
+            element: '#intro_tablehead',
             intro: 'You can <b class="text-orange">sort</b> table by clicking the column header.',
             position: 'right',
         },
         {
+            title: 'List',
+            element: '#intro_tbody',
+            intro: $('#table_gif').html(),
+            position: 'top',
+        },
+        {
             title: 'New',
-            element: document.getElementById('intro_addbutton'),
+            element: '#intro_addbutton',
             intro: 'If you ever want to start <b class="text-orange">creating</b> your requests, This is where you go.',
             position: 'left',
-        }],
+        }].filter(function (obj) {
+            return document.querySelector(obj.element) !== null;
+        }),
     })
     .onexit(function(element) {  
         localStorage.setItem('explore_requesttbl', true);
@@ -166,7 +174,6 @@ const exploreRequestNew = function() {
         }],
     })
     .onbeforechange(function(element) {  
-        console.log(element.id)
         switch (element.id) { 
             case "intro_title": 
                 $('#txt_description').val('An error occured on the system (For demonstration purposes only)');
