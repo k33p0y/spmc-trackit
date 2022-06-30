@@ -1,4 +1,10 @@
 $(document).ready(function () {
+   // get tour value in localstorage
+   // run tour if no item seen
+   if (!localStorage.getItem('explore_request_tbl')) {
+      exploreRequestTable();
+   }
+
    // RETRIEVE / GET
    var searchInput = function() { return $('#search-input').val(); }
    var formFilter = function() { return $('#requestform-filter').val(); }
@@ -215,7 +221,6 @@ $(document).ready(function () {
 
    // click explore
    $('.tour-me').click(function() {
-      localStorage.setItem('explore_main', false);
       exploreRequestTable();
    });
 });

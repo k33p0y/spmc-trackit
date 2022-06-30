@@ -6,7 +6,7 @@ const exploreTrackit = function() {
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: 'Skip',
+        skipLabel: '',
         steps: [{
             title: 'Welcome',
             intro: 'Lets get started. You can now use <b class="text-orange">Track It!</b> Explore our guide or jump right into your dashboard.'
@@ -56,10 +56,10 @@ const exploreTrackit = function() {
         }
     })
     .onexit(function(element) {  
-        localStorage.setItem('explore_main', true);
+        localStorage.setItem('explore_main', 'done');
     })
     .oncomplete(function(element) {  
-        localStorage.setItem('explore_main', true);
+        localStorage.setItem('explore_main', 'done');
     })
     .start()
 }
@@ -73,7 +73,7 @@ const exploreRequestTable = function() {
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: 'Skip',
+        skipLabel: '',
         steps: [{
             title: 'Filter',
             element: '#intro_filter',
@@ -107,10 +107,10 @@ const exploreRequestTable = function() {
         }),
     })
     .onexit(function(element) {  
-        localStorage.setItem('explore_requesttbl', true);
+        localStorage.setItem('explore_request_tbl', 'done');
     })
     .oncomplete(function(element) {  
-        localStorage.setItem('explore_requesttbl', true);
+        localStorage.setItem('explore_request_tbl', 'done');
     })
     .start()
 }
@@ -124,7 +124,7 @@ const exploreRequestNew = function() {
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: 'Skip',
+        skipLabel: '',
         steps: [{
             title: 'Title',
             element: document.getElementById('intro_title'),
@@ -193,11 +193,11 @@ const exploreRequestNew = function() {
         }
     })
     .onexit(function(element) {  
-        localStorage.setItem('explore_requestnew', true);
+        localStorage.setItem('explore_request_new', 'done')
         location.reload();
     })
     .oncomplete(function(element) {  
-        localStorage.setItem('explore_requestnew', true);
+        localStorage.setItem('explore_request_new', 'done')
         location.reload();
     })
     .start()
@@ -212,7 +212,7 @@ const exploreRequestView = function() {
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: 'Skip',
+        skipLabel: '',
         steps: [{
             title: 'Information',
             element: '#intro_information',
@@ -270,8 +270,10 @@ const exploreRequestView = function() {
         }),
     })
     .onexit(function(element) {  
+        localStorage.setItem('explore_request_view', 'done')
     })
     .oncomplete(function(element) {  
+        localStorage.setItem('explore_request_view', 'done')
     })
     .start()
 }
@@ -285,7 +287,7 @@ const exploreRequestDetail = function() {
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: 'Skip',
+        skipLabel: '',
         steps: [{
             title: 'Details',
             element: '#intro_details1',
@@ -326,8 +328,10 @@ const exploreRequestDetail = function() {
         }),
     })
     .onexit(function(element) {  
+        localStorage.setItem('explore_request_detail', 'done')
     })
     .oncomplete(function(element) {  
+        localStorage.setItem('explore_request_detail', 'done')
     })
     .start()
 }
@@ -341,7 +345,7 @@ const exploreProfile = function() {
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: 'Skip',
+        skipLabel: '',
         steps: [{
             title: 'Change Password',
             element: '#btn-change-password',
@@ -375,11 +379,11 @@ const exploreProfile = function() {
             return document.querySelector(obj.element) !== null;
         }),
     })
-    .onexit(function(element) {  
-    })
     .oncomplete(function(element) {  
+        localStorage.setItem('explore_profile', 'done')
+    })
+    .onexit(function(element) { 
+        localStorage.setItem('explore_profile', 'done')
     })
     .start()
 }
-// const intro = JSON.parse(localStorage.getItem('explore_main'));
-// if (intro == false) exploreTrackit()

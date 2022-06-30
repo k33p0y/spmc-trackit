@@ -1,4 +1,9 @@
 $(document).ready(function () {
+   // get tour value in localstorage
+   // run tour if no item seen
+   if (!localStorage.getItem('explore_request_tbl')) {
+      exploreRequestTable();
+   }
 
    var request_form, department, category, category_type;
    var data_obj;
@@ -456,7 +461,6 @@ $(document).ready(function () {
 
    // click explore
    $('.tour-me').click(function() {
-      localStorage.setItem('explore_main', false);
       exploreRequestNew();
    });
 });

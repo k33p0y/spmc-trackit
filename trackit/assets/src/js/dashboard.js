@@ -1,4 +1,10 @@
 $(document).ready(function () {
+   // get tour value in localstorage
+   // run tour if no item seen
+   if (!localStorage.getItem('explore_main')) {
+      exploreTrackit();
+   }
+
    // List Table
    let table = $('#dt_requests').DataTable({
       "searching": false,
@@ -114,7 +120,6 @@ $(document).ready(function () {
 
    // click explore
    $('.tour-me').click(function() {
-      localStorage.setItem('explore_main', false);
       exploreTrackit();
    });
 });

@@ -1,4 +1,10 @@
 $(document).ready(function () {
+   // get tour value in localstorage
+   // run tour if no item seen
+   if (!localStorage.getItem('explore_request_detail')) {
+      exploreRequestDetail();
+   }
+
    $('#select2_categorytype').select2();
    $('#select2_category').select2();
    $('.form-select').select2();

@@ -1,4 +1,10 @@
 $(document).ready(function () {
+    // get tour value in localstorage
+    // run tour if no item seen
+    if (!localStorage.getItem('explore_request_view')) {
+        exploreRequestView();
+    }
+
     // get ticket number in localStorage if available
     if (localStorage.getItem('ticketNumber')){
         localStorage.removeItem('ticketNumber');
@@ -66,7 +72,6 @@ $(document).ready(function () {
 
     // click explore
     $('.tour-me').click(function() {
-        // localStorage.setItem('explore_main', false);
         exploreRequestView();
     });
 });

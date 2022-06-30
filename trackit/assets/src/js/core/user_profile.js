@@ -1,5 +1,4 @@
-$(document).ready(function () {
-
+$(document).ready(function () {   
    var url;
    var file_arr = new Array();
 
@@ -13,6 +12,17 @@ $(document).ready(function () {
       axios.delete(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {headers: axiosConfig})
       localStorage.removeItem('notification-id');
    }
+
+   // get tour value in localstorage
+   // run tour if no item seen
+   if (!localStorage.getItem('explore_profile')) {
+      exploreProfile();
+   }
+
+   // click explore
+   $('.tour-me').click(function() {
+      exploreProfile();
+   });
 
    // datatable
    let table = $('#dt_requests').DataTable({
@@ -414,8 +424,4 @@ $(document).ready(function () {
       removeFieldErrors('new_password');  
    }
 
-   // click explore
-   $('.tour-me').click(function() {
-      exploreProfile();
-   });
 });
