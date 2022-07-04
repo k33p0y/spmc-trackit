@@ -5,8 +5,8 @@ from django.core.paginator import Paginator
 
 from django.db.models import Q
 from easyaudit.models import CRUDEvent
-from .serializers import DepartmentSerializer, CategorySerializer, CategoryGETSerializer, CategoryTypeSerializer, StatusSerializer
-from .models import Department, Category, CategoryType, Status, Remark
+from .serializers import DepartmentSerializer, CategorySerializer, CategoryGETSerializer, CategoryTypeSerializer, StatusSerializer, TourSerializer
+from .models import Department, Category, CategoryType, Status, Remark, Tour
 
 import json
 
@@ -129,3 +129,8 @@ class StatusViewSet(viewsets.ModelViewSet):
       serializer.is_valid(raise_exception=True)
       serializer.save()
       return Response(serializer.data)
+
+class TourViewSet(viewsets.ModelViewSet):    
+   serializer_class = TourSerializer
+   queryset = Tour.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]

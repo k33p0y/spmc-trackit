@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Department, Category, CategoryType, Status
+from .models import Department, Category, CategoryType, Status, Tour
 from core.models import User
 from core.serializers import GroupReadOnlySerializer
 
@@ -120,4 +120,10 @@ class StatusSerializer(serializers.ModelSerializer):
         model = Status
         fields = ['id', 'name', 'is_active', 'forms']
         datatables_always_serialize = ('id',)
+
+class TourSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Status
+        fields = '__all__'
         
