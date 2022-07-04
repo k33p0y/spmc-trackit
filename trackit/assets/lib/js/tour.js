@@ -1,12 +1,13 @@
 const exploreTrackit = function() {
     introJs()
     .setOptions({
+        disableInteraction: true,
         exitOnEsc: false, // prevent user to exit tour when pressing Esc button
         exitOnOverlayClick: false, // prevent user to exit tour when clicking overlay
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: '',
+        skipLabel: 'skip',
         steps: [{
             title: 'Welcome',
             intro: 'Lets get started. You can now use <b class="text-orange">Track It!</b> Explore our guide or jump right into your dashboard.'
@@ -26,7 +27,7 @@ const exploreTrackit = function() {
         {
             title: 'Request',
             element: document.getElementById('intro_request'),
-            intro: 'Create your requests,',
+            intro: 'Create, Manage and Track your  <b class="text-orange">requests</b>.',
             position: 'right',
         },
         {
@@ -73,7 +74,7 @@ const exploreRequestTable = function() {
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: '',
+        skipLabel: 'skip',
         steps: [{
             title: 'Filter',
             element: '#intro_filter',
@@ -124,7 +125,7 @@ const exploreRequestNew = function() {
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: '',
+        skipLabel: 'skip',
         steps: [{
             title: 'Title',
             element: document.getElementById('intro_title'),
@@ -212,7 +213,7 @@ const exploreRequestView = function() {
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: '',
+        skipLabel: 'skip',
         steps: [{
             title: 'Information',
             element: '#intro_information',
@@ -287,7 +288,7 @@ const exploreRequestDetail = function() {
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: '',
+        skipLabel: 'skip',
         steps: [{
             title: 'Details',
             element: '#intro_details1',
@@ -339,13 +340,13 @@ const exploreRequestDetail = function() {
 const exploreProfile = function() {
     introJs()
     .setOptions({
-        // disableInteraction: true,
+        disableInteraction: true,
         exitOnEsc: false, // prevent user to exit tour when pressing Esc button
         exitOnOverlayClick: false, // prevent user to exit tour when clicking overlay
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
         // showProgress: true,
-        skipLabel: '',
+        skipLabel: 'skip',
         steps: [{
             title: 'Change Password',
             element: '#btn-change-password',
