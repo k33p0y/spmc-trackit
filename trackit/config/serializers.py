@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from .models import Department, Category, CategoryType, Status, Tour
 from core.models import User
-from core.serializers import GroupReadOnlySerializer
+from core.serializers import GroupReadOnlySerializer, UserSerializer
 
 # Serializers
 class UserSerializer(serializers.ModelSerializer):
@@ -122,8 +122,14 @@ class StatusSerializer(serializers.ModelSerializer):
         datatables_always_serialize = ('id',)
 
 class TourSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    def create(self, validated_data):
+        tour = Tour(user = self.context['request'].user)
+        tour.save()
+        return tour
     
     class Meta:
-        model = Status
+        model = Tour
         fields = '__all__'
         

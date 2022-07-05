@@ -133,4 +133,10 @@ class StatusViewSet(viewsets.ModelViewSet):
 class TourViewSet(viewsets.ModelViewSet):    
    serializer_class = TourSerializer
    queryset = Tour.objects.all()
-   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   permission_classes = [permissions.IsAuthenticated]
+
+   def get_queryset(self):
+      qs = Tour.objects.filter(user=self.request.user)
+      return qs
+
+      
