@@ -1,9 +1,23 @@
 $(document).ready(function () {
-   // get tour value in localstorage
-   // run tour if no item seen
-   if (!localStorage.getItem('explore_main')) {
-      exploreTrackit();
-   }
+   // Check if user has already done or skip walkthrough
+   axios.get('/api/config/tour/').then(res => { // response
+      const response = res.data.results;
+      let request = new Object();
+      // if has response and is_explore value is false; call walkthrough fn with PUT method and url
+      // if empty response; call walkthrough fn with POST method to create instance  
+      if (response.length > 0 && !response[0].is_explore_main) {
+         request.method = 'PUT';
+         request.url = `/api/config/tour/${response[0].id}/`;
+         exploreTrackit(request);
+      }
+      else if (response.length == 0) {
+         request.method = 'POST';
+         request.url = `/api/config/tour/`;
+         exploreTrackit(request);
+      }
+   }).catch(err => { // error
+      toastError(err.response.statusText) // alert
+   });
 
    // List Table
    let table = $('#dt_requests').DataTable({
@@ -118,8 +132,9 @@ $(document).ready(function () {
          })
    });
 
-   // click explore
+   // walkthrough click event
    $('.tour-me').click(function() {
       exploreTrackit();
    });
+
 });

@@ -125,7 +125,15 @@ class TourSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
 
     def create(self, validated_data):
-        tour = Tour(user = self.context['request'].user)
+        tour = Tour(
+            user = self.context['request'].user,
+            is_explore_main = validated_data['is_explore_main'],
+            is_explore_req_list = validated_data['is_explore_req_list'],
+            is_explore_req_new = validated_data['is_explore_req_new'],
+            is_explore_req_view = validated_data['is_explore_req_view'],
+            is_explore_req_detail = validated_data['is_explore_req_detail'],
+            is_explore_profile = validated_data['is_explore_profile']
+        )
         tour.save()
         return tour
     

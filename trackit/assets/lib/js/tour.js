@@ -1,4 +1,4 @@
-const exploreTrackit = function() {
+const exploreTrackit = function(request) {
     introJs()
     .setOptions({
         disableInteraction: true,
@@ -56,16 +56,13 @@ const exploreTrackit = function() {
                 $('#intro_request').removeClass('menu-open')
         }
     })
-    .onexit(function(element) {  
-        localStorage.setItem('explore_main', 'done');
-    })
-    .oncomplete(function(element) {  
-        localStorage.setItem('explore_main', 'done');
+    .onexit(function(element) {
+        if (request) axiosTour(request, 'main')  
     })
     .start()
 }
 
-const exploreRequestTable = function() {
+const exploreRequestTable = function(request) {
     introJs()
     .setOptions({
         disableInteraction: true,
@@ -108,15 +105,12 @@ const exploreRequestTable = function() {
         }),
     })
     .onexit(function(element) {  
-        localStorage.setItem('explore_request_tbl', 'done');
-    })
-    .oncomplete(function(element) {  
-        localStorage.setItem('explore_request_tbl', 'done');
+        if (request) axiosTour(request, 'request_list')
     })
     .start()
 }
 
-const exploreRequestNew = function() {
+const exploreRequestNew = function(request) {
     introJs()
     .setOptions({
         disableInteraction: true,
@@ -194,17 +188,13 @@ const exploreRequestNew = function() {
         }
     })
     .onexit(function(element) {  
-        localStorage.setItem('explore_request_new', 'done')
-        location.reload();
-    })
-    .oncomplete(function(element) {  
-        localStorage.setItem('explore_request_new', 'done')
+        if (request) axiosTour(request, 'request_new')
         location.reload();
     })
     .start()
 }
 
-const exploreRequestView = function() {
+const exploreRequestView = function(request) {
     introJs()
     .setOptions({
         disableInteraction: true,
@@ -271,15 +261,12 @@ const exploreRequestView = function() {
         }),
     })
     .onexit(function(element) {  
-        localStorage.setItem('explore_request_view', 'done')
-    })
-    .oncomplete(function(element) {  
-        localStorage.setItem('explore_request_view', 'done')
+        if (request) axiosTour(request, 'request_view')
     })
     .start()
 }
 
-const exploreRequestDetail = function() {
+const exploreRequestDetail = function(request) {
     introJs()
     .setOptions({
         disableInteraction: true,
@@ -329,19 +316,16 @@ const exploreRequestDetail = function() {
         }),
     })
     .onexit(function(element) {  
-        localStorage.setItem('explore_request_detail', 'done')
-    })
-    .oncomplete(function(element) {  
-        localStorage.setItem('explore_request_detail', 'done')
+        if (request) axiosTour(request, 'request_detail')
     })
     .start()
 }
 
-const exploreProfile = function() {
+const exploreProfile = function(request) {
     introJs()
     .setOptions({
         disableInteraction: true,
-        exitOnEsc: false, // prevent user to exit tour when pressing Esc button
+        exitOnEsc:  false, // prevent user to exit tour when pressing Esc button
         exitOnOverlayClick: false, // prevent user to exit tour when clicking overlay
         scrollToElement: true,
         showBullets: true, // steps bullets indicators
@@ -380,11 +364,39 @@ const exploreProfile = function() {
             return document.querySelector(obj.element) !== null;
         }),
     })
-    .oncomplete(function(element) {  
-        localStorage.setItem('explore_profile', 'done')
-    })
-    .onexit(function(element) { 
-        localStorage.setItem('explore_profile', 'done')
+    .onexit(function() {
+        if (request) axiosTour(request, 'profile')
     })
     .start()
+}
+
+const axiosTour = function(request, tour) {
+    // set data values;
+    let data = new Object()
+    switch (request.method) {
+        case "POST":
+            data.is_explore_main = (tour == 'main') ? true : false;
+            data.is_explore_req_list = (tour == 'request_list') ? true : false;
+            data.is_explore_req_new = (tour == 'request_new') ? true : false;
+            data.is_explore_req_view = (tour == 'request_view') ? true : false;
+            data.is_explore_req_detail = (tour == 'request_detail') ? true : false;
+            data.is_explore_profile = (tour == 'profile') ? true : false;
+        break;
+        case "PUT":
+            if (tour == 'main') data.is_explore_main = true;
+            if (tour == 'request_list') data.is_explore_req_list = true;
+            if (tour == 'request_new') data.is_explore_req_new = true;
+            if (tour == 'request_view') data.is_explore_req_view = true;
+            if (tour == 'request_detail') data.is_explore_req_detail = true;
+            if (tour == 'profile') data.is_explore_profile = true;
+        break;
+    }
+    axios({
+        method: request.method,
+        url: request.url,
+        data: data,
+        headers: axiosConfig,
+    }).catch(err => { // error
+        toastError(err.response.statusText) // alert
+    });      
 }

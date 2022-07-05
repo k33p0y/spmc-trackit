@@ -1,9 +1,23 @@
 $(document).ready(function () {
-   // get tour value in localstorage
-   // run tour if no item seen
-   if (!localStorage.getItem('explore_request_tbl')) {
-      exploreRequestTable();
-   }
+   // Check if user has already done or skip walkthrough
+   axios.get('/api/config/tour/').then(res => { // response
+      const response = res.data.results;
+      let request = new Object();
+      // if has response and is_explore value is false; call walkthrough fn with PUT method and url
+      // if empty response; call walkthrough fn with POST method to create instance  
+      if (response.length > 0 && !response[0].is_explore_req_new) {
+         request.method = 'PUT';
+         request.url = `/api/config/tour/${response[0].id}/`;
+         exploreRequestNew(request);
+      }
+      else if (response.length == 0) {
+         request.method = 'POST';
+         request.url = `/api/config/tour/`;
+         exploreRequestNew(request);
+      }
+   }).catch(err => { // error
+      toastError(err.response.statusText) // alert
+   });
 
    var request_form, department, category, category_type;
    var data_obj;
@@ -459,7 +473,7 @@ $(document).ready(function () {
       return form_fields_obj;
    }
 
-   // click explore
+   // walkthrough click event
    $('.tour-me').click(function() {
       exploreRequestNew();
    });
