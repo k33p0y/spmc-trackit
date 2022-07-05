@@ -52,7 +52,7 @@ class Remark(models.Model):
 
 class Tour(models.Model):
     user = models.ForeignKey(User, related_name='tourist', on_delete=models.CASCADE)
-    is_explore_main = models.BooleanField(default=True)
+    is_explore_main = models.BooleanField(default=False)
     is_explore_req_list = models.BooleanField(default=False)
     is_explore_req_new = models.BooleanField(default=False)
     is_explore_req_view = models.BooleanField(default=False)
