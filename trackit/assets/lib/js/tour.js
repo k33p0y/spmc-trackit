@@ -14,38 +14,40 @@ const exploreTrackit = function(request) {
         },
         {
             title: 'Profile',
-            element: document.getElementById('intro_profile'),
+            element: '#intro_profile',
             intro: 'This is where your <b class="text-orange">information</b> is present. Your name, email, department and so on.',
             position: 'right',
         },
         {
             title: 'Dashboard',
-            element: document.getElementById('intro_dashboard'),
+            element: '#intro_dashboard',
             intro: 'A visual representation of all of your data <b class="text-orange">at-a-glance</b>. Keeps you informed of the most recent reports and news.',
             position: 'right',
         },
         {
             title: 'Request',
-            element: document.getElementById('intro_request'),
+            element: '#intro_request',
             intro: 'Create, Manage and Track your  <b class="text-orange">requests</b>.',
             position: 'right',
         },
         {
             title: 'User Guide',
-            element: document.getElementById('intro_guide'),
+            element: '#intro_guide',
             intro: 'This is where to go for a <b class="text-orange">guide</b>. Clicking this will direct you to a PDF viewer.',
             position: 'right',
         },
         {
             title: 'Notification',
-            element: document.getElementById('intro_notification'),
+            element: '#intro_notification',
             intro: 'Alerts you with information by a badge. <b class="text-orange">Notify</b> you with requests status and other updates.',
         },
         {
             title: 'Explore',
-            element: document.getElementById('intro_explore'),
+            element: '#intro_explore',
             intro: 'If you ever need <b class="text-orange">help</b>, this is where you go for tutorials and walkthrough.',
-        }],
+        }].filter(function (obj) {
+            return document.querySelector(obj.element) !== null || obj.title === 'Welcome';
+        }),
     })
     .onbeforechange(function(element) {  
         switch (element.id) { 
