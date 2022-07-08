@@ -11,11 +11,11 @@
          <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item">
-         <a href="#" class="nav-link tour-me" id="intro_explore"><i class="far fa-question-circle"></i></a>
+         <a href="#" class="nav-link tour-me" id="intro_explore"><i class="far fa-question-circle d-sm-none"></i> <span class="d-none d-sm-inline">Help<span></a>
       </li>
-      <li class="nav-item">
+      {% comment %} <li class="nav-item">
          <a href="{% url 'home' %}" class="nav-link">Home</a>
-      </li>
+      </li> {% endcomment %}
    </ul>
 
    {% block comment %}
