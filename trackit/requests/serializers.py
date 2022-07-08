@@ -348,6 +348,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
    class Meta:
       model = Attachment
       fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'description', 'ticket', 'uploaded_at', 'uploaded_by']
+      datatables_always_serialize = ('id', 'file_type', 'file', 'file_size', 'ticket')
 
 # serializer choice field
 class ChoiceField(serializers.ChoiceField):
