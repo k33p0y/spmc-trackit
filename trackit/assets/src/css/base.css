@@ -538,6 +538,7 @@ table.dataTable tbody tr:hover {
 /* width */
 ::-webkit-scrollbar {
    width: 10px;
+   height: 10px;
  }
  
  /* Track */
@@ -550,7 +551,6 @@ table.dataTable tbody tr:hover {
    background: #b7b9bd;
    border-radius: 10px;
    margin:0 2px;
-
  }
  
  /* Handle on hover */

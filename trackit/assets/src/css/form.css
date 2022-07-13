@@ -52,6 +52,23 @@
    color: #5f6b77;
 }
 
+.status-body { 
+   width: auto !important;
+   overflow-x: scroll;
+}
+.select2-officer-wrap .select2-container--default .select2-selection__rendered {
+   height: 31px !important;
+   overflow-y: auto !important;
+} 
+.select2-officer-wrap .select2-container--default .select2-selection__rendered::-webkit-scrollbar-track {
+   margin-top: 1px;
+   background-color: transparent;
+}
+.select2-officer-wrap .select2-container--default .select2-selection__rendered::-webkit-scrollbar-thumb {
+   border-radius: .25rem;
+   background-clip: padding-box;
+}
+
 .has-error .select2-selection {
    border-color: #dc3546a2 !important;
 }

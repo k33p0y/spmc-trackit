@@ -13,13 +13,6 @@ $(document).ready(function () {
    });
 
    // Status Select2 Config
-   $('.select2_status').select2({
-      allowClear: true,
-      placeholder: 'Select status',
-      // cache: true,
-   });
-
-   // Status Select2 Config
    $('#select2_types').select2({
       allowClear: true,
       placeholder: 'Select category type',
@@ -43,7 +36,6 @@ $(document).ready(function () {
       $(this).parents("div.form-row").remove()
    });
 
-   
    //Modal Cancel
    $('#btn_cancel').click(function () {
       resetForm()
@@ -89,7 +81,6 @@ $(document).ready(function () {
    $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
       if (e.clickEvent) e.preventDefault();      
    });
-   
 
    // RETRIEVE / GET
    // List Table
@@ -169,11 +160,6 @@ $(document).ready(function () {
       "order": [[ 3, "desc" ]],
    });
 
-   $('#btn_add').click(function () {
-      let counter = $('.form-wrapper .form-row').length + 1;
-      addStatusRow(counter);
-   });
-
    // CREATE / POST
    $('#btn-create-form').on('click', function () {
       // Assign AJAX Action Type and URL
@@ -228,10 +214,22 @@ $(document).ready(function () {
       $('#select2_types').val(types).trigger('change');
       $('#txt_json').val(JSON.stringify(dt_data['fields']));
       $('#chk_status').prop("checked", dt_data['is_active']);
-      setStatusOrder(dt_data['status'])
+      setStatusRowValues(dt_data['status'])
 
       // Format Textarea value to JSON
       prettyPrint();
+   });
+   
+   // Add row   
+   $('#btn_add').click(function () {
+      let counter = $('.form-wrapper .form-row').length + 1;
+      addStatusRow(counter);
+   });
+
+   // select2 officer on change count selected
+   $('.form-wrapper').on('change', '.select2_officer', function () {
+      const badgeEl = $(this).next().next();
+      badgeEl.html($(this).val().length);
    });
 
    // Submit Form
@@ -303,6 +301,13 @@ $(document).ready(function () {
          placeholder: 'Select status',
          // cache: true,
       });
+
+      // Select2 Config
+      $('.select2_officer').select2({
+         allowClear: true,
+         placeholder: 'Select officer',
+         // cache: true,
+      });
    };
 
    var getStatusRowValues = function() {
@@ -310,8 +315,9 @@ $(document).ready(function () {
       const form_row = $(".form-wrapper div.form-row");
    
       form_row.each(function () {
-         const status = $(this).find('div.form-group select');
+         const status = $(this).find('div.select2-select-wrap select');
          const order = $(this).find('div.form-group input.txt_order');
+         const officer = $(this).find('div.select2-officer-wrap select');
          const is_client = $(this).find('div.form-group input.client-box');
          const is_head = $(this).find('div.form-group input.head-box');
          const has_approving = $(this).find('div.form-group input.approving-box');
@@ -322,6 +328,7 @@ $(document).ready(function () {
             arr.push({
                'status': status.val(),
                'order': order.val(),
+               'officer' : officer.val(),
                'is_client' : (is_client.is(":checked")) ? true : false,
                'is_head' : (is_head.is(":checked")) ? true : false,
                'has_approving' : (has_approving.is(":checked")) ? true : false,
@@ -333,17 +340,15 @@ $(document).ready(function () {
       return arr
    };
 
-   var setStatusOrder = function(status) {
-      let counter = 1;
+   var setStatusRowValues = function(status) {
       status.forEach(stat => {
-         $(`#status_${counter}`).val(stat.id).trigger('change');
-         $(`#order_${counter}`).val(stat.order);
-         $(`#chk_is_client_${counter}`).prop("checked", stat.is_client_step);
-         $(`#chk_is_head_${counter}`).prop("checked", stat.is_head_step);
-         $(`#chk_has_approving_${counter}`).prop("checked", stat.has_approving);
-         $(`#chk_has_pass_fail_${counter}`).prop("checked", stat.has_pass_fail);
-         $(`#chk_has_event_${counter}`).prop("checked", stat.has_event);
-         counter++;
+         $(`#status_${stat.id}`).val(stat.id).trigger('change');
+         $(`#order_${stat.id}`).val(stat.order);
+         $(`#chk_is_client_${stat.id}`).prop("checked", stat.is_client_step);
+         $(`#chk_is_head_${stat.id}`).prop("checked", stat.is_head_step);
+         $(`#chk_has_approving_${stat.id}`).prop("checked", stat.has_approving);
+         $(`#chk_has_pass_fail_${stat.id}`).prop("checked", stat.has_pass_fail);
+         $(`#chk_has_event_${stat.id}`).prop("checked", stat.has_event);
       });
    };
 
@@ -377,21 +382,20 @@ $(document).ready(function () {
       }
       
       form_row.each(function () {
-         const status = $(this).find('div.form-group select');
+         const status = $(this).find('div.select2-select-wrap');
          const order = $(this).find('div.form-group input');
    
          if (status.val() != '' && order.val() != '') {
-            $(this).find('div.form-group').removeClass('has-error');;
+            $(this).find('div.select2-select-wrap').removeClass('has-error');;
             $(this).find('.txt_order').removeClass('form-error');
-            $(this).find('div.form-group').find('.status-error').html('');
+            $(this).find('div.select2-select-wrap').find('.status-error').html('');
          } else {
-            $(this).find('div.form-group').addClass('has-error');
+            $(this).find('div.select2-select-wrap').addClass('has-error');
             $(this).find('.txt_order').addClass('form-error');
-            $(this).find('div.form-group').find('.status-error').html('*This field row may not be blank.');
+            $(this).find('div.select2-select-wrap').find('.status-error').html('*This field row may not be blank.');
             success = false;
          }
       });
-   
       return success;
    };
 

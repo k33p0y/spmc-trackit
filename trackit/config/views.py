@@ -44,7 +44,8 @@ def forms(request):
    statuses = Status.objects.filter(is_active=True).order_by('name')
    types = CategoryType.objects.filter(is_active=True).order_by('name')
    groups = Group.objects.all().order_by('name')
-   context = {'statuses': statuses, 'types':types, 'groups': groups}
+   users = User.objects.filter(is_active=True).order_by('first_name')
+   context = {'statuses': statuses, 'types':types, 'groups': groups, 'users' : users}
    return render(request, 'pages/config/forms.html', context)
 
 @login_required
