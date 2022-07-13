@@ -315,7 +315,7 @@ $(document).ready(function () {
       const form_row = $(".form-wrapper div.form-row");
    
       form_row.each(function () {
-         const status = $(this).find('div.select2-select-wrap select');
+         const status = $(this).find('div.select2-status-wrap select');
          const order = $(this).find('div.form-group input.txt_order');
          const officer = $(this).find('div.select2-officer-wrap select');
          const is_client = $(this).find('div.form-group input.client-box');
@@ -344,6 +344,7 @@ $(document).ready(function () {
       status.forEach(stat => {
          $(`#status_${stat.id}`).val(stat.id).trigger('change');
          $(`#order_${stat.id}`).val(stat.order);
+         $(`#officer_${stat.id}`).val(stat.officer).trigger('change');
          $(`#chk_is_client_${stat.id}`).prop("checked", stat.is_client_step);
          $(`#chk_is_head_${stat.id}`).prop("checked", stat.is_head_step);
          $(`#chk_has_approving_${stat.id}`).prop("checked", stat.has_approving);
@@ -382,17 +383,17 @@ $(document).ready(function () {
       }
       
       form_row.each(function () {
-         const status = $(this).find('div.select2-select-wrap');
+         const status = $(this).find('div.select2-status-wrap select');
          const order = $(this).find('div.form-group input');
    
          if (status.val() != '' && order.val() != '') {
-            $(this).find('div.select2-select-wrap').removeClass('has-error');;
+            $(this).find('div.select2-status-wrap').removeClass('has-error');;
             $(this).find('.txt_order').removeClass('form-error');
-            $(this).find('div.select2-select-wrap').find('.status-error').html('');
+            $(this).find('div.select2-status-wrap').find('.status-error').html('');
          } else {
-            $(this).find('div.select2-select-wrap').addClass('has-error');
+            $(this).find('div.select2-status-wrap').addClass('has-error');
             $(this).find('.txt_order').addClass('form-error');
-            $(this).find('div.select2-select-wrap').find('.status-error').html('*This field row may not be blank.');
+            $(this).find('div.select2-status-wrap').find('.status-error').html('*This field row may not be blank.');
             success = false;
          }
       });
@@ -434,6 +435,7 @@ $(document).ready(function () {
       
       $(".select2_status").val([]).trigger('change');
       $(".txt_order").val('');
+      $(".select2_officer").val([]).trigger('change');
       $('.client-box').prop("checked", false);
       $('.head-box').prop("checked", false);
       $('.approving-box').prop("checked", false);

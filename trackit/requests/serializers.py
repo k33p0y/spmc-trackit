@@ -21,7 +21,7 @@ class RequestFormStatusSerializer(serializers.ModelSerializer):
 
    class Meta: 
       model = RequestFormStatus
-      fields = ('id', 'name', 'order', 'is_client_step', 'is_head_step', 'has_approving', 'has_pass_fail', 'has_event')
+      fields = ('id', 'name', 'order', 'is_client_step', 'is_head_step', 'has_approving', 'has_pass_fail', 'has_event', 'officer')
 
 class RequestFormListSerializer(serializers.ModelSerializer):
    status = RequestFormStatusSerializer(source="requestformstatus_set", many=True, read_only=True)
@@ -45,13 +45,12 @@ class RequestFormCRUDSerializer(serializers.ModelSerializer):
          fields = validated_data['fields'],
          is_active = validated_data['is_active']
       )
-      request_form.save()
       request_form.group.add(*validated_data['group'])
       request_form.category_types.add(*validated_data['category_types'])
 
       # create status
       for status in self.context['request'].data['status']:
-         RequestFormStatus.objects.create(
+         form_status = RequestFormStatus.objects.create(
             status_id = status['status'], 
             order = status['order'], 
             is_client_step = status['is_client'],
@@ -61,6 +60,7 @@ class RequestFormCRUDSerializer(serializers.ModelSerializer):
             has_event = status['has_event'],
             form = request_form
          )
+         form_status.officer.add(*status['officer'])
 
       return request_form
 
@@ -83,7 +83,7 @@ class RequestFormCRUDSerializer(serializers.ModelSerializer):
       # update status
       RequestFormStatus.objects.filter(form=instance).delete()
       for status in self.context['request'].data['status']:
-         RequestFormStatus.objects.create(
+         form_status = RequestFormStatus.objects.create(
             status_id = status['status'], 
             order = status['order'], 
             is_client_step = status['is_client'],
@@ -93,6 +93,7 @@ class RequestFormCRUDSerializer(serializers.ModelSerializer):
             has_event = status['has_event'],
             form = instance
          )
+         form_status.officer.add(*status['officer'])
    
       return instance
 
