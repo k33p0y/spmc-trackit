@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'core',
     'config',
     'events',
-    'requests'
+    'requests',
+    'tasks',
 ]
 
 MIDDLEWARE = [
@@ -184,7 +185,9 @@ DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = [ # list of models that Easy Audi
     # requests app
     'requests.requestform', 'requests.requestformstatus', 'requests.notification', 'requests.attachment',
     # events app
-    'events.event', 'events.eventdate', 'events.eventticket'
+    'events.event', 'events.eventdate', 'events.eventticket',
+    # tasks app
+    'tasks.task', 'tasks.member',
 ]
 
 # Django Channels
