@@ -45,8 +45,19 @@
                   <p> Dashboard</p>
                </a>
             </li>
+
+            <!-- // // // // USER GUIDE MODULE --> 
+            <li class="nav-item" id="intro_guide">
+               <a href="{% static 'user_guide_2_0.pdf' %}"
+                  class="nav-link" target="_blank">
+                  <i class="nav-icon fas fa-book"></i>
+                  <p> User Guide</p>
+               </a>
+            </li>
+
             
             {% if user.is_verified %}
+               <li class="nav-header">menu</li>
                <!-- // // // // USERS AND GROUPS MODULE --> 
                {% if request.user.is_superuser or request.user.is_staff %}
                   {% if perms.auth.view_group or perms.core.view_user %}
@@ -142,8 +153,92 @@
                   {% endif %}
                {% endif %}
 
+               <!-- // // // // EVENTS MODULE --> 
+               {% if request.user.is_superuser or request.user.is_staff %}
+                  {% if perms.events.view_event %}
+                  <li class="nav-item {% if url == 'event' or  url == 'create_event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} menu-open {% endif %}">
+                     <a href="#" class="nav-link {% if url == 'event' or  url == 'create_event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
+                        <i class="nav-icon fas fa-calendar-alt"></i>
+                        <p>
+                           Events
+                           <i class="right fas fa-angle-left"></i>
+                        </p>
+                     </a>
+                     <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                           <a href="{% url 'event_calendar' %}"
+                              class="nav-link {% if url == 'event_calendar'  %} active {% endif %}">
+                              <i class="nav-icon far fa-circle"></i>
+                              <p>Calendar</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="{% url 'event' %}"
+                              class="nav-link {% if url == 'event' or  url == 'create_event' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
+                              <i class="nav-icon far fa-circle"></i>
+                              <p>Manage</p>
+                           </a>
+                        </li>
+                     </ul>
+                  </li>
+                  {% endif %}
+               {% endif %}
+
+               <!-- // // // // ANNOUNCEMENT MODULE --> 
+               {% if request.user.is_superuser or request.user.is_staff %}
+                  {% if perms.announcement.view_article %}
+                  <li class="nav-item">
+                     <a href="{% url 'announcement' %}" class="nav-link {% if url == 'announcement' or  url == 'create_article' or  url == 'view_article' or  url == 'change_article' %} active {% endif %}">
+                        <i class="nav-icon fas fa-bullhorn"></i>
+                        <p> Announcement</p>
+                     </a>
+                  </li>
+                  {% endif %}
+               {% endif %}
+
+               <!-- // // // // TASKS MODULE --> 
+               {% if request.user.is_superuser or request.user.is_staff %}
+                  {% if perms.announcement.view_article %}
+                  <li class="nav-item">
+                     <a href="{% url 'mytasks' %}" class="nav-link {% if url == 'mytasks' %} active {% endif %}">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p> My Tasks</p>
+                     </a>
+                  </li>
+                  {% endif %}
+               {% endif %}
+            
                <!-- // // // // REQUESTS MODULE --> 
                {% if perms.requests.add_ticket or perms.requests.view_ticket %}
+                  <li class="nav-header">Request</li>
+                  {% if perms.requests.view_ticket %}
+                  <li class="nav-item">
+                     <a href="{% url 'ticket' %}"
+                        class="nav-link {% if url == 'ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
+                        <i class="nav-icon fas fa-list"></i>
+                        <p>All Requests</p>
+                     </a>
+                  </li>
+                  {% endif %}
+                  <li class="nav-item">
+                     <a href="{% url 'ticket_log_list' %}"
+                        class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}">
+                        <i class="nav-icon fas fa-paper-plane"></i>
+                        <p>Track</p>
+                     </a>
+                  </li>
+                  {% if perms.requests.add_ticket %}
+                  <a href="{% url 'create_ticket' %}"
+                     class="nav-link nav-link-add{% if url == 'create_ticket' %} active {% endif %}">
+                     <i class="nav-icon fas fa-plus mr-1"></i>
+                     <p>Create a Request</p>
+                  </a>
+                  {% endif %}
+                  </li>
+               {% endif %}
+
+               {% comment %} {% if perms.requests.add_ticket or perms.requests.view_ticket %}
+                  <li class="nav-header">Request</li>
                   <li class="nav-item {% if url == 'ticket' or  url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' or  url == 'ticket_log_list' %} menu-open {% endif %}" id="intro_request">
                      <a href="#" class="nav-link {% if url == 'ticket' or url == 'create_ticket' or url == 'detail_ticket' or url == 'view_ticket' or  url == 'ticket_log_list' %} active {% endif %}">
                         <i class="nav-icon fas fa-pen"></i>
@@ -180,60 +275,8 @@
                         </li>
                      </ul>
                   </li>
-               {% endif %}
+               {% endif %} {% endcomment %}
             {% endif %}
-
-            <!-- // // // // EVENTS MODULE --> 
-            {% if request.user.is_superuser or request.user.is_staff %}
-               {% if perms.events.view_event %}
-               <li class="nav-item {% if url == 'event' or  url == 'create_event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} menu-open {% endif %}">
-                  <a href="#" class="nav-link {% if url == 'event' or  url == 'create_event' or url == 'event_calendar' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
-                     <i class="nav-icon fas fa-calendar-alt"></i>
-                     <p>
-                        Events
-                        <i class="right fas fa-angle-left"></i>
-                     </p>
-                  </a>
-                  <ul class="nav nav-treeview">
-                     <li class="nav-item">
-                        <a href="{% url 'event_calendar' %}"
-                           class="nav-link {% if url == 'event_calendar'  %} active {% endif %}">
-                           <i class="nav-icon far fa-circle"></i>
-                           <p>Calendar</p>
-                        </a>
-                     </li>
-                     <li class="nav-item">
-                        <a href="{% url 'event' %}"
-                           class="nav-link {% if url == 'event' or  url == 'create_event' or url == 'view_event' or url == 'change_event' %} active {% endif %}">
-                           <i class="nav-icon far fa-circle"></i>
-                           <p>Manage</p>
-                        </a>
-                     </li>
-                  </ul>
-               </li>
-               {% endif %}
-            {% endif %}
-
-            <!-- // // // // ANNOUNCEMENT MODULE --> 
-            {% if request.user.is_superuser or request.user.is_staff %}
-               {% if perms.announcement.view_article %}
-               <li class="nav-item">
-                  <a href="{% url 'announcement' %}" class="nav-link {% if url == 'announcement' or  url == 'create_article' or  url == 'view_article' or  url == 'change_article' %} active {% endif %}">
-                     <i class="nav-icon fas fa-bullhorn"></i>
-                     <p> Announcement</p>
-                  </a>
-               </li>
-               {% endif %}
-            {% endif %}
-
-            <!-- // // // // USER GUIDE MODULE --> 
-            <li class="nav-item" id="intro_guide">
-               <a href="{% static 'user_guide_2_0.pdf' %}"
-                  class="nav-link" target="_blank">
-                  <i class="nav-icon fas fa-book"></i>
-                  <p> User Guide</p>
-               </a>
-            </li>
          </ul>
       </nav>
       {% endwith %}
