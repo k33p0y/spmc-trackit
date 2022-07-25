@@ -1,0 +1,101 @@
+.container-fluid {
+    color: #59626b;
+    font-size: 12px;
+ }
+ 
+ .card-form .card-header {
+    background-color: #e3E5ED 
+ }
+ 
+ .card-form .card-header .card-title,
+ .card-form .card-header .card-toggle-icon {
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #717c87;
+ }
+ 
+ .card-form .card-body .form-group>label {
+    color: #59626b !important;
+    font-weight:bold !important;
+    font-size: 10px !important;
+ }
+ 
+ .card-form .card-body >p.preface {
+     color: #5f6b77 !important;
+     font-weight:bold !important;
+ }
+ 
+ /* Overlay */
+ .overlay {
+    position:absolute;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: #343a4023;
+ }
+  
+ .state-icon {
+    font-size: 2em;
+    color: #d8dbe4;
+ }
+ .state-text {
+    color: #a5a7aa;
+    font-style: italic;
+ }
+ 
+/* .list-flush-dashed .list-group-item:hover {
+    background-color: #fff9f747;
+} */
+.list-wrapper {
+    max-height: 60em;
+    overflow-y: auto;
+}
+.list-header {
+    border-bottom: 1px solid #f4f4f4
+}
+.list-header div {
+    font-size:10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: none;
+    color : #717c87 ;
+    white-space:nowrap;
+}
+.list-flush-dashed .list-group-item .dropdown-ellipsis {
+    padding: 4px 7px;
+    border-radius: 50%;
+}
+.list-flush-dashed .list-group-item .dropdown-ellipsis:hover,
+.list-flush-dashed .list-group-item .dropdown-ellipsis:active {
+    background-color: #f4f4f4;
+}
+.dropdown-ellipsis .dropdown-menu .dropdown-item {
+    font-size: 12px;
+}
+.dropdown-ellipsis .dropdown-menu .dropdown-item:active {
+    background-color: #FD7E14;
+}
+
+.member-profile {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    background-color: #ffe5d0;
+    font-size: 11px;
+    font-weight: bold;
+    color: #997867;
+    text-transform: uppercase;
+    cursor: default;
+}
+.member-overlap-item {
+    margin-right: -10px;
+    border: 2px solid #fff;
+}
+

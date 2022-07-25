@@ -160,6 +160,10 @@ h1, h2,  h3, h4, h5, h6, small  {
    background-color: #FD7E14;
    color: #fff;
 }
+.badge-orange-pastel {
+   background-color: #ffe9d7;
+   color: #FD7E14;
+}
 
 .line-clamp {
    display: -webkit-box !important;
@@ -714,4 +718,10 @@ table.dataTable tbody tr:hover {
 }
 .introjs-disabled { 
    display: none !important;
+}
+
+.list-flush-dashed .list-group-item {
+   border-style: dashed;
+   border-color: #eee !important;
+   color: #59626b;
 }
