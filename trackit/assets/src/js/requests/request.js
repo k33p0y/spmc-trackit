@@ -71,14 +71,12 @@ $(document).ready(function () {
             data: "request_form",
             render: function (data, type, row) {
                if (type == 'display') {
-                  data = `<span class="td-badge text-light" style="background-color:${row.request_form.color}">
-                     <span class="d-inline d-md-none">${row.request_form.prefix} </span>
-                     <span class="d-none d-md-inline">${row.request_form.name}</span>   
+                  data = `<span class="td-badge text-light" style="background-color:${row.request_form.color}" data-toggle="tooltip" title="${row.request_form.name}">${row.request_form.prefix}
                   </span>`
                }
                return data
             },
-            width: "20%"
+            // width: "10%"
          }, // Request Type
          { 
             data: "description",
@@ -95,7 +93,7 @@ $(document).ready(function () {
                }
                return data
             },
-            width: "20%"
+            width: "15%"
             
          }, // Category
          { 
@@ -108,14 +106,24 @@ $(document).ready(function () {
             }         
          }, // Reference No
          {
-            data: "department",
+            data: "requested_by",
             render: function (data, type, row) {
                if (type == 'display') {
-                  data = row.department.name
+                  data = `<p class="title m-0">${row.requested_by.first_name} ${row.requested_by.last_name}</p>
+                     <span class="sub-title">${row.department.name}</span>`
                }
                return data
-            }
-         }, // Department
+            },
+         }, // User 
+         // {
+         //    data: "department",
+         //    render: function (data, type, row) {
+         //       if (type == 'display') {
+         //          data = row.department.name
+         //       }
+         //       return data
+         //    }
+         // }, // Department
          {
             data: 'date_created',
             render: function (data, type, row) {
@@ -128,15 +136,6 @@ $(document).ready(function () {
                return data
             },
          }, // Date Create
-         {
-            data: "requested_by",
-            render: function (data, type, row) {
-               if (type == 'display') {
-                  data = `${row.requested_by.first_name} ${row.requested_by.last_name}`
-               }
-               return data
-            },
-         }, // User 
          {
             data: "status",
             render: function (data, type, row) {
@@ -152,7 +151,7 @@ $(document).ready(function () {
                return data
             },
             width: "10%"
-         }, // Status 
+         }, // Status
          {
             data: "is_active",
             render: function (data, type, row) {

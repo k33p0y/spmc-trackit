@@ -322,9 +322,9 @@ table.dataTable td  > a > div > div > span.sub-title {
 
 table.dataTable td span.td-badge {
    width: auto !important;
-   padding: 4px 10px !important;
+   padding: 4px 6px !important;
    border-radius: 5px;
-   font-size: 11px;
+   font-size: 10px;
 }
 
 table.dataTable tbody tr:hover {
@@ -724,4 +724,42 @@ table.dataTable tbody tr:hover {
    border-style: dashed;
    border-color: #eee !important;
    color: #59626b;
+}
+
+/* Bootstrap tooltip */
+.tooltip .tooltip-inner { 
+   background-color: #343a40 !important;
+   font-size: 12px;
+}
+.tooltip.bs-tooltip-right .arrow::before {
+   border-right-color: #343a40 !important;
+}
+.tooltip.bs-tooltip-left .arrow::before {
+   border-left-color: #343a40 !important;
+}
+.tooltip.bs-tooltip-bottom .arrow::before {
+   border-bottom-color: #343a40 !important;
+}
+.tooltip.bs-tooltip-top .arrow::before {
+   border-top-color: #343a40 !important;
+}
+
+.member-profile {
+   width: 32px;
+   height: 32px;
+   border-radius: 50%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   vertical-align: middle;
+   background-color: #ffe5d0;
+   font-size: 11px;
+   font-weight: bold;
+   color: #997867;
+   text-transform: uppercase;
+   cursor: default;
+}
+.member-overlap-item {
+   margin-right: -10px;
+   border: 1px solid rgb(255, 255, 255);
 }

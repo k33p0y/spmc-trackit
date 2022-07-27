@@ -138,7 +138,7 @@ class TicketListSerializer(serializers.ModelSerializer):
    class Meta:
       model = Ticket
       exclude = ['form_data']
-      datatables_always_serialize = ('ticket_id', 'progress')
+      datatables_always_serialize = ('ticket_id', 'progress', 'department')
 
 class TicketProfileSerializer(serializers.ModelSerializer):
    status = StatusReadOnlySerializer(read_only=True)

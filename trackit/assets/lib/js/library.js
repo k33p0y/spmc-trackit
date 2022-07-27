@@ -1,3 +1,5 @@
+$('body').tooltip({selector: '[data-toggle="tooltip"]'}); // initiate tooltip
+
 // Headers CSRF 
 function getCookie(name) {
    let cookieValue = null;
