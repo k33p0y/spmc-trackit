@@ -22,10 +22,18 @@
                <div id="compressAction" class="collapse show">
                   <form class="form-actions mt-2">
                      <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
-                        <label>Next Step:</label> 
+                        <label>Next Step: <span class="font-italic text-muted"> (Prev: {{prev_step.status}})</span></label> </label> 
                         <select class="form-control form-control-sm" id="select2_nextstep" style="width: 100%">
                            {% for step in steps %}
-                              <option value="{{step.status_id}}" {% if step.status == next_step.status %} selected {% endif %}>{{step.status}}</option>
+                              <option value="{{step.status_id}}" {% if step.status == next_step.status %} selected {% endif %} data-formstatusid={{step.id}}>{{step.status}}</option>
+                           {% endfor %}
+                        </select>
+                     </div>
+                    <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
+                        <label>Assign To:</label> 
+                        <select class="form-control form-control-sm" id="select2_officer" style="width: 100%" multiple>
+                           {% for officer in officers %}
+                              <option value="{{officer.pk}}">{{officer}}</option>
                            {% endfor %}
                         </select>
                      </div>

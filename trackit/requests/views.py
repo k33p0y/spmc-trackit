@@ -91,13 +91,14 @@ def view_ticket(request, ticket_id):
    if event_schedule: is_schedule_open = True if str(datetime.datetime.now().replace(microsecond=0)) >= event_schedule.scheduled_event.date_start() else False
 
    ### form status
-   steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') # get all steps from ticket request form
+   steps = RequestFormStatus.objects.select_related('form', 'status',).filter(form_id=ticket.request_form).order_by('order') # get all steps from ticket request form
    last_step = steps.latest('order') # get last step
    first_step = steps.first() # get first step
    curr_step = steps.get(status_id=ticket.status) # get current step
    next_step = steps.get(order=curr_step.order+1) if not curr_step.status == last_step.status else curr_step # next current step
    prev_step = steps.get(order=curr_step.order-1) if not curr_step.status == first_step.status else curr_step # prev current step
    has_event_form = True if steps.filter(has_event=True) else False  # check if statuses has event
+   officers = next_step.officer.all() # get officer in current status
 
    ### iterate steps/status
    for step in steps:
@@ -119,6 +120,7 @@ def view_ticket(request, ticket_id):
       'curr_step':curr_step, 
       'next_step':next_step,
       'last_step':last_step, 
+      'officers':officers,
       'remark': remark,
       'progress' : progress,
       'event_tickets' : event_tickets.filter(attended__isnull=False),
