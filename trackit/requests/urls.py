@@ -4,6 +4,7 @@ from .api import (
    AttachmentViewSet, 
    CommentListCreateAPIView,
    CRUDEventList, 
+   FormStatusOfficerViewSet,
    NotificationDeleteViewSet,
    NotificationViewSet, 
    RequestFormCRUDViewSet, 
@@ -29,7 +30,8 @@ router.register('api/requests/ticket/latest', TicketDashboardViewSet, basename='
 router.register('api/requests/ticket/generate_reference', TicketGenerateReferenceViewSet, basename='TicketGenerateReference')
 router.register('api/requests/ticket/status', TicketStatusViewSet, basename='TicketStatus')
 router.register('api/requests/ticket/actions', TicketActionViewSet, basename='TicketAction')
-router.register('api/requests/form-status', RequestFormStatusViewSet, basename='RequestFormStatus')
+router.register('api/requests/form/status', RequestFormStatusViewSet, basename='RequestFormStatus')
+router.register('api/requests/formstatus/officer', FormStatusOfficerViewSet, basename='FormStatusOfficer')
 router.register('api/requests/attachments', AttachmentViewSet, basename='Attachment')
 router.register('api/user/notifications', NotificationViewSet, basename='Notification')
 

@@ -312,7 +312,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['name']
+        fields = ['id', 'name']
 
 class UserListSerializer(serializers.ModelSerializer):
     groups = GroupReadOnlySerializer(read_only=True, many=True)

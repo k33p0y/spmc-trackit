@@ -1,7 +1,8 @@
 $(document).ready(function () {
    $('#select2_nextstep').select2(); // select2 steps
-   $('#select2_event').select2({placeholder: 'Select Event'}); // select2 events
-   $('#select2_schedule').select2({placeholder: 'Select Date'}); // select2 schedule
+   $('#select2_officer').select2({placeholder: 'Select officer'}); // select2 officer
+   $('#select2_event').select2({placeholder: 'Select event'}); // select2 events
+   $('#select2_schedule').select2({placeholder: 'Select date'}); // select2 schedule
 
    // character counter
    $('#txtarea-remark').on("input", function() {
@@ -12,6 +13,18 @@ $(document).ready(function () {
       if (currentLength >= maxlength)$('#error-info-remark').html("You have reached the maximum number of characters.");
       else $('#error-info-remark').html('Optional, Maximum of 100 characters only')
   });
+
+   // select2_nextstep on change
+   $('#select2_nextstep').on('change', function () {
+      let step_id = $("#select2_nextstep option:selected").data().formstatusid;
+      $("#select2_officer").empty().append('<option></option>');
+      axios.get('/api/requests/formstatus/officer/', {params: {step: step_id}}, axiosConfig).then(res => {
+         let officers = res.data.results[0].officer;
+         officers.forEach(officer => {
+            $("#select2_officer").append(`<option value='${officer.id}'>${officer.name}</option>`)
+         })  
+      });
+   });
 
    // select2_event on change
    $('#select2_event').on('change', function () {

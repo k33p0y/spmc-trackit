@@ -9,7 +9,7 @@ from core.models import User
 from events.models import EventTicket
 from easyaudit.models import CRUDEvent
 
-from core.serializers import GroupReadOnlySerializer
+from core.serializers import GroupReadOnlySerializer, UserInfoSerializer
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer, CategoryTypeReadOnlySerializer
 
 import json, uuid
@@ -18,6 +18,7 @@ import json, uuid
 class RequestFormStatusSerializer(serializers.ModelSerializer):
    id = serializers.ReadOnlyField(source='status.id')
    name = serializers.ReadOnlyField(source='status.name')
+   officer = UserInfoSerializer(read_only=True, many=True)
 
    class Meta: 
       model = RequestFormStatus
@@ -421,4 +422,10 @@ class CommentSerializer(serializers.ModelSerializer):
       model = Comment
       fields = '__all__'
 
+class FormStatusOfficerSerializer(serializers.ModelSerializer):
+   name = serializers.ReadOnlyField(source='status.name')
+   officer = UserInfoSerializer(read_only=True, many=True)
 
+   class Meta: 
+      model = RequestFormStatus
+      fields = ('id', 'name', 'officer')

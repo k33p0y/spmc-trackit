@@ -13,6 +13,7 @@ from .serializers import (
    AttachmentSerializer, 
    CommentSerializer,
    CRUDEventSerializer,
+   FormStatusOfficerSerializer,
    NotificationSerializer, 
    RequestFormCRUDSerializer, 
    RequestFormListSerializer, 
@@ -170,7 +171,11 @@ class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):
       if not self.request.user.has_perm('requests.view_ticket'):
          return RequestFormStatus.objects.none()
       else:
-         return RequestFormStatus.objects.all().order_by('id')
+         # Parameters
+         step = self.request.query_params.get('step', None)
+         qs = RequestFormStatus.objects.all().order_by('id')
+         if step: qs = qs.filter(pk=step)
+         return qs
 
 class AttachmentViewSet(viewsets.ModelViewSet):
    serializer_class = AttachmentSerializer
@@ -279,3 +284,13 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
       create_notification(comment.id, comment.ticket, 'comment') # create notification instance
       serializer = CommentSerializer(comment)
       return Response(serializer.data)
+
+class FormStatusOfficerViewSet(viewsets.ReadOnlyModelViewSet):    
+   serializer_class = FormStatusOfficerSerializer
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+
+   def get_queryset(self):
+      step = self.request.query_params.get('step', None)
+      qs = RequestFormStatus.objects.all().order_by('id')
+      if step: qs = qs.filter(pk=step)
+      return qs
