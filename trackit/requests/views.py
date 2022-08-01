@@ -7,6 +7,7 @@ from config.models import Category, CategoryType, Department, Status, Remark
 from easyaudit.models import CRUDEvent
 from .models import Ticket, RequestForm, Attachment, RequestFormStatus, Notification, Comment
 from events.models import Event, EventDate, EventTicket
+from tasks.models import Task, Member
 from core.decorators import user_is_verified
 
 import json, uuid, datetime
@@ -43,6 +44,10 @@ def detail_ticket(request, ticket_id):
    ticket_categories = ticket.category.all()
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') 
 
+   ### tasks
+   tasks = ticket.tasks.filter(task_type=ticket.status).last()
+   action_officers = tasks.members.all() if tasks else None
+
    if steps.latest('order').status.id != ticket.status.id or request.user.is_superuser:
       forms = RequestForm.objects.prefetch_related('status', 'group', 'category_types').filter(is_active=True).order_by('name')
       categories = Category.objects.filter(category_type=ticket_categories[0].category_type, is_active=True).order_by('name')
@@ -66,6 +71,7 @@ def detail_ticket(request, ticket_id):
          'ticket_categories': ticket_categories, 
          'attachments':attachments, 
          'steps':steps, 
+         'action_officers': action_officers,
          'curr_step':curr_step, 
          'last_step':steps.latest('order'),
          'remark' : remark
@@ -98,8 +104,12 @@ def view_ticket(request, ticket_id):
    next_step = steps.get(order=curr_step.order+1) if not curr_step.status == last_step.status else curr_step # next current step
    prev_step = steps.get(order=curr_step.order-1) if not curr_step.status == first_step.status else curr_step # prev current step
    has_event_form = True if steps.filter(has_event=True) else False  # check if statuses has event
-   officers = next_step.officer.all() # get officer in current status
-
+   officers = next_step.officer.all() # get officer in current status.
+   
+   ### tasks
+   tasks = ticket.tasks.filter(task_type=ticket.status).last()
+   action_officers = tasks.members.all() if tasks else None
+   
    ### iterate steps/status
    for step in steps:
       # get remark if has approving and is head step 
@@ -121,6 +131,7 @@ def view_ticket(request, ticket_id):
       'next_step':next_step,
       'last_step':last_step, 
       'officers':officers,
+      'action_officers': action_officers,
       'remark': remark,
       'progress' : progress,
       'event_tickets' : event_tickets.filter(attended__isnull=False),

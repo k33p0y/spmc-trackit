@@ -153,8 +153,19 @@
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">None</p>
-                                       <span class="label">Action Officer</span>
+                                       <p class="context text-truncate">
+                                       {% if action_officers %}
+                                          {% for officer in action_officers %}
+                                             {% if not forloop.first %}
+                                                {% if forloop.last %} & {% else %}, {% endif %}
+                                             {% endif %}
+                                             {{officer.member}}
+                                          {% endfor %}
+                                       {% else %}
+                                          <span style="color: #e3e5ed"> None </span>
+                                       {% endif %}
+                                       </p>
+                                       <span class="label">Ticket Officer</span>
                                     </div>
                                  </div>
                               </div>
