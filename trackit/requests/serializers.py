@@ -8,6 +8,7 @@ from config.models import Department, Status, Remark
 from core.models import User
 from events.models import EventTicket
 from easyaudit.models import CRUDEvent
+from tasks.models import Task, Member
 
 from core.serializers import GroupReadOnlySerializer, UserInfoSerializer
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer, CategoryTypeReadOnlySerializer
@@ -18,7 +19,6 @@ import json, uuid
 class RequestFormStatusSerializer(serializers.ModelSerializer):
    id = serializers.ReadOnlyField(source='status.id')
    name = serializers.ReadOnlyField(source='status.name')
-   officer = UserInfoSerializer(read_only=True, many=True)
 
    class Meta: 
       model = RequestFormStatus
@@ -321,6 +321,17 @@ class TicketActionSerializer(serializers.ModelSerializer):
          log = log
       )
       action.save()
+      
+      # post Task if has officer assigned
+      officers = self.context['request'].data['officer'] # officer request obj
+      if officers: 
+         task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=ticket.status)
+         for officer in officers:
+            Member.objects.create(
+               member_id = officer,
+               task_id = task.pk,
+               assign_by = self.context['request'].user
+            )
       
       # post EventTicket if action has_event
       event_date = self.context['request'].data['event_date'] # event_date request obj

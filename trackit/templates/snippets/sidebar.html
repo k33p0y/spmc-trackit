@@ -228,14 +228,17 @@
                      </a>
                   </li>
                   {% if perms.requests.add_ticket %}
-                  <a href="{% url 'create_ticket' %}"
-                     class="nav-link nav-link-add{% if url == 'create_ticket' %} active {% endif %}">
-                     <i class="nav-icon fas fa-plus mr-1"></i>
-                     <p>Create a Request</p>
-                  </a>
+                  {% comment %} <li class="nav-item"> {% endcomment %}
+                     <a href="{% url 'create_ticket' %}"
+                        class="nav-link nav-link-add {% if url == 'create_ticket' %}active{% endif %}">
+                        <i class="nav-icon nav-icon-add fas fa-plus"></i>
+                        <p>Create a Request</p>
+                     </a>
+                  {% comment %} </li> {% endcomment %}
                   {% endif %}
-                  </li>
                {% endif %}
+             {% endif %}
+         </ul>
 
                {% comment %} {% if perms.requests.add_ticket or perms.requests.view_ticket %}
                   <li class="nav-header">Request</li>
@@ -276,8 +279,6 @@
                      </ul>
                   </li>
                {% endif %} {% endcomment %}
-            {% endif %}
-         </ul>
       </nav>
       {% endwith %}
       <!-- /.sidebar-menu -->
