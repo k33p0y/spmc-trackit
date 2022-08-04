@@ -8,7 +8,7 @@ from config.models import Department, Status, Remark
 from core.models import User
 from events.models import EventTicket
 from easyaudit.models import CRUDEvent
-from tasks.models import Task, Member
+from tasks.models import Task, Team
 
 from core.serializers import GroupReadOnlySerializer, UserInfoSerializer
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer, CategoryTypeReadOnlySerializer
@@ -129,6 +129,7 @@ class TicketListSerializer(serializers.ModelSerializer):
    department = DepartmentSerializer(read_only=True)
    category = CategoryReadOnlySerializer(many=True, read_only=True)
    progress = serializers.SerializerMethodField()
+   # task_officer = serializers.SerializerMethodField()
 
    def get_progress(self, instance):
       steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=instance.request_form).order_by('order')
@@ -139,7 +140,7 @@ class TicketListSerializer(serializers.ModelSerializer):
    class Meta:
       model = Ticket
       exclude = ['form_data']
-      datatables_always_serialize = ('ticket_id', 'progress', 'department')
+      datatables_always_serialize = ('ticket_id', 'progress', 'department',                )
 
 class TicketProfileSerializer(serializers.ModelSerializer):
    status = StatusReadOnlySerializer(read_only=True)
@@ -327,10 +328,11 @@ class TicketActionSerializer(serializers.ModelSerializer):
       if officers: 
          task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=ticket.status)
          for officer in officers:
-            Member.objects.create(
+            Team.objects.create(
                member_id = officer,
                task_id = task.pk,
-               assign_by = self.context['request'].user
+               assignee = self.context['request'].user,
+               remark = action.remark
             )
       
       # post EventTicket if action has_event

@@ -7,7 +7,7 @@ from config.models import Category, CategoryType, Department, Status, Remark
 from easyaudit.models import CRUDEvent
 from .models import Ticket, RequestForm, Attachment, RequestFormStatus, Notification, Comment
 from events.models import Event, EventDate, EventTicket
-from tasks.models import Task, Member
+from tasks.models import Task, Team
 from core.decorators import user_is_verified
 
 import json, uuid, datetime
@@ -44,9 +44,9 @@ def detail_ticket(request, ticket_id):
    ticket_categories = ticket.category.all()
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') 
 
-   ### tasks
+   ## tasks
    tasks = ticket.tasks.filter(task_type=ticket.status).last()
-   action_officers = tasks.members.all() if tasks else None
+   ticket_officers = tasks.officers.all() if tasks else None
 
    if steps.latest('order').status.id != ticket.status.id or request.user.is_superuser:
       forms = RequestForm.objects.prefetch_related('status', 'group', 'category_types').filter(is_active=True).order_by('name')
@@ -71,7 +71,7 @@ def detail_ticket(request, ticket_id):
          'ticket_categories': ticket_categories, 
          'attachments':attachments, 
          'steps':steps, 
-         'action_officers': action_officers,
+         'ticket_officers': ticket_officers,
          'curr_step':curr_step, 
          'last_step':steps.latest('order'),
          'remark' : remark
@@ -108,7 +108,7 @@ def view_ticket(request, ticket_id):
    
    ### tasks
    tasks = ticket.tasks.filter(task_type=ticket.status).last()
-   action_officers = tasks.members.all() if tasks else None
+   ticket_officers = tasks.officers.all() if tasks else None
    
    ### iterate steps/status
    for step in steps:
@@ -131,7 +131,7 @@ def view_ticket(request, ticket_id):
       'next_step':next_step,
       'last_step':last_step, 
       'officers':officers,
-      'action_officers': action_officers,
+      'ticket_officers': ticket_officers,
       'remark': remark,
       'progress' : progress,
       'event_tickets' : event_tickets.filter(attended__isnull=False),

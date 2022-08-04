@@ -145,12 +145,28 @@ $(document).ready(function () {
                         <div class="progress progress-table mt-1">
                            <div class="progress-bar bg-orange" role="progressbar" style="width: ${row.progress}%;" aria-valuenow="${row.progress}" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
+                        </div>
                      </div>`
                   data = template
                }
                return data
             },
-            width: "10%"
+            width: "15%"
+         }, // Status
+         {
+            data: null,
+            render: function (data, type, row) {
+               // console.log(row)
+               if (type == 'display') {
+                  template = ` <div class="d-flex">                                                
+                     <div class="member-profile member-profile-sm member-overlap-item" data-toggle="tooltip" data-placement="top" title="Aldrich Muyco">AM</div>
+                     <div class="member-profile member-profile-sm member-overlap-item">AM</div>
+                     <div class="member-profile member-profile-sm member-overlap-item">AM</div>
+                  </div>`
+                  data = template
+               }
+               return data
+            },
          }, // Status
          {
             data: "is_active",

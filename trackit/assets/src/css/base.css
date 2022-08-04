@@ -322,10 +322,15 @@ table.dataTable td  > a.action-link i {
 }
 
 table.dataTable td  > p.title,
+table.dataTable td  > div > div > p.title,
 table.dataTable td  > a > div > p.title,
 table.dataTable td  > a > div > div > p.title {
    font-size: 11px !important;
    margin: 0 !important;
+   width: 100%;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 
 table.dataTable td  > span.sub-title,
@@ -777,6 +782,10 @@ table.dataTable tbody tr:hover {
    color: #997867;
    text-transform: uppercase;
    cursor: default;
+}
+.member-profile-sm {
+   width: 28px;
+   height: 28px;
 }
 .member-overlap-item {
    margin-right: -10px;

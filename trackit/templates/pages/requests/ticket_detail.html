@@ -143,8 +143,8 @@
                                  <div class="card card-detail mt-2 mb-1">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate">
-                                       {% if action_officers %}
-                                          {% for officer in action_officers %}
+                                       {% if ticket_officers %}
+                                          {% for officer in ticket_officers %}
                                              {% if not forloop.first %}
                                                 {% if forloop.last %} & {% else %}, {% endif %}
                                              {% endif %}
