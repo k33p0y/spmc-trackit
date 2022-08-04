@@ -45,8 +45,8 @@ def detail_ticket(request, ticket_id):
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') 
 
    ## tasks
-   tasks = ticket.tasks.filter(task_type=ticket.status).last()
-   ticket_officers = tasks.officers.all() if tasks else None
+   task = ticket.tasks.filter(task_type=ticket.status).last()
+   ticket_officers = task.officers.all() if task else None
 
    if steps.latest('order').status.id != ticket.status.id or request.user.is_superuser:
       forms = RequestForm.objects.prefetch_related('status', 'group', 'category_types').filter(is_active=True).order_by('name')
@@ -107,8 +107,8 @@ def view_ticket(request, ticket_id):
    officers = next_step.officer.all() # get officer in current status.
    
    ### tasks
-   tasks = ticket.tasks.filter(task_type=ticket.status).last()
-   ticket_officers = tasks.officers.all() if tasks else None
+   task = ticket.tasks.filter(task_type=ticket.status).last()
+   ticket_officers = task.officers.all() if task else None
    
    ### iterate steps/status
    for step in steps:

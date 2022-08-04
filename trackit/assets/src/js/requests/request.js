@@ -115,15 +115,6 @@ $(document).ready(function () {
                return data
             },
          }, // User 
-         // {
-         //    data: "department",
-         //    render: function (data, type, row) {
-         //       if (type == 'display') {
-         //          data = row.department.name
-         //       }
-         //       return data
-         //    }
-         // }, // Department
          {
             data: 'date_created',
             render: function (data, type, row) {
@@ -154,19 +145,24 @@ $(document).ready(function () {
             width: "15%"
          }, // Status
          {
-            data: null,
+            data: 'officers',
             render: function (data, type, row) {
-               // console.log(row)
+               // if (row.officers) console.log(row.officers) else console.log('empty')
                if (type == 'display') {
-                  template = ` <div class="d-flex">                                                
-                     <div class="member-profile member-profile-sm member-overlap-item" data-toggle="tooltip" data-placement="top" title="Aldrich Muyco">AM</div>
-                     <div class="member-profile member-profile-sm member-overlap-item">AM</div>
-                     <div class="member-profile member-profile-sm member-overlap-item">AM</div>
-                  </div>`
-                  data = template
+                  function memberItem() {
+                     let template = '';
+                     row.officers.forEach(officer => {
+                        const fullname = officer.full_name
+                        const initials = `${officer.first_name.charAt(0)}${officer.last_name.charAt(0)}`
+                        template += `<div class="member-profile member-profile-sm member-overlap-item" data-toggle="tooltip" data-placement="top" title="${fullname}">${initials}</div>`
+                     })
+                     return template
+                  }
+                  data = (row.officers) ? `<div class="d-flex">${memberItem()}</div>` : '<span style="color: #e3e5ed">None</span>';
                }
                return data
-            },
+            }, 
+            orderable: false, /* true or false */
          }, // Status
          {
             data: "is_active",

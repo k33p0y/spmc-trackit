@@ -5,13 +5,12 @@ from core.models import User
 from core.serializers import UserInfoSerializer
 
 class MemberSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField('get_full_name')
+    full_name = serializers.SerializerMethodField()
 
     def get_full_name(self, obj):
         return '%s %s' % (obj.first_name, obj.last_name)
 
     def serialize_team(self, instance):
-        print(instance.team_members)
         member = instance.team_members.filter(task=self.context["task_instance"]).first()
 
         if member:
@@ -24,7 +23,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'name')
+        fields = ('id', 'full_name', 'first_name', 'last_name')
 
 class TeamSerializer(serializers.ModelSerializer):
     assignee = UserInfoSerializer()

@@ -12,6 +12,7 @@ from tasks.models import Task, Team
 
 from core.serializers import GroupReadOnlySerializer, UserInfoSerializer
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer, CategoryTypeReadOnlySerializer
+from tasks.serializers import MemberSerializer
 
 import json, uuid
 
@@ -129,18 +130,24 @@ class TicketListSerializer(serializers.ModelSerializer):
    department = DepartmentSerializer(read_only=True)
    category = CategoryReadOnlySerializer(many=True, read_only=True)
    progress = serializers.SerializerMethodField()
-   # task_officer = serializers.SerializerMethodField()
+   officers = serializers.SerializerMethodField()
 
    def get_progress(self, instance):
       steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=instance.request_form).order_by('order')
       for step in steps: curr_step = steps.get(status_id=instance.status)
       progress = round((curr_step.order / len(steps)) * 100) # get progress value
       return progress
+   
+   def get_officers(self, instance):
+      # getting current working officers per status
+      task = instance.tasks.filter(task_type=instance.status).last()
+      ticket_officers = MemberSerializer(task.officers.all(), many=True, context={"task_instance": task}).data if task else None
+      return ticket_officers
 
    class Meta:
       model = Ticket
       exclude = ['form_data']
-      datatables_always_serialize = ('ticket_id', 'progress', 'department',                )
+      datatables_always_serialize = ('ticket_id', 'progress', 'department', 'officers')
 
 class TicketProfileSerializer(serializers.ModelSerializer):
    status = StatusReadOnlySerializer(read_only=True)
