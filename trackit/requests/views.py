@@ -3,14 +3,14 @@ from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 
+from .models import Ticket, RequestForm, Attachment, RequestFormStatus, Notification
 from config.models import Category, CategoryType, Department, Status, Remark
+from core.models import User
 from easyaudit.models import CRUDEvent
-from .models import Ticket, RequestForm, Attachment, RequestFormStatus, Notification, Comment
-from events.models import Event, EventDate, EventTicket
-from tasks.models import Task, Team
+from events.models import Event, EventTicket
 from core.decorators import user_is_verified
 
-import json, uuid, datetime
+import datetime
 
 # Create your views here.
 @login_required
@@ -18,12 +18,15 @@ import json, uuid, datetime
 @permission_required('requests.view_ticket', raise_exception=True)
 def ticket(request):
    tickets = Ticket.objects.all()
+
+   # Filter dropdown querysets
    departments =  Department.objects.all().order_by('name')
    types = CategoryType.objects.all().order_by('name')
    statuses = Status.objects.all().order_by('name')
    forms = RequestForm.objects.all().order_by('name')
+   users = User.objects.filter(is_staff=True).order_by('first_name')
 
-   context = {'tickets': tickets, 'departments':departments, 'types':types, 'statuses': statuses, 'forms': forms}
+   context = {'tickets': tickets, 'departments':departments, 'types':types, 'statuses': statuses, 'forms': forms, 'task_officers': users}
    return render(request, 'pages/requests/ticket_lists.html', context)
    
 @login_required

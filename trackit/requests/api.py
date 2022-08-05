@@ -30,6 +30,7 @@ from .permissions import CanGenerateReference
 from easyaudit.models import CRUDEvent
 from config.models import Remark
 from core.models import User
+from tasks.models import Task
 
 import json, uuid, datetime
 
@@ -73,6 +74,7 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
       category = self.request.query_params.get('category', None)
       department = self.request.query_params.get('department', None)
       status = self.request.query_params.get('status', None)
+      officer = self.request.query_params.get('officer', None)
       date_from = self.request.query_params.get('date_from', None)
       date_to = self.request.query_params.get('date_to', None)
       is_active = self.request.query_params.get('is_active', None)
@@ -82,7 +84,7 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
       else:        
          # Queryset
          if self.request.user.is_superuser:
-            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status')
+            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status',)
          elif self.request.user.is_staff:
             user_groups = list(self.request.user.groups.all())
             qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(request_form__group__in=user_groups) | Q(requested_by = self.request.user)).distinct()
@@ -97,6 +99,9 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
          if category: qs = qs.filter(category__exact=category)
          if department: qs = qs.filter(department_id__exact=department)
          if status: qs = qs.filter(status_id__exact=status)
+         if officer: 
+            tasks_ticket = Task.objects.prefetch_related('officers').filter(officers__exact=officer).values_list('ticket', flat=True) # return ticket with all tasks from 'officer' request param
+            qs = qs.filter(ticket_id__in=list(tasks_ticket)) # filter all ticket_id with tasks list
          if date_from: qs = qs.filter(date_created__gte=date_from)
          if date_to: qs = qs.filter(date_created__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
          if status: qs = qs.filter(status_id__exact=status)

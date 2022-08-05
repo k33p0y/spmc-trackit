@@ -26,6 +26,7 @@ $(document).ready(function () {
    var categoryFilter = function() { return $('#category-filter').val(); }
    var departmentFilter = function() { return $('#department-filter').val(); }
    var statusFilter = function() { return $('#status-filter').val(); }
+   var officerFilter = function() { return $('#officer-filter').val(); }
    var dateFromFilter = function() { return $('#date-from-filter').val(); }
    var dateToFilter = function() { return $('#date-to-filter').val(); }
    var activeFilter = function() { return $('#active-filter').val(); }
@@ -52,6 +53,7 @@ $(document).ready(function () {
             "category": categoryFilter,
             "department": departmentFilter,
             "status": statusFilter,
+            "officer" : officerFilter,
             "date_from": dateFromFilter,
             "date_to": dateToFilter,
             "is_active": activeFilter
@@ -149,6 +151,7 @@ $(document).ready(function () {
             render: function (data, type, row) {
                // if (row.officers) console.log(row.officers) else console.log('empty')
                if (type == 'display') {
+                  console.log(row.officers) 
                   function memberItem() {
                      let template = '';
                      row.officers.forEach(officer => {
