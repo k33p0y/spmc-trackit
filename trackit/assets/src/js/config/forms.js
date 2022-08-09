@@ -306,6 +306,38 @@ $(document).ready(function () {
       $('.select2_officer').select2({
          allowClear: true,
          placeholder: 'Select officer',
+         matcher: function(params, data) {
+            let stringMatch = function(term, candidate) {
+               return candidate && candidate.toLowerCase().indexOf(term.toLowerCase()) >= 0;
+            }
+            // If there are no search terms, return all of the data
+            if ($.trim(params.term) === '') {
+                return data;
+            }
+            // Do not display the item if there is no 'text' property
+            if (typeof data.text === 'undefined') {
+                return null;
+            }
+            // Match text of option
+            if (stringMatch(params.term, data.text)) {
+                return data;
+            }
+            // Match attribute "data-foo" of option
+            if (stringMatch(params.term, $(data.element).attr('data-groups'))) {
+                return data;
+            }
+            // Return `null` if the term should not be displayed
+            return null;
+        },
+         templateResult: function(state) {
+            let data = $(state.element).data()
+            let option = $(`<div><div class="font-weight-bold">${state.text}</div> ${data ? `<div class='text-xs'>${data.groups}</div>`: ''}</div>`);
+            return option
+         },
+         templateSelection: function(state) {
+            if (!state.id) return 'Select officer';
+            return state.text;
+         },
          // cache: true,
       });
    };
@@ -385,6 +417,9 @@ $(document).ready(function () {
       form_row.each(function () {
          const status = $(this).find('div.select2-status-wrap select');
          const order = $(this).find('div.form-group input');
+         const officer = $(this).find('div.select2-officer-wrap select');
+         const is_client = $(this).find('div.form-group input.client-box');
+         const is_head = $(this).find('div.form-group input.head-box');
    
          if (status.val() != '' && order.val() != '') {
             $(this).find('div.select2-status-wrap').removeClass('has-error');;
@@ -394,6 +429,16 @@ $(document).ready(function () {
             $(this).find('div.select2-status-wrap').addClass('has-error');
             $(this).find('.txt_order').addClass('form-error');
             $(this).find('div.select2-status-wrap').find('.status-error').html('*This field row may not be blank.');
+            success = false;
+         }
+
+         // validate officer dropdown if is_client or is_head is not
+         if ((is_client.is(":checked") || is_head.is(":checked")) && officer.val == '') {
+            $(this).find('div.select2-officer-wrap').removeClass('has-error');
+            $(this).find('div.select2-officer-wrap').find('.officer-error').html('');
+         } else {
+            $(this).find('div.select2-officer-wrap').addClass('has-error');
+            $(this).find('div.select2-officer-wrap').find('.officer-error').html('*This field may not be blank.');
             success = false;
          }
       });

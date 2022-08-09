@@ -211,13 +211,13 @@ def create_task(ticket, officers, request_user, remark):
    ticket_formstatus = ticket.status.form_statuses.filter(form_id=ticket.request_form, status_id=ticket.status).first()
 
    # client step status
-   if ticket_formstatus.is_client_step: 
+   if ticket_formstatus.is_client_step:
       task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=ticket.status)
-      Team.objects.create(member_id=ticket.requested_by, task_id=task.pk, remark=remark)
+      Team.objects.create(member_id=ticket.requested_by.pk, task_id=task.pk, remark=remark)
    # department head step status 
    elif ticket_formstatus.is_head_step: 
       task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=ticket.status)
-      Team.objects.create(member_id=ticket.department.department_head, task_id=task.pk, remark=remark)
+      Team.objects.create(member_id=ticket.department.department_head.pk, task_id=task.pk, remark=remark)
 
    # if request param assign_by is not empty
    if officers: 
