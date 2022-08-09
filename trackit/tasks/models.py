@@ -8,8 +8,7 @@ class Task(models.Model):
     ticket = models.ForeignKey(Ticket, related_name='tasks', on_delete=models.CASCADE)
     task_type = models.ForeignKey(Status, on_delete=models.CASCADE)
     officers = models.ManyToManyField(User, related_name='task_teams', blank=True, through='Team', through_fields=('task', 'member'))
-    date_completed = models.DateTimeField(auto_now=True)
-    is_pending = models.BooleanField(default=True)
+    date_completed = models.DateTimeField(null=True)
     is_active = models.BooleanField(default=True)
 
     # In reference to 'members' ManyToManyField
@@ -22,6 +21,6 @@ class Task(models.Model):
 class Team(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     member = models.ForeignKey(User, related_name="team_members", on_delete=models.CASCADE)
-    assignee = models.ForeignKey(User, related_name='task_assignees', on_delete=models.CASCADE)
+    assignee = models.ForeignKey(User, related_name='task_assignees', null=True, on_delete=models.CASCADE)
     date_assigned = models.DateTimeField(auto_now_add=True)
     remark = models.CharField(max_length=100, blank=True)

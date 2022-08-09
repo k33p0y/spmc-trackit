@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
-from .views import create_notification, create_remark
+from .views import create_notification, create_remark, create_task
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
 from config.models import Department, Status, Remark
 from core.models import User
@@ -311,10 +311,7 @@ class TicketActionSerializer(serializers.ModelSerializer):
       ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(validated_data['ticket'])))
       ticket.status = validated_data['status']
       ticket.save()
-
-      # Create notification instance
-      create_notification(str(ticket.ticket_id), ticket, 'ticket')  
-
+ 
       # get log from easyaudit
       log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
    
@@ -327,21 +324,12 @@ class TicketActionSerializer(serializers.ModelSerializer):
          is_pass = validated_data['is_pass'],
          action_officer = self.context['request'].user,
          log = log
-      )
+      )  
       action.save()
       
-      # post Task if has officer assigned
-      officers = self.context['request'].data['officer'] # officer request obj
-      if officers: 
-         task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=ticket.status)
-         for officer in officers:
-            Team.objects.create(
-               member_id = officer,
-               task_id = task.pk,
-               assignee = self.context['request'].user,
-               remark = action.remark
-            )
-      
+      create_task(ticket, self.context['request'].data['assign_to'], self.context['request'].user, action.remark) # create task instance
+      create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
+
       # post EventTicket if action has_event
       event_date = self.context['request'].data['event_date'] # event_date request obj
       if event_date: 

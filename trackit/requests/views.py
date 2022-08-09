@@ -8,6 +8,8 @@ from config.models import Category, CategoryType, Department, Status, Remark
 from core.models import User
 from easyaudit.models import CRUDEvent
 from events.models import Event, EventTicket
+from tasks.models import Task, Team 
+
 from core.decorators import user_is_verified
 
 import datetime
@@ -202,3 +204,27 @@ def generate_reference(form):
       reference_no = (str(form.prefix)+"-"+str(year)+"-"+num_series.zfill(5))
 
    return reference_no
+
+# Task method post
+def create_task(ticket, officers, request_user, remark):
+   # post task if current status is not client step
+   ticket_formstatus = ticket.status.form_statuses.filter(form_id=ticket.request_form, status_id=ticket.status).first()
+
+   # client step status
+   if ticket_formstatus.is_client_step: 
+      task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=ticket.status)
+      Team.objects.create(member_id=ticket.requested_by, task_id=task.pk, remark=remark)
+   # department head step status 
+   elif ticket_formstatus.is_head_step: 
+      task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=ticket.status)
+      Team.objects.create(member_id=ticket.department.department_head, task_id=task.pk, remark=remark)
+
+   # if request param assign_by is not empty
+   if officers: 
+      for officer in officers:
+         Team.objects.create(
+            member_id=officer,
+            task_id=task.pk,
+            assignee=request_user,
+            remark=remark
+         )

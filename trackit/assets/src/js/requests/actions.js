@@ -84,7 +84,7 @@ $(document).ready(function () {
       data.is_approve = is_approve;
       data.is_pass = is_pass;
       data.status = status;   
-      data.officer = ($("#select2_officer").val()) ? $("#select2_officer").val() : '';
+      data.assign_to = ($("#select2_officer").val()) ? $("#select2_officer").val() : '';
       data.event_date = ($('#current_step').data().hasEvent) ? $("#select2_schedule").val() : '';
       
       axios({

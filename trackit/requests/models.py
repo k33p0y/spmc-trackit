@@ -58,7 +58,7 @@ class Ticket(models.Model):
 
 class RequestFormStatus(models.Model):
     form = models.ForeignKey(RequestForm, on_delete=models.CASCADE)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE)
+    status = models.ForeignKey(Status, related_name='form_statuses', on_delete=models.CASCADE)
     officer = models.ManyToManyField(User, related_name='status_officers', blank=True)
     order = models.PositiveSmallIntegerField(null=True, blank=True)
     is_client_step =  models.BooleanField(default=False)
