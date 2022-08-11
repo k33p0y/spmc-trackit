@@ -1,3 +1,7 @@
+:root {
+   --animate-delay: 0.1s;
+}
+
 /* Custom Colors, text */
 html * {
    font-family: Arial, Helvetica, sans-serif;
@@ -164,7 +168,10 @@ h1, h2,  h3, h4, h5, h6, small  {
    background-color: #ffe9d7;
    color: #FD7E14;
 }
-
+.badge-light2 {
+   background-color: #e6e6e6;
+   color: #3e454d
+}
 .line-clamp {
    display: -webkit-box !important;
    -webkit-line-clamp: 1 !important;

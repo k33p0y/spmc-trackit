@@ -6,7 +6,7 @@ from .models import Task, Team
 
 class TaskViewSet(viewsets.ModelViewSet):    
    serializer_class = TasksSerializer
-   queryset = Task.objects.all()
+   queryset = Task.objects.all().select_related('task_type')
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
    http_method_names = ['get', 'head']
 

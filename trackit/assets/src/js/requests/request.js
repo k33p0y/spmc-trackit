@@ -151,7 +151,6 @@ $(document).ready(function () {
             render: function (data, type, row) {
                // if (row.officers) console.log(row.officers) else console.log('empty')
                if (type == 'display') {
-                  console.log(row.officers) 
                   function memberItem() {
                      let template = '';
                      row.officers.forEach(officer => {
