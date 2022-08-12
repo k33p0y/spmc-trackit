@@ -1,7 +1,5 @@
-from asyncore import read
-from calendar import c
-from pickle import OBJ
 from rest_framework import serializers
+from django.db import transaction
 
 from .models import OpenTask, Task, Team
 from core.models import User
@@ -79,6 +77,20 @@ class TasksSerializer(serializers.ModelSerializer):
 class OpenTasksSerializer(serializers.ModelSerializer):
     ticket = TicketShortListSerializer(read_only=True)
     task_type = RequestFormStatusNameSerializer(read_only=True)
+    
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        # save isntance to task
+        task = Task.objects.create(
+            ticket = instance.ticket,
+            task_type = instance.task_type,
+            opentask_str = str(instance.pk),
+        )
+        Team.objects.create(member_id=self.context['request'].user.pk, task_id=task.pk)
+
+        # delete instance
+        instance.delete()
+        return instance
 
     class Meta:
         model = OpenTask

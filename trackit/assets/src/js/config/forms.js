@@ -1,13 +1,13 @@
 $(document).ready(function () {
 
-   var searchInput = function() { return $('#search-input').val(); }
-   var activeFilter = function() { return $('#active-filter').val(); }
+   var searchInput = function () { return $('#search-input').val(); }
+   var activeFilter = function () { return $('#active-filter').val(); }
 
    // Local Variables
    let action_type, url;
 
    // color on change
-   $('#color_picker').on('click', '.color-palette', function() {
+   $('#color_picker').on('click', '.color-palette', function () {
       $('.color-palette').removeClass('active');
       $(this).addClass('active')
    });
@@ -70,16 +70,16 @@ $(document).ready(function () {
       table.ajax.reload();
       return false; // prevent refresh
    });
-   
+
    // Close Dropdown 
-   $('#close_dropdown').click(function (){ toggleFilter() });
+   $('#close_dropdown').click(function () { toggleFilter() });
 
    // Close Dropdown When Click Outside 
    $(document).on('click', function (e) { toggleFilter() });
 
    // Dropdown Prevent From closing
    $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
-      if (e.clickEvent) e.preventDefault();      
+      if (e.clickEvent) e.preventDefault();
    });
 
    // RETRIEVE / GET
@@ -104,7 +104,7 @@ $(document).ready(function () {
          },
       },
       "columns": [
-         { 
+         {
             data: "name",
             render: function (data, type, row) {
                if (type == 'display') {
@@ -113,8 +113,8 @@ $(document).ready(function () {
                return data
             },
          }, // Name
-         { 
-            data: "prefix" 
+         {
+            data: "prefix"
          }, // Prefix
          {
             data: "color",
@@ -157,7 +157,7 @@ $(document).ready(function () {
             }
          }, // Is Active
       ],
-      "order": [[ 3, "desc" ]],
+      "order": [[3, "desc"]],
    });
 
    // CREATE / POST
@@ -182,9 +182,9 @@ $(document).ready(function () {
 
       const groups = new Array();
       const types = new Array();
-      dt_data['group'].forEach( group => groups.push(group.id));
-      dt_data['category_types'].forEach( type => types.push(type.id));
-      
+      dt_data['group'].forEach(group => groups.push(group.id));
+      dt_data['category_types'].forEach(type => types.push(type.id));
+
       // Assign AJAX Action Type/Method and URL
       action_type = 'PUT';
       url = `/api/requests/forms/crud/${id}/`;
@@ -201,8 +201,8 @@ $(document).ready(function () {
       $('#txt_name').val(dt_data['name']);
       $('#txt_prefix').val(dt_data['prefix']);
       // color field
-      $('#color_picker').data('color', dt_data['color']); 
-      $('#color_picker').attr('data-color', dt_data['color']); 
+      $('#color_picker').data('color', dt_data['color']);
+      $('#color_picker').attr('data-color', dt_data['color']);
       $('#color_picker .color-palette').each(function () {
          let color_pallete = $(this).css('background-color');
          let color_data = $('#color_picker').data().color
@@ -219,7 +219,7 @@ $(document).ready(function () {
       // Format Textarea value to JSON
       prettyPrint();
    });
-   
+
    // Add row   
    $('#btn_add').click(function () {
       let counter = $('.form-wrapper .form-row').length + 1;
@@ -236,20 +236,20 @@ $(document).ready(function () {
    $("#btn_save").click(function (e) {
       e.preventDefault();
       $(this).prop('disabled', false); // disable button      
-      
+
       if (validateForm()) {
          axios({
             method: action_type,
             url: url,
             data: {
-               name : $('#txt_name').val(),
-               prefix : $('#txt_prefix').val(),
-               color : $('#color_picker .active').css('background-color'),
-               group : $('#select2_groups').val(),
-               category_types : $('#select2_types').val(),
-               status : getStatusRowValues(),
-               fields : JSON.parse($('#txt_json').val()),
-               is_active : ($('#chk_status').prop("checked") == true) ? true : false,
+               name: $('#txt_name').val(),
+               prefix: $('#txt_prefix').val(),
+               color: $('#color_picker .active').css('background-color'),
+               group: $('#select2_groups').val(),
+               category_types: $('#select2_types').val(),
+               status: getStatusRowValues(),
+               fields: JSON.parse($('#txt_json').val()),
+               is_active: ($('#chk_status').prop("checked") == true) ? true : false,
             },
             headers: axiosConfig,
          }).then(function (response) { // success
@@ -266,19 +266,19 @@ $(document).ready(function () {
       }
    });
 
-   let showFieldErrors = function(obj, field) {
+   let showFieldErrors = function (obj, field) {
       $("#btn_submit").prop('disabled', false); // enable button
 
       // Get error message
       let msg = '';
-      obj.forEach(error => {msg += `${error} `});
+      obj.forEach(error => { msg += `${error} ` });
       $(`#${field}_error`).html(`*${msg} `) // display message
 
       // Add error class change border color to red
       $(`#txt_${field}`).addClass('form-error');
    };
 
-   let removeFieldErrors = function(field) {
+   let removeFieldErrors = function (field) {
       // Remove error class for border color
       $(`#txt_${field}`).removeClass('form-error');
       $(`#${field}-error`).html('');
@@ -291,7 +291,7 @@ $(document).ready(function () {
       $('#txt_json').val(pretty);
    };
 
-   var addStatusRow = function(count) {
+   var addStatusRow = function (count) {
       let row = formStatusRow(count);
       $(".form-wrapper").append(row)
 
@@ -306,35 +306,35 @@ $(document).ready(function () {
       $('.select2_officer').select2({
          allowClear: true,
          placeholder: 'Select officer',
-         matcher: function(params, data) {
-            let stringMatch = function(term, candidate) {
+         matcher: function (params, data) {
+            let stringMatch = function (term, candidate) {
                return candidate && candidate.toLowerCase().indexOf(term.toLowerCase()) >= 0;
             }
             // If there are no search terms, return all of the data
             if ($.trim(params.term) === '') {
-                return data;
+               return data;
             }
             // Do not display the item if there is no 'text' property
             if (typeof data.text === 'undefined') {
-                return null;
+               return null;
             }
             // Match text of option
             if (stringMatch(params.term, data.text)) {
-                return data;
+               return data;
             }
             // Match attribute "data-foo" of option
             if (stringMatch(params.term, $(data.element).attr('data-groups'))) {
-                return data;
+               return data;
             }
             // Return `null` if the term should not be displayed
             return null;
-        },
-         templateResult: function(state) {
+         },
+         templateResult: function (state) {
             let data = $(state.element).data()
-            let option = $(`<div><div class="font-weight-bold">${state.text}</div> ${data ? `<div class='text-xs'>${data.groups}</div>`: ''}</div>`);
+            let option = $(`<div><div class="font-weight-bold">${state.text}</div> ${data ? `<div class='text-xs'>${data.groups}</div>` : ''}</div>`);
             return option
          },
-         templateSelection: function(state) {
+         templateSelection: function (state) {
             if (!state.id) return 'Select officer';
             return state.text;
          },
@@ -342,10 +342,10 @@ $(document).ready(function () {
       });
    };
 
-   var getStatusRowValues = function() {
+   var getStatusRowValues = function () {
       const arr = new Array();
       const form_row = $(".form-wrapper div.form-row");
-   
+
       form_row.each(function () {
          const status = $(this).find('div.select2-status-wrap select');
          const order = $(this).find('div.form-group input.txt_order');
@@ -355,24 +355,24 @@ $(document).ready(function () {
          const has_approving = $(this).find('div.form-group input.approving-box');
          const has_pass_fail = $(this).find('div.form-group input.pass-fail-box');
          const has_event = $(this).find('div.form-group input.event-box');
-   
+
          if (status.val() != '' && order.val() != '') {
             arr.push({
                'status': status.val(),
                'order': order.val(),
-               'officer' : officer.val(),
-               'is_client' : (is_client.is(":checked")) ? true : false,
-               'is_head' : (is_head.is(":checked")) ? true : false,
-               'has_approving' : (has_approving.is(":checked")) ? true : false,
-               'has_pass_fail' : (has_pass_fail.is(":checked")) ? true : false,
-               'has_event' : (has_event.is(":checked")) ? true : false
+               'officer': officer.val(),
+               'is_client': (is_client.is(":checked")) ? true : false,
+               'is_head': (is_head.is(":checked")) ? true : false,
+               'has_approving': (has_approving.is(":checked")) ? true : false,
+               'has_pass_fail': (has_pass_fail.is(":checked")) ? true : false,
+               'has_event': (has_event.is(":checked")) ? true : false
             });
-         } 
+         }
       });
       return arr
    };
 
-   var setStatusRowValues = function(status) {
+   var setStatusRowValues = function (status) {
       status.forEach(stat => {
          $(`#status_${stat.id}`).val(stat.id).trigger('change');
          $(`#order_${stat.id}`).val(stat.order);
@@ -385,7 +385,7 @@ $(document).ready(function () {
       });
    };
 
-   var validateForm = function() {
+   var validateForm = function () {
       var success = true;
       const form_row = $(".form-wrapper div.form-row");
 
@@ -397,7 +397,7 @@ $(document).ready(function () {
          $('#name_error').html('*This field may not be blank.')
          success = false;
       }
-      
+
       if ($('#txt_prefix').val()) {
          $('#txt_prefix').removeClass('form-error');
          $('#prefix_error').html('');
@@ -406,21 +406,21 @@ $(document).ready(function () {
          $('#prefix_error').html('*This field may not be blank.')
          success = false;
       }
-   
+
       if ($('.color-palette').hasClass('active')) {
          $('#color_error').html('');
       } else {
          $('#color_error').html('**This field is required.')
          success = false;
       }
-      
+
       form_row.each(function () {
          const status = $(this).find('div.select2-status-wrap select');
          const order = $(this).find('div.form-group input');
          const officer = $(this).find('div.select2-officer-wrap select');
          const is_client = $(this).find('div.form-group input.client-box');
          const is_head = $(this).find('div.form-group input.head-box');
-   
+
          if (status.val() != '' && order.val() != '') {
             $(this).find('div.select2-status-wrap').removeClass('has-error');;
             $(this).find('.txt_order').removeClass('form-error');
@@ -433,34 +433,39 @@ $(document).ready(function () {
          }
 
          // validate officer dropdown if is_client or is_head is not
-         if ((is_client.is(":checked") || is_head.is(":checked")) && officer.val == '') {
+         if (is_client.is(":checked") || is_head.is(":checked")) {
             $(this).find('div.select2-officer-wrap').removeClass('has-error');
             $(this).find('div.select2-officer-wrap').find('.officer-error').html('');
          } else {
-            $(this).find('div.select2-officer-wrap').addClass('has-error');
-            $(this).find('div.select2-officer-wrap').find('.officer-error').html('*This field may not be blank.');
-            success = false;
+            if (officer.val() != '') {
+               $(this).find('div.select2-officer-wrap').removeClass('has-error');
+               $(this).find('div.select2-officer-wrap').find('.officer-error').html('');
+            } else {
+               $(this).find('div.select2-officer-wrap').addClass('has-error');
+               $(this).find('div.select2-officer-wrap').find('.officer-error').html('*This field may not be blank.');
+               success = false;
+            }
          }
       });
       return success;
    };
 
-   var rgb2hex = function(bg_color) {
-      var rgb = bg_color.replace(/\s/g,'').match(/^rgba?\((\d+),(\d+),(\d+)/i);
+   var rgb2hex = function (bg_color) {
+      var rgb = bg_color.replace(/\s/g, '').match(/^rgba?\((\d+),(\d+),(\d+)/i);
       return (rgb && rgb.length === 4) ? "#" +
-         ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-         ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-         ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : bg_color;   
+         ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+         ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : bg_color;
    };
 
-   var resetForm = function() {
+   var resetForm = function () {
       let samp_json = [{
          "title": "",
          "form_field": [
             {
                "id": "",
                "type": "",
-               "value" : null,
+               "value": null,
                "option": null
             }
          ],
@@ -477,7 +482,7 @@ $(document).ready(function () {
       $("#select2_groups").val([]).trigger('change');
       $("#select2_types").val([]).trigger('change');
       $('#chk_status').prop("checked", true);
-      
+
       $(".select2_status").val([]).trigger('change');
       $(".txt_order").val('');
       $(".select2_officer").val([]).trigger('change');

@@ -6,7 +6,6 @@ $(document).ready(function () {
         "autoWidth": false,
         "serverSide": true,
         "processing": true,
-        "paging": false,
         "language": {
             processing: $('#table_spinner').html()
         },
@@ -77,7 +76,7 @@ $(document).ready(function () {
         ],
     }); // table end
 
-    const getOpenTasks = function (page, lookup) {
+    const getOpenTasks = function (page, lookup, refresh) {
         let url = (page) ? page : '/api/tasks/open/';
         let params = (lookup) ? { search: lookup } : '';
 
@@ -98,10 +97,10 @@ $(document).ready(function () {
 
             if (tasks.length > 0) {
                 if (lookup) $('#opentask_lists').empty();
+                if (refresh) $('#opentask_lists').empty();
                 $('#opentasks_state').addClass('d-none'); // hide event state
                 $('.task-wrapper').removeClass('d-none'); // show elements
                 tasks.forEach(task => {
-                    console.log(task)
                     $('#opentask_lists').append( // render template
                         `<div class="card card-task px-3 py-2 mb-3 mx-1 animate__animated animate__flipInX animate__faster">
                             <div class="card-body p-0">
@@ -115,7 +114,7 @@ $(document).ready(function () {
                                         <p class="text-xs m-0 mt-2"><a href="#" class="text-muted">Read More</a></p>
                                     </div>
                                     <div class="ml-auto">
-                                        <button type="button" class="btn btn-sm btn-outline-orange" data-toggle="tooltip" data-placement="top" title="Get task"><i class="fas fa-sm fa-plus"></i></button>
+                                        <button type="button" class="btn btn-sm btn-outline-orange get-task" data-task-id="${task.id}" data-toggle="tooltip" data-placement="top" title="Get task"><i class="fas fa-sm fa-plus"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -133,8 +132,7 @@ $(document).ready(function () {
             toastError(error.response.statusText);
         });
     }
-    getOpenTasks(null, null);
-
+    getOpenTasks(null, null, false);
 
     // get more open tasks on scroll
     $('.list-wrapper').scroll(function () {
@@ -146,11 +144,10 @@ $(document).ready(function () {
         }
     });
 
-
     // Search Bar onSearch Event
     $("#search-input").on('search', function () {
         let lookup = $('#search-input').val();
-        getOpenTasks(null, lookup)
+        getOpenTasks(null, lookup, false)
         return false; // prevent refresh
     });
 
@@ -158,13 +155,31 @@ $(document).ready(function () {
     // $('#search-input').keypress(function (event) {
     //     let lookup = $('#search-input').val();
     //     let keycode = event.keyCode || event.which;
-    //     if (keycode == '13'); getOpenTasks(null, lookup)
+    //     if (keycode == '13'); getOpenTasks(null, lookup, false)
     // });
 
     // Search Bar onClick Event
     $("#execute-search").click(function () {
         let lookup = $('#search-input').val();
-        getOpenTasks(null, lookup)
+        getOpenTasks(null, lookup, false)
         return false; // prevent refresh
+    });
+
+    // Events
+    // get tasks
+    $('#opentask_lists').on('click', '.get-task', function () {
+        let opentask_id = $(this).data().taskId;
+
+        axios({
+            method: 'PUT',
+            url: `/api/tasks/open/${opentask_id}/`,
+            headers: axiosConfig
+        }).then(results => {
+            // $(this).find('div.card-task');.addClass()
+            todos.ajax.reload();
+            getOpenTasks(null, null, true);
+        }).catch(error => {
+            console.log(error)
+        })
     });
 });
