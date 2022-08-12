@@ -1,15 +1,15 @@
-$(document).ready(function() {
-    let table = $('#dt_mytasks').DataTable({
+$(document).ready(function () {
+    let todos = $('#dt_mytasks').DataTable({
         "searching": false,
         "responsive": true,
         "lengthChange": false,
-        "autoWidth": false, 
+        "autoWidth": false,
         "serverSide": true,
         "processing": true,
-        "paging" : false,
+        "paging": false,
         "language": {
             processing: $('#table_spinner').html()
-         },
+        },
         "pageLength": 15,
         "ajax": {
             url: '/api/tasks/all/?format=datatables',
@@ -19,15 +19,15 @@ $(document).ready(function() {
             {
                 data: "ticket",
                 render: function (data, type, row) {
-                    let description = (row.ticket.description.length >= 80) ? `${row.ticket.description.substr(0, 80)} ...` : row.ticket.description;
+                    let description = (row.ticket.description.length >= 60) ? `${row.ticket.description.substr(0, 60)}...` : row.ticket.description;
                     let template = `<p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
                         <span class="badge badge-pill text-light" style="background-color:${row.ticket.request_form.color}!important">${row.ticket.request_form.prefix}</span>
                         <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>
-                        <span class="badge badge-orange-pastel badge-pill">${row.task_type.name}</span>`;
+                        <span class="badge badge-orange-pastel badge-pill">${row.task_type.status.name}</span>`;
                     if (type == 'display') data = template
                     return data
                 },
-                width: "45%"
+                // width: "45%"
             }, // tikcket
             {
                 data: "ticket",
@@ -42,12 +42,12 @@ $(document).ready(function() {
                     function memberItem() {
                         let template = '';
                         row.officers.forEach(officer => {
-                           const fullname = officer.full_name
-                           const initials = `${officer.first_name.charAt(0)}${officer.last_name.charAt(0)}`
-                           template += `<div class="member-profile member-overlap-item" data-toggle="tooltip" data-placement="top" title="${fullname}">${initials}</div>`
+                            const fullname = officer.full_name
+                            const initials = `${officer.first_name.charAt(0)}${officer.last_name.charAt(0)}`
+                            template += `<div class="member-profile member-overlap-item" data-toggle="tooltip" data-placement="top" title="${fullname}">${initials}</div>`
                         })
                         return template
-                     }
+                    }
                     if (type == 'display') data = `<div class="d-flex">${memberItem()}</div>`
                     return data
                 },
@@ -66,9 +66,9 @@ $(document).ready(function() {
                 data: null,
                 render: function (data, type, row) {
                     let template = `<div class="d-flex align-items-center">
-                        <button type="button" class="btn btn-outline-secondary btn-sm p-0 px-2 mr-1" data-toggle="tooltip" data-placement="top" title="Add collaborator"><i class="fas fa-xs fa-user-plus"></i></button>
-                        <button type="button" class="btn btn-outline-secondary btn-sm p-0 px-2 mr-1" data-toggle="tooltip" data-placement="top" title="Transfer Task"><i class="fas fa-xs fa-exchange-alt"></i></button>
-                        <button type="button" class="btn btn-outline-danger btn-sm p-0 px-2 mr-1" data-toggle="tooltip" data-placement="top" title="Remove Task"><i class="fas fa-xs fa-trash-alt"></i></button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 mr-1" data-toggle="tooltip" data-placement="top" title="Add collaborator"><i class="fas fa-xs fa-user-plus"></i></button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 mr-1" data-toggle="tooltip" data-placement="top" title="Transfer Task"><i class="fas fa-xs fa-exchange-alt"></i></button>
+                        <button type="button" class="btn btn-outline-danger btn-sm py-1 px-2 mr-1" data-toggle="tooltip" data-placement="top" title="Remove Task"><i class="fas fa-xs fa-trash-alt"></i></button>
                     </div>`
                     return data = template
                 },
@@ -76,4 +76,95 @@ $(document).ready(function() {
             } // dropdown
         ],
     }); // table end
+
+    const getOpenTasks = function (page, lookup) {
+        let url = (page) ? page : '/api/tasks/open/';
+        let params = (lookup) ? { search: lookup } : '';
+
+        axios({
+            method: 'GET',
+            url: url,
+            params: params
+        }).then(response => {
+            const tasks_api_next = response.data.next;
+            const tasks = response.data.results;
+
+            if (tasks_api_next) { // check if there is next page to comment list API
+                if (tasks_api_next.includes('socket')) { // check if host == socket
+                    let nextpage = tasks_api_next.replace('socket', window.location.host) // change socket host to window.location.host
+                    $('#tasks_nextpage_url').val(nextpage);
+                } else $('#tasks_nextpage_url').val(tasks_api_next);
+            } else $('#tasks_nextpage_url').val(null);
+
+            if (tasks.length > 0) {
+                if (lookup) $('#opentask_lists').empty();
+                $('#opentasks_state').addClass('d-none'); // hide event state
+                $('.task-wrapper').removeClass('d-none'); // show elements
+                tasks.forEach(task => {
+                    console.log(task)
+                    $('#opentask_lists').append( // render template
+                        `<div class="card card-task px-3 py-2 mb-3 mx-1 animate__animated animate__flipInX animate__faster">
+                            <div class="card-body p-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="w-75">
+                                        <p class="font-weight-bold text-orange m-0">${task.ticket.ticket_no}</p>
+                                        <p class="font-weight-bold text-truncate m-0">${task.ticket.description}</p>
+                                        <span class="badge badge-pill text-light" style="background-color:${task.ticket.request_form.color}!important">${task.ticket.request_form.prefix}</span>
+                                        <span class="badge badge-light2 badge-pill">${task.ticket.reference_no}</span>
+                                        <span class="badge badge-orange-pastel badge-pill">${task.task_type.status.name}</span>
+                                        <p class="text-xs m-0 mt-2"><a href="#" class="text-muted">Read More</a></p>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <button type="button" class="btn btn-sm btn-outline-orange" data-toggle="tooltip" data-placement="top" title="Get task"><i class="fas fa-sm fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`
+                    )
+                });
+                $('.tasks-spinner').addClass('d-none');
+            } else if (lookup && tasks.length == 0) {
+                $('#opentask_lists').html('<p class="text-center text-muted m-0">No event data found</p>')
+            } else {
+                $('#opentasks_state').removeClass('d-none'); // show elements
+                $('.task-wrapper').addClass('d-none'); // hide elements
+            }
+        }).catch(error => { // error
+            toastError(error.response.statusText);
+        });
+    }
+    getOpenTasks(null, null);
+
+
+    // get more open tasks on scroll
+    $('.list-wrapper').scroll(function () {
+        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+            if ($('#tasks_nextpage_url').val()) {
+                $('.tasks-spinner').removeClass('d-none');
+                setTimeout(function () { getOpenTasks($('#tasks_nextpage_url').val()) }, 400);
+            };
+        }
+    });
+
+
+    // Search Bar onSearch Event
+    $("#search-input").on('search', function () {
+        let lookup = $('#search-input').val();
+        getOpenTasks(null, lookup)
+        return false; // prevent refresh
+    });
+
+    // // Search Bar keyPress Event
+    // $('#search-input').keypress(function (event) {
+    //     let lookup = $('#search-input').val();
+    //     let keycode = event.keyCode || event.which;
+    //     if (keycode == '13'); getOpenTasks(null, lookup)
+    // });
+
+    // Search Bar onClick Event
+    $("#execute-search").click(function () {
+        let lookup = $('#search-input').val();
+        getOpenTasks(null, lookup)
+        return false; // prevent refresh
+    });
 });

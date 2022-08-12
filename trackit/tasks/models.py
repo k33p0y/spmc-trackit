@@ -1,12 +1,13 @@
 from django.db import models
-from requests.models import Ticket
+from requests.models import Ticket, RequestFormStatus
 from config.models import Status
 from core.models import User
 
 # Create your models here.
 class Task(models.Model):
     ticket = models.ForeignKey(Ticket, related_name='tasks', on_delete=models.CASCADE)
-    task_type = models.ForeignKey(Status, on_delete=models.CASCADE)
+    task_type = models.ForeignKey(RequestFormStatus, on_delete=models.CASCADE)
+    opentask_str = models.CharField(max_length=255, blank=True)
     officers = models.ManyToManyField(User, related_name='task_teams', blank=True, through='Team', through_fields=('task', 'member'))
     date_completed = models.DateTimeField(null=True)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -28,4 +29,4 @@ class Team(models.Model):
 
 class OpenTask(models.Model):
     ticket = models.ForeignKey(Ticket, related_name='open_tasks', on_delete=models.CASCADE)
-    task_type = models.ForeignKey(Status, on_delete=models.CASCADE)
+    task_type = models.ForeignKey(RequestFormStatus, on_delete=models.CASCADE)

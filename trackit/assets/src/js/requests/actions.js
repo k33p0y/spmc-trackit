@@ -1,28 +1,28 @@
 $(document).ready(function () {
    $('#select2_nextstep').select2(); // select2 steps
-   $('#select2_officer').select2({placeholder: 'Select officer'}); // select2 officer
-   $('#select2_event').select2({placeholder: 'Select event'}); // select2 events
-   $('#select2_schedule').select2({placeholder: 'Select date'}); // select2 schedule
+   $('#select2_officer').select2({ placeholder: 'Select officer' }); // select2 officer
+   $('#select2_event').select2({ placeholder: 'Select event' }); // select2 events
+   $('#select2_schedule').select2({ placeholder: 'Select date' }); // select2 schedule
 
    // character counter
-   $('#txtarea-remark').on("input", function() {
+   $('#txtarea-remark').on("input", function () {
       let maxlength = $(this).attr("maxlength");
       let currentLength = $(this).val().length;
       $('#char_count').html(currentLength);
 
-      if (currentLength >= maxlength)$('#error-info-remark').html("You have reached the maximum number of characters.");
+      if (currentLength >= maxlength) $('#error-info-remark').html("You have reached the maximum number of characters.");
       else $('#error-info-remark').html('Optional, Maximum of 100 characters only')
-  });
+   });
 
    // select2_nextstep on change
    $('#select2_nextstep').on('change', function () {
       let step_id = $("#select2_nextstep option:selected").data().formstatusid;
       $("#select2_officer").empty().append('<option></option>');
-      axios.get('/api/requests/formstatus/officer/', {params: {step: step_id}}, axiosConfig).then(res => {
+      axios.get('/api/requests/formstatus/officer/', { params: { step: step_id } }, axiosConfig).then(res => {
          let officers = res.data.results[0].officer;
          officers.forEach(officer => {
             $("#select2_officer").append(`<option value='${officer.id}'>${officer.name}</option>`)
-         })  
+         })
       });
    });
 
@@ -30,21 +30,21 @@ $(document).ready(function () {
    $('#select2_event').on('change', function () {
       let event = $("#select2_event").val();
       let url = `/api/events/eventdate/all/?event=${event}&is_active=${true}&dates=${true}`
-      $("#select2_schedule").empty().append('<option></option>').removeAttr('disabled'); 
+      $("#select2_schedule").empty().append('<option></option>').removeAttr('disabled');
       getEventDatesAPI(url, event)
    });
-   
+
    // accept action 
    $('.btn-accept').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
       var status = $("#select2_nextstep").val()
-      // let status = (typeof step === "undefined") ? next_step : step;
+      var formstatus = $("#select2_nextstep option:selected").data().formstatusid
       let remark = $('#txtarea-remark').val();
       let is_approve = ($(this).data().approve) ? true : null;
       let is_pass = ($(this).data().pass) ? true : null;
-      
-      if (validateRemark()) postAction(ticket_id, status, remark, is_approve, is_pass);
+
+      if (validateRemark()) postAction(ticket_id, status, formstatus, remark, is_approve, is_pass);
    });
 
    // refuse action
@@ -61,7 +61,7 @@ $(document).ready(function () {
          status = $('#select2_nextstep option:last-child').val();
       }
 
-      if (validateRemark()){
+      if (validateRemark()) {
          Swal.fire({
             title: 'Are you sure?',
             icon: 'question',
@@ -77,23 +77,24 @@ $(document).ready(function () {
    });
 
    // post action
-   const postAction = function(ticket, status, remark, is_approve, is_pass) {
+   const postAction = function (ticket, status, formstatus, remark, is_approve, is_pass) {
       let data = new Object();
       data.ticket = ticket
       data.remark = remark;
       data.is_approve = is_approve;
       data.is_pass = is_pass;
-      data.status = status;   
+      data.status = status;
+      data.formstatus = formstatus;
       data.assign_to = ($("#select2_officer").val()) ? $("#select2_officer").val() : '';
       data.event_date = ($('#current_step').data().hasEvent) ? $("#select2_schedule").val() : '';
-      
+
       axios({
          method: 'POST',
-         url:`/api/requests/ticket/actions/`,
-         data: data, 
+         url: `/api/requests/ticket/actions/`,
+         data: data,
          headers: axiosConfig,
       }).then(res => {
-         socket_notification.send(JSON.stringify({type: 'notification', data: {object_id: res.data.ticket, notification_type: 'ticket'}}))
+         socket_notification.send(JSON.stringify({ type: 'notification', data: { object_id: res.data.ticket, notification_type: 'ticket' } }))
          $.when(toastSuccess('Success')).then(function () {
             location.reload();
          });
@@ -101,14 +102,14 @@ $(document).ready(function () {
          toastError(err.response.statusText)
          if (err.response.data.ticket.attendance) $('.error-action').html(`*${err.response.data.ticket.attendance}`); else $('.error-action').html();
       });
-   }; 
+   };
 
-   const validateRemark = function() {
+   const validateRemark = function () {
       is_valid = true;
 
-      if($('#current_step').data().hasEvent) { // validate events dropdown
+      if ($('#current_step').data().hasEvent) { // validate events dropdown
          // event select2
-         if($('#select2_event').val()) { 
+         if ($('#select2_event').val()) {
             $('#select2_event').next().find('.select2-selection').removeClass('form-error');
             $('#event_error').html('');
          } else {
@@ -118,7 +119,7 @@ $(document).ready(function () {
          }
 
          // schedule select2
-         if($('#select2_schedule').val()) { 
+         if ($('#select2_schedule').val()) {
             $('#select2_schedule').next().find('.select2-selection').removeClass('form-error');
             $('#schedule_error').html('');
          } else {
@@ -137,13 +138,13 @@ $(document).ready(function () {
             $('#txtarea-remark').removeClass('form-error')
             $('#error-info-remark').removeClass('error-info').html('Optional, Maximum of 100 characters only')
          }
-      } 
+      }
 
       return is_valid
    };
 
-   const getEventDatesAPI = function(url, event) {
-      axios.get(url, axiosConfig).then(res => {      
+   const getEventDatesAPI = function (url, event) {
+      axios.get(url, axiosConfig).then(res => {
          res.data.results.forEach(schedule => {
             const date = moment(schedule.date).format("MMMM DD, YYYY (ddd)");
             const start = moment(schedule.date + ' ' + schedule.time_start).format("h:mm A");
@@ -152,11 +153,11 @@ $(document).ready(function () {
          });
 
          if (res.data.next) { // check if there is next page to API
-            if (res.data.next.includes('socket')){ // check if host == socket
+            if (res.data.next.includes('socket')) { // check if host == socket
                let url = res.data.next.replace('socket', window.location.host)
                getEventDatesAPI(url, event)
             } else getEventDatesAPI(res.data.next, event)
-         } 
+         }
       });
    };
 });

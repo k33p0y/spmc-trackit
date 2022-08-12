@@ -8,7 +8,7 @@ from config.models import Category, CategoryType, Department, Status, Remark
 from core.models import User
 from easyaudit.models import CRUDEvent
 from events.models import Event, EventTicket
-from tasks.models import Task, Team 
+from tasks.models import OpenTask, Task, Team 
 
 from core.decorators import user_is_verified
 
@@ -112,7 +112,7 @@ def view_ticket(request, ticket_id):
    officers = next_step.officer.all() # get officer in current status.
    
    ### tasks
-   task = ticket.tasks.filter(task_type=ticket.status).last()
+   task = ticket.tasks.filter(task_type__status=ticket.status).last()
    ticket_officers = task.officers.all() if task else None
    
    ### iterate steps/status
@@ -206,21 +206,23 @@ def generate_reference(form):
    return reference_no
 
 # Task method post
-def create_task(ticket, officers, request_user, remark):
-   # post task if current status is not client step
-   ticket_formstatus = ticket.status.form_statuses.filter(form_id=ticket.request_form, status_id=ticket.status).first()
+def create_task(ticket, formstatus_id, officers, request_user, remark):
+   # get formstatus instance
+   steps = RequestFormStatus.objects.select_related('form', 'status',).filter(form=ticket.request_form).order_by('order') # get all steps from ticket request form
+   last_step = steps.latest('order')
+   form_status = steps.get(pk=formstatus_id)
 
    # client step status
-   if ticket_formstatus.is_client_step:
-      task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=ticket.status)
+   if form_status.is_client_step:
+      task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
       Team.objects.create(member_id=ticket.requested_by.pk, task_id=task.pk, remark=remark)
    # department head step status 
-   elif ticket_formstatus.is_head_step: 
-      task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=ticket.status)
+   elif form_status.is_head_step: 
+      task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
       Team.objects.create(member_id=ticket.department.department_head.pk, task_id=task.pk, remark=remark)
-
-   # if request param assign_by is not empty
-   if officers: 
+    # if request param assign_by is not empty
+   elif officers: 
+      task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
       for officer in officers:
          Team.objects.create(
             member_id=officer,
@@ -228,3 +230,5 @@ def create_task(ticket, officers, request_user, remark):
             assignee=request_user,
             remark=remark
          )
+   elif not last_step.order == form_status.order:
+      task = OpenTask.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)

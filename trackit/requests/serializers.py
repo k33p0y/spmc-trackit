@@ -140,7 +140,7 @@ class TicketListSerializer(serializers.ModelSerializer):
    
    def get_officers(self, instance):
       # getting current working officers per status
-      task = instance.tasks.filter(task_type=instance.status).last()
+      task = instance.tasks.filter(task_type__status=instance.status).last()
       ticket_officers = MemberSerializer(task.officers.all(), many=True, context={"task_instance": task}).data if task else None
       return ticket_officers
 
@@ -307,6 +307,11 @@ class TicketStatusSerializer(serializers.ModelSerializer):
 class TicketActionSerializer(serializers.ModelSerializer):
    
    def create(self, validated_data):
+      current_user = self.context['request'].user
+      event_date = self.context['request'].data['event_date'] # event_date request obj
+      assign_officer = self.context['request'].data['assign_to'] # officers list request data
+      formstatus = self.context['request'].data['formstatus'] # formstatus id request data
+
       # update ticket status first
       ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(validated_data['ticket'])))
       ticket.status = validated_data['status']
@@ -322,19 +327,18 @@ class TicketActionSerializer(serializers.ModelSerializer):
          remark = validated_data['remark'],
          is_approve = validated_data['is_approve'],
          is_pass = validated_data['is_pass'],
-         action_officer = self.context['request'].user,
+         action_officer = current_user,
          log = log
       )  
       action.save()
-      
-      create_task(ticket, self.context['request'].data['assign_to'], self.context['request'].user, action.remark) # create task instance
+   
+      create_task(ticket, formstatus, assign_officer, current_user, action.remark) # create task instance
       create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
 
       # post EventTicket if action has_event
-      event_date = self.context['request'].data['event_date'] # event_date request obj
       if event_date: 
          EventTicket.objects.create(ticket_id=ticket.ticket_id, scheduled_event_id=event_date)
-      
+
       return action
 
    def validate_ticket(self, ticket):

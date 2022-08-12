@@ -48,7 +48,7 @@
 }
 
 .list-wrapper {
-   max-height: 35em;
+   max-height: 40em;
    overflow-y: auto;
    overflow-x: hidden;
 }

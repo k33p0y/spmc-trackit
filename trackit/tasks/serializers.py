@@ -3,10 +3,10 @@ from calendar import c
 from pickle import OBJ
 from rest_framework import serializers
 
-from .models import Task, Team
+from .models import OpenTask, Task, Team
 from core.models import User
 from config.models import Status
-from requests.models import Ticket, RequestForm
+from requests.models import Ticket, RequestForm, RequestFormStatus
 from core.serializers import UserInfoSerializer
 
 class StatusNameSerializer(serializers.ModelSerializer):
@@ -14,6 +14,13 @@ class StatusNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
         fields = ['id', 'name']
+
+class RequestFormStatusNameSerializer(serializers.ModelSerializer):
+    status = StatusNameSerializer(read_only=True)
+
+    class Meta:
+        model = RequestFormStatus
+        fields = ['id', 'status']
 
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):
     
@@ -59,7 +66,7 @@ class TeamSerializer(serializers.ModelSerializer):
 class TasksSerializer(serializers.ModelSerializer):
     officers = serializers.SerializerMethodField()
     ticket = TicketShortListSerializer(read_only=True)
-    task_type = StatusNameSerializer(read_only=True)
+    task_type = RequestFormStatusNameSerializer(read_only=True)
     
     def get_officers(self, task):
         return MemberSerializer(task.officers.all(), many=True, context={"task_instance": task}).data
@@ -68,3 +75,11 @@ class TasksSerializer(serializers.ModelSerializer):
         model = Task
         fields = '__all__'
         datatables_always_serialize = ('task_type',)
+
+class OpenTasksSerializer(serializers.ModelSerializer):
+    ticket = TicketShortListSerializer(read_only=True)
+    task_type = RequestFormStatusNameSerializer(read_only=True)
+
+    class Meta:
+        model = OpenTask
+        fields = '__all__'
