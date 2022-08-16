@@ -19,29 +19,23 @@ $(document).ready(function () {
                 data: "ticket",
                 render: function (data, type, row) {
                     let description = (row.ticket.description.length >= 60) ? `${row.ticket.description.substr(0, 60)}...` : row.ticket.description;
-                    let template = `<p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
+                    let template = `<a href='/requests/${row.ticket.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket.ticket_no} </a>
+                        <p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
                         <span class="badge badge-pill text-light" style="background-color:${row.ticket.request_form.color}!important">${row.ticket.request_form.prefix}</span>
                         <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>
                         <span class="badge badge-orange-pastel badge-pill">${row.task_type.status.name}</span>`;
                     if (type == 'display') data = template
                     return data
                 },
-                // width: "45%"
+                width: "70%"
             }, // tikcket
-            {
-                data: "ticket",
-                render: function (data, type, row) {
-                    if (type == 'display') data = `<a href='/requests/${row.ticket.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket.ticket_no} </a>`
-                    return data
-                }
-            }, // ticket no
             {
                 data: "officers",
                 render: function (data, type, row) {
                     function memberItem() {
                         let template = '';
                         row.officers.forEach(officer => {
-                            const fullname = officer.full_name
+                            const fullname = (actor == officer.id) ? 'Me' : officer.full_name
                             const initials = `${officer.first_name.charAt(0)}${officer.last_name.charAt(0)}`
                             template += `<div class="member-profile member-overlap-item" data-toggle="tooltip" data-placement="top" title="${fullname}">${initials}</div>`
                         })
@@ -50,7 +44,7 @@ $(document).ready(function () {
                     if (type == 'display') data = `<div class="d-flex">${memberItem()}</div>`
                     return data
                 },
-                orderable: false,
+                // orderable: false,
             }, // officers
             {
                 data: "date_created",
@@ -64,10 +58,22 @@ $(document).ready(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    let template = `<div class="d-flex align-items-center">
-                        <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 mr-1" data-toggle="tooltip" data-placement="top" title="Add collaborator"><i class="fas fa-xs fa-user-plus"></i></button>
-                        <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 mr-1" data-toggle="tooltip" data-placement="top" title="Transfer Task"><i class="fas fa-xs fa-exchange-alt"></i></button>
-                        <button type="button" class="btn btn-outline-danger btn-sm py-1 px-2 mr-1" data-toggle="tooltip" data-placement="top" title="Remove Task"><i class="fas fa-xs fa-trash-alt"></i></button>
+                    let template = `<div class="d-flex align-items-center justify-content-end actions">
+                    
+                        <button class="action-item d-flex align-items-center text-secondary" type="button" data-toggle="tooltip" data-placement="top" title="View Detals">
+                            <span class="fa-stack" style="font-size: 8px">
+                                <i class="far fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-info fa-stack-1x"></i>
+                            </span>
+                        </button>
+                        <button class="action-item text-secondary" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>
+                        <div class="dropdown-ellipsis" data-toggle="tooltip" data-placement="top" title="More Actions">
+                            <button class="action-item text-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-lg fa-ellipsis-v"></i></button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#"><i class="fas fa-user-plus text-secondary mr-3"></i> Add collaborator</a>
+                                <a class="dropdown-item" href="#"><i class="fas fa-exchange-alt text-secondary mr-3"></i> Transfer task</a>
+                            </div>
+                        </div>
                     </div>`
                     return data = template
                 },
