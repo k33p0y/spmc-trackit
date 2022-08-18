@@ -1,11 +1,11 @@
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from django.db.models import Q
-from .serializers import TasksSerializer, OpenTasksSerializer
+from .serializers import TasksListSerializer, TasksSerializer, OpenTasksSerializer
 from .models import OpenTask, Task, Team
 
-class TaskViewSet(viewsets.ModelViewSet):    
-   serializer_class = TasksSerializer
+class TaskListViewSet(viewsets.ModelViewSet):    
+   serializer_class = TasksListSerializer
    queryset = Task.objects.all()
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
    http_method_names = ['get', 'head',]
@@ -13,11 +13,17 @@ class TaskViewSet(viewsets.ModelViewSet):
    def get_queryset(self):
       return Task.objects.filter(officers=self.request.user)
 
+class TaskViewSet(viewsets.ModelViewSet):    
+   serializer_class = TasksSerializer
+   queryset = Task.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   http_method_names = ['get', 'head', 'put']
+
 class OpenTaskViewSet(viewsets.ModelViewSet):    
    serializer_class = OpenTasksSerializer
    queryset = OpenTask.objects.all()
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
-   http_method_names = ['get', 'head', 'put', 'patch']
+   http_method_names = ['get', 'head', 'put']
 
    def get_queryset(self):
       search = self.request.query_params.get("search", None)

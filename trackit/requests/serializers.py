@@ -1,3 +1,4 @@
+from asyncore import read
 from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -18,12 +19,13 @@ import json, uuid
 
 # Serializers
 class RequestFormStatusSerializer(serializers.ModelSerializer):
-   id = serializers.ReadOnlyField(source='status.id')
+   status_id = serializers.ReadOnlyField(source='status.id')
    name = serializers.ReadOnlyField(source='status.name')
+   officer = UserInfoSerializer(read_only=True, many=True)
 
    class Meta: 
       model = RequestFormStatus
-      fields = ('id', 'name', 'order', 'is_client_step', 'is_head_step', 'has_approving', 'has_pass_fail', 'has_event', 'officer')
+      fields = ('id', 'status_id', 'name', 'order', 'is_client_step', 'is_head_step', 'has_approving', 'has_pass_fail', 'has_event', 'officer')
 
 class RequestFormListSerializer(serializers.ModelSerializer):
    status = RequestFormStatusSerializer(source="requestformstatus_set", many=True, read_only=True)

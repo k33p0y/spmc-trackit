@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    let todos = $('#dt_mytasks').DataTable({
+    let todosTbl = $('#dt_mytasks').DataTable({
         "searching": false,
         "responsive": true,
         "lengthChange": false,
@@ -11,7 +11,7 @@ $(document).ready(function () {
         },
         "pageLength": 15,
         "ajax": {
-            url: '/api/tasks/all/?format=datatables',
+            url: '/api/tasks/list/mytasks/?format=datatables',
             type: "GET",
         },
         "columns": [
@@ -59,21 +59,14 @@ $(document).ready(function () {
                 data: null,
                 render: function (data, type, row) {
                     let template = `<div class="d-flex align-items-center justify-content-end actions">
-                    
-                        <button class="action-item d-flex align-items-center text-secondary" type="button" data-toggle="tooltip" data-placement="top" title="View Detals">
+                        <button class="action-item d-flex align-items-center text-secondary btn-view" type="button" data-toggle="tooltip" data-placement="top" title="Detals">
                             <span class="fa-stack" style="font-size: 8px">
                                 <i class="far fa-circle fa-stack-2x"></i>
                                 <i class="fas fa-info fa-stack-1x"></i>
                             </span>
                         </button>
-                        <button class="action-item text-secondary" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>
-                        <div class="dropdown-ellipsis" data-toggle="tooltip" data-placement="top" title="More Actions">
-                            <button class="action-item text-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-lg fa-ellipsis-v"></i></button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#"><i class="fas fa-user-plus text-secondary mr-3"></i> Add collaborator</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-exchange-alt text-secondary mr-3"></i> Transfer task</a>
-                            </div>
-                        </div>
+                        <button class="action-item text-secondary btn-collab" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>
+                        <button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>
                     </div>`
                     return data = template
                 },
@@ -172,7 +165,7 @@ $(document).ready(function () {
     });
 
     // Events
-    // get tasks
+    // get open tasks
     $('#opentask_lists').on('click', '.get-task', function () {
         let opentask_id = $(this).data().taskId;
 
@@ -182,10 +175,89 @@ $(document).ready(function () {
             headers: axiosConfig
         }).then(results => {
             // $(this).find('div.card-task');.addClass()
-            todos.ajax.reload();
+            todosTbl.ajax.reload();
             getOpenTasks(null, null, true);
         }).catch(error => {
-            console.log(error)
+            toastError(error.response.statusText)
         })
+    });
+
+    // add collaborator
+    $('#dt_mytasks tbody').on('click', '.btn-collab', function () {
+        const dt_data = todosTbl.row($(this).parents('tr')).data();
+        let people = $.map(dt_data['officers'], function( value, i ) { return value.id })
+        
+        console.log(dt_data)
+        $("#shareModal").modal(); // show modal
+        $("#task_name").html(`"${dt_data['ticket'].ticket_no}"`);
+        $('#select2_people').select2({ // select2 config
+            allowClear: true,
+            placeholder: 'Add people',
+            cache: true,
+            ajax: {
+                url: `/api/requests/form/status/${dt_data['task_type'].id}/`,
+                dataType: 'json',
+                type: "GET",
+                processResults: function (data) {
+                    // Transforms the top-level key of the response object from 'items' to 'results'3
+                    return {
+                        results: $.map(data.officer, function (item) {
+                            if ($.inArray(item.id, people) == -1) {
+                                return {
+                                    text: item.name,
+                                    slug: item.slug,
+                                    id: item.id
+                                }
+                            }
+                        })
+                    };
+
+                }
+            }
+        });
+
+        // iterate owners
+        $('.people-wrapper').empty();
+        dt_data['officers'].forEach(person => {
+            $('.people-wrapper').append(`
+                <div class="d-flex align-items-center my-3">
+                    <div class="member-profile">${person.first_name.charAt(0)}${person.last_name.charAt(0)}</div>
+                    <div class="text-sm-height px-2">
+                        <p class="font-weight-bold text-dark mb-0">${person.full_name} ${person.id == actor ? '(you)' : ''}</p>
+                        <small class="text-muted">${person.username}</small>
+                    </div>
+                </div>`
+            );
+        });
+    });
+
+    // remove todos task 
+    $('#dt_mytasks tbody').on('click', '.btn-remove', function () {
+        const dt_data = todosTbl.row($(this).parents('tr')).data();
+        Swal.fire({
+            title: 'Remove task',
+            html: '<p class="m-0">This will remove from the lists.</p>',
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Remove',
+            confirmButtonColor: '#c44a56',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                $(this).prop('disabled', true) // disable button
+
+                axios({
+                    method: 'PUT',
+                    url: `/api/tasks/all/${dt_data['id']}/`,
+                    headers: axiosConfig
+                }).then(results => {
+                    todosTbl.ajax.reload();
+                    getOpenTasks(null, null, true);
+                }).catch(error => {
+                    toastError(error.response.statusText)
+                })
+            }
+        });
     });
 });

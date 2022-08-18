@@ -52,7 +52,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'full_name', 'first_name', 'last_name')
+        fields = ('id', 'full_name', 'first_name', 'last_name', 'username')
 
 class TeamSerializer(serializers.ModelSerializer):
     assignee = UserInfoSerializer()
@@ -61,18 +61,38 @@ class TeamSerializer(serializers.ModelSerializer):
         model = Team
         fields = ("assignee", "date_assigned", "remark")
 
-class TasksSerializer(serializers.ModelSerializer):
+class TasksListSerializer(serializers.ModelSerializer):
     officers = serializers.SerializerMethodField()
     ticket = TicketShortListSerializer(read_only=True)
     task_type = RequestFormStatusNameSerializer(read_only=True)
-    
+
     def get_officers(self, task):
         return MemberSerializer(task.officers.all(), many=True, context={"task_instance": task}).data
 
     class Meta:
         model = Task
         fields = '__all__'
-        datatables_always_serialize = ('task_type',)
+        datatables_always_serialize = ('id', 'task_type',)
+
+class TasksSerializer(serializers.ModelSerializer):
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        officers = instance.officers.all()
+        # if pivot table members has more than 1 record
+        if len(officers) > 1:           
+            Team.objects.filter(task_id=instance.pk, member_id=self.context['request'].user.pk).delete()  # delete team task instance
+        else:
+            OpenTask.objects.create(ticket = instance.ticket, task_type = instance.task_type) # save isntance to opentask
+            Team.objects.filter(task_id=instance.pk).delete() # delete team task instance
+            instance.delete() # delete instance
+        return instance
+
+    class Meta:
+        model = Task
+        fields = '__all__'
+        read_only_fields = ['opentask_str', 'date_completed', 'is_active', 'ticket', 'task_type']
+        datatables_always_serialize = ('id', 'task_type',)
+
 
 class OpenTasksSerializer(serializers.ModelSerializer):
     ticket = TicketShortListSerializer(read_only=True)

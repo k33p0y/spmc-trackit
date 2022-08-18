@@ -30,7 +30,7 @@ label {
    margin-bottom: .3rem !important;
 }
 
-h1, h2,  h3, h4, h5, h6, small  {
+h1, h2,  h3, h4, h5, h6, small {
    color : #3e454d !important;
 }
 
@@ -45,6 +45,11 @@ h1, h2,  h3, h4, h5, h6, small  {
 .p-1 {
    padding: 5px !important
 }
+
+.text-height { line-height: 110% }
+.text-sm-height { line-height: 100%; }
+.text-md-height { line-height: 1.6 }
+.text-lg-height { line-height: 200%; }
 
 .alert-danger, .badge-danger {background-color: #c44a56 !important;}
 
@@ -83,6 +88,7 @@ h1, h2,  h3, h4, h5, h6, small  {
 .bg-notification {background-color: #ff990017 ;}
 
 .text-danger {color: #c44a56 !important;}
+.text-dark {color: #3e454d !important;}
 
 .btn-light {
    background-color: #ffffff !important;
