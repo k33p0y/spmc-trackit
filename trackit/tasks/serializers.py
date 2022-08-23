@@ -43,7 +43,7 @@ class MemberSerializer(serializers.ModelSerializer):
         member = instance.team_members.filter(task=self.context["task_instance"]).first()
 
         if member:
-            return TeamSerializer(member).data
+            return TeamInfoSerializer(member).data
         return {}
 
     def to_representation(self, instance):
@@ -54,7 +54,7 @@ class MemberSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'full_name', 'first_name', 'last_name', 'username')
 
-class TeamSerializer(serializers.ModelSerializer):
+class TeamInfoSerializer(serializers.ModelSerializer):
     assignee = UserInfoSerializer()
     
     class Meta:
@@ -74,7 +74,7 @@ class TasksListSerializer(serializers.ModelSerializer):
         fields = '__all__'
         datatables_always_serialize = ('id', 'task_type',)
 
-class TasksSerializer(serializers.ModelSerializer):
+class RemoveTasksSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         officers = instance.officers.all()
@@ -89,10 +89,30 @@ class TasksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = '__all__'
-        read_only_fields = ['opentask_str', 'date_completed', 'is_active', 'ticket', 'task_type']
-        datatables_always_serialize = ('id', 'task_type',)
+        fields = ['id', 'ticket', 'task_type', 'officers']
 
+class ShareTaskSerializer(serializers.ModelSerializer):
+
+    def update(self, instance, validated_data):
+        people = self.context['request'].data['people']
+        if people:
+            for person in people:
+                Team.objects.create(
+                    task_id = instance.pk,
+                    member_id = int(person),
+                    assignee = self.context['request'].user
+                )
+        return instance
+
+    def validate(self, data):
+        if not self.context['request'].data['people']:
+            raise serializers.ValidationError({'people': 'This field may not be blank.'}) 
+        return data
+
+    class Meta:
+        model = Task
+        fields = ['id', 'ticket', 'task_type', 'officers']
+        read_only_fields = ['id', 'ticket', 'task_type']
 
 class OpenTasksSerializer(serializers.ModelSerializer):
     ticket = TicketShortListSerializer(read_only=True)
@@ -114,4 +134,4 @@ class OpenTasksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OpenTask
-        fields = '__all__'
+        fields = '__all__' 

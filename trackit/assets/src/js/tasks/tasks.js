@@ -27,7 +27,7 @@ $(document).ready(function () {
                     if (type == 'display') data = template
                     return data
                 },
-                width: "70%"
+                width: "60%"
             }, // tikcket
             {
                 data: "officers",
@@ -44,6 +44,7 @@ $(document).ready(function () {
                     if (type == 'display') data = `<div class="d-flex">${memberItem()}</div>`
                     return data
                 },
+                width: "15%"
                 // orderable: false,
             }, // officers
             {
@@ -182,12 +183,11 @@ $(document).ready(function () {
         })
     });
 
-    // add collaborator
+    // share task
     $('#dt_mytasks tbody').on('click', '.btn-collab', function () {
         const dt_data = todosTbl.row($(this).parents('tr')).data();
         let people = $.map(dt_data['officers'], function( value, i ) { return value.id })
         
-        console.log(dt_data)
         $("#shareModal").modal(); // show modal
         $("#task_name").html(`"${dt_data['ticket'].ticket_no}"`);
         $('#select2_people').select2({ // select2 config
@@ -215,6 +215,7 @@ $(document).ready(function () {
                 }
             }
         });
+        $("#btn_share").prop('disabled', false).data('task', dt_data['id']) // add data attribute to button
 
         // iterate owners
         $('.people-wrapper').empty();
@@ -230,6 +231,36 @@ $(document).ready(function () {
             );
         });
     });
+
+    // share button
+    $('#btn_share').click(function () {
+        $(this).prop('disabled', true);  // disable Button 
+        let task = $(this).data().task;
+        
+        axios({
+            method: 'PUT',
+            url: `/api/tasks/share/${task}/`,
+            data: {
+                people: $('#select2_people').val(),
+            },
+            headers: axiosConfig
+        }).then(res => {
+            todosTbl.ajax.reload();
+            toastSuccess('Success'); // alert
+            $("#shareModal").modal('toggle'); // close modal
+        }).catch(err => {
+            toastError(err.response.statusText)
+            if (err.response.data.people) {
+                $('#select2_people').next().find('.select2-selection').addClass('form-error');
+                $('#people-error').html(err.response.data.people.shift())
+            } else {
+                $('#select2_people').next().find('.select2-selection').removeClass('form-error');
+                $('#people-error').html('')
+            }
+            $('#btn_share').prop('disabled', false); // enable button
+        })
+    });
+
 
     // remove todos task 
     $('#dt_mytasks tbody').on('click', '.btn-remove', function () {
@@ -249,13 +280,13 @@ $(document).ready(function () {
 
                 axios({
                     method: 'PUT',
-                    url: `/api/tasks/all/${dt_data['id']}/`,
+                    url: `/api/tasks/remove/${dt_data['id']}/`,
                     headers: axiosConfig
-                }).then(results => {
+                }).then(res => {
                     todosTbl.ajax.reload();
                     getOpenTasks(null, null, true);
-                }).catch(error => {
-                    toastError(error.response.statusText)
+                }).catch(err => {
+                    toastError(err.response.statusText)
                 })
             }
         });
