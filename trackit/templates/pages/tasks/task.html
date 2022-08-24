@@ -139,6 +139,50 @@
       </div>
     </div>
 </div>
+
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="detailModalLabel">Details <span id="task_name"></span></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="people-container">
+                <p class="text-dark mb-3">People who own</p>
+                <div class="d-flex people-wrapper my-2"></div>
+            </div>
+            <div class="about-container mt-4 mb-2">
+                <p class="text-dark mb-3">About Task</p>
+                <ul class="list-group list-group-flush list-flush-dashed ">
+                    <li class="list-group-item d-flex py-2 px-1">
+                        <small class="mr-auto">Task</small> 
+                        <small class="text-right font-weight-bold w-75" id="task_description"></small>
+                    </li>
+                    <li class="list-group-item d-flex py-2 px-1 ">
+                        <small class="mr-auto">Ticket</small> 
+                        <small class="text-right font-weight-bold w-75" id="task_ticket"></small>
+                    </li>
+                    <li class="list-group-item d-flex py-2 px-1">
+                        <small class="mr-auto">Form</small> 
+                        <small class="text-right font-weight-bold w-75" id="task_form"></small>
+                    </li>
+                    <li class="list-group-item d-flex py-2 px-1">
+                        <small class="mr-auto">Type</small>
+                        <small class="text-right font-weight-bold w-75" id="task_type"></small>
+                    </li>
+                    <li class="list-group-item d-flex py-2 px-1">
+                        <small class="mr-auto">Created</small>
+                        <small class="text-right font-weight-bold w-75" id="task_created"></small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extrascript %}

@@ -66,7 +66,7 @@ $(document).ready(function () {
                                 <i class="fas fa-info fa-stack-1x"></i>
                             </span>
                         </button>
-                        <button class="action-item text-secondary btn-collab" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>
+                        <button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>
                         <button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>
                     </div>`
                     return data = template
@@ -183,8 +183,57 @@ $(document).ready(function () {
         })
     });
 
+    // detail task
+    $('#dt_mytasks tbody').on('click', '.btn-view', function () {
+        const dt_data = todosTbl.row($(this).parents('tr')).data();
+        let people = $.map(dt_data['officers'], function( value, i ) { return value.id })
+        
+        $("#detailModal").modal(); // show modal
+        $("#task_name").html(`"${dt_data['ticket'].ticket_no}"`);
+        $("#btn_share").prop('disabled', false).data('task', dt_data['id']) // add data attribute to button
+
+        // iterate owners
+        $('.people-wrapper').empty();
+        dt_data['officers'].forEach(person => {
+            let initials = `${person.first_name.charAt(0)}${person.last_name.charAt(0)}`
+            let name = `${person.full_name} ${person.id == actor ? '(you)' : ''}`
+            let formatDate = moment(person.date_assigned).format('MMM DD YYYY');
+            // draw template
+            $('.people-wrapper').append(`
+                <div class="dropdown mr-2">
+                    <a class="member-link" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="member-profile member-profile-lg" data-toggle="tooltip" data-placement="top" title="${name}">${initials}</div>
+                    </a>
+                    <div class="dropdown-menu text-muted p-2" aria-labelledby="dropdownMenuLink">
+                        <ul class="list-group list-flush-dashed list-group-flush">
+                            <li class="list-group-item d-flex p-1">
+                                <small class="flex-grow-1">Name</small>
+                                <small>${name}</small>
+                            </li>
+                            <li class="list-group-item d-flex p-1">
+                                <small class="flex-grow-1">Date</small>
+                                <small>${formatDate}</small>
+                            </li>
+                            <li class="list-group-item d-flex p-1">
+                                <small class="flex-grow-1">Assign by</small>
+                                <small>${person.assignee ? `${person.assignee.name}` : '-'}</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>`
+            );
+        });
+
+        // task about
+        $('#task_ticket').html(dt_data['ticket'].ticket_no);
+        $('#task_form').html(dt_data['ticket'].request_form.name);
+        $('#task_description').html(dt_data['ticket'].description);
+        $('#task_type').html(dt_data['task_type'].status.name);
+        $('#task_created').html(moment(dt_data['date_created']).format('DD MMMM YYYY h:mm:ss a'));
+    });
+
     // share task
-    $('#dt_mytasks tbody').on('click', '.btn-collab', function () {
+    $('#dt_mytasks tbody').on('click', '.btn-share', function () {
         const dt_data = todosTbl.row($(this).parents('tr')).data();
         let people = $.map(dt_data['officers'], function( value, i ) { return value.id })
         

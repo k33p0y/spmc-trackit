@@ -757,6 +757,8 @@ table.dataTable tbody tr:hover {
    display: none !important;
 }
 
+
+.modal-body .list-flush-dashed .list-group-item, 
 .list-flush-dashed .list-group-item {
    border-style: dashed;
    border-color: #eee !important;
@@ -800,7 +802,18 @@ table.dataTable tbody tr:hover {
    width: 28px;
    height: 28px;
 }
+.member-profile-lg {
+   width: 36px !important;
+   height: 36px !important;
+   font-size: 12px !important;
+}
 .member-overlap-item {
    margin-right: -10px;
    border: 1px solid rgb(255, 255, 255);
+}
+
+.member-link:hover .member-profile,
+.member-link:active .member-profile {
+   background-color: #ffd0aa;
+   color: #83614f;
 }
