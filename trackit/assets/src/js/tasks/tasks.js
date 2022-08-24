@@ -67,7 +67,7 @@ $(document).ready(function () {
                             </span>
                         </button>
                         <button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>
-                        <button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>
+                        ${row.officers.length > 1 ? '<button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>' : ''}
                     </div>`
                     return data = template
                 },
@@ -317,7 +317,9 @@ $(document).ready(function () {
     $('.people-wrapper').on('click', '.item-remove', function () {
         let person = $(this).data().person;
         axios.delete(`/api/tasks/people/${person}/`, { headers: axiosConfig }).then(res => {
-            toastSuccess('Success')
+            todosTbl.ajax.reload()
+            toastSuccess('Success');
+            $("#shareModal").modal('toggle'); // close modal
         });
     });
 
