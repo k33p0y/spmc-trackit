@@ -35,7 +35,7 @@ $(document).ready(function () {
                     function memberItem() {
                         let template = '';
                         row.officers.forEach(officer => {
-                            const fullname = (actor == officer.id) ? 'Me' : officer.full_name
+                            const fullname = (actor == officer.user_id) ? 'Me' : officer.full_name
                             const initials = `${officer.first_name.charAt(0)}${officer.last_name.charAt(0)}`
                             template += `<div class="member-profile member-overlap-item" data-toggle="tooltip" data-placement="top" title="${fullname}">${initials}</div>`
                         })
@@ -111,7 +111,7 @@ $(document).ready(function () {
                                         <span class="badge badge-pill text-light" style="background-color:${task.ticket.request_form.color}!important">${task.ticket.request_form.prefix}</span>
                                         <span class="badge badge-light2 badge-pill">${task.ticket.reference_no}</span>
                                         <span class="badge badge-orange-pastel badge-pill">${task.task_type.status.name}</span>
-                                        <p class="text-xs m-0 mt-2"><a href="#" class="text-muted">Read More</a></p>
+                                        <p class="text-xs m-0 mt-2"><a href="/requests/${task.ticket.ticket_id}/view" class="text-muted">View Ticket</a></p>
                                     </div>
                                     <div class="ml-auto">
                                         <button type="button" class="btn btn-sm btn-outline-orange get-task" data-task-id="${task.id}" data-toggle="tooltip" data-placement="top" title="Get task"><i class="fas fa-sm fa-plus"></i></button>
@@ -196,7 +196,7 @@ $(document).ready(function () {
         $('.people-wrapper').empty();
         dt_data['officers'].forEach(person => {
             let initials = `${person.first_name.charAt(0)}${person.last_name.charAt(0)}`
-            let name = `${person.full_name} ${person.id == actor ? '(you)' : ''}`
+            let name = `${person.full_name} ${person.user_id == actor ? '(you)' : ''}`
             let formatDate = moment(person.date_assigned).format('MMM DD YYYY');
             // draw template
             $('.people-wrapper').append(`
@@ -204,7 +204,7 @@ $(document).ready(function () {
                     <a class="member-link" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <div class="member-profile member-profile-lg" data-toggle="tooltip" data-placement="top" title="${name}">${initials}</div>
                     </a>
-                    <div class="dropdown-menu text-muted p-2" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-menu dropdown-menu-lg text-muted p-2" aria-labelledby="dropdownMenuLink">
                         <ul class="list-group list-flush-dashed list-group-flush">
                             <li class="list-group-item d-flex p-1">
                                 <small class="flex-grow-1">Name</small>
@@ -230,12 +230,13 @@ $(document).ready(function () {
         $('#task_description').html(dt_data['ticket'].description);
         $('#task_type').html(dt_data['task_type'].status.name);
         $('#task_created').html(moment(dt_data['date_created']).format('DD MMMM YYYY h:mm:ss a'));
+        $("#task_ticket_link").attr("href", `/requests/${dt_data['ticket'].ticket_id}/view`)
     });
 
     // share task
     $('#dt_mytasks tbody').on('click', '.btn-share', function () {
         const dt_data = todosTbl.row($(this).parents('tr')).data();
-        let people = $.map(dt_data['officers'], function( value, i ) { return value.id })
+        let people = $.map(dt_data['officers'], function( value, i ) { return value.user_id })
         
         $("#shareModal").modal(); // show modal
         $("#task_name").html(`"${dt_data['ticket'].ticket_no}"`);
@@ -248,7 +249,6 @@ $(document).ready(function () {
                 dataType: 'json',
                 type: "GET",
                 processResults: function (data) {
-                    // Transforms the top-level key of the response object from 'items' to 'results'3
                     return {
                         results: $.map(data.officer, function (item) {
                             if ($.inArray(item.id, people) == -1) {
@@ -260,7 +260,6 @@ $(document).ready(function () {
                             }
                         })
                     };
-
                 }
             }
         });
@@ -268,16 +267,20 @@ $(document).ready(function () {
 
         // iterate owners
         $('.people-wrapper').empty();
-        dt_data['officers'].forEach(person => {
-            $('.people-wrapper').append(`
-                <div class="d-flex align-items-center my-3">
-                    <div class="member-profile">${person.first_name.charAt(0)}${person.last_name.charAt(0)}</div>
-                    <div class="text-sm-height px-2">
-                        <p class="font-weight-bold text-dark mb-0">${person.full_name} ${person.id == actor ? '(you)' : ''}</p>
-                        <small class="text-muted">${person.username}</small>
+        dt_data['officers'].forEach(person => { 
+            let nameTemplate = `<div class="member-profile">${person.first_name.charAt(0)}${person.last_name.charAt(0)}</div>
+                <div class="text-sm-height px-2">
+                    <p class="font-weight-bold text-dark mb-0">${person.full_name} ${person.user_id == actor ? '(you)' : ''}</p>
+                    <small class="text-muted">${person.username}</small>
+                </div>`
+            let dropdownButton = `<div class="dropdown-ellipsis ml-auto">
+                    <button class="btn btn-link text-secondary action-item" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item item-remove" href="#" data-person="${person.team_id}">Remove</a>
                     </div>
                 </div>`
-            );
+            if (dt_data['officers'].length > 1) $('.people-wrapper').append(`<div class="d-flex align-items-center py-2 m-0">${nameTemplate} ${person.user_id == actor ? '' : `${dropdownButton}`}</div>`);
+            else $('.people-wrapper').append(`<div class="d-flex align-items-center py-2 m-0">${nameTemplate}</div>`);
         });
     });
 
@@ -310,6 +313,13 @@ $(document).ready(function () {
         })
     });
 
+    // remove person 
+    $('.people-wrapper').on('click', '.item-remove', function () {
+        let person = $(this).data().person;
+        axios.delete(`/api/tasks/people/${person}/`, { headers: axiosConfig }).then(res => {
+            toastSuccess('Success')
+        });
+    });
 
     // remove todos task 
     $('#dt_mytasks tbody').on('click', '.btn-remove', function () {
@@ -336,7 +346,7 @@ $(document).ready(function () {
                     getOpenTasks(null, null, true);
                 }).catch(err => {
                     toastError(err.response.statusText)
-                })
+                });
             }
         });
     });

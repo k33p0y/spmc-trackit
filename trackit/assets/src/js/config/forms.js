@@ -374,9 +374,10 @@ $(document).ready(function () {
 
    var setStatusRowValues = function (status) {
       status.forEach(stat => {
-         $(`#status_${stat.id}`).val(stat.id).trigger('change');
+         let officers = $.map(stat.officer, function( value, i ) { return value.id })
+         $(`#status_${stat.id}`).val(stat.status_id).trigger('change');
          $(`#order_${stat.id}`).val(stat.order);
-         $(`#officer_${stat.id}`).val(stat.officer).trigger('change');
+         $(`#officer_${stat.id}`).val(officers).trigger('change');
          $(`#chk_is_client_${stat.id}`).prop("checked", stat.is_client_step);
          $(`#chk_is_head_${stat.id}`).prop("checked", stat.is_head_step);
          $(`#chk_has_approving_${stat.id}`).prop("checked", stat.has_approving);

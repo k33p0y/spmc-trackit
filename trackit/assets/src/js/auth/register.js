@@ -141,8 +141,6 @@ $(document).ready(function () {
     }
     // show field errors
     let showFieldErrors = function (obj, field) {
-        console.log(obj, field)
-
         let errors = ''
         for (i = 0; i < obj.length; i++) errors += `${obj[i]} `;
         $(`#${field}_error`).html(`*${errors}`)

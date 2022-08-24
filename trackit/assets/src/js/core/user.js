@@ -66,7 +66,6 @@ $(document).ready(function () {
          {
             data: "username",
             render: function (data, type, row) {
-               console.log(row)
                if (type == 'display') {
                   let name_template = `<div class="d-flex align-items-center" id="name_profile">
                      <div class="profile-img">${row.first_name.charAt(0)}${row.last_name.charAt(0)}</div>

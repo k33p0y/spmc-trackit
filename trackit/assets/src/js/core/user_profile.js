@@ -78,7 +78,6 @@ $(document).ready(function () {
          { 
             data: "status",
             render: function (data, type, row) {
-               // console.log(row)
                if (type == 'display') {
                   template = `<div> ${row.status.name}
                         <div class="progress progress-table mt-1">

@@ -1,7 +1,12 @@
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from django.db.models import Q
-from .serializers import TasksListSerializer, ShareTaskSerializer, RemoveTasksSerializer, OpenTasksSerializer
+from .serializers import (
+   OpenTasksSerializer,
+   RemoveTasksSerializer, 
+   RemoveTeamPersonSerializer,
+   ShareTaskSerializer, 
+   TasksListSerializer,)
 from .models import OpenTask, Task, Team
 
 class TaskListViewSet(viewsets.ModelViewSet):    
@@ -36,4 +41,11 @@ class OpenTaskViewSet(viewsets.ModelViewSet):
       qs = OpenTask.objects.filter(task_type__officer=self.request.user)
       if search: qs = qs.filter(Q(ticket__ticket_no__iexact=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
       return qs
+
+class RemoveTeamPersonViewSet(viewsets.ModelViewSet):    
+   serializer_class = RemoveTeamPersonSerializer
+   queryset = Team.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   http_method_names = ['head', 'delete']
+
 

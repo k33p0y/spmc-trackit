@@ -35,9 +35,13 @@ class TicketShortListSerializer(serializers.ModelSerializer):
 
 class MemberSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
+    user_id = serializers.SerializerMethodField()
 
     def get_full_name(self, obj):
         return '%s %s' % (obj.first_name, obj.last_name)
+
+    def get_user_id(self, instance):
+        return instance.id
 
     def serialize_team(self, instance):
         member = instance.team_members.filter(task=self.context["task_instance"]).first()
@@ -52,14 +56,18 @@ class MemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'full_name', 'first_name', 'last_name', 'username')
+        fields = ('user_id', 'full_name', 'first_name', 'last_name', 'username')
 
 class TeamInfoSerializer(serializers.ModelSerializer):
     assignee = UserInfoSerializer()
+    team_id = serializers.SerializerMethodField()
+
+    def get_team_id(self, instance):
+        return instance.id
     
     class Meta:
         model = Team
-        fields = ("assignee", "date_assigned", "remark")
+        fields = ("team_id", "assignee", "date_assigned", "remark")
 
 class TasksListSerializer(serializers.ModelSerializer):
     officers = serializers.SerializerMethodField()
@@ -90,6 +98,7 @@ class RemoveTasksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id', 'ticket', 'task_type', 'officers']
+        read_only_fields = ['id', 'ticket', 'task_type']
 
 class ShareTaskSerializer(serializers.ModelSerializer):
 
@@ -135,3 +144,8 @@ class OpenTasksSerializer(serializers.ModelSerializer):
     class Meta:
         model = OpenTask
         fields = '__all__' 
+
+class RemoveTeamPersonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ("id", "member")
