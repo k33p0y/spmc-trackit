@@ -5,6 +5,5 @@ from core.decorators import user_is_verified, user_is_staff_member
 # Create your views here.
 @login_required
 @user_is_verified
-@user_is_staff_member
 def mytasks(request):
    return render(request, 'pages/tasks/task.html', {})

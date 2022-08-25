@@ -197,17 +197,15 @@
                {% endif %}
 
                <!-- // // // // TASKS MODULE --> 
-               {% if request.user.is_superuser or request.user.is_staff %}
-                  {% if perms.announcement.view_article %}
-                  <li class="nav-item">
-                     <a href="{% url 'mytasks' %}" class="nav-link {% if url == 'mytasks' %} active {% endif %}">
-                        <i class="nav-icon fas fa-tasks"></i>
-                        <p> My Tasks</p>
-                     </a>
-                  </li>
-                  {% endif %}
-               {% endif %}
-            
+               {% comment %} {% if perms.tasks.view_task %} {% endcomment %}
+               <li class="nav-item">
+                  <a href="{% url 'mytasks' %}" class="nav-link {% if url == 'mytasks' %} active {% endif %}">
+                     <i class="nav-icon fas fa-tasks"></i>
+                     <p> My Tasks</p>
+                  </a>
+               </li>
+               {% comment %} {% endif %} {% endcomment %}
+
                <!-- // // // // REQUESTS MODULE --> 
                {% if perms.requests.add_ticket or perms.requests.view_ticket %}
                   <li class="nav-header">Request</li>
