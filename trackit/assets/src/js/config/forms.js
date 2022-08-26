@@ -235,7 +235,7 @@ $(document).ready(function () {
    // Submit Form
    $("#btn_save").click(function (e) {
       e.preventDefault();
-      $(this).prop('disabled', false); // disable button      
+      $(this).prop('disabled', false); // disable button  
 
       if (validateForm()) {
          axios({
@@ -368,6 +368,7 @@ $(document).ready(function () {
       const form_row = $(".form-wrapper div.form-row");
 
       form_row.each(function () {
+         const formstatus = $(this).data().formstatus;
          const status = $(this).find('div.select2-status-wrap select');
          const order = $(this).find('div.form-group input.txt_order');
          const officer = $(this).find('div.select2-officer-wrap select');
@@ -379,6 +380,7 @@ $(document).ready(function () {
 
          if (status.val() != '' && order.val() != '') {
             arr.push({
+               'formstatus' : (formstatus) ? formstatus : null,
                'status': status.val(),
                'order': order.val(),
                'officer': officer.val(),
@@ -404,6 +406,9 @@ $(document).ready(function () {
          $(`#chk_has_approving_${stat.id}`).prop("checked", stat.has_approving);
          $(`#chk_has_pass_fail_${stat.id}`).prop("checked", stat.has_pass_fail);
          $(`#chk_has_event_${stat.id}`).prop("checked", stat.has_event);
+
+         if (stat.is_client_step || stat.is_head_step) $(`#officer_${stat.id}`).prop('disabled', true);
+         else $(`#officer_${stat.id}`).prop('disabled', false);
       });
    };
 

@@ -85,20 +85,23 @@ class RequestFormCRUDSerializer(serializers.ModelSerializer):
       instance.save()
 
       # update status
-      RequestFormStatus.objects.filter(form=instance).delete()
+      # RequestFormStatus.objects.filter(form=instance).delete()
       for status in self.context['request'].data['status']:
-         form_status = RequestFormStatus.objects.create(
-            status_id = status['status'], 
-            order = status['order'], 
-            is_client_step = status['is_client'],
-            is_head_step = status['is_head'],
-            has_approving = status['has_approving'],
-            has_pass_fail = status['has_pass_fail'],
-            has_event = status['has_event'],
-            form = instance
-         )
-         form_status.officer.add(*status['officer'])
-   
+         ins = get_object_or_404(RequestFormStatus, pk=status['formstatus'])
+         ins.status_id = status['status']
+         ins.order = status['order']
+         ins.is_client_step = status['is_client']
+         ins.is_head_step = status['is_head']
+         ins.has_approving = status['has_approving']
+         ins.has_pass_fail = status['has_pass_fail']
+         ins.has_event = status['has_event']
+         ins.form = instance
+         
+         ins.officer.clear()
+         if status['officer']:
+            ins.officer.add(*status['officer'])
+         ins.save()
+  
       return instance
 
    def validate_name(self, name):
