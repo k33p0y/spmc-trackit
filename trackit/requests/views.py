@@ -224,12 +224,15 @@ def create_task(ticket, formstatus_id, officers, request_user, remark):
     # if request param assign_by is not empty
    elif officers: 
       task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
-      for officer in officers:
-         Team.objects.create(
-            member_id=officer,
-            task_id=task.pk,
-            assignee=request_user,
-            remark=remark
-         )
+      if type(officers) is list:
+         for officer in officers:
+            Team.objects.create(
+               member_id=officer,
+               task_id=task.pk,
+               assignee=request_user,
+               remark=remark
+            )
+      else: 
+         Team.objects.create(member_id=officers, task_id=task.pk, remark=remark)
    elif not last_step.order == form_status.order:
       task = OpenTask.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)

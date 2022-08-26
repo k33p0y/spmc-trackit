@@ -15,10 +15,15 @@ class StatusNameSerializer(serializers.ModelSerializer):
 
 class RequestFormStatusNameSerializer(serializers.ModelSerializer):
     status = StatusNameSerializer(read_only=True)
+    default_officer = serializers.SerializerMethodField()
+
+    def get_default_officer(self, instance):
+        state = 'multiple' if instance.officer.count() > 1 else 'single' 
+        return state
 
     class Meta:
         model = RequestFormStatus
-        fields = ['id', 'status']
+        fields = ['id', 'status', 'is_client_step', 'is_head_step', 'default_officer']
 
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):
     

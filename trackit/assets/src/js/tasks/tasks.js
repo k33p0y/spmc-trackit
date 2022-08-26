@@ -60,13 +60,13 @@ $(document).ready(function () {
                 data: null,
                 render: function (data, type, row) {
                     let template = `<div class="d-flex align-items-center justify-content-end actions">
-                        <button class="action-item d-flex align-items-center text-secondary btn-view" type="button" data-toggle="tooltip" data-placement="top" title="Detals">
+                        <button class="action-item d-flex align-items-center text-secondary btn-view" type="button" data-toggle="tooltip" data-placement="top" title="Details">
                             <span class="fa-stack" style="font-size: 8px">
                                 <i class="far fa-circle fa-stack-2x"></i>
                                 <i class="fas fa-info fa-stack-1x"></i>
                             </span>
                         </button>
-                        <button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>
+                        ${row.task_type.default_officer === 'single' && (row.task_type.is_client_step === false || row.task_type.is_head_step === false) ? '' : `<button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>`}
                         ${row.officers.length > 1 ? '<button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>' : ''}
                     </div>`
                     return data = template
@@ -310,7 +310,7 @@ $(document).ready(function () {
                 $('#people-error').html('')
             }
             $('#btn_share').prop('disabled', false); // enable button
-        })
+        });
     });
 
     // remove person 
