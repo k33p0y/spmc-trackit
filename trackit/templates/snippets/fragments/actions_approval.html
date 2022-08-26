@@ -29,11 +29,11 @@
                            {% endfor %}
                         </select>
                      </div>
-                    <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
+                     <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
                         <label>Assign To:</label> 
-                        <select class="form-control form-control-sm" id="select2_officer" style="width: 100%" multiple>
+                        <select class="form-control form-control-sm" id="select2_officer" style="width: 100%" {% if officers|length > 1 %} multiple {% endif %}>
                            {% for officer in officers %}
-                              <option value="{{officer.pk}}">{{officer}}</option>
+                              <option value="{{officer.pk}}" {% if officers|length == 1 %} selected {% endif %}>{{officer}}</option>
                            {% endfor %}
                         </select>
                      </div>

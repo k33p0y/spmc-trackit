@@ -280,32 +280,43 @@
          <div class="col-12 col-sm-12 col-md-12 col-lg-3">
             {% comment %} ACTIONS SECTION {% endcomment %}
             {% if curr_step.status != last_step.status or user.is_superuser %}
-               {% if curr_step.has_approving %}
-                  {% if curr_step.is_head_step and ticket.department.department_head == user or user.is_superuser %} 
+               {% if curr_step.has_approving %} <!-- APPROVAL -->
+                  {% if curr_step.is_head_step and ticket.department.department_head == user or user.is_superuser %} <!-- department head or superuser -->
                      {% include '../../snippets/fragments/actions_approval.html' %}
-                  {% elif curr_step.is_client_step and ticket.requested_by == user  or user.is_superuser%} 
+                  {% elif curr_step.is_client_step and ticket.requested_by == user and user in ticket_officer or user.is_superuser %}  <!-- requestor or superuser-->
                      {% include '../../snippets/fragments/actions_approval.html' %} 
-                  {% elif not curr_step.is_client_step and not curr_step.is_head_step and user.is_staff or user.is_superuser%} 
-                     {% include '../../snippets/fragments/actions_approval.html' %} 
+                  {% elif not curr_step.is_client_step and not curr_step.is_head_step and user.is_staff or user.is_superuser %}  <!-- staff or superuser -->
+                     {% if user in ticket_officers %} {% include '../../snippets/fragments/actions_approval.html' %}  <!-- if staff user is task officer -->
+                     {% elif not curr_step.officer.all %} {% include '../../snippets/fragments/actions_approval.html' %} <!-- if current step has no default officer -->
+                     {% endif %}                     
                   {% endif %}
-               {% elif curr_step.has_pass_fail %}
-                  {% if curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %} 
+               {% elif curr_step.has_pass_fail %}  <!-- PASS/FAIL -->
+                  {% if curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %}  <!-- requestor or superuser-->
                      {% include '../../snippets/fragments/actions_pass_fail.html' %}
-                  {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser %} 
-                     {% include '../../snippets/fragments/actions_pass_fail.html' %} 
+                  {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser %} <!-- staff or superuser -->
+                     {% if user in ticket_officers %} {% include '../../snippets/fragments/actions_pass_fail.html' %} <!-- if staff user is task officer -->
+                     {% elif not curr_step.officer.all %} {% include '../../snippets/fragments/actions_pass_fail.html' %} <!-- if current step has no default officer -->
+                     {% endif %}     
                   {% endif %}
-               {% elif curr_step.has_event %}
-                  {% if curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %} 
+               {% elif curr_step.has_event %}  <!-- HAS EVENT -->
+                  {% if curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %}  <!-- requestor or superuser-->
                      {% include '../../snippets/fragments/actions_event.html' %}
-                  {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser %} 
-                     {% include '../../snippets/fragments/actions_event.html' %} 
-                  {% endif %}
-               {% elif curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %}
+                  {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser %} <!-- staff or superuser -->
+                     {% if user in ticket_officers %} {% include '../../snippets/fragments/actions_event.html' %}  <!-- if staff user is task officer -->
+                     {% elif not curr_step.officer.all %} {% include '../../snippets/fragments/actions_event.html' %} <!-- if current step has no default officer -->
+                     {% endif %}  
+                  {% endif %} <!-- DEFAULT -->
+               {% elif curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %} <!-- requestor or superuser-->
                   {% include '../../snippets/fragments/actions_default.html' %} 
                {% else %}
-                  {% if user.is_staff and not curr_step.is_client_step %} {% include '../../snippets/fragments/actions_default.html' %} {% endif %}
+                  {% if not curr_step.is_client_step and user.is_staff or user.is_superuser %} <!-- staff or superuser -->
+                     {% if user in ticket_officers %} {% include '../../snippets/fragments/actions_default.html' %} <!-- if staff user is task officer -->
+                     {% elif not curr_step.officer.all %} {% include '../../snippets/fragments/actions_default.html' %} <!-- if current step has no default officer -->
+                     {% endif %} 
+                  {% endif %} 
                {% endif %}
             {% endif %}
+            
             {% comment %} ATTENDANCE SECTION {% endcomment %}
             {% if has_event_form %}
             <div class="row" id="row-attendance">

@@ -17,14 +17,20 @@ $(document).ready(function () {
    // select2_nextstep on change
    $('#select2_nextstep').on('change', function () {
       let step_id = $("#select2_nextstep option:selected").data().formstatusid;
-      $("#select2_officer").empty().append('<option></option>');
+      $("#select2_officer").empty();
       axios.get('/api/requests/formstatus/officer/', { params: { step: step_id } }, axiosConfig).then(res => {
-         let officers = res.data.results[0].officer;
-         officers.forEach(officer => {
-            $("#select2_officer").append(`<option value='${officer.id}'>${officer.name}</option>`)
-         })
+         let response = res.data.results.shift();
+         let officers = response.officer;
+
+         if (officers.length == 1) {
+            let person = officers.shift();
+            $("#select2_officer").attr('multiple', false).append(`<option value='${person.id}' selected>${person.name}</option>`)
+         } else {
+            $("#select2_officer").attr('multiple', true).select2({ placeholder: 'Select officer' });
+            officers.forEach(person => $("#select2_officer").append(`<option value='${p0qhgcxerson.id}'>${person.name}</option>`));
+         }
       });
-   });
+   });   
 
    // select2_event on change
    $('#select2_event').on('change', function () {

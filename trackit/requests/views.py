@@ -112,6 +112,7 @@ def view_ticket(request, ticket_id):
    officers = next_step.officer.all() # get officer in current status.
    
    ### tasks
+   ### get task officers of current step
    task = ticket.tasks.filter(task_type__status=ticket.status).last()
    ticket_officers = task.officers.all() if task else None
    
