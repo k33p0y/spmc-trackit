@@ -266,6 +266,27 @@ $(document).ready(function () {
       }
    });
 
+   // checkbox is_client on change event
+   $('.form-wrapper').on('change', '.client-box', function () {
+      let rowEl = $(this).parents('.form-row'); // parent row
+      disableSelect(rowEl);
+   });
+   // checkbox is_client on change event
+   $('.form-wrapper').on('change', '.head-box', function () {
+      let rowEl = $(this).parents('.form-row'); // parent row
+      disableSelect(rowEl);
+   });
+
+   let disableSelect = function (rowEl) {
+      const select = rowEl.find('div.select2-officer-wrap select') // officer dropdown
+      const client_box = rowEl.find('div.form-group input.client-box') // client checkbox
+      const head_box = rowEl.find('div.form-group input.head-box') // head checkbox
+      if (client_box.is(":checked") || head_box.is(":checked") ) {
+         if (select.val()) select.val([]).trigger('change'); // clear dropdown if has values
+         select.prop('disabled', true) 
+      } else select.prop('disabled', false);
+   } 
+
    let showFieldErrors = function (obj, field) {
       $("#btn_submit").prop('disabled', false); // enable button
 
@@ -304,7 +325,7 @@ $(document).ready(function () {
 
       // Select2 Config
       $('.select2_officer').select2({
-         allowClear: true,
+         allowClear: false,
          placeholder: 'Select officer',
          matcher: function (params, data) {
             let stringMatch = function (term, candidate) {
@@ -433,20 +454,20 @@ $(document).ready(function () {
             success = false;
          }
 
-         // validate officer dropdown if is_client or is_head is not
-         if (is_client.is(":checked") || is_head.is(":checked")) {
-            $(this).find('div.select2-officer-wrap').removeClass('has-error');
-            $(this).find('div.select2-officer-wrap').find('.officer-error').html('');
-         } else {
-            if (officer.val() != '') {
-               $(this).find('div.select2-officer-wrap').removeClass('has-error');
-               $(this).find('div.select2-officer-wrap').find('.officer-error').html('');
-            } else {
-               $(this).find('div.select2-officer-wrap').addClass('has-error');
-               $(this).find('div.select2-officer-wrap').find('.officer-error').html('*This field may not be blank.');
-               success = false;
-            }
-         }
+         // // validate officer dropdown if is_client or is_head is not
+         // if (is_client.is(":checked") || is_head.is(":checked")) {
+         //    $(this).find('div.select2-officer-wrap').removeClass('has-error');
+         //    $(this).find('div.select2-officer-wrap').find('.officer-error').html('');
+         // } else {
+         //    if (officer.val() != '') {
+         //       $(this).find('div.select2-officer-wrap').removeClass('has-error');
+         //       $(this).find('div.select2-officer-wrap').find('.officer-error').html('');
+         //    } else {
+         //       $(this).find('div.select2-officer-wrap').addClass('has-error');
+         //       $(this).find('div.select2-officer-wrap').find('.officer-error').html('*This field may not be blank.');
+         //       success = false;
+         //    }
+         // }
       });
       return success;
    };
