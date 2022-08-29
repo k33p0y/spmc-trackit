@@ -1,4 +1,5 @@
 from asyncore import read
+from datetime import date
 from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -15,7 +16,7 @@ from core.serializers import GroupReadOnlySerializer, UserInfoSerializer
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer, CategoryTypeReadOnlySerializer
 from tasks.serializers import MemberSerializer
 
-import json, uuid
+import json, uuid, datetime
 
 # Serializers
 class RequestFormStatusSerializer(serializers.ModelSerializer):
@@ -313,6 +314,7 @@ class TicketActionSerializer(serializers.ModelSerializer):
    
    def create(self, validated_data):
       current_user = self.context['request'].user
+      active_task = self.context['request'].data['task'] # task id request data
       event_date = self.context['request'].data['event_date'] # event_date request obj
       assign_officer = self.context['request'].data['assign_to'] # officers list request data
       formstatus = self.context['request'].data['formstatus'] # formstatus id request data
@@ -325,7 +327,7 @@ class TicketActionSerializer(serializers.ModelSerializer):
       # get log from easyaudit
       log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
    
-      # post action Remark
+      # create action Remark
       action = Remark(
          ticket_id = ticket.ticket_id,
          status = ticket.status,
@@ -336,8 +338,13 @@ class TicketActionSerializer(serializers.ModelSerializer):
          log = log
       )  
       action.save()
+
+      # update task instance, mark complete
+      task = get_object_or_404(Task, pk=active_task)
+      task.date_completed = datetime.datetime.now()
+      task.save()
    
-      create_task(ticket, formstatus, assign_officer, current_user, action.remark) # create task instance
+      create_task(ticket, formstatus, assign_officer, current_user, action.remark) # create new task instance
       create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
 
       # post EventTicket if action has_event

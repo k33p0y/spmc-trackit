@@ -44,19 +44,21 @@ $(document).ready(function () {
    $('.btn-accept').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
+      let task_id = $("#current_step").data().task;
       var status = $("#select2_nextstep").val()
       var formstatus = $("#select2_nextstep option:selected").data().formstatusid
       let remark = $('#txtarea-remark').val();
       let is_approve = ($(this).data().approve) ? true : null;
       let is_pass = ($(this).data().pass) ? true : null;
 
-      if (validateRemark()) postAction(ticket_id, status, formstatus, remark, is_approve, is_pass);
+      if (validateRemark()) postAction(ticket_id, task_id, status, formstatus, remark, is_approve, is_pass);
    });
 
    // refuse action
    $('.btn-refuse').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
+      let task_id = $("#current_step").data().task;
       let status = ($(this).data().nextStep == $("#select2_nextstep").val()) ? $(this).data().prevStep : $("#select2_nextstep").val();
       let remark = $('#txtarea-remark').val();
       let is_approve = ($(this).data().approve == false) ? false : null;
@@ -76,17 +78,18 @@ $(document).ready(function () {
             confirmButtonColor: '#17a2b8',
          }).then((result) => {
             if (result.value) {
-               postAction(ticket_id, status, remark, is_approve, is_pass);
+               postAction(ticket_id, task_id, status, remark, is_approve, is_pass);
             }
          })
       }
    });
 
    // post action
-   const postAction = function (ticket, status, formstatus, remark, is_approve, is_pass) {
+   const postAction = function (ticket, task, status, formstatus, remark, is_approve, is_pass) {
       let data = new Object();
       data.ticket = ticket
       data.remark = remark;
+      data.task = (task) ? task : null;
       data.is_approve = is_approve;
       data.is_pass = is_pass;
       data.status = status;

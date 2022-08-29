@@ -137,6 +137,7 @@ def view_ticket(request, ticket_id):
       'next_step':next_step,
       'last_step':last_step, 
       'officers':officers,
+      'task' : task,
       'ticket_officers': ticket_officers,
       'remark': remark,
       'progress' : progress,
