@@ -85,7 +85,7 @@ class TasksListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = '__all__'
-        datatables_always_serialize = ('id', 'task_type',)
+        datatables_always_serialize = ('id', 'task_type', 'officers', 'date_created', 'date_completed')
 
 class RemoveTasksSerializer(serializers.ModelSerializer):
     @transaction.atomic

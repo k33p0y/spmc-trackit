@@ -76,6 +76,63 @@ $(document).ready(function () {
         ],
     }); // table end
 
+    let completedTbl = $('#dt_completed').DataTable({
+        "searching": false,
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "serverSide": true,
+        "processing": true,
+        "language": {
+            processing: $('#table_spinner').html()
+        },
+        "pageLength": 15,
+        "ajax": {
+            url: '/api/tasks/list/completed/?format=datatables',
+            type: "GET",
+        },
+        "columns": [
+            {
+                data: "ticket",
+                render: function (data, type, row) {
+                    let description = (row.ticket.description.length >= 60) ? `${row.ticket.description.substr(0, 60)}...` : row.ticket.description;
+                    let template = `<a href='/requests/${row.ticket.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket.ticket_no} </a>
+                        <p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
+                        <span class="badge badge-pill text-light" style="background-color:${row.ticket.request_form.color}!important">${row.ticket.request_form.prefix}</span>
+                        <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>
+                        <span class="badge badge-orange-pastel badge-pill">${row.task_type.status.name}</span>`;
+                    if (type == 'display') data = template
+                    return data
+                },
+                width: "60%"
+            }, // tikcket
+            {
+                data: "date_completed",
+                render: function (data, type, row) {
+                    let date = moment(row.date_created).format('DD MMMM YYYY');
+                    let time = moment(row.date_created).format('h:mm:ss a');
+                    if (type == 'display') data = `<p class="title mb-0">${date}</p><span class="sub-title">${time}</span>`
+                    return data
+                },
+            }, // date_completed
+            {
+                data: null,
+                render: function (data, type, row) {
+                    let template = `<div class="d-flex align-items-center justify-content-end actions">
+                            <button class="action-item d-flex align-items-center text-secondary btn-view" type="button" data-toggle="tooltip" data-placement="top" title="Details">
+                                <span class="fa-stack" style="font-size: 8px">
+                                    <i class="far fa-circle fa-stack-2x"></i>
+                                    <i class="fas fa-info fa-stack-1x"></i>
+                                </span>
+                            </button>
+                        </div>`
+                    return data = template
+                },
+                orderable: false
+            } // dropdown
+        ],
+    }); // table end
+
     const getOpenTasks = function (page, lookup, refresh) {
         let url = (page) ? page : '/api/tasks/open/';
         let params = (lookup) ? { search: lookup } : '';
@@ -186,51 +243,12 @@ $(document).ready(function () {
     // detail task
     $('#dt_mytasks tbody').on('click', '.btn-view', function () {
         const dt_data = todosTbl.row($(this).parents('tr')).data();
-        let people = $.map(dt_data['officers'], function( value, i ) { return value.id })
-        
-        $("#detailModal").modal(); // show modal
-        $("#task_name").html(`"${dt_data['ticket'].ticket_no}"`);
-        $("#btn_share").prop('disabled', false).data('task', dt_data['id']) // add data attribute to button
+        taskDetail(dt_data)
+    });
 
-        // iterate owners
-        $('.people-wrapper').empty();
-        dt_data['officers'].forEach(person => {
-            let initials = `${person.first_name.charAt(0)}${person.last_name.charAt(0)}`
-            let name = `${person.full_name} ${person.user_id == actor ? '(you)' : ''}`
-            let formatDate = moment(person.date_assigned).format('MMM DD YYYY');
-            // draw template
-            $('.people-wrapper').append(`
-                <div class="dropdown mr-2">
-                    <a class="member-link" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <div class="member-profile member-profile-lg" data-toggle="tooltip" data-placement="top" title="${name}">${initials}</div>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg text-muted p-2" aria-labelledby="dropdownMenuLink">
-                        <ul class="list-group list-flush-dashed list-group-flush">
-                            <li class="list-group-item d-flex p-1">
-                                <small class="flex-grow-1">Name</small>
-                                <small>${name}</small>
-                            </li>
-                            <li class="list-group-item d-flex p-1">
-                                <small class="flex-grow-1">Date</small>
-                                <small>${formatDate}</small>
-                            </li>
-                            <li class="list-group-item d-flex p-1">
-                                <small class="flex-grow-1">Assign by</small>
-                                <small>${person.assignee ? `${person.assignee.name}` : '-'}</small>
-                            </li>
-                        </ul>
-                    </div>
-                </div>`
-            );
-        });
-
-        // task about
-        $('#task_ticket').html(dt_data['ticket'].ticket_no);
-        $('#task_form').html(dt_data['ticket'].request_form.name);
-        $('#task_description').html(dt_data['ticket'].description);
-        $('#task_type').html(dt_data['task_type'].status.name);
-        $('#task_created').html(moment(dt_data['date_created']).format('DD MMMM YYYY h:mm:ss a'));
-        $("#task_ticket_link").attr("href", `/requests/${dt_data['ticket'].ticket_id}/view`)
+    $('#dt_completed tbody').on('click', '.btn-view', function () {
+        const dt_data = completedTbl.row($(this).parents('tr')).data();
+        taskDetail(dt_data)
     });
 
     // share task
@@ -352,4 +370,53 @@ $(document).ready(function () {
             }
         });
     });
+
+    let taskDetail = function(dt_data) {
+        let people = $.map(dt_data['officers'], function( value, i ) { return value.id })
+        
+        $("#detailModal").modal(); // show modal
+        $("#task_name").html(`"${dt_data['ticket'].ticket_no}"`);
+        $("#btn_share").prop('disabled', false).data('task', dt_data['id']) // add data attribute to button
+
+        // iterate owners
+        $('.people-wrapper').empty();
+        dt_data['officers'].forEach(person => {
+            let initials = `${person.first_name.charAt(0)}${person.last_name.charAt(0)}`
+            let name = `${person.full_name} ${person.user_id == actor ? '(you)' : ''}`
+            let formatDate = moment(person.date_assigned).format('MMM DD YYYY');
+            // draw template
+            $('.people-wrapper').append(`
+                <div class="dropdown mr-2">
+                    <a class="member-link" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="member-profile member-profile-lg" data-toggle="tooltip" data-placement="top" title="${name}">${initials}</div>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg text-muted p-2" aria-labelledby="dropdownMenuLink">
+                        <ul class="list-group list-flush-dashed list-group-flush">
+                            <li class="list-group-item d-flex p-1">
+                                <small class="flex-grow-1">Name</small>
+                                <small>${name}</small>
+                            </li>
+                            <li class="list-group-item d-flex p-1">
+                                <small class="flex-grow-1">Date</small>
+                                <small>${formatDate}</small>
+                            </li>
+                            <li class="list-group-item d-flex p-1">
+                                <small class="flex-grow-1">Assign by</small>
+                                <small>${person.assignee ? `${person.assignee.name}` : '-'}</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>`
+            );
+        });
+
+        // task about
+        $('#task_ticket').html(dt_data['ticket'].ticket_no);
+        $('#task_form').html(dt_data['ticket'].request_form.name);
+        $('#task_description').html(dt_data['ticket'].description);
+        $('#task_type').html(dt_data['task_type'].status.name);
+        (dt_data['date_created']) ? $('#task_created').html(moment(dt_data['date_created']).format('DD MMMM YYYY h:mm:ss a')) : '';
+        (dt_data['date_completed']) ? $('#task_complete').html(moment(dt_data['date_completed']).format('DD MMMM YYYY h:mm:ss a')) : '';
+        $("#task_ticket_link").attr("href", `/requests/${dt_data['ticket'].ticket_id}/view`)
+    }
 });

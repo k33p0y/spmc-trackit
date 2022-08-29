@@ -130,3 +130,25 @@
 .people-wrapper div:hover  {
    background-color: red;
 } */
+
+/* .nav-pills {
+   border-bottom: 2px solid #dee2e6;
+} */
+.nav-tasks .nav-link {
+   font-size: 10px;
+   color: #5f6b77;
+   border:none;   
+   margin-right: 4px;
+   transition: 0.2s;
+}
+.nav-tasks .nav-link:hover {
+   background-color: #FD7E14 !important;
+   color: #fff !important;
+   box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+
+.nav-tasks .nav-link.active {
+   background-color: #FD7E14;
+   color: #ffffff;
+   box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}

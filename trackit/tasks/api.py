@@ -16,8 +16,17 @@ class TaskListViewSet(viewsets.ModelViewSet):
    http_method_names = ['get', 'head',]
 
    def get_queryset(self):
-      return Task.objects.filter(officers=self.request.user)
+      return Task.objects.filter(officers=self.request.user, date_completed__isnull=True)
 
+class TaskListCompleteViewSet(viewsets.ModelViewSet):    
+   serializer_class = TasksListSerializer
+   queryset = Task.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   http_method_names = ['get', 'head',]
+
+   def get_queryset(self):
+      return Task.objects.filter(officers=self.request.user, date_completed__isnull=False).order_by('-date_completed')
+ 
 class RemoveTaskViewSet(viewsets.ModelViewSet):    
    serializer_class = RemoveTasksSerializer
    queryset = Task.objects.all()

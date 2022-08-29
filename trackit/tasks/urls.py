@@ -4,12 +4,14 @@ from .api import (
    OpenTaskViewSet,
    RemoveTaskViewSet,
    RemoveTeamPersonViewSet,
-   ShareTaskViewSet, 
+   ShareTaskViewSet,
+   TaskListCompleteViewSet, 
    TaskListViewSet)
 from . import views
 
 router = routers.DefaultRouter()
 router.register('api/tasks/list/mytasks', TaskListViewSet)
+router.register('api/tasks/list/completed', TaskListCompleteViewSet)
 router.register('api/tasks/remove', RemoveTaskViewSet)
 router.register('api/tasks/people', RemoveTeamPersonViewSet)
 router.register('api/tasks/share', ShareTaskViewSet)

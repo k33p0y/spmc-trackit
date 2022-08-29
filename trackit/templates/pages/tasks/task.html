@@ -33,7 +33,7 @@
             <div class="col-12 col-lg-12 col-xl-8 order-2 order-xl-1">
                 <div class="card card-form shadow-sm mt-2 mb-1">
                     <div class="card-header d-flex align-items-center px-2 py-1">
-                        <div class="card-title">To Do</div>
+                        <div class="card-title">My tasks</div>
                         <div class="card-tools ml-auto">
                             <button type="button" class="btn btn-tool btn-minimize" data-toggle="collapse" data-target="#collapseAttachment" aria-expanded="false" aria-controls="collapseAttachment"></button>
                         </div>
@@ -46,16 +46,40 @@
                                     <span class="text-secondary">Fetching...</span>
                                 </div>
                             </template>
-                            <table id="dt_mytasks" class="table table-hover" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th data-priority="1">Task</th>
-                                        <th>Owner</th>
-                                        <th>date</th>
-                                        <th data-priority="2"></th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            <ul class="nav nav-pills nav-tasks m-1" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                  <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">To Do</a>
+                                </li>
+                                <li class="nav-item">
+                                  <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Completed</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                    <table id="dt_mytasks" class="table table-hover" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th data-priority="1">Task</th>
+                                                <th>Owner</th>
+                                                <th>date</th>
+                                                <th data-priority="2"></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                    <table id="dt_completed" class="table table-hover" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th data-priority="1">Task</th>
+                                                <th>date completed</th>
+                                                <th data-priority="2"></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+
                             {% comment %} <template>
                                 <div class="dropdown-ellipsis" data-toggle="tooltip" data-placement="top" title="More Actions">
                                     <button class="action-item text-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-lg fa-ellipsis-v"></i></button>
@@ -181,6 +205,10 @@
                     <li class="list-group-item d-flex py-2 px-1">
                         <small class="mr-auto">Created</small>
                         <small class="text-right font-weight-bold w-75" id="task_created"></small>
+                    </li>
+                    <li class="list-group-item d-flex py-2 px-1">
+                        <small class="mr-auto">Completed</small>
+                        <small class="text-right font-weight-bold w-75" id="task_complete"></small>
                     </li>
                 </ul>
             </div>
