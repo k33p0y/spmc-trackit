@@ -25,21 +25,39 @@ const exploreTrackit = function(request) {
             position: 'right',
         },
         {
-            title: 'Request',
-            element: '#intro_request',
-            intro: 'Create, Manage and Track your  <b class="text-orange">requests</b>.',
+            title: 'Tasks',
+            element: '#intro_tasks',
+            intro: 'A list of every <b class="text-orange">action item</b> linked to your requests that must be accomplished.',
             position: 'right',
         },
         {
-            title: 'User Guide',
-            element: '#intro_guide',
-            intro: 'This is where to go for a <b class="text-orange">guide</b>. Clicking this will direct you to a PDF viewer.',
+            title: 'Request',
+            element: '#intro_request',
+            intro: 'A table containing all of your <b class="text-orange">made requests</b>. Here, you may view and manage the details of your request.',
+            position: 'right',
+        },
+        {
+            title: 'Track',
+            element: '#intro_track_request',
+            intro: "To monitor the progress of your request. You can view the request logs by simply <b class='text-orange'>keeping track</b> of your ticket number.",
+            position: 'right',
+        },
+        {
+            title: 'Create',
+            element: '#intro_craete_request',
+            intro: 'If you ever want to start <b class="text-orange">creating</b> your requests, This is where you go.',
             position: 'right',
         },
         {
             title: 'Notification',
             element: '#intro_notification',
             intro: 'Alerts you with information by a badge. <b class="text-orange">Notify</b> you with requests status and other updates.',
+        },
+        {
+            title: 'Guide',
+            element: '#intro_guide',
+            intro: "Visit this page for a <b class='text-orange'>user's manual</b> with more details about Track-it. Clicking this will direct you to a PDF viewer.",
+            position: 'right',
         },
         {
             title: 'Explore',
@@ -49,15 +67,15 @@ const exploreTrackit = function(request) {
             return document.querySelector(obj.element) !== null || obj.title === 'Welcome';
         }),
     })
-    .onbeforechange(function(element) {  
-        switch (element.id) { 
-            case "intro_request": 
-                $('#intro_request').addClass('menu-open')
-            break;
-            default:
-                $('#intro_request').removeClass('menu-open')
-        }
-    })
+    // .onbeforechange(function(element) {  
+    //     switch (element.id) { 
+    //         case "intro_request": 
+    //             $('#intro_request').addClass('menu-open')
+    //         break;
+    //         default:
+    //             $('#intro_request').removeClass('menu-open')
+    //     }
+    // })
     .onexit(function(element) {
         if (request) axiosTour(request, 'main')  
     })
