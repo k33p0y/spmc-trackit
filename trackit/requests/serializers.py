@@ -155,6 +155,12 @@ class TicketListSerializer(serializers.ModelSerializer):
       exclude = ['form_data']
       datatables_always_serialize = ('ticket_id', 'progress', 'department', 'officers')
 
+class TicketCounterSerializer(serializers.ModelSerializer):
+
+   class Meta:
+      model = Ticket
+      fields = ['form_data']
+
 class TicketProfileSerializer(serializers.ModelSerializer):
    status = StatusReadOnlySerializer(read_only=True)
    request_form = RequestFormReadOnlySerializer(read_only=True)

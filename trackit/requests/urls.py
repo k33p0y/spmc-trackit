@@ -10,7 +10,8 @@ from .api import (
    RequestFormCRUDViewSet, 
    RequestFormStatusViewSet, 
    RequestFormViewSet, 
-   TicketActionViewSet, 
+   TicketActionViewSet,
+   TicketCounterViewSet, 
    TicketCRUDViewSet, 
    TicketDashboardViewSet,
    TicketGenerateReferenceViewSet,
@@ -25,6 +26,7 @@ router.register('api/requests/forms/crud', RequestFormCRUDViewSet, basename='Req
 router.register('api/requests/forms/all', RequestFormViewSet, basename='RequestFormList')
 router.register('api/requests/ticket/crud', TicketCRUDViewSet, basename='Ticket')
 router.register('api/requests/ticket/all', TicketViewSet, basename='TicketList')
+router.register('api/requests/ticket/counter', TicketCounterViewSet, basename='TicketCount')
 router.register('api/requests/ticket/myrequests', TicketProfileViewSet, basename='TicketProfile')
 router.register('api/requests/ticket/latest', TicketDashboardViewSet, basename='TicketDashboard')
 router.register('api/requests/ticket/generate_reference', TicketGenerateReferenceViewSet, basename='TicketGenerateReference')

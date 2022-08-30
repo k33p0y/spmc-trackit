@@ -137,4 +137,37 @@ $(document).ready(function () {
       exploreTrackit();
    });
 
+   const getCounterDash = function() {
+      $('.spinner-dash').removeClass('d-none'); // remove spinners
+      $('.counter').html(''); // clear values
+
+      // REQUESTS
+      $.get('/api/requests/ticket/counter/', {"myrequest" : true}, (response) => { // my request
+         $('#spinner_myrequest').addClass('d-none'); // remove spinners
+         $('#my_request').html(response.count) // display count
+      });
+      $.get('/api/requests/ticket/counter/', {"closed" : true}, (response) => { // closed request
+         $('#spinner_closed').addClass('d-none'); // remove spinners
+         $('#closed_request').html(response.count) // display users
+      });     
+      $.get('/api/requests/ticket/counter/', (response) => { // total request
+         $('#spinner_total').addClass('d-none'); // remove spinners
+         $('#total_request').html(response.count) // display count
+      });
+
+      // TASKS
+      $.get('/api/tasks/open/', (response) => { // open tasks
+         $('#spinner_open').addClass('d-none'); // total request
+         $('#open_tasks').html(response.count) // display count
+      });
+      $.get('/api/tasks/list/mytasks/', (response) => { // todo tasks
+         $('#spinner_todo').addClass('d-none'); // total request
+         $('#todo_tasks').html(response.count) // display count
+      });
+      $.get('/api/tasks/list/completed/', (response) => { // completed tasks
+         $('#spinner_complete').addClass('d-none'); // total request
+         $('#completed_tasks').html(response.count) // display count
+      });
+   }
+   getCounterDash();
 });

@@ -39,7 +39,7 @@
                </div>
             </div>
          </div>
-         <div class="col-12">
+         {% comment %} <div class="col-12">
             <div class="card card-wrap shadow-sm">
                <div class="card-body p-3">
                   <div>
@@ -48,6 +48,67 @@
                      <small class="text-muted">Software and Systems Development Unit (SSD)</small>
                   </div>
                   <div class="icon-overlay"><i class="fas fa-laptop-code"></i></div>
+               </div>
+            </div>
+         </div> {% endcomment %}
+      </div>
+      
+      <div class="row">
+         <div class="col-12 col-md-6">
+            <div class="card card-wrap shadow-sm">
+               <div class="card-body p-3">
+                  <div>
+                     <p class="text-xs font-weight-bold text-uppercase mb-2 wrap-label">Tasks</p>
+                     <div class="d-flex">
+                        {% if user.is_staff or user.is_superuser %} 
+                        <div class="flex-fill">
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_open" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold counter m-0" id="open_tasks"></h5>
+                           <small class="text-muted">Open</small>
+                        </div>
+                        {% endif %}
+                        <div class="flex-fill"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_todo" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold counter m-0" id="todo_tasks"></h5>
+                           <small class="text-muted">To Do</small>
+                        </div>
+                        <div class="flex-fill"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_complete" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold counter m-0" id="completed_tasks"></h5>
+                           <small class="text-muted">Completed</small>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="icon-overlay"><i class="fas fa-tasks"></i></div>
+               </div>
+            </div>
+         </div>
+         <div class="col-12 col-md-6">
+            <div class="card card-wrap shadow-sm">
+               <div class="card-body p-3">
+                  <div>
+                     <p class="text-xs font-weight-bold text-uppercase mb-2 wrap-label">Requests</p>
+                     <div class="d-flex">
+                        <div class="flex-fill">
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_myrequest" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold counter m-0" id="my_request"></h5>
+                           <small class="text-muted">My Request</small>
+                        </div>                        
+                        <div class="flex-fill"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_closed" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold counter m-0" id="closed_request"></h5>
+                           <small class="text-muted">Closed</small>
+                        </div>
+                        {% if user.is_staff or user.is_superuser %} 
+                        <div class="flex-fill"> 
+                           <span class="spinner-border text-secondary spinner-dash m-1" id="spinner_total" role="status" aria-hidden="true"></span>
+                           <h5 class="font-weight-bold counter m-0" id="total_request"></h5>
+                           <small class="text-muted">Total</small>
+                        </div>
+                        {% endif %}
+                     </div>
+                  </div>
+                  <div class="icon-overlay"><i class="fas fa-list"></i></div>
                </div>
             </div>
          </div>

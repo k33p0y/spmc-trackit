@@ -5,14 +5,14 @@
 
 .profile-head {
    background: rgb(250,140,81);
-   background: linear-gradient(90deg, 
+   /* background: linear-gradient(90deg, 
       rgba(250,138,78,1) 0%, 
       rgba(253,155,102,1) 25%, 
       rgba(255,170,125,0.9023984593837535) 50%, 
       rgba(252,151,97,1) 75%, 
       rgba(250,138,78,1) 100%),
       url("../img/cover-bg.jpg"),
-      no-repeat;
+      no-repeat; */
    background-size: cover;
    height: 150px;
    border: 0;

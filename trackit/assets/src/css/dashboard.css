@@ -5,6 +5,10 @@
     text-decoration: none !important;
     color: #3e454d !important;
 }
+.spinner-dash {
+   width: 1rem;
+   height: 1rem;
+}
 
 .card .card-title {
     font-size: 12px !important;

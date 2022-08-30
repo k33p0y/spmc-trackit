@@ -19,6 +19,7 @@ from .serializers import (
    RequestFormListSerializer, 
    RequestFormStatusSerializer,
    TicketActionSerializer,
+   TicketCounterSerializer,
    TicketCRUDSerializer, 
    TicketDashboardSerializer, 
    TicketListSerializer, 
@@ -167,6 +168,29 @@ class TicketActionViewSet(viewsets.ModelViewSet):
    serializer_class = TicketActionSerializer
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
    queryset = Remark.objects.all()
+
+class TicketCounterViewSet(viewsets.ModelViewSet):
+   serializer_class = TicketCounterSerializer
+   permission_classes = [permissions.IsAuthenticated]
+   queryset = Ticket.objects.all()
+   http_method_names = ['get', 'head']
+
+   def get_queryset(self):
+      # Search & Filter Parameters
+      myrequest = self.request.query_params.get('myrequest', None)
+      closed = self.request.query_params.get('closed', None)
+
+      qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status')
+      
+      # Parameters
+      if myrequest: qs = qs.filter(requested_by=self.request.user)
+      if closed: 
+         if self.request.user.is_superuser or self.request.user.is_staff:
+            qs = qs.filter(status__name='Close')
+         else: 
+            qs = qs.filter(requested_by=self.request.user, status__name='Close')
+
+      return qs
 
 class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):    
    serializer_class = RequestFormStatusSerializer
