@@ -59,4 +59,3 @@ class Tour(models.Model):
     is_explore_req_detail = models.BooleanField(default=False)
     is_explore_profile = models.BooleanField(default=False)
     is_explore_task = models.BooleanField(default=False)
-    is_explore_update = models.BooleanField(default=False)

@@ -44,7 +44,7 @@ const exploreTrackit = function(request) {
         },
         {
             title: 'Create',
-            element: '#intro_craete_request',
+            element: '#intro_create_request',
             intro: 'If you ever want to start <b class="text-orange">creating</b> your requests, This is where you go.',
             position: 'right',
         },
