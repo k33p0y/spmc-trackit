@@ -93,6 +93,18 @@ const exploreRequestTable = function(request) {
         // showProgress: true,
         skipLabel: 'skip',
         steps: [{
+            title: 'List',
+            element: '#intro_tbody',
+            intro: $('#table_gif').html(),
+            position: 'top',
+        },
+        {
+            title: 'Sort',
+            element: '#intro_tablehead',
+            intro: 'You can <b class="text-orange">sort</b> table by clicking the column header.',
+            position: 'right',
+        },
+        {
             title: 'Filter',
             element: '#intro_filter',
             intro: 'You can <b class="text-orange">filter rows</b> by form, category, department, status, and date.'
@@ -102,18 +114,6 @@ const exploreRequestTable = function(request) {
             element: '#intro_search',
             intro: 'You can <b class="text-orange">search</b> by ticket number, reference number and description.',
             position: 'right',
-        },
-        {
-            title: 'Sort',
-            element: '#intro_tablehead',
-            intro: 'You can <b class="text-orange">sort</b> table by clicking the column header.',
-            position: 'right',
-        },
-        {
-            title: 'List',
-            element: '#intro_tbody',
-            intro: $('#table_gif').html(),
-            position: 'top',
         },
         {
             title: 'New',
@@ -390,6 +390,51 @@ const exploreProfile = function(request) {
     .start()
 }
 
+const exploreTask = function(request) {
+    introJs()
+    .setOptions({
+        disableInteraction: true,
+        exitOnEsc: false, // prevent user to exit tour when pressing Esc button
+        exitOnOverlayClick: false, // prevent user to exit tour when clicking overlay
+        scrollToElement: true,
+        showBullets: true, // steps bullets indicators
+        // showProgress: true,
+        skipLabel: 'skip',
+        steps: [{
+            title: 'List',
+            element: '#intro_list',
+            intro: $('#table_tasks_gif').html(),
+        },
+        {
+            title: 'Sort',
+            element: '#intro_tablehead',
+            intro: 'You can <b class="text-orange">sort</b> table by clicking the column header.',
+            position: 'right',
+        },
+        {
+            title: 'Search',
+            element: '#intro_search_mytask',
+            intro: 'You can <b class="text-orange">search</b> by ticket number, reference number and description.'
+        },
+        {
+            title: 'Tabs',
+            element: '#intro_task',
+            intro: 'By selecting <b class="text-orange">tabs</b>, you can change the table view. Switching on to the to-do list or completed tasks'
+        },
+        {
+            title: 'Tasks',
+            element: '#intro_open',
+            intro: 'Not all tasks are assigned to you directly. Lists of <b class="text-orange">open tasks</b> are available in this panel.'
+        }].filter(function (obj) {
+            return document.querySelector(obj.element) !== null;
+        }),
+    })
+    .onexit(function(element) {  
+        if (request) axiosTour(request, 'task')
+    })
+    .start()
+}
+
 const axiosTour = function(request, tour) {
     // set data values;
     let data = new Object()
@@ -401,6 +446,7 @@ const axiosTour = function(request, tour) {
             data.is_explore_req_view = (tour == 'request_view') ? true : false;
             data.is_explore_req_detail = (tour == 'request_detail') ? true : false;
             data.is_explore_profile = (tour == 'profile') ? true : false;
+            data.is_explore_task = (tour == 'task') ? true : false;
         break;
         case "PUT":
             if (tour == 'main') data.is_explore_main = true;
@@ -409,6 +455,7 @@ const axiosTour = function(request, tour) {
             if (tour == 'request_view') data.is_explore_req_view = true;
             if (tour == 'request_detail') data.is_explore_req_detail = true;
             if (tour == 'profile') data.is_explore_profile = true;
+            if (tour == 'task') data.is_explore_task = true;
         break;
     }
     axios({

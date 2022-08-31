@@ -1,4 +1,9 @@
 $(document).ready(function () {
+    // walkthrough click event
+    $('.tour-me').click(function() {
+        exploreTask();
+    });
+
     let todosTbl = $('#dt_mytasks').DataTable({
         "searching": false,
         "responsive": true,
@@ -19,15 +24,19 @@ $(document).ready(function () {
                 data: "ticket",
                 render: function (data, type, row) {
                     let description = (row.ticket.description.length >= 60) ? `${row.ticket.description.substr(0, 60)}...` : row.ticket.description;
-                    let template = `<a href='/requests/${row.ticket.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket.ticket_no} </a>
-                        <p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
-                        <span class="badge badge-pill text-light" style="background-color:${row.ticket.request_form.color}!important">${row.ticket.request_form.prefix}</span>
-                        <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>
-                        <span class="badge badge-orange-pastel badge-pill">${row.task_type.status.name}</span>`;
+                    let template = `<div class="d-flex align-items-center">
+                            <div class="mr-auto">
+                                <a href='/requests/${row.ticket.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket.ticket_no} </a>
+                                <p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
+                                <span class="badge badge-pill text-light" style="background-color:${row.ticket.request_form.color}!important">${row.ticket.request_form.prefix}</span>
+                                <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>
+                                <span class="badge badge-orange-pastel badge-pill">${row.task_type.status.name}</span>
+                            </div>
+                        </div>`;
                     if (type == 'display') data = template
                     return data
                 },
-                width: "60%"
+                width: "70%"
             }, // tikcket
             {
                 data: "officers",
@@ -44,7 +53,7 @@ $(document).ready(function () {
                     if (type == 'display') data = `<div class="d-flex">${memberItem()}</div>`
                     return data
                 },
-                width: "15%"
+                // width: "10%"
                 // orderable: false,
             }, // officers
             {
@@ -104,7 +113,7 @@ $(document).ready(function () {
                     if (type == 'display') data = template
                     return data
                 },
-                width: "60%"
+                width: "80%"
             }, // tikcket
             {
                 data: "date_completed",

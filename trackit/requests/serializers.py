@@ -345,10 +345,11 @@ class TicketActionSerializer(serializers.ModelSerializer):
       )  
       action.save()
 
-      # update task instance, mark complete
-      task = get_object_or_404(Task, pk=active_task)
-      task.date_completed = datetime.datetime.now()
-      task.save()
+      # update task instance, mark complete\
+      if active_task:
+         task = get_object_or_404(Task, pk=active_task)
+         task.date_completed = datetime.datetime.now()
+         task.save()
    
       create_task(ticket, formstatus, assign_officer, current_user, action.remark) # create new task instance
       create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
