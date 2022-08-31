@@ -132,7 +132,8 @@ class TourSerializer(serializers.ModelSerializer):
             is_explore_req_new = validated_data['is_explore_req_new'],
             is_explore_req_view = validated_data['is_explore_req_view'],
             is_explore_req_detail = validated_data['is_explore_req_detail'],
-            is_explore_profile = validated_data['is_explore_profile']
+            is_explore_profile = validated_data['is_explore_profile'],
+            is_explore_task = validated_data['is_explore_task']
         )
         tour.save()
         return tour

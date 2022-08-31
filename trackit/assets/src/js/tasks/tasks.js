@@ -1,4 +1,24 @@
 $(document).ready(function () {
+    // Check if user has already done or skip walkthrough
+    axios.get('/api/config/tour/').then(res => { // response
+        const response = res.data.results;
+        let request = new Object();
+        // if has response and is_explore value is false; call walkthrough fn with PUT method and url
+        // if empty response; call walkthrough fn with POST method to create instance  
+        if (response.length > 0 && !response[0].is_explore_task) {
+            request.method = 'PUT';
+            request.url = `/api/config/tour/${response[0].id}/`;
+            exploreTask(request);
+        }
+        else if (response.length == 0) {
+            request.method = 'POST';
+            request.url = `/api/config/tour/`;
+            exploreTask(request);
+        }
+    }).catch(err => { // error
+        toastError(err.response.statusText) // alert
+    });
+
     // walkthrough click event
     $('.tour-me').click(function() {
         exploreTask();
