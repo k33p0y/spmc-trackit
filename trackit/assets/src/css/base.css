@@ -238,40 +238,17 @@ h1, h2,  h3, h4, h5, h6, small {
    display: flex;
    align-items: center;  
 }
-.sidebar .nav .nav-link-add {
-   padding: 8px;
-   display: flex;
-   align-items: center;
-}
-.sidebar .nav .nav-link-add.active {
-   font-size: 12px !important;
-   /* color: #1f2d3d; */
-   background-color: unset;
-}
-.sidebar .nav .nav-link-add p {
-   margin: 0;
-}
-.sidebar .nav .nav-link-add .nav-icon-add {
-   margin-left: 0.05rem;
-   margin-right: 0.2rem;
-   text-align: center;
-   width: 1.6rem;
-}
-.sidebar .nav .nav-pills .nav-icon-add.active {
-   background-color: none !important;
-}
 .sidebar .nav .nav-link-add i.nav-icon-add,
 .sidebar .nav .nav-link-add p {
    color: #FD7E14 !important;
 }
 .sidebar .nav .nav-link-add:hover i.nav-icon-add,
-.sidebar .nav .nav-link-add.active i.nav-icon-add,
-.sidebar .nav .nav-link-add:hover p,
-.sidebar .nav .nav-link-add.active p {
+.sidebar .nav .nav-link-add:hover p {
    color: #ff9e4e !important;
 }
-.sidebar .nav .nav-link-add.active {
-   background-color: none !important;
+.sidebar .nav .nav-link-add.active i.nav-icon-add,
+.sidebar .nav .nav-link-add.active p {
+   color: #1f2d3d !important;
 }
 .sidebar .nav .nav-item .nav-link .nav-icon {
    font-size: 12px !important;

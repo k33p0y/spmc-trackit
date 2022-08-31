@@ -87,13 +87,13 @@
                </a>
             </li>
             {% if perms.requests.add_ticket %}
-            {% comment %} <li class="nav-item"> {% endcomment %}
+            <li class="nav-item">
                <a href="{% url 'create_ticket' %}"
                   class="nav-link nav-link-add {% if url == 'create_ticket' %}active{% endif %}" id="intro_create_request">
-                  <i class="nav-icon nav-icon-add fas fa-plus"></i>
+                  <i class="nav-icon nav-icon-add  fas fa-plus"></i>
                   <p>Create a Request</p>
                </a>
-            {% comment %} </li> {% endcomment %}
+            </li>
             {% endif %}
             {% endif %}
         
