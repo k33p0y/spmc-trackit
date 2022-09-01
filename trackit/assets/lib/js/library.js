@@ -1,4 +1,8 @@
-$('body').tooltip({selector: '[data-toggle="tooltip"]'}); // initiate tooltip
+$('body').tooltip({selector: '[data-toggle="tooltip"]'}); // initiate 
+
+// task counter for badge
+// temporary notifacation
+axios.get('/api/tasks/list/mytasks/').then(res => { $('#badge_task').html(res.data.count) });
 
 // Headers CSRF 
 function getCookie(name) {

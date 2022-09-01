@@ -59,8 +59,11 @@
             {% comment %} {% if perms.tasks.view_task %} {% endcomment %}
             <li class="nav-item" id="intro_tasks">
                <a href="{% url 'mytasks' %}" class="nav-link {% if url == 'mytasks' %} active {% endif %}">
-                  <i class="nav-icon fas fa-tasks"></i>
-                  <p> My Tasks</p>
+                  <div class="d-flex align-items-center mr-auto">
+                     <i class="nav-icon fas fa-tasks"></i>
+                     <p> My Tasks</p>
+                  </div>
+                  <span class="badge badge-pill badge-secondary mx-2" id="badge_task"></span>
                </a>
             </li>
             {% comment %} {% endif %} {% endcomment %}

@@ -12,7 +12,7 @@ from .models import OpenTask, Task, Team
 class TaskListViewSet(viewsets.ModelViewSet):    
    serializer_class = TasksListSerializer
    queryset = Task.objects.all()
-   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['get', 'head',]
 
    def get_queryset(self):
@@ -21,7 +21,7 @@ class TaskListViewSet(viewsets.ModelViewSet):
 class TaskListCompleteViewSet(viewsets.ModelViewSet):    
    serializer_class = TasksListSerializer
    queryset = Task.objects.all()
-   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['get', 'head',]
 
    def get_queryset(self):
@@ -30,19 +30,19 @@ class TaskListCompleteViewSet(viewsets.ModelViewSet):
 class RemoveTaskViewSet(viewsets.ModelViewSet):    
    serializer_class = RemoveTasksSerializer
    queryset = Task.objects.all()
-   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['get', 'head', 'put']
 
 class ShareTaskViewSet(viewsets.ModelViewSet):    
    serializer_class = ShareTaskSerializer
    queryset = Task.objects.all()
-   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['get', 'head', 'put']
 
 class OpenTaskViewSet(viewsets.ModelViewSet):    
    serializer_class = OpenTasksSerializer
    queryset = OpenTask.objects.all()
-   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['get', 'head', 'put']
 
    def get_queryset(self):
@@ -54,7 +54,7 @@ class OpenTaskViewSet(viewsets.ModelViewSet):
 class RemoveTeamPersonViewSet(viewsets.ModelViewSet):    
    serializer_class = RemoveTeamPersonSerializer
    queryset = Team.objects.all()
-   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['head', 'delete']
 
 
