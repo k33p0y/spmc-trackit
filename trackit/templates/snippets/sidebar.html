@@ -69,37 +69,7 @@
             {% comment %} {% endif %} {% endcomment %}
 
             
-            {% if user.is_verified %}
-            <!-- // // // // REQUESTS MODULE --> 
-            {% if perms.requests.add_ticket or perms.requests.view_ticket %}
-            <li class="nav-header">Request</li>
-            {% if perms.requests.view_ticket %}
-            <li class="nav-item"  id="intro_request">
-               <a href="{% url 'ticket' %}"
-                  class="nav-link {% if url == 'ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
-                  <i class="nav-icon fas fa-list"></i>
-                  <p>All Requests</p>
-               </a>
-            </li>
-            {% endif %}
-            <li class="nav-item">
-               <a href="{% url 'ticket_log_list' %}"
-                  class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}" id="intro_track_request">
-                  <i class="nav-icon fas fa-paper-plane"></i>
-                  <p>Track</p>
-               </a>
-            </li>
-            {% if perms.requests.add_ticket %}
-            <li class="nav-item">
-               <a href="{% url 'create_ticket' %}"
-                  class="nav-link nav-link-add {% if url == 'create_ticket' %}active{% endif %}" id="intro_create_request">
-                  <i class="nav-icon nav-icon-add  fas fa-plus"></i>
-                  <p>Create a Request</p>
-               </a>
-            </li>
-            {% endif %}
-            {% endif %}
-        
+            {% if user.is_verified %}        
             {% if request.user.is_superuser or request.user.is_staff %}
             <li class="nav-header">menu</li>
 
@@ -229,6 +199,37 @@
                <a href="{% url 'announcement' %}" class="nav-link {% if url == 'announcement' or  url == 'create_article' or  url == 'view_article' or  url == 'change_article' %} active {% endif %}">
                   <i class="nav-icon fas fa-bullhorn"></i>
                   <p> Announcement</p>
+               </a>
+            </li>
+            {% endif %}
+            {% endif %}
+
+
+            <!-- // // // // REQUESTS MODULE --> 
+            {% if perms.requests.add_ticket or perms.requests.view_ticket %}
+            <li class="nav-header">Request</li>
+            {% if perms.requests.view_ticket %}
+            <li class="nav-item"  id="intro_request">
+               <a href="{% url 'ticket' %}"
+                  class="nav-link {% if url == 'ticket' or url == 'detail_ticket' or url == 'view_ticket' %} active {% endif %}">
+                  <i class="nav-icon fas fa-list"></i>
+                  <p>All Requests</p>
+               </a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+               <a href="{% url 'ticket_log_list' %}"
+                  class="nav-link {% if url == 'ticket_log_list' %} active {% endif %}" id="intro_track_request">
+                  <i class="nav-icon fas fa-paper-plane"></i>
+                  <p>Track</p>
+               </a>
+            </li>
+            {% if perms.requests.add_ticket %}
+            <li class="nav-item">
+               <a href="{% url 'create_ticket' %}"
+                  class="nav-link nav-link-add {% if url == 'create_ticket' %}active{% endif %}" id="intro_create_request">
+                  <i class="nav-icon nav-icon-add  fas fa-plus"></i>
+                  <p>Create a Request</p>
                </a>
             </li>
             {% endif %}

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
+from django.db import transaction
 from django.db.models import Q
 
 from .models import Ticket, RequestForm, Attachment, RequestFormStatus, Notification
@@ -208,6 +209,7 @@ def generate_reference(form):
    return reference_no
 
 # Task method post
+@transaction.atomic
 def create_task(ticket, formstatus_id, officers, request_user, remark):
    # get formstatus instance
    steps = RequestFormStatus.objects.select_related('form', 'status',).filter(form=ticket.request_form).order_by('order') # get all steps from ticket request form
@@ -237,3 +239,16 @@ def create_task(ticket, formstatus_id, officers, request_user, remark):
          Team.objects.create(member_id=officers, task_id=task.pk, remark=remark)
    elif not last_step.order == form_status.order:
       task = OpenTask.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
+
+def create_task_for_all_requests(request):
+   tickets = Ticket.objects.filter(is_active=True)
+   for ticket in tickets:
+      steps = RequestFormStatus.objects.select_related('form', 'status',).filter(form_id=ticket.request_form).order_by('order') # get all steps from ticket request form
+      curr_step = steps.get(status_id=ticket.status) # get current step
+      
+      remark = ''
+      officers = curr_step.officer.all()[0].pk if len(curr_step.officer.all()) == 1 else []
+
+      create_task(ticket, curr_step.pk, officers, request.user, remark)
+      
+   return render(request, 'pages/tasks/create_task.html', {})
