@@ -57,7 +57,7 @@ class Ticket(models.Model):
         return str(self.ticket_id)
 
 class RequestFormStatus(models.Model):
-    form = models.ForeignKey(RequestForm, on_delete=models.CASCADE)
+    form = models.ForeignKey(RequestForm, related_name="request_forms", on_delete=models.CASCADE)
     status = models.ForeignKey(Status, related_name='form_statuses', on_delete=models.CASCADE)
     officer = models.ManyToManyField(User, related_name='status_officers', blank=True)
     order = models.PositiveSmallIntegerField(null=True, blank=True)

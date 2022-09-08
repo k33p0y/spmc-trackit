@@ -201,20 +201,23 @@ class TicketCRUDSerializer(serializers.ModelSerializer):
 
    def create(self, validated_data):
       form = RequestForm.objects.get(pk=validated_data['request_form'].id)
+      formstatus = form.request_forms.get(order=1).pk
+
       try:
          ticket = Ticket(
             ticket_no = validated_data['ticket_no'],
             description = validated_data['description'],
             request_form = validated_data['request_form'],
             form_data = validated_data['form_data'],
-            status = form.status.get(requestformstatus__order=1),
+            status = form.status.get(form_statuses__order=1),
             requested_by = self.context['request'].user,
             department = self.context['request'].user.department,
             is_active = True
          )
          ticket.save()
          ticket.category.add(*validated_data['category'])
-      
+
+         create_task(ticket, formstatus, None, None, '') # create new task instance
          create_notification(str(ticket.ticket_id), ticket, 'ticket')  # Create notification instance
          create_remark(str(ticket.ticket_id), ticket) # Create initial remark
       except Exception as error:
