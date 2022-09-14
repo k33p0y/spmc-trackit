@@ -10,11 +10,11 @@ from config.models import Department, Status, Remark
 from core.models import User
 from events.models import EventTicket
 from easyaudit.models import CRUDEvent
-from tasks.models import Task, Team
+from tasks.models import Task, Team, OpenTask
 
 from core.serializers import GroupReadOnlySerializer, UserInfoSerializer
 from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer, CategoryTypeReadOnlySerializer
-from tasks.serializers import MemberSerializer
+from tasks.serializers import MemberSerializer, TasksNotificationSerializer
 
 import json, uuid, datetime
 
@@ -29,7 +29,7 @@ class RequestFormStatusSerializer(serializers.ModelSerializer):
       fields = ('id', 'status_id', 'name', 'order', 'is_client_step', 'is_head_step', 'has_approving', 'has_pass_fail', 'has_event', 'officer')
 
 class RequestFormListSerializer(serializers.ModelSerializer):
-   status = RequestFormStatusSerializer(source="requestformstatus_set", many=True, read_only=True)
+   status = RequestFormStatusSerializer(source="request_forms", many=True, read_only=True)
    group = GroupReadOnlySerializer(many=True, read_only=True)
 
    class Meta:
@@ -118,6 +118,7 @@ class RequestFormCRUDSerializer(serializers.ModelSerializer):
    class Meta:
       model = RequestForm
       fields = '__all__'
+      # datatables_always_serialize = ('id', 'fields', 'status', 'group', 'category_types')
 
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):
    class Meta:
@@ -407,14 +408,18 @@ class ChoiceField(serializers.ChoiceField):
 class CRUDEventSerializer(serializers.ModelSerializer):
    event_type = ChoiceField(choices=CRUDEvent.TYPES)
    changed_fields = serializers.JSONField()
-   ticket_no = serializers.SerializerMethodField()
+   ticket = serializers.SerializerMethodField()
    remarks = serializers.SerializerMethodField()
+   tasks = serializers.SerializerMethodField()
 
-   def get_ticket_no(self, instance):
+   def get_ticket(self, instance):
       object_json_repr = json.loads(instance.object_json_repr)
       if (object_json_repr[0]['model'] == 'requests.comment'):
          ticket = Ticket.objects.get(pk=object_json_repr[0]['fields']['ticket'])
-         return ticket.ticket_no
+         return {'ticket_no' : ticket.ticket_no}
+      elif (object_json_repr[0]['model'] == 'requests.ticket'):
+         ticket = Ticket.objects.get(pk=instance.object_id)
+         return {'requestor' : '%s %s' % (ticket.requested_by.first_name, ticket.requested_by.last_name)}
       return ''
 
    def get_remarks(self, instance):
@@ -431,9 +436,25 @@ class CRUDEventSerializer(serializers.ModelSerializer):
       except Remark.DoesNotExist:
          pass
 
+   def get_tasks(self, instance):
+      object_json_repr = json.loads(instance.object_json_repr)
+      if (object_json_repr[0]['model'] == 'tasks.task'):
+         task = Task.objects.get(pk=instance.object_id)
+         return {
+            'is_head_task' : task.task_type.is_head_step,
+            'is_client_task' : task.task_type.is_client_step,
+            'date_created' : task.date_created,
+            'date_completed' : task.date_completed,
+            'task_type' : task.task_type.status.name,
+            'ticket' : {
+               'ticket_no' : task.ticket.ticket_no
+            }
+         }
+      return ''
+
    class Meta:
       model = CRUDEvent
-      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr', 'ticket_no', 'remarks', 'content_type']
+      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr', 'ticket', 'remarks', 'tasks', 'content_type']
 
    def to_representation(self, instance):
       if instance.changed_fields:

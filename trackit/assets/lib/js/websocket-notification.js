@@ -42,10 +42,11 @@ let getAllNotifications = function (page) {
             if (!page) $('.dropdown-notifications-div .dropdown-body').empty();
             for (i = 0; i < notifications.length; i++) {
                 let model = JSON.parse(notifications[i].log.object_json_repr)
-
                 if (model[0].model === 'requests.ticket') displayTicketNotification(notifications[i]);
                 if (model[0].model === 'requests.comment') displayCommentNotification(notifications[i]);
                 if (model[0].model === 'core.user') displayUserNotification(notifications[i]);
+                if (model[0].model === 'tasks.task') displayActionNotification(notifications[i]);
+                if (model[0].model === 'tasks.opentask') displayOpenTaskNotification(notifications[i]);
             }
             $('.dropdown-notifications-div .dropdown-body a').click(function () {
                 localStorage.setItem("ticketNumber", $(this).attr('data-ticket-no'));
@@ -65,18 +66,38 @@ let displayTicketNotification = function (notification) {
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     let ticket_no = object_json_repr[0].fields.ticket_no
     let description = object_json_repr[0].fields.description
-    created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`
+    let requested_by = object_json_repr[0].fields.requested_by
+    created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`  // creator of the notification
     user = `${notification.user.first_name} ${notification.user.last_name}`
     if (created_by === user) created_by = 'You'; // if the authenticated user is the requestor of the ticket
+    if (requested_by === notification.user.id) requestor = 'your' 
+    else {
+        apostrophe = (notification.log.ticket.requestor.charAt(notification.log.ticket.requestor.length-1) === 's') ? `'` : `'s`
+        requestor = `<b>${notification.log.ticket.requestor}${apostrophe}</b>`
+    }
+    icon = 'fa-ticket-alt'
+    color = 'bg-primary'
     action = `${notification.log.event_type}`
     time_from_now = moment(notification.log.datetime).fromNow()
-    if (action === 'Create') action = `Created a new request: <b class="text-orange">${ticket_no}</b>.`;
+    if (action === 'Create') action = `created a new request.`;
     else if (action === 'Update') {
         if (notification.log.remarks) {
-            if (notification.log.remarks.is_approve) action = `Approved request: <b class="text-orange">${ticket_no}</b> changed status to <b class="text-orange">${notification.log.changed_fields.status[1]}</b>.`
-            else if (notification.log.remarks.is_approve == false) action = `Disapproved request: <b class="text-orange">${ticket_no}</b> changed status to <b class="text-orange">${notification.log.changed_fields.status[1]}</b>.`
-            else action = `Updated request: <b class="text-orange">${ticket_no}</b> status to <b class="text-orange">${notification.log.changed_fields.status[1]}</b>.`
-        } else action = `Updated request: <b class="text-orange">${ticket_no}</b> details.`
+            if (notification.log.remarks.is_approve) { // approved
+                icon = 'fa-check'
+                action = `approved ${requestor} request on ticket <b>${ticket_no}</b>.`
+            } else if (notification.log.remarks.is_approve == false) { // disapproved
+                icon = 'fa-times'
+                color = 'bg-danger'
+                action = `disapproved your request on ticket <b>${ticket_no}</b>.`
+            } else if (notification.log.remarks.is_pass) { // passed
+                icon = 'fa-check'
+                action = `passed its request on ticket <b>${ticket_no}</b>.`
+            } else if (notification.log.remarks.is_pass == false) { // failed
+                icon = 'fa-times'
+                color = 'bg-danger'
+                action = `failed its request on ticket <b>${ticket_no}</b>.`
+            } else action = `moved status to <b>${notification.log.changed_fields.status[1]}</b> on ticket <b>${ticket_no}</b>.`
+        } else action = `made changes to ticket <b>${ticket_no}</b>.`
     }
 
     $('.dropdown-body').append(
@@ -84,16 +105,12 @@ let displayTicketNotification = function (notification) {
             <div class="notification-user align-self-start mr-2">
                 <div class="img-circle">
                     <span class="img-name">${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}</span>
-                    <div class="img-icon bg-info"><i class="fas fa-ticket-alt text-light"></i></div>
+                    <div class="img-icon ${color}"><i class="fas ${icon} text-light"></i></div>
                 </div>
             </div>
             <div class="notification-content w-100">
-                <div class="d-flex justify-content-between align-items-center">    
-                    <p><b>${created_by}</b></p>
-                    <span class="text-muted notification-time">${time_from_now}</span>  
-                </div>  
-                <p class="m-0">${action}</p>
-                <p class="text-muted line-clamp notification-overview"><i class="text-muted">Title: ${description}</i></p>
+                <p class="m-0"><b>${created_by}</b> ${action}</p>
+                <div class="text-muted notification-time">${time_from_now}</div>  
             </div>
         </a>`        
     )
@@ -109,7 +126,7 @@ let displayCommentNotification = function (notification) {
     time_from_now = moment(notification.log.datetime).fromNow();
 
     let ticket_id = `${object_json_repr[0].fields.ticket}`
-    let ticket_no = notification.log.ticket_no
+    let ticket_no = notification.log.ticket.ticket_no
     let comment = `${object_json_repr[0].fields.content}`
 
     $('.dropdown-body').append(
@@ -121,12 +138,8 @@ let displayCommentNotification = function (notification) {
                 </div>
             </div>
             <div class="notification-content w-100">
-                <div class="d-flex justify-content-between align-items-center">    
-                    <p><b>${created_by}</b></p>
-                    <span class="text-muted notification-time">${time_from_now}</span>  
-                </div>  
-                <p class="m-0">Commented on request: <b class="text-orange">${ticket_no}</b>.</p>
-                <p class="text-muted line-clamp notification-overview"><i class="text-muted">"${comment}"</i></p>
+                <p class="m-0"><b>${created_by}</b> commented on request: "<b>${comment}</b>"</p>
+                <div class="text-muted notification-time">${time_from_now}</div>  
             </div>
         </a>`
     )
@@ -135,94 +148,153 @@ let displayCommentNotification = function (notification) {
 let displayUserNotification = function (notification) {
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     let user_pk = object_json_repr[0].pk
-    let time_from_now = moment(notification.log.datetime).fromNow()
     let action = notification.log.event_type
     let changed_fields = notification.log.changed_fields
 
-    img_icon = 'fa-user'
-    img_color = 'bg-purple'
-    subtext = ''
+    time_from_now = moment(notification.log.datetime).fromNow()
+    img_text = ''
+    img_icon = ''
+    circle_color = ''
+    name_color = ''
 
     if (action === 'Create' && notification.log.user === null) {
         img_text = `${object_json_repr[0].fields.first_name.charAt(0)}${object_json_repr[0].fields.last_name.charAt(0)}`
-        title = 'A new user has created an account'
-        content = `<b class="text-orange">${object_json_repr[0].fields.first_name} ${object_json_repr[0].fields.last_name} </b>successfully registered to Track-It. Review account now.`
+        img_icon = `<div class="img-icon bg-success"><i class="fas fa-plus text-light"></i></div>`
+        content = `<b>${object_json_repr[0].fields.first_name} ${object_json_repr[0].fields.last_name}</b> registered to Track-It.`
         notification_url = `/core/user`
     } else if (action === 'Update') {
         notification_url = `/core/user`
         if (notification.log.user.id === parseInt(notification.log.object_id)) { // if user update its profile
             img_text = `${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}`
-            title = `${notification.log.user.first_name} ${notification.log.user.last_name}`
-            content = `Update profile information. <b class="text-orange">See changes</b>.`
+            img_icon = `<div class="img-icon bg-primary"><i class="fas fa-user text-light"></i></div>`
+            content = `<b>$${notification.log.user.first_name} ${notification.log.user.last_name}</b> updated profile information. <b>Review now</b>.`
             if (changed_fields.is_verified) {
                 if (changed_fields.is_verified[1] === 'None') {
-                    img_icon = 'fa-images'
-                    content = `Uploaded new digital photos for verification. <b class="text-orange">Review account now</b>.`
+                    img_icon = `<div class="img-icon bg-danger"><i class="fas fa-image text-light"></i></div>`
+                    content = `<b>${notification.log.user.first_name} ${notification.log.user.last_name}</b> added new photos for verification. <b>Review now</b>.`
                 }             
             } 
         } else { // else admin update its record
             notification_url = `/core/user/${notification.log.object_id}/profile`
+            img_text = `<i class="fas fa-lg fa-user"></i>`
+            circle_color = 'img-circle-info'
+            name_color = 'img-name-info'
             if (changed_fields.is_verified) {
                 if (changed_fields.is_verified[1] === 'True') {
-                    img_text = 'A'
-                    img_icon = 'fa-check'
-                    img_color = 'bg-orange'
-                    title = 'Account Verified'
-                    content = `Welcome to Track-It. <b class="text-orange">You can now start creating your requests</b>.`
+                    img_text = `<i class="fas fa-lg fa-check"></i>`
+                    circle_color = 'img-circle-success'
+                    name_color = 'img-name-success'
+                    content = `<b>Welcome to Track-It</b>. You can now start creating your requests.`
                 } else if (changed_fields.is_verified[1] === 'False') {
-                    img_text = 'A'
-                    img_icon = 'fa-exclamation'
-                    img_color = 'bg-danger'
-                    title = 'Verification Failed'
-                    content = `The Administrator declined your verification. <b class="text-orange">Go to your profile and repeat the verification process</b>.`
+                    img_text = `<i class="fas fa-lg fa-exclamation-triangle"></i>`
+                    circle_color = 'img-circle-danger'
+                    name_color = 'img-name-danger'
+                    content = `<b>The Adminstrator</b> declined your verification. <b>View on profile to repeat the verification process</b>.`
                 } else if (changed_fields.is_verified[1] === 'None') {
-                    img_text = `${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}`
-                    img_icon = 'fa-exclamation'
-                    img_color = 'bg-danger'
-                    title = 'Verification Failed'
-                    content = `The Adminstrator declined your identification. <b class="text-orange">Go to your profile and repeat verification process</b>.`
+                    img_text = `<i class="fas fa-exclamation-triangle"></i>`
+                    circle_color = 'img-circle-danger'
+                    name_color = 'img-name-danger'
+                    content = `<b>The Adminstrator</b> declined your identification. <b>View on profile to repeat verification process</b>.`
                 }
             } else if (changed_fields.department) {
-                img_text = `A`
-                title = 'Account Update'
-                content = `Your department has been changed to <b class="text-orange">${changed_fields.department[1]}</b>.`
-                subtext = `From: ${changed_fields.department[0]}`
+                img_text = `<i class="fas fa-lg fa-sitemap"></i>`
+                circle_color = 'img-circle-primary'
+                name_color = 'img-name-primary'
+                content = `<b>The Adminstrator</b> changed your department: <b>${changed_fields.department[1]}</b>.`
             } else if (changed_fields.first_name || changed_fields.last_name) {
-                img_text = `A`
-                title = 'Account Update'
-                content = `Your name has been changed.<b class="text-orange">See profile now</b>.`
+                content = `<b>The Adminstrator</b> made changes to your name profile. <b>See profile now</b>.`
             } else if (changed_fields.is_staff || changed_fields.is_superuser) {
-                img_text = `A`
-                title = 'Account Permission'
-                content = 'Your permission has been changed.'
-    
+                img_text = `<i class="fas fa-lg fa-unlock"></i>`
+                circle_color = 'img-circle-purple'
+                name_color = 'img-name-purple'
+                content = '<b>The Adminstrator</b> made changes to your permission.'
             } else if (changed_fields.username) {
-                img_text = `A`
-                title = 'Account Update'
-                content = 'Your username has been changed. <b class="text-orange">See profile now.</b>'
+                content = `<b>The Adminstrator</b> changed your username: <b>${changed_fields.username[1]}</b>`
             } else {
-                img_text = `A`
-                title = 'Account Update'
-                content = 'Your information has been changed. See profile now.'
+                content = '<b>The Adminstrator</b> made changes to your information. <b>See profile now</b>.'
             }
         }   
     }
 
     $('.dropdown-body').append(
-        `<a href="${notification_url}" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-user-id="${user_pk}">
+        `<a href="${notification_url}" class="dropdown-notification-item d-flex align-items-center" data-notification-id="${notification.id}" data-user-id="${user_pk}">
             <div class="notification-user align-self-start mr-2">
-                <div class="img-circle">
-                    <span class="img-name">${img_text}</span>
-                    <div class="img-icon ${img_color}"><i class="fas ${img_icon} text-light"></i></div>
+                <div class="img-circle ${circle_color}">
+                    <span class="img-name ${name_color}">${img_text}</span>
+                    ${img_icon}
                 </div>
             </div>
             <div class="notification-content w-100">
-                <div class="d-flex justify-content-between align-items-center">    
-                    <p><b>${title}</b></p>
-                    <span class="text-muted notification-time">${time_from_now}</span>  
-                </div>  
                 <p class="m-0">${content}</p>
-                <p class="text-muted line-clamp notification-overview"><i class="text-muted">${subtext}</i></p>
+                <div class="text-muted notification-time">${time_from_now}</div>  
+            </div>
+        </a>`
+    )
+};
+
+let displayActionNotification = async function (notification) {
+    let object_json_repr = JSON.parse(notification.log.object_json_repr)
+    let log_user = `${notification.log.user.first_name} ${notification.log.user.last_name}`
+    let action = notification.log.event_type
+    let task = notification.log.tasks
+    time_from_now = moment(notification.log.datetime).fromNow()
+    
+    img_text = ''
+    img_icon = ''
+    circle_color = ''
+    name_color = ''
+
+    if (action === 'Create') {
+        if (task.is_head_task && task.is_client_task == false) {
+            img_text = `${notification.log.user.first_name.charAt(0)}${notification.log.user.first_name.charAt(0)}`
+            img_icon = '<div class="img-icon bg-primary"><i class="fas fa-siganture text-light"></i></div>'
+            content = `<b>${log_user}</b> created a new request that requires your approval. See ticket <b>${task.ticket.ticket_no}</b>.`
+            notification_url = `/core/user`
+        } else if (task.is_client_task) {
+            circle_color = 'img-circle-primary'
+            name_color = 'img-name-primary'
+            img_text = '<i class="fas fa-lg fa-ticket-alt"></i>'
+            content = `Your ticket status is in <b>${task.task_type}</b> and requires your action.`
+            notification_url = `/core/user`
+        } else {
+            img_text = `${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}`
+            img_icon = '<div class="img-icon bg-warning"><i class="fas fa-tasks text-light"></i></div>'
+            content = `<b>${log_user}</b> assigned you a new task of <b>${task.task_type}</b>.`
+        }
+    }
+
+    $('.dropdown-body').append(
+        `<a href="#" class="dropdown-notification-item d-flex" data-notification-id="#">
+            <div class="notification-user align-self-start mr-2">
+                <div class="img-circle ${circle_color}">
+                    <span class="img-name ${name_color}">${img_text}</span>
+                    ${img_icon}
+                </div>
+            </div>
+            <div class="notification-content w-100">
+                <p class="m-0">${content}</p>
+                <div class="text-muted notification-time">${time_from_now}</div>  
+            </div>
+        </a>`
+    )
+};
+
+let displayOpenTaskNotification = async function (notification) {
+    let object_json_repr = JSON.parse(notification.log.object_json_repr)
+    let log_user = `${notification.log.user.first_name} ${notification.log.user.last_name}`
+    let action = notification.log.event_type
+    time_from_now = moment(notification.log.datetime).fromNow()
+    if (action === 'Create') content = 'You have a new task available in <b>My Tasks</b>.'
+    $('.dropdown-body').append(
+        `<a href="#" class="dropdown-notification-item d-flex" data-notification-id="#">
+            <div class="notification-user align-self-start mr-2">
+                <div class="img-circle img-circle-warning">
+                    <span class="img-name img-name-warning"><i class="fas fa-lg fa-tasks"></i></span>
+                </div>
+            </div>
+            <div class="notification-content w-100">
+                <p class="m-0">${content}</p>
+                <div class="text-muted notification-time">${time_from_now}</div>  
             </div>
         </a>`
     )

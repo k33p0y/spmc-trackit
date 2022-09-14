@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.db import transaction
@@ -51,7 +52,7 @@ def detail_ticket(request, ticket_id):
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') 
 
    ## tasks
-   task = ticket.tasks.filter(task_type=ticket.status).last()
+   task = ticket.tasks.filter(task_type__status=ticket.status).last()
    ticket_officers = task.officers.all() if task else None
 
    if steps.latest('order').status.id != ticket.status.id or request.user.is_superuser:
@@ -159,30 +160,51 @@ def create_notification(object_id, ticket, sender):
    requestor = ticket.requested_by
    date_created = ticket.date_created.replace(microsecond=0)
    date_modified = ticket.date_modified.replace(microsecond=0)
+   form_status = ticket.request_form.request_forms.get(status=ticket.status)
+   task = Task.objects.filter(ticket=ticket, task_type=form_status).last()
 
-   for group in form_groups:
-      categories = Category.objects.filter(groups=group)
-      if categories:
-         for category in categories:
-            if ticket.category.filter(id=category.id):
+   if task:
+      ctype = ContentType.objects.get(model='task')
+      task_log = CRUDEvent.objects.filter(object_id=task.pk, content_type=ctype, event_type=CRUDEvent.CREATE).latest('datetime')
+      for officer in task.officers.all():
+         Notification(log=task_log, user=officer).save()
+   
+   if not form_status.is_client_step and not form_status.is_head_step:
+      if not form_status.officer.all():
+         for group in form_groups:
+            categories = Category.objects.filter(groups=group)
+            if categories:
+               for category in categories:
+                  if ticket.category.filter(id=category.id):
+                     # create notifications for users in selected group
+                     users = group.user_set.all()
+                     for user in users:
+                        if not log.user == user and not user == requestor:
+                           Notification(log=log, user=user).save()
+                  else:
+                     continue
+            else:
                # create notifications for users in selected group
                users = group.user_set.all()
                for user in users:
                   if not log.user == user and not user == requestor:
                      Notification(log=log, user=user).save()
-            else:
-               continue
       else:
-         # create notifications for users in selected group
-         users = group.user_set.all()
-         for user in users:
-            if not log.user == user and not user == requestor:
-               Notification(log=log, user=user).save()
-   # create notification for department head
-   if date_modified == date_created and sender == 'ticket':
-      if ticket.department.department_head:
-         if not log.user == ticket.department.department_head:
-            Notification(log=log, user=ticket.department.department_head).save()
+         otask = OpenTask.objects.filter(ticket=ticket, task_type=form_status).last()
+         if otask:
+            ctype = ContentType.objects.get(model='opentask')
+            otask_log = CRUDEvent.objects.filter(object_id=otask.pk, content_type=ctype, event_type=CRUDEvent.CREATE).latest('datetime')
+            for officer in form_status.officer.all():
+               Notification(log=otask_log, user=officer).save()
+         else:
+            for officer in form_status.officer.all():
+               Notification(log=log, user=officer).save()
+
+   # # create notification for department head
+   # if date_modified == date_created and sender == 'ticket':
+   #    if ticket.department.department_head:
+   #       if not log.user == ticket.department.department_head:
+   #          Notification(log=log, user=ticket.department.department_head).save()
    if not log.user == requestor:
       Notification(log=log, user=requestor).save()
 

@@ -1,3 +1,4 @@
+from urllib import request
 from rest_framework import serializers
 from django.db import transaction
 
@@ -6,6 +7,7 @@ from core.models import User
 from config.models import Status
 from requests.models import Ticket, RequestForm, RequestFormStatus
 from core.serializers import UserInfoSerializer
+from config.serializers import DepartmentSerializer, UserSerializer
 
 class StatusNameSerializer(serializers.ModelSerializer):
 
@@ -33,10 +35,12 @@ class RequestFormReadOnlySerializer(serializers.ModelSerializer):
 
 class TicketShortListSerializer(serializers.ModelSerializer):
     request_form = RequestFormReadOnlySerializer(read_only=True)
+    requested_by = UserSerializer(read_only=True)
+    department = DepartmentSerializer(read_only=True)
 
     class Meta:
         model = Ticket
-        fields = ('ticket_id', 'request_form', 'ticket_no', 'reference_no', 'description')
+        fields = ('ticket_id', 'request_form', 'ticket_no', 'reference_no', 'description', 'department', 'requested_by')
 
 class MemberSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
@@ -86,6 +90,12 @@ class TasksListSerializer(serializers.ModelSerializer):
         model = Task
         fields = '__all__'
         datatables_always_serialize = ('id', 'task_type', 'officers', 'date_created', 'date_completed')
+
+class TasksNotificationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Task
+        fields = '__all__'
 
 class RemoveTasksSerializer(serializers.ModelSerializer):
     @transaction.atomic

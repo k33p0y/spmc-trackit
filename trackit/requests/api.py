@@ -276,7 +276,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated]
 
    def get_queryset(self):
-      return Notification.objects.select_related('user').filter(user__id=self.request.user.pk).order_by('-unread', '-log__datetime')
+      return Notification.objects.select_related('user').filter(user__id=self.request.user.pk).order_by('-log__datetime')
 
 class NotificationDeleteViewSet(viewsets.ModelViewSet):
    serializer_class = NotificationSerializer

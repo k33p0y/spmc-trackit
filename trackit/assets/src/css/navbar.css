@@ -89,7 +89,17 @@
     height: 35px;
     border-radius: 50%;
     background-color: #fccfaa;
- }
+}
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle-primary { background-color: #b9dbff; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle-success { background-color: #cce9d2; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle-danger { background-color: #f5c3c8; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle-warning { background-color: #fff2c6; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle-info { background-color: #c1f4fc; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle-purple { background-color: #cac8fc; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle-maroon { background-color: #f1c1d4; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle-navy { background-color: #c1d0df; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle-graydark { background-color: #edf1f5; }
+
 .dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name {
     position: relative;
     width: 100%;
@@ -104,7 +114,17 @@
     justify-content: center;
     align-items: center;
     vertical-align: middle;
- }
+}
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name-primary { color: #007bff; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name-success { color: #28a745; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name-danger { color: #dc3545; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name-warning { color: #ffbf00; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name-info { color: #17a2b8; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name-purple { color: #605ca8; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name-maroon { color: #d81b60; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name-navy { color: #001f3f; }
+.dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-name-graydark { color: #343a40; }
+
 .dropdown-notifications-div .dropdown-notification-item .notification-user .img-circle > .img-icon {
     position: relative;
     width: 1rem;
@@ -117,9 +137,10 @@
     align-items: center;
     vertical-align: middle;
     border-radius: 50%;
+    border: 1px solid #fff;
  
-    top: -2.2em;
-    left: 3.2em;
+    top: -5.3em;
+    left: 3em;
     bottom:0;
     right: 0;
  }

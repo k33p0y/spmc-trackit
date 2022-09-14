@@ -187,8 +187,6 @@ DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = [ # list of models that Easy Audi
     'requests.requestform', 'requests.requestformstatus', 'requests.notification', 'requests.attachment',
     # events app
     'events.event', 'events.eventdate', 'events.eventticket',
-    # tasks app
-    'tasks.opentask',
 ]
 
 # Django Channels

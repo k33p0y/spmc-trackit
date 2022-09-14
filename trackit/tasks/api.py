@@ -15,8 +15,15 @@ class TaskListViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['get', 'head',]
 
+class MyTaskListViewSet(viewsets.ModelViewSet):    
+   serializer_class = TasksListSerializer
+   queryset = Task.objects.all()
+   permission_classes = [permissions.IsAuthenticated]
+   http_method_names = ['get', 'head',]
+
    def get_queryset(self):
-      return Task.objects.filter(officers=self.request.user, date_completed__isnull=True)
+      mytask = Task.objects.filter(officers=self.request.user, date_completed__isnull=True)
+      return mytask
 
 class TaskListCompleteViewSet(viewsets.ModelViewSet):    
    serializer_class = TasksListSerializer

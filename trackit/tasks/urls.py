@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 from .api import (
+   MyTaskListViewSet,
    OpenTaskViewSet,
    RemoveTaskViewSet,
    RemoveTeamPersonViewSet,
@@ -10,7 +11,8 @@ from .api import (
 from . import views
 
 router = routers.DefaultRouter()
-router.register('api/tasks/list/mytasks', TaskListViewSet)
+router.register('api/tasks/list/tasks', TaskListViewSet)
+router.register('api/tasks/list/mytasks', MyTaskListViewSet)
 router.register('api/tasks/list/completed', TaskListCompleteViewSet)
 router.register('api/tasks/remove', RemoveTaskViewSet)
 router.register('api/tasks/people', RemoveTeamPersonViewSet)
