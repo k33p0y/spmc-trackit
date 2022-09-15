@@ -414,12 +414,14 @@ class CRUDEventSerializer(serializers.ModelSerializer):
 
    def get_ticket(self, instance):
       object_json_repr = json.loads(instance.object_json_repr)
-      if (object_json_repr[0]['model'] == 'requests.comment'):
-         ticket = Ticket.objects.get(pk=object_json_repr[0]['fields']['ticket'])
-         return {'ticket_no' : ticket.ticket_no}
-      elif (object_json_repr[0]['model'] == 'requests.ticket'):
-         ticket = Ticket.objects.get(pk=instance.object_id)
-         return {'requestor' : '%s %s' % (ticket.requested_by.first_name, ticket.requested_by.last_name)}
+      if (object_json_repr[0]['model'] == 'requests.comment'): object_id = object_json_repr[0]['fields']['ticket']
+      if (object_json_repr[0]['model'] == 'requests.ticket'): object_id = instance.object_id
+      if object_id:
+         ticket = Ticket.objects.get(pk=object_id)
+         return {
+            'ticket_no' : ticket.ticket_no,
+            'requestor' : '%s %s' % (ticket.requested_by.first_name, ticket.requested_by.last_name)
+         }
       return ''
 
    def get_remarks(self, instance):

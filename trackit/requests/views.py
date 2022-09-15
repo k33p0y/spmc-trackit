@@ -161,13 +161,8 @@ def create_notification(object_id, ticket, sender):
    date_created = ticket.date_created.replace(microsecond=0)
    date_modified = ticket.date_modified.replace(microsecond=0)
    form_status = ticket.request_form.request_forms.get(status=ticket.status)
-   task = Task.objects.filter(ticket=ticket, task_type=form_status).last()
-
-   if task:
-      ctype = ContentType.objects.get(model='task')
-      task_log = CRUDEvent.objects.filter(object_id=task.pk, content_type=ctype, event_type=CRUDEvent.CREATE).latest('datetime')
-      for officer in task.officers.all():
-         Notification(log=task_log, user=officer).save()
+   task = ticket.tasks.filter(task_type__status=ticket.status).last()
+   ticket_officers = task.officers.all()
    
    if not form_status.is_client_step and not form_status.is_head_step:
       if not form_status.officer.all():
@@ -190,14 +185,9 @@ def create_notification(object_id, ticket, sender):
                   if not log.user == user and not user == requestor:
                      Notification(log=log, user=user).save()
       else:
-         otask = OpenTask.objects.filter(ticket=ticket, task_type=form_status).last()
-         if otask:
-            ctype = ContentType.objects.get(model='opentask')
-            otask_log = CRUDEvent.objects.filter(object_id=otask.pk, content_type=ctype, event_type=CRUDEvent.CREATE).latest('datetime')
-            for officer in form_status.officer.all():
-               Notification(log=otask_log, user=officer).save()
-         else:
-            for officer in form_status.officer.all():
+         officers = ticket_officers if ticket_officers else form_status.officer.all()
+         for officer in officers:
+            if not log.user == officer:
                Notification(log=log, user=officer).save()
 
    # # create notification for department head
@@ -207,6 +197,15 @@ def create_notification(object_id, ticket, sender):
    #          Notification(log=log, user=ticket.department.department_head).save()
    if not log.user == requestor:
       Notification(log=log, user=requestor).save()
+
+# Create notification method
+def create_task_notification(instance, sender):
+   if sender == 'task': officers = instance.officers.all()
+   if sender == 'opentask': officers = instance.task_type.officer.all()
+   ctype = ContentType.objects.get(model=sender)
+   log = CRUDEvent.objects.filter(object_id=instance.pk, content_type=ctype, event_type=CRUDEvent.CREATE).latest('datetime')
+   for officer in officers:
+      Notification(log=log, user=officer).save()
 
 # Remark Method
 def create_remark(object_id, ticket):
@@ -242,10 +241,12 @@ def create_task(ticket, formstatus_id, officers, request_user, remark):
    if form_status.is_client_step:
       task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
       Team.objects.create(member_id=ticket.requested_by.pk, task_id=task.pk, remark=remark)
+      create_task_notification(task, 'task')
    # department head step status 
    elif form_status.is_head_step: 
       task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
       Team.objects.create(member_id=ticket.department.department_head.pk, task_id=task.pk, remark=remark)
+      create_task_notification(task, 'task')
     # if request param assign_by is not empty
    elif officers: 
       task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
@@ -259,8 +260,10 @@ def create_task(ticket, formstatus_id, officers, request_user, remark):
             )
       else: 
          Team.objects.create(member_id=officers, task_id=task.pk, remark=remark)
+      create_task_notification(task, 'task')
    elif not last_step.order == form_status.order:
       task = OpenTask.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
+      create_task_notification(task, 'opentask')
 
 def create_task_for_all_requests(request):
    tickets = Ticket.objects.filter(is_active=True)

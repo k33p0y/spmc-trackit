@@ -67,10 +67,11 @@ let displayTicketNotification = function (notification) {
     let ticket_no = object_json_repr[0].fields.ticket_no
     let description = object_json_repr[0].fields.description
     let requested_by = object_json_repr[0].fields.requested_by
+    let changed_fields = notification.log.changed_fields
     created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`  // creator of the notification
     user = `${notification.user.first_name} ${notification.user.last_name}`
     if (created_by === user) created_by = 'You'; // if the authenticated user is the requestor of the ticket
-    if (requested_by === notification.user.id) requestor = 'your' 
+    if (requested_by === notification.user.id) requestor = 'your'
     else {
         apostrophe = (notification.log.ticket.requestor.charAt(notification.log.ticket.requestor.length-1) === 's') ? `'` : `'s`
         requestor = `<b>${notification.log.ticket.requestor}${apostrophe}</b>`
@@ -78,26 +79,50 @@ let displayTicketNotification = function (notification) {
     icon = 'fa-ticket-alt'
     color = 'bg-primary'
     action = `${notification.log.event_type}`
+    context = ''
     time_from_now = moment(notification.log.datetime).fromNow()
     if (action === 'Create') action = `created a new request.`;
     else if (action === 'Update') {
         if (notification.log.remarks) {
             if (notification.log.remarks.is_approve) { // approved
                 icon = 'fa-check'
-                action = `approved ${requestor} request on ticket <b>${ticket_no}</b>.`
+                action = `approved ${requestor} request ticket <b>${ticket_no}</b>.`
             } else if (notification.log.remarks.is_approve == false) { // disapproved
                 icon = 'fa-times'
                 color = 'bg-danger'
-                action = `disapproved your request on ticket <b>${ticket_no}</b>.`
+                action = `disapproved ${requestor} request ticket <b>${ticket_no}</b>.`
             } else if (notification.log.remarks.is_pass) { // passed
+                if (requested_by === notification.user.id) requestor = 'a'
                 icon = 'fa-check'
-                action = `passed its request on ticket <b>${ticket_no}</b>.`
+                action = `passed ${requestor} request ticket <b>${ticket_no}</b>.`
             } else if (notification.log.remarks.is_pass == false) { // failed
                 icon = 'fa-times'
                 color = 'bg-danger'
-                action = `failed its request on ticket <b>${ticket_no}</b>.`
-            } else action = `moved status to <b>${notification.log.changed_fields.status[1]}</b> on ticket <b>${ticket_no}</b>.`
-        } else action = `made changes to ticket <b>${ticket_no}</b>.`
+                action = `failed ${requestor} request ticket <b>${ticket_no}</b>.`
+            } else action = `moved status to <b>${changed_fields.status[1]}</b> on ticket <b>${ticket_no}</b>.`
+        } else {
+            // console.log(changed_fields)
+            determiner = (user === notification.log.ticket.requestor) ? 'to your' : 'in a';
+            if (Object.keys(changed_fields).length > 1){
+                items = Object.keys(changed_fields).map(function(item) {
+                    if (item == 'description') item = 'Title/Description'
+                    if (item == 'form_data') item = 'Request Details'
+                    if (item == 'reference_no') item = 'Reference Number'
+                    return item;
+                }).join(' • ')
+                action = `made changes ${determiner} request.`
+                context = `<p class="line-clamp notification-overview">${items}</p>`
+            } else if (Object.keys(changed_fields).length == 1) {
+                determiner = (user === notification.log.ticket.requestor) ? 'your' : 'a';
+                if (changed_fields.description) {
+                    action = `changed the <b>Title/Description</b> in ${determiner} request.`
+                    context = `<p class="line-clamp notification-overview">${changed_fields.description[1]}</p>`
+                } else if (changed_fields.form_data) action = `updated the <b>Request Details</b> in ${determiner} request.`
+                else if (changed_fields.reference_no) action = `assigned ${requestor} request a reference number of <b>${changed_fields.reference_no[1]}</b>.`
+            } else {
+                action = `made changes ${determiner} request.`
+            }
+        }   
     }
 
     $('.dropdown-body').append(
@@ -110,6 +135,7 @@ let displayTicketNotification = function (notification) {
             </div>
             <div class="notification-content w-100">
                 <p class="m-0"><b>${created_by}</b> ${action}</p>
+                ${context}
                 <div class="text-muted notification-time">${time_from_now}</div>  
             </div>
         </a>`        
@@ -117,17 +143,15 @@ let displayTicketNotification = function (notification) {
 };
 
 let displayCommentNotification = function (notification) {
-    created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`
-    user = `${notification.user.first_name} ${notification.user.last_name}`
-
-    if (created_by === user) self = 'You'; // if the authenticated user is the requestor of the ticket
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
-
-    time_from_now = moment(notification.log.datetime).fromNow();
-
     let ticket_id = `${object_json_repr[0].fields.ticket}`
     let ticket_no = notification.log.ticket.ticket_no
     let comment = `${object_json_repr[0].fields.content}`
+
+    created_by = `${notification.log.user.first_name} ${notification.log.user.last_name}`
+    user = `${notification.user.first_name} ${notification.user.last_name}` // if the authenticated user is the requestor of the ticket 
+    determiner = (user === notification.log.ticket.requestor) ? 'your' : 'a';
+    time_from_now = moment(notification.log.datetime).fromNow();
 
     $('.dropdown-body').append(
         `<a href="/requests/${ticket_id}/view" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-ticket-no="${ticket_no}">
@@ -138,7 +162,8 @@ let displayCommentNotification = function (notification) {
                 </div>
             </div>
             <div class="notification-content w-100">
-                <p class="m-0"><b>${created_by}</b> commented on request: "<b>${comment}</b>"</p>
+                <p class="m-0"><b>${created_by}</b> commented on ${determiner} request.</p>
+                <p class="line-clamp notification-overview">${comment}</p>
                 <div class="text-muted notification-time">${time_from_now}</div>  
             </div>
         </a>`
