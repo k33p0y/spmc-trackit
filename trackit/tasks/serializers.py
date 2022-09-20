@@ -9,6 +9,8 @@ from requests.models import Ticket, RequestForm, RequestFormStatus
 from core.serializers import UserInfoSerializer
 from config.serializers import DepartmentSerializer, UserSerializer
 
+from .views import create_task_notification
+
 class StatusNameSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -80,16 +82,23 @@ class TeamInfoSerializer(serializers.ModelSerializer):
 
 class TasksListSerializer(serializers.ModelSerializer):
     officers = serializers.SerializerMethodField()
+    logged_in_officer = serializers.SerializerMethodField()
     ticket = TicketShortListSerializer(read_only=True)
     task_type = RequestFormStatusNameSerializer(read_only=True)
 
     def get_officers(self, task):
         return MemberSerializer(task.officers.all(), many=True, context={"task_instance": task}).data
+    
+    def get_logged_in_officer(self, task):
+        for member in task.officers.all():
+            if member == self.context['request'].user: 
+                return task.members.get(member=member).pk
+        return ''
 
     class Meta:
         model = Task
         fields = '__all__'
-        datatables_always_serialize = ('id', 'task_type', 'officers', 'date_created', 'date_completed')
+        datatables_always_serialize = ('id', 'task_type', 'officers', 'logged_in_officer', 'date_created', 'date_completed')
 
 class TasksNotificationSerializer(serializers.ModelSerializer):
 
@@ -103,11 +112,12 @@ class RemoveTasksSerializer(serializers.ModelSerializer):
         officers = instance.officers.all()
         # if pivot table members has more than 1 record
         if len(officers) > 1:           
-            Team.objects.filter(task_id=instance.pk, member_id=self.context['request'].user.pk).delete()  # delete team task instance
+            Team.objects.get(task_id=instance.pk, member_id=self.context['request'].user.pk).delete()
         else:
-            OpenTask.objects.create(ticket = instance.ticket, task_type = instance.task_type) # save isntance to opentask
+            otask = OpenTask.objects.create(ticket = instance.ticket, task_type = instance.task_type) # save isntance to opentask
             Team.objects.filter(task_id=instance.pk).delete() # delete team task instance
-            instance.delete() # delete instance
+            instance.delete() # delete task instance
+            create_task_notification(otask, 'opentask')
         return instance
 
     class Meta:
@@ -121,11 +131,12 @@ class ShareTaskSerializer(serializers.ModelSerializer):
         people = self.context['request'].data['people']
         if people:
             for person in people:
-                Team.objects.create(
+                team = Team.objects.create(
                     task_id = instance.pk,
                     member_id = int(person),
                     assignee = self.context['request'].user
                 )
+                create_task_notification(team, 'team')
         return instance
 
     def validate(self, data):
@@ -144,16 +155,15 @@ class OpenTasksSerializer(serializers.ModelSerializer):
     
     @transaction.atomic
     def update(self, instance, validated_data):
-        # save isntance to task
+        # save instance to task
         task = Task.objects.create(
             ticket = instance.ticket,
             task_type = instance.task_type,
             opentask_str = str(instance.pk),
         )
         Team.objects.create(member_id=self.context['request'].user.pk, task_id=task.pk)
-
-        # delete instance
-        instance.delete()
+        instance.delete() # delete opentask instance
+        create_task_notification(task, 'task')
         return instance
 
     class Meta:

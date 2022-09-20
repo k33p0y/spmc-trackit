@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions
+from rest_framework import status, viewsets, permissions
 from rest_framework.response import Response
 from django.db.models import Q
 from .serializers import (
@@ -8,6 +8,7 @@ from .serializers import (
    ShareTaskSerializer, 
    TasksListSerializer,)
 from .models import OpenTask, Task, Team
+from requests.models import Notification
 
 class TaskListViewSet(viewsets.ModelViewSet):    
    serializer_class = TasksListSerializer
@@ -64,4 +65,17 @@ class RemoveTeamPersonViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['head', 'delete']
 
-
+   def perform_destroy(self, instance):
+      from easyaudit.models import CRUDEvent
+      from django.contrib.contenttypes.models import ContentType
+      
+      team_id = instance.pk
+      officers = list(instance.task.officers.all().values_list('id', flat=True))
+      instance.delete()
+      # create notification instance
+      ctype = ContentType.objects.get(model='team')
+      log = CRUDEvent.objects.filter(object_id=team_id, content_type=ctype).latest('datetime')
+      for officer in officers:
+         if not log.user_id == officer:
+            Notification(log=log, user_id=officer).save()
+   

@@ -21,7 +21,7 @@ class Task(models.Model):
     # and field2 the name of the foreign key to the target model (member in this case).
 
 class Team(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, related_name="members", on_delete=models.CASCADE)
     member = models.ForeignKey(User, related_name="team_members", on_delete=models.CASCADE)
     assignee = models.ForeignKey(User, related_name='task_assignees', null=True, on_delete=models.CASCADE)
     date_assigned = models.DateTimeField(auto_now_add=True)

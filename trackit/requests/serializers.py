@@ -4,17 +4,19 @@ from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
-from .views import create_notification, create_remark, create_task
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
-from config.models import Department, Status, Remark
+from config.models import Status, Remark
 from core.models import User
 from events.models import EventTicket
 from easyaudit.models import CRUDEvent
-from tasks.models import Task, Team, OpenTask
+from tasks.models import Task, Team
+
+from .views import create_notification, create_remark
+from tasks.views import create_task
 
 from core.serializers import GroupReadOnlySerializer, UserInfoSerializer
-from config.serializers import DepartmentSerializer, UserSerializer, CategorySerializer, StatusSerializer, CategoryReadOnlySerializer, CategoryTypeReadOnlySerializer
-from tasks.serializers import MemberSerializer, TasksNotificationSerializer
+from config.serializers import DepartmentSerializer, UserSerializer, CategoryReadOnlySerializer
+from tasks.serializers import MemberSerializer
 
 import json, uuid, datetime
 
@@ -410,10 +412,11 @@ class CRUDEventSerializer(serializers.ModelSerializer):
    changed_fields = serializers.JSONField()
    ticket = serializers.SerializerMethodField()
    remarks = serializers.SerializerMethodField()
-   tasks = serializers.SerializerMethodField()
+   task = serializers.SerializerMethodField()
 
    def get_ticket(self, instance):
       object_json_repr = json.loads(instance.object_json_repr)
+      object_id = None
       if (object_json_repr[0]['model'] == 'requests.comment'): object_id = object_json_repr[0]['fields']['ticket']
       if (object_json_repr[0]['model'] == 'requests.ticket'): object_id = instance.object_id
       if object_id:
@@ -438,7 +441,7 @@ class CRUDEventSerializer(serializers.ModelSerializer):
       except Remark.DoesNotExist:
          pass
 
-   def get_tasks(self, instance):
+   def get_task(self, instance):
       object_json_repr = json.loads(instance.object_json_repr)
       if (object_json_repr[0]['model'] == 'tasks.task'):
          task = Task.objects.get(pk=instance.object_id)
@@ -452,11 +455,17 @@ class CRUDEventSerializer(serializers.ModelSerializer):
                'ticket_no' : task.ticket.ticket_no
             }
          }
+      elif (object_json_repr[0]['model'] == 'tasks.team'):
+         user = User.objects.get(pk=object_json_repr[0]['fields']['member'])
+         return {
+               'task_id' : object_json_repr[0]['fields']['task'],
+               'member' : '%s %s' % (user.first_name, user.last_name)
+            }
       return ''
-
+   
    class Meta:
       model = CRUDEvent
-      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr', 'ticket', 'remarks', 'tasks', 'content_type']
+      fields = ['event_type', 'object_id', 'datetime', 'user', 'changed_fields', 'object_json_repr', 'ticket', 'remarks', 'task', 'content_type']
 
    def to_representation(self, instance):
       if instance.changed_fields:

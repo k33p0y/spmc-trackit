@@ -42,11 +42,13 @@ let getAllNotifications = function (page) {
             if (!page) $('.dropdown-notifications-div .dropdown-body').empty();
             for (i = 0; i < notifications.length; i++) {
                 let model = JSON.parse(notifications[i].log.object_json_repr)
+                
                 if (model[0].model === 'requests.ticket') displayTicketNotification(notifications[i]);
                 if (model[0].model === 'requests.comment') displayCommentNotification(notifications[i]);
                 if (model[0].model === 'core.user') displayUserNotification(notifications[i]);
-                if (model[0].model === 'tasks.task') displayActionNotification(notifications[i]);
+                if (model[0].model === 'tasks.task') displayTaskNotification(notifications[i]);
                 if (model[0].model === 'tasks.opentask') displayOpenTaskNotification(notifications[i]);
+                if (model[0].model === 'tasks.team') displayTaskTeamNotification(notifications[i]);
             }
             $('.dropdown-notifications-div .dropdown-body a').click(function () {
                 localStorage.setItem("ticketNumber", $(this).attr('data-ticket-no'));
@@ -257,11 +259,11 @@ let displayUserNotification = function (notification) {
     )
 };
 
-let displayActionNotification = async function (notification) {
+let displayTaskNotification = function (notification) {
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     let log_user = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     let action = notification.log.event_type
-    let task = notification.log.tasks
+    let task = notification.log.task
     time_from_now = moment(notification.log.datetime).fromNow()
     
     img_text = ''
@@ -271,7 +273,7 @@ let displayActionNotification = async function (notification) {
 
     if (action === 'Create') {
         if (task.is_head_task && task.is_client_task == false) {
-            img_text = `${notification.log.user.first_name.charAt(0)}${notification.log.user.first_name.charAt(0)}`
+            img_text = `${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}`
             img_icon = '<div class="img-icon bg-primary"><i class="fas fa-siganture text-light"></i></div>'
             content = `<b>${log_user}</b> created a new request that requires your approval. See ticket <b>${task.ticket.ticket_no}</b>.`
             notification_url = `/core/user`
@@ -304,7 +306,7 @@ let displayActionNotification = async function (notification) {
     )
 };
 
-let displayOpenTaskNotification = async function (notification) {
+let displayOpenTaskNotification = function (notification) {
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     let log_user = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     let action = notification.log.event_type
@@ -319,6 +321,41 @@ let displayOpenTaskNotification = async function (notification) {
             </div>
             <div class="notification-content w-100">
                 <p class="m-0">${content}</p>
+                <div class="text-muted notification-time">${time_from_now}</div>  
+            </div>
+        </a>`
+    )
+};
+
+let displayTaskTeamNotification = function (notification) {
+    console.log(notification)
+    let log_user = `${notification.log.user.first_name} ${notification.log.user.last_name}`
+    let self = `${notification.user.first_name} ${notification.user.last_name}`
+    let action = notification.log.event_type
+    let task = notification.log.task
+    time_from_now = moment(notification.log.datetime).fromNow()
+    img_icon = ''
+    if (action === 'Create') {
+        img_icon = '<div class="img-icon bg-primary"><i class="fas fa-share text-light"></i></div>'
+        if (notification.log.task.member == self) content = `shared with you a task.`
+        else content = `added <b>${notification.log.task.member}</b> to a task.`
+    } else if (action === 'Delete') {
+        img_icon = '<div class="img-icon bg-danger"><i class="fas fa-user-slash text-light"></i></div>'
+        if (notification.log.task.member == self ) person = 'you'
+        else if (notification.log.task.member == log_user) person = 'itself'
+        else person = `<b>${notification.log.task.member}</b>`
+        content = `removed ${person} from a task.`
+    }
+    $('.dropdown-body').append(
+        `<a href="#" class="dropdown-notification-item d-flex" data-notification-id="#">
+            <div class="notification-user align-self-start mr-2">
+                <div class="img-circle ">
+                    <span class="img-name">${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}</span>
+                    ${img_icon}
+                </div>
+            </div>
+            <div class="notification-content w-100">
+                <p class="m-0"><b>${log_user}</b> ${content}</p>
                 <div class="text-muted notification-time">${time_from_now}</div>  
             </div>
         </a>`

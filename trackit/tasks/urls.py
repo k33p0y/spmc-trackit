@@ -21,6 +21,7 @@ router.register('api/tasks/open', OpenTaskViewSet)
 
 urlpatterns = [
    path('tasks/mytasks', views.mytasks, name='mytasks'),
+   path('tasks/create_task', views.create_task_for_all_requests, name='create_task_for_all_requests'),
 ]
 
 urlpatterns += router.urls

@@ -96,7 +96,7 @@ $(document).ready(function () {
                             </span>
                         </button>
                         ${row.task_type.default_officer === 'single' && (row.task_type.is_client_step === false || row.task_type.is_head_step === false) ? '' : `<button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>`}
-                        ${row.officers.length > 1 ? '<button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>' : ''}
+                        ${row.officers.length > 1 ? `<button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>` : ''}
                     </div>`
                     return data = template
                 },
@@ -344,6 +344,7 @@ $(document).ready(function () {
             },
             headers: axiosConfig
         }).then(res => {
+            socket_notification.send(JSON.stringify({ type: 'notification', data: { object_id: formstatus, notification_type: 'action' } }))
             todosTbl.ajax.reload();
             toastSuccess('Success'); // alert
             $("#shareModal").modal('toggle'); // close modal
@@ -375,7 +376,7 @@ $(document).ready(function () {
         const dt_data = todosTbl.row($(this).parents('tr')).data();
         Swal.fire({
             title: 'Remove task',
-            html: '<p class="m-0">This will remove from the lists.</p>',
+            html: '<p class="m-0">This removes you from the lists and prevents you from taking action on the request module.</p>',
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: 'Cancel',
@@ -385,14 +386,9 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.value) {
                 $(this).prop('disabled', true) // disable button
-
-                axios({
-                    method: 'PUT',
-                    url: `/api/tasks/remove/${dt_data['id']}/`,
-                    headers: axiosConfig
-                }).then(res => {
-                    todosTbl.ajax.reload();
-                    getOpenTasks(null, null, true);
+                axios.delete(`/api/tasks/people/${dt_data.logged_in_officer}/`, { headers: axiosConfig }).then(res => {
+                    todosTbl.ajax.reload()
+                    toastSuccess('Success');
                 }).catch(err => {
                     toastError(err.response.statusText)
                 });
