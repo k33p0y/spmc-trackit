@@ -9,7 +9,7 @@ from config.models import Status, Remark
 from core.models import User
 from events.models import EventTicket
 from easyaudit.models import CRUDEvent
-from tasks.models import Task, Team
+from tasks.models import Task, Team, OpenTask
 
 from .views import create_notification, create_remark
 from tasks.views import create_task
@@ -446,6 +446,7 @@ class CRUDEventSerializer(serializers.ModelSerializer):
       if (object_json_repr[0]['model'] == 'tasks.task'):
          task = Task.objects.get(pk=instance.object_id)
          return {
+            'task_id' : task.pk,
             'is_head_task' : task.task_type.is_head_step,
             'is_client_task' : task.task_type.is_client_step,
             'date_created' : task.date_created,
@@ -461,6 +462,9 @@ class CRUDEventSerializer(serializers.ModelSerializer):
                'task_id' : object_json_repr[0]['fields']['task'],
                'member' : '%s %s' % (user.first_name, user.last_name)
             }
+      elif (object_json_repr[0]['model'] == 'tasks.opentask'):
+         otask = OpenTask.objects.get(pk=instance.object_id)
+         return {'task_id': otask.pk}
       return ''
    
    class Meta:

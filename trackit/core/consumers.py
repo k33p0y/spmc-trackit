@@ -13,7 +13,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.joined_groups = await self.get_groups()
         self.joined_staff = await self.get_users_with_core_perms()
-        self.joined_staus = await self.get_requestform_status()
+        self.joined_status = await self.get_requestform_status()
+        self.joined_tasks = await self.get_tasks()
         self.user = self.scope["user"]
         self.user_room_name = "notif_room_for_user_"+str(self.user.id) # notification for a single user
 
@@ -38,11 +39,19 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             )
         
         # join room status
-        for status in self.joined_staus:
+        for status in self.joined_status:
             await self.channel_layer.group_add(
                 'notif_room_for_status_' + str(status.pk),
                 self.channel_name
             )
+            
+        # join room task
+        for task in self.joined_tasks:
+            await self.channel_layer.group_add(
+                'notif_room_for_task_' + str(task.pk),
+                self.channel_name
+            )
+           
            
         await self.accept()
 
@@ -153,6 +162,20 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                             'sender_channel_name': self.channel_name
                         }
                     )
+        if text_data_json['type'] == 'task_notification': 
+            object_id = text_data_json['data']['object_id']
+            self.obj = await self.send_notification(object_id, text_data_json['data']['notification_type'])
+            
+            if text_data_json['data']['notification_type'] == 'task': # notification for ticket action
+                    # send notification to group
+                    await self.channel_layer.group_send(
+                        'notif_room_for_task_' + str(self.obj['task']),
+                        {
+                            'type': 'notification_message',
+                            'notification': self.obj,
+                            'sender_channel_name': self.channel_name
+                        }
+                    )
         
     # send notification
     async def notification_message(self, event):
@@ -231,10 +254,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             obj['user_pk'] = user.pk
         if notification_type == 'action':
             task = Task.objects.filter(task_type=object_id).last()
-
             obj['status'] = str(task.task_type.status.pk)
             obj['task_officer'] = list(task.officer.values('id')) if task else None
-        
+        if notification_type == 'task':
+            task = Task.objects.get(pk=object_id)
+            obj['task'] = str(task.pk)        
         return obj
 
     @database_sync_to_async
@@ -252,6 +276,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     def get_requestform_status(self):
         status = RequestFormStatus.objects.filter(officer=self.scope['user'])
         return list(status)
+    
+    @database_sync_to_async
+    def get_tasks(self):
+        tasks = Task.objects.filter(officers=self.scope['user'])
+        return list(tasks)
     
 class CommentConsumer(AsyncWebsocketConsumer):
     async def connect(self):

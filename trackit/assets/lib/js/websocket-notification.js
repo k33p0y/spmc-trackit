@@ -51,9 +51,10 @@ let getAllNotifications = function (page) {
                 if (model[0].model === 'tasks.team') displayTaskTeamNotification(notifications[i]);
             }
             $('.dropdown-notifications-div .dropdown-body a').click(function () {
-                localStorage.setItem("ticketNumber", $(this).attr('data-ticket-no'));
                 localStorage.setItem("notification-id", $(this).attr('data-notification-id'));
+                localStorage.setItem("ticketNumber", $(this).attr('data-ticket-no'));
                 localStorage.setItem("user-id", $(this).attr('data-user-id'));
+                localStorage.setItem("task-id", $(this).attr('data-task-id'));
             })
         } else {
             displayEmptyNotification();
@@ -227,7 +228,7 @@ let displayUserNotification = function (notification) {
                 img_text = `<i class="fas fa-lg fa-sitemap"></i>`
                 circle_color = 'img-circle-primary'
                 name_color = 'img-name-primary'
-                content = `<b>The Adminstrator</b> changed your department: <b>${changed_fields.department[1]}</b>.`
+                content = `<b>The Adminstrator</b> changed your department to <b>${changed_fields.department[1]}</b>.`
             } else if (changed_fields.first_name || changed_fields.last_name) {
                 content = `<b>The Adminstrator</b> made changes to your name profile. <b>See profile now</b>.`
             } else if (changed_fields.is_staff || changed_fields.is_superuser) {
@@ -236,7 +237,7 @@ let displayUserNotification = function (notification) {
                 name_color = 'img-name-purple'
                 content = '<b>The Adminstrator</b> made changes to your permission.'
             } else if (changed_fields.username) {
-                content = `<b>The Adminstrator</b> changed your username: <b>${changed_fields.username[1]}</b>`
+                content = `<b>The Adminstrator</b> changed your username to <b>${changed_fields.username[1]}</b>`
             } else {
                 content = '<b>The Adminstrator</b> made changes to your information. <b>See profile now</b>.'
             }
@@ -260,12 +261,14 @@ let displayUserNotification = function (notification) {
 };
 
 let displayTaskNotification = function (notification) {
+    console.log(notification)
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     let log_user = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     let action = notification.log.event_type
-    let task = notification.log.task
+    let task = notification.log.task 
     time_from_now = moment(notification.log.datetime).fromNow()
     
+    notification_url = '#'
     img_text = ''
     img_icon = ''
     circle_color = ''
@@ -274,24 +277,25 @@ let displayTaskNotification = function (notification) {
     if (action === 'Create') {
         if (task.is_head_task && task.is_client_task == false) {
             img_text = `${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}`
-            img_icon = '<div class="img-icon bg-primary"><i class="fas fa-siganture text-light"></i></div>'
+            img_icon = '<div class="img-icon bg-primary"><i class="fas fa-signature text-light"></i></div>'
             content = `<b>${log_user}</b> created a new request that requires your approval. See ticket <b>${task.ticket.ticket_no}</b>.`
-            notification_url = `/core/user`
+            notification_url = `/requests/${object_json_repr[0].fields.ticket}/view`
         } else if (task.is_client_task) {
             circle_color = 'img-circle-primary'
             name_color = 'img-name-primary'
             img_text = '<i class="fas fa-lg fa-ticket-alt"></i>'
             content = `Your ticket status is in <b>${task.task_type}</b> and requires your action.`
-            notification_url = `/core/user`
+            notification_url = `/requests/${object_json_repr[0].fields.ticket}/view`
         } else {
             img_text = `${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}`
             img_icon = '<div class="img-icon bg-warning"><i class="fas fa-tasks text-light"></i></div>'
             content = `<b>${log_user}</b> assigned you a new task of <b>${task.task_type}</b>.`
+            notification_url = '/tasks/mytasks'
         }
     }
 
     $('.dropdown-body').append(
-        `<a href="#" class="dropdown-notification-item d-flex" data-notification-id="#">
+        `<a href="${notification_url}" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-task-id="${task.task_id}">
             <div class="notification-user align-self-start mr-2">
                 <div class="img-circle ${circle_color}">
                     <span class="img-name ${name_color}">${img_text}</span>
@@ -310,10 +314,11 @@ let displayOpenTaskNotification = function (notification) {
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     let log_user = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     let action = notification.log.event_type
+    let task = notification.log.task
     time_from_now = moment(notification.log.datetime).fromNow()
     if (action === 'Create') content = 'You have a new task available in <b>My Tasks</b>.'
     $('.dropdown-body').append(
-        `<a href="#" class="dropdown-notification-item d-flex" data-notification-id="#">
+        `<a href="/tasks/mytasks" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-task-id="${task.task_id}">
             <div class="notification-user align-self-start mr-2">
                 <div class="img-circle img-circle-warning">
                     <span class="img-name img-name-warning"><i class="fas fa-lg fa-tasks"></i></span>
@@ -347,7 +352,7 @@ let displayTaskTeamNotification = function (notification) {
         content = `removed ${person} from a task.`
     }
     $('.dropdown-body').append(
-        `<a href="#" class="dropdown-notification-item d-flex" data-notification-id="#">
+        `<a href="/tasks/mytasks" class="dropdown-notification-item d-flex" data-notification-id="${notification.id}" data-task-id="${task.task_id}">
             <div class="notification-user align-self-start mr-2">
                 <div class="img-circle ">
                     <span class="img-name">${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}</span>

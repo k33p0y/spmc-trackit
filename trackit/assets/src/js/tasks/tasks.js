@@ -1,4 +1,14 @@
 $(document).ready(function () {
+    // get ticket number in localStorage if available
+    if (localStorage.getItem('task-id')){
+        localStorage.removeItem('task-id');
+    }
+    // set notification instance to unread = False
+    if (localStorage.getItem('notification-id')){
+        axios.delete(`/api/user/notifications/${localStorage.getItem('notification-id')}/`, {headers: axiosConfig})
+        localStorage.removeItem('notification-id');
+    }
+    
     // Check if user has already done or skip walkthrough
     axios.get('/api/config/tour/').then(res => { // response
         const response = res.data.results;
@@ -344,7 +354,8 @@ $(document).ready(function () {
             },
             headers: axiosConfig
         }).then(res => {
-            socket_notification.send(JSON.stringify({ type: 'notification', data: { object_id: formstatus, notification_type: 'action' } }))
+            console.log(res)
+            socket_notification.send(JSON.stringify({ type: 'task_notification', data: { object_id: res.data.id, notification_type: 'task' } }))
             todosTbl.ajax.reload();
             toastSuccess('Success'); // alert
             $("#shareModal").modal('toggle'); // close modal
