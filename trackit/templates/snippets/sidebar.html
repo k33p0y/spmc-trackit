@@ -54,9 +54,10 @@
                   <p> User Guide</p>
                </a>
             </li> {% endcomment %}
+            
+            {% if user.is_verified %}      
 
             <!-- // // // // TASKS MODULE --> 
-            {% comment %} {% if perms.tasks.view_task %} {% endcomment %}
             <li class="nav-item" id="intro_tasks">
                <a href="{% url 'mytasks' %}" class="nav-link {% if url == 'mytasks' %} active {% endif %}">
                   <div class="d-flex align-items-center mr-auto">
@@ -66,10 +67,7 @@
                   <span class="badge badge-pill badge-secondary mx-2" id="badge_task"></span>
                </a>
             </li>
-            {% comment %} {% endif %} {% endcomment %}
 
-            
-            {% if user.is_verified %}        
             {% if request.user.is_superuser or request.user.is_staff %}
             <li class="nav-header">menu</li>
 

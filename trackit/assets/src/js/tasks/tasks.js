@@ -34,6 +34,16 @@ $(document).ready(function () {
         exploreTask();
     });
 
+    // // //  Filters
+    // Select2 config
+    $('.select-filter').select2();
+
+    // RETRIEVE / GET
+    var searchInput = function() { return $('#search-input').val(); }
+    var statusFilter = function() { return $('#status-filter').val(); }
+    var dateFromFilter = function() { return $('#date-from-filter').val(); }
+    var dateToFilter = function() { return $('#date-to-filter').val(); }
+
     let todosTbl = $('#dt_mytasks').DataTable({
         "searching": false,
         "responsive": true,
@@ -53,21 +63,29 @@ $(document).ready(function () {
             {
                 data: "ticket",
                 render: function (data, type, row) {
-                    let description = (row.ticket.description.length >= 60) ? `${row.ticket.description.substr(0, 60)}...` : row.ticket.description;
+                    let description = (row.ticket.description.length >= 50) ? `${row.ticket.description.substr(0, 50)}...` : row.ticket.description;
                     let template = `<div class="d-flex align-items-center">
                             <div class="mr-auto">
                                 <a href='/requests/${row.ticket.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket.ticket_no} </a>
                                 <p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
                                 <span class="badge badge-pill text-light" style="background-color:${row.ticket.request_form.color}!important">${row.ticket.request_form.prefix}</span>
                                 <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>
-                                <span class="badge badge-orange-pastel badge-pill">${row.task_type.status.name}</span>
                             </div>
                         </div>`;
                     if (type == 'display') data = template
                     return data
                 },
-                width: "70%"
-            }, // tikcket
+                width: "50%"
+            }, // ticket
+            {
+                data: "task_type.status.name",
+                render: function (data, type, row) {
+                    console.log(row)
+                    if (type == 'display') data = row.task_type.status.name
+                    return data
+                },
+                width: "20%"
+            }, // type
             {
                 data: "officers",
                 render: function (data, type, row) {
@@ -138,13 +156,21 @@ $(document).ready(function () {
                     let template = `<a href='/requests/${row.ticket.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket.ticket_no} </a>
                         <p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
                         <span class="badge badge-pill text-light" style="background-color:${row.ticket.request_form.color}!important">${row.ticket.request_form.prefix}</span>
-                        <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>
-                        <span class="badge badge-orange-pastel badge-pill">${row.task_type.status.name}</span>`;
+                        <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>`;
                     if (type == 'display') data = template
                     return data
                 },
-                width: "80%"
+                width: "60%"
             }, // tikcket
+            {
+                data: "task_type.status.name",
+                render: function (data, type, row) {
+                    console.log(row)
+                    if (type == 'display') data = row.task_type.status.name
+                    return data
+                },
+                width: "20%"
+            }, // type
             {
                 data: "date_completed",
                 render: function (data, type, row) {
@@ -455,4 +481,48 @@ $(document).ready(function () {
         (dt_data['date_completed']) ? $('#task_complete').html(moment(dt_data['date_completed']).format('DD MMMM YYYY h:mm:ss a')) : '';
         $("#task_ticket_link").attr("href", `/requests/${dt_data['ticket'].ticket_id}/view`)
     }
+
+    
+    // Search Bar onSearch Event
+   $("#search-input").on('search', function () {
+    table.ajax.reload();
+    return false; // prevent refresh
+    });
+
+    // Search Bar keyPress Event
+    $('#search-input').keypress(function(event){
+        let keycode = event.keyCode || event.which;
+        if (keycode == '13') table.ajax.reload();
+    });
+
+    // Search Bar onClick Event
+    $("#execute-search").click(function () {
+        table.ajax.reload();
+        return false; // prevent refresh
+    });
+
+    // Apply Filter
+    $("#btn_apply").click(function () {
+        table.ajax.reload();
+        return false; // prevent refresh
+    });
+
+    // Clear Filter
+    $("#btn_clear").click(function () {
+        $('#form-filter').trigger("reset");
+        $('#form-filter select').trigger("change");
+        table.ajax.reload();
+        return false; // prevent refresh
+    });
+
+    // Close Dropdown 
+    $('#close_dropdown').click(function (){ toggleFilter() });
+
+    // Close Dropdown When Click Outside 
+    $(document).on('click', function (e) { toggleFilter() });
+
+    // Dropdown Prevent From closing
+    $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
+        if (e.clickEvent) e.preventDefault();      
+    });
 });
