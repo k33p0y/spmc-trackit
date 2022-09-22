@@ -358,7 +358,7 @@ class TicketActionSerializer(serializers.ModelSerializer):
          task.save()
    
       create_task(ticket, formstatus, assign_officer, current_user, action.remark) # create new task instance
-      create_notification(str(ticket.ticket_id), ticket, 'ticket') # create notification instance
+      create_notification(str(ticket.ticket_id), ticket, 'action') # create notification instance
 
       # post EventTicket if action has_event
       if event_date: 

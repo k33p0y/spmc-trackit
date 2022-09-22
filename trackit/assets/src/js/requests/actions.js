@@ -27,7 +27,7 @@ $(document).ready(function () {
             $("#select2_officer").attr('multiple', false).append(`<option value='${person.id}' selected>${person.name}</option>`)
          } else {
             $("#select2_officer").attr('multiple', true).select2({ placeholder: 'Select officer' });
-            officers.forEach(person => $("#select2_officer").append(`<option value='${p0qhgcxerson.id}'>${person.name}</option>`));
+            officers.forEach(person => $("#select2_officer").append(`<option value='${person.id}'>${person.name}</option>`));
          }
       });
    });   
@@ -44,23 +44,20 @@ $(document).ready(function () {
    $('.btn-accept').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
-      let task_id = $("#current_step").data().task;
-      var status = $("#select2_nextstep").val()
-      var formstatus = $("#select2_nextstep option:selected").data().formstatusid
-      let remark = $('#txtarea-remark').val();
+      let status = $("#select2_nextstep").val()
+      let formstatus = $("#select2_nextstep option:selected").data().formstatusid
       let is_approve = ($(this).data().approve) ? true : null;
       let is_pass = ($(this).data().pass) ? true : null;
 
-      if (validateRemark()) postAction(ticket_id, task_id, status, formstatus, remark, is_approve, is_pass);
+      if (validateRemark()) postAction(ticket_id, status, formstatus, is_approve, is_pass);
    });
 
    // refuse action
    $('.btn-refuse').click(function (e) {
       e.preventDefault();
       let ticket_id = $(this).data().ticketId;
-      let task_id = $("#current_step").data().task;
       let status = ($(this).data().nextStep == $("#select2_nextstep").val()) ? $(this).data().prevStep : $("#select2_nextstep").val();
-      let remark = $('#txtarea-remark').val();
+      let formstatus = ($(this).data().nextStep == $("#select2_nextstep").val()) ?  $(this).data().prevformstatusId : $("#select2_nextstep option:selected").data().formstatusid 
       let is_approve = ($(this).data().approve == false) ? false : null;
       let is_pass = ($(this).data().pass == false) ? false : null;
 
@@ -78,18 +75,18 @@ $(document).ready(function () {
             confirmButtonColor: '#17a2b8',
          }).then((result) => {
             if (result.value) {
-               postAction(ticket_id, task_id, status, remark, is_approve, is_pass);
+               postAction(ticket_id, status, formstatus, is_approve, is_pass);
             }
          })
       }
    });
 
    // post action
-   const postAction = function (ticket, task, status, formstatus, remark, is_approve, is_pass) {
+   const postAction = function (ticket, status, formstatus, is_approve, is_pass) {     
       let data = new Object();
       data.ticket = ticket
-      data.remark = remark;
-      data.task = (task) ? task : null;
+      data.remark = $('#txtarea-remark').val();
+      data.task = ($("#current_step").data().task) ? $("#current_step").data().task : null;
       data.is_approve = is_approve;
       data.is_pass = is_pass;
       data.status = status;
@@ -103,7 +100,7 @@ $(document).ready(function () {
          data: data,
          headers: axiosConfig,
       }).then(res => {
-         socket_notification.send(JSON.stringify({ type: 'notification', data: { object_id: res.data.ticket, notification_type: 'ticket' } }))
+         socket_notification.send(JSON.stringify({ type: 'action_notification', data: { object_id: formstatus, notification_type: 'action' } }))
          $.when(toastSuccess('Success')).then(function () {
             location.reload();
          });

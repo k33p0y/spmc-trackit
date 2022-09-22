@@ -153,7 +153,6 @@ class OpenTasksSerializer(serializers.ModelSerializer):
     ticket = TicketShortListSerializer(read_only=True)
     task_type = RequestFormStatusNameSerializer(read_only=True)
     
-    @transaction.atomic
     def update(self, instance, validated_data):
         # save instance to task
         task = Task.objects.create(

@@ -141,27 +141,16 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             self.obj = await self.send_notification(object_id, text_data_json['data']['notification_type'])
             
             if text_data_json['data']['notification_type'] == 'action': # notification for ticket action
-                # send notification to task officer
-                if self.obj['task_officer']:
-                    for officer in self.obj['task_officer']:
-                        await self.channel_layer.group_send(
-                            'notif_room_for_user_' + str(officer['id']),
-                            {
-                                'type': 'notification_message',
-                                'notification': self.obj,
-                                'sender_channel_name': self.channel_name
-                            }
-                        )
-                else:
-                    # send notification to group
-                    await self.channel_layer.group_send(
-                        'notif_room_for_status_' + str(self.obj['status']),
-                        {
-                            'type': 'notification_message',
-                            'notification': self.obj,
-                            'sender_channel_name': self.channel_name
-                        }
-                    )
+                # send notification to group
+                await self.channel_layer.group_send(
+                    'notif_room_for_status_' + str(self.obj['status']),
+                    {
+                        'type': 'notification_message',
+                        'notification': self.obj,
+                        'sender_channel_name': self.channel_name
+                    }
+                )
+                    
         if text_data_json['type'] == 'task_notification': 
             object_id = text_data_json['data']['object_id']
             self.obj = await self.send_notification(object_id, text_data_json['data']['notification_type'])
@@ -253,9 +242,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             
             obj['user_pk'] = user.pk
         if notification_type == 'action':
-            task = Task.objects.filter(task_type=object_id).last()
-            obj['status'] = str(task.task_type.status.pk)
-            obj['task_officer'] = list(task.officer.values('id')) if task else None
+            formstatus = RequestFormStatus.objects.get(pk=object_id)
+            obj['status'] = str(formstatus.pk)
         if notification_type == 'task':
             task = Task.objects.get(pk=object_id)
             obj['task'] = str(task.pk)        
