@@ -259,7 +259,6 @@ let displayUserNotification = function (notification) {
 };
 
 let displayTaskNotification = function (notification) {
-    console.log(notification)   
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     let log_user = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     let action = notification.log.event_type

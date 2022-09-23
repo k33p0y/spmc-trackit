@@ -34,7 +34,7 @@ class MyTaskListViewSet(viewsets.ModelViewSet):
       qs = Task.objects.filter(officers=self.request.user, date_completed__isnull=True)
       
       if search: qs = qs.filter(Q(ticket__ticket_no__icontains=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
-      if task_type: qs = qs.filter(task_type=task_type)
+      if task_type: qs = qs.filter(task_type__status=task_type)
       if date_from: qs = qs.filter(date_created__gte=date_from)
       if date_to: qs = qs.filter(date_created__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
       return qs
@@ -55,7 +55,7 @@ class TaskListCompleteViewSet(viewsets.ModelViewSet):
       qs = Task.objects.filter(officers=self.request.user, date_completed__isnull=False).order_by('-date_completed')
       
       if search: qs = qs.filter(Q(ticket__ticket_no__icontains=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
-      if task_type: qs = qs.filter(task_type=task_type)
+      if task_type: qs = qs.filter(task_type__status=task_type)
       if date_from: qs = qs.filter(date_completed__gte=date_from)
       if date_to: qs = qs.filter(date_completed__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
       

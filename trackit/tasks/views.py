@@ -3,17 +3,21 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, get_object_or_404
 from core.decorators import user_is_verified, user_is_staff_member
 from django.db import transaction
+from django.db.models import Q
 
 from .models import Task, Team, OpenTask
 from easyaudit.models import CRUDEvent
+from config.models import Status
 from requests.models import RequestFormStatus, Ticket, Notification
+
 
 # Create your views here.
 @login_required
 @user_is_verified
 def mytasks(request):
-   status = RequestFormStatus.objects.filter(officer=request.user).order_by('status__name').distinct()
-   return render(request, 'pages/tasks/task.html', {'task_types' : status})
+   # status = Status.objects.filter(form_statuses__officer=request.user, is_active=True).order_by('name').distinct()
+   status = Status.objects.filter(form_statuses__officer__isnull=False, is_active=True).order_by('name').distinct()
+   return render(request, 'pages/tasks/task.html', {'status' : status})
 
 # Create notification method
 def create_task_notification(instance, sender):

@@ -53,8 +53,8 @@
                                                 <label for="status-filter">By Status </label>
                                                 <select class="form-control form-control-sm select-filter" id="status-filter" name="status-filter">
                                                    <option value="">All</option>
-                                                   {% for type in task_types %}
-                                                   <option value={{type.id}}>{{type.status}}</option>
+                                                   {% for stat in status %}
+                                                   <option value={{stat.id}}>{{stat}}</option>
                                                    {% endfor %}
                                                 </select>
                                              </div>
