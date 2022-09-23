@@ -184,7 +184,6 @@ $(document).ready(function () {
             {
                 data: "task_type.status.name",
                 render: function (data, type, row) {
-                    console.log(row)
                     if (type == 'display') data = row.task_type.status.name
                     return data
                 },
@@ -275,7 +274,6 @@ $(document).ready(function () {
             {
                 data: "task_type.status.name",
                 render: function (data, type, row) {
-                    console.log(row)
                     if (type == 'display') data = row.task_type.status.name
                     return data
                 },
@@ -500,7 +498,6 @@ $(document).ready(function () {
             },
             headers: axiosConfig
         }).then(res => {
-            console.log(res)
             socket_notification.send(JSON.stringify({ type: 'task_notification', data: { object_id: res.data.id, notification_type: 'task' } }))
             todosTbl.ajax.reload();
             toastSuccess('Success'); // alert

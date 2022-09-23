@@ -42,7 +42,6 @@ let getAllNotifications = function (page) {
             if (!page) $('.dropdown-notifications-div .dropdown-body').empty();
             for (i = 0; i < notifications.length; i++) {
                 let model = JSON.parse(notifications[i].log.object_json_repr)
-                
                 if (model[0].model === 'requests.ticket') displayTicketNotification(notifications[i]);
                 if (model[0].model === 'requests.comment') displayCommentNotification(notifications[i]);
                 if (model[0].model === 'core.user') displayUserNotification(notifications[i]);
@@ -104,7 +103,6 @@ let displayTicketNotification = function (notification) {
                 action = `failed ${requestor} request ticket <b>${ticket_no}</b>.`
             } else action = `moved status to <b>${changed_fields.status[1]}</b> on ticket <b>${ticket_no}</b>.`
         } else {
-            // console.log(changed_fields)
             determiner = (user === notification.log.ticket.requestor) ? 'to your' : 'in a';
             if (Object.keys(changed_fields).length > 1){
                 items = Object.keys(changed_fields).map(function(item) {
@@ -261,7 +259,7 @@ let displayUserNotification = function (notification) {
 };
 
 let displayTaskNotification = function (notification) {
-    console.log(notification)
+    console.log(notification)   
     let object_json_repr = JSON.parse(notification.log.object_json_repr)
     let log_user = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     let action = notification.log.event_type
@@ -289,8 +287,9 @@ let displayTaskNotification = function (notification) {
         } else {
             img_text = `${notification.log.user.first_name.charAt(0)}${notification.log.user.last_name.charAt(0)}`
             img_icon = '<div class="img-icon bg-warning"><i class="fas fa-tasks text-light"></i></div>'
-            content = `<b>${log_user}</b> assigned you a new task of <b>${task.task_type}</b>.`
             notification_url = '/tasks/mytasks'
+            if (object_json_repr[0].fields.opentask_str) content = `<b>${log_user}</b> owned a task of <b>${task.task_type}</b>.`
+            else content = `<b>${log_user}</b> assigned you a new task of <b>${task.task_type}</b>.`
         }
     }
 
@@ -333,7 +332,6 @@ let displayOpenTaskNotification = function (notification) {
 };
 
 let displayTaskTeamNotification = function (notification) {
-    console.log(notification)
     let log_user = `${notification.log.user.first_name} ${notification.log.user.last_name}`
     let self = `${notification.user.first_name} ${notification.user.last_name}`
     let action = notification.log.event_type

@@ -17,7 +17,7 @@ def mytasks(request):
 
 # Create notification method
 def create_task_notification(instance, sender):
-   if sender == 'task': officers = instance.officers.all()
+   if sender == 'task': officers = instance.officers.all() if not instance.opentask_str else instance.task_type.officer.all()
    if sender == 'team': officers = instance.task.officers.all()
    if sender == 'opentask': officers = instance.task_type.officer.all()
    ctype = ContentType.objects.get(model=sender)

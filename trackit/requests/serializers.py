@@ -463,8 +463,7 @@ class CRUDEventSerializer(serializers.ModelSerializer):
                'member' : '%s %s' % (user.first_name, user.last_name)
             }
       elif (object_json_repr[0]['model'] == 'tasks.opentask'):
-         otask = OpenTask.objects.get(pk=instance.object_id)
-         return {'task_id': otask.pk}
+         return {'task_id': instance.object_id}
       return ''
    
    class Meta:
