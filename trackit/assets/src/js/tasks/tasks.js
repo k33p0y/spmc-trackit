@@ -1,4 +1,111 @@
 $(document).ready(function () {
+    const getOpenTasks = function (page, lookup, refresh) {
+        let url = (page) ? page : '/api/tasks/open/';
+        let params = (lookup) ? { search: lookup } : '';
+    
+        axios({
+            method: 'GET',
+            url: url,
+            params: params
+        }).then(response => {
+            const tasks_api_next = response.data.next;
+            const tasks = response.data.results;
+    
+            if (tasks_api_next) { // check if there is next page to comment list API
+                if (tasks_api_next.includes('socket')) { // check if host == socket
+                    let nextpage = tasks_api_next.replace('socket', window.location.host) // change socket host to window.location.host
+                    $('#tasks_nextpage_url').val(nextpage);
+                } else $('#tasks_nextpage_url').val(tasks_api_next);
+            } else $('#tasks_nextpage_url').val(null);
+    
+            if (tasks.length > 0) {
+                if (refresh) $('#opentask_lists').empty();
+                $('#opentask_lists').empty();
+                $('#opentasks_state').addClass('d-none'); // hide event state
+                $('.task-wrapper').removeClass('d-none'); // show elements
+                tasks.forEach(task => {
+                    $('#opentask_lists').append( // render template
+                        `<div class="card card-task px-3 py-2 mb-3 mx-1 animate__animated animate__flipInX animate__faster">
+                            <div class="card-body p-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="w-75">
+                                        <p class="font-weight-bold text-orange m-0">${task.ticket.ticket_no}</p>
+                                        <p class="font-weight-bold text-truncate m-0">${task.ticket.description}</p>
+                                        <span class="badge badge-pill text-light" style="background-color:${task.ticket.request_form.color}!important">${task.ticket.request_form.prefix}</span>
+                                        <span class="badge badge-light2 badge-pill">${task.ticket.reference_no}</span>
+                                        <span class="badge badge-orange-pastel badge-pill">${task.task_type.status.name}</span>
+                                        <p class="text-xs m-0 mt-2"><a href="/requests/${task.ticket.ticket_id}/view" class="text-muted">View Ticket</a></p>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <button type="button" class="btn btn-sm btn-outline-orange get-task" data-task-id="${task.id}" data-toggle="tooltip" data-placement="top" title="Get task"><i class="fas fa-sm fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`
+                    )
+                });
+                $('.tasks-spinner').addClass('d-none');
+            } else if (lookup && tasks.length == 0) {
+                $('#opentask_lists').html('<p class="text-center text-muted m-0">No event data found</p>')
+            } else {
+                $('#opentasks_state').removeClass('d-none'); // show elements
+                $('.task-wrapper').addClass('d-none'); // hide elements
+            }
+        }).catch(error => { // error
+            toastError(error.response.statusText);
+        });
+    };
+    getOpenTasks(null, null, false);
+
+    const taskDetail = function(dt_data) {
+        let people = $.map(dt_data['officers'], function( value, i ) { return value.id })
+        
+        $("#detailModal").modal(); // show modal
+        $("#task_name").html(`"${dt_data['ticket'].ticket_no}"`);
+        $("#btn_share").prop('disabled', false).data('task', dt_data['id']) // add data attribute to button
+    
+        // iterate owners
+        $('.people-wrapper').empty();
+        dt_data['officers'].forEach(person => {
+            let initials = `${person.first_name.charAt(0)}${person.last_name.charAt(0)}`
+            let name = `${person.full_name} ${person.user_id == actor ? '(you)' : ''}`
+            let formatDate = moment(person.date_assigned).format('MMM DD YYYY');
+            // draw template
+            $('.people-wrapper').append(`
+                <div class="dropdown mr-2">
+                    <a class="member-link" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="member-profile member-profile-lg" data-toggle="tooltip" data-placement="top" title="${name}">${initials}</div>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg text-muted p-2" aria-labelledby="dropdownMenuLink">
+                        <ul class="list-group list-flush-dashed list-group-flush">
+                            <li class="list-group-item d-flex p-1">
+                                <small class="flex-grow-1">Name</small>
+                                <small>${name}</small>
+                            </li>
+                            <li class="list-group-item d-flex p-1">
+                                <small class="flex-grow-1">Date</small>
+                                <small>${formatDate}</small>
+                            </li>
+                            <li class="list-group-item d-flex p-1">
+                                <small class="flex-grow-1">Assign by</small>
+                                <small>${person.assignee ? `${person.assignee.name}` : '-'}</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>`
+            );
+        });
+    
+        // task about
+        $('#task_ticket').html(dt_data['ticket'].ticket_no);
+        $('#task_form').html(dt_data['ticket'].request_form.name);
+        $('#task_description').html(dt_data['ticket'].description);
+        $('#task_type').html(dt_data['task_type'].status.name);
+        (dt_data['date_created']) ? $('#task_created').html(moment(dt_data['date_created']).format('DD MMMM YYYY h:mm:ss a')) : '';
+        (dt_data['date_completed']) ? $('#task_complete').html(moment(dt_data['date_completed']).format('DD MMMM YYYY h:mm:ss a')) : '';
+        $("#task_ticket_link").attr("href", `/requests/${dt_data['ticket'].ticket_id}/view`)
+    };
+  
     // get ticket number in localStorage if available
     if (localStorage.getItem('task-id')){
         localStorage.removeItem('task-id');
@@ -29,20 +136,11 @@ $(document).ready(function () {
         toastError(err.response.statusText) // alert
     });
 
-    // walkthrough click event
-    $('.tour-me').click(function() {
-        exploreTask();
-    });
-
-    // // //  Filters
-    // Select2 config
-    $('.select-filter').select2();
-
     // RETRIEVE / GET
-    var searchInput = function() { return $('#search-input').val(); }
-    var statusFilter = function() { return $('#status-filter').val(); }
-    var dateFromFilter = function() { return $('#date-from-filter').val(); }
-    var dateToFilter = function() { return $('#date-to-filter').val(); }
+    let searchInput = function() { return $('#search_input_task').val(); }
+    let statusFilter = function() { return $('#status-filter').val(); }
+    let dateFromFilter = function() { return $('#date-from-filter').val(); }
+    let dateToFilter = function() { return $('#date-to-filter').val(); }
 
     let todosTbl = $('#dt_mytasks').DataTable({
         "searching": false,
@@ -58,6 +156,12 @@ $(document).ready(function () {
         "ajax": {
             url: '/api/tasks/list/mytasks/?format=datatables',
             type: "GET",
+            data: {
+                "search": searchInput,
+                "task_type": statusFilter,
+                "date_from": dateFromFilter,
+                "date_to": dateToFilter,
+            }
         },
         "columns": [
             {
@@ -132,8 +236,8 @@ $(document).ready(function () {
             } // dropdown
         ],
     }); // table end
-
-    let completedTbl = $('#dt_completed').DataTable({
+    
+    let completeTbl = $('#dt_completed').DataTable({
         "searching": false,
         "responsive": true,
         "lengthChange": false,
@@ -147,6 +251,12 @@ $(document).ready(function () {
         "ajax": {
             url: '/api/tasks/list/completed/?format=datatables',
             type: "GET",
+            data: {
+                "search": searchInput,
+                "task_type": statusFilter,
+                "date_from": dateFromFilter,
+                "date_to": dateToFilter,
+            }
         },
         "columns": [
             {
@@ -198,63 +308,94 @@ $(document).ready(function () {
         ],
     }); // table end
 
-    const getOpenTasks = function (page, lookup, refresh) {
-        let url = (page) ? page : '/api/tasks/open/';
-        let params = (lookup) ? { search: lookup } : '';
 
-        axios({
-            method: 'GET',
-            url: url,
-            params: params
-        }).then(response => {
-            const tasks_api_next = response.data.next;
-            const tasks = response.data.results;
+    // pill tab shown event.
+    $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+        switch(e.target.id) {
+            case "pills-todo-tab":
+                $('#search_input_task').val("");
+                $('#form-filter').trigger("reset");
+                $('#form-filter select').trigger("change");
+                todosTbl.ajax.reload();
+                break;
+            case "pills-complete-tab":
+                $('#search_input_task').val("");
+                $('#form-filter').trigger("reset");
+                $('#form-filter select').trigger("change");
+                completeTbl.ajax.reload();
+                break;
+        }
+    });
+        
+    //  // // // // // // // // // // // // // // // SEARCHING AND FILTERING EVENTS 
+    $('.select-filter').select2(); // select2 config
 
-            if (tasks_api_next) { // check if there is next page to comment list API
-                if (tasks_api_next.includes('socket')) { // check if host == socket
-                    let nextpage = tasks_api_next.replace('socket', window.location.host) // change socket host to window.location.host
-                    $('#tasks_nextpage_url').val(nextpage);
-                } else $('#tasks_nextpage_url').val(tasks_api_next);
-            } else $('#tasks_nextpage_url').val(null);
+    // // // // // // // // // // // // // // // //  OPEN TASK SEARCH BAR
+    // onClick Event
+    $("#execute_search_opentask").click(function () {
+        let lookup = $('#search_input_opentask').val();
+        getOpenTasks(null, lookup, false)
+        return false; // prevent refresh
+    });
+    // onSearch Event
+    $("#search_input_opentask").on('search', function () {
+        let lookup = $('#search_input_opentask').val();
+        getOpenTasks(null, lookup, false)
+        return false; // prevent refresh
+    });
+    // keyPress Event
+    $('#search_input_opentask').keypress(function (event) {
+        let lookup = $('#search_input_opentask').val();
+        let keycode = event.keyCode || event.which;
+        if (keycode == '13') getOpenTasks(null, lookup, false)
+    });
 
-            if (tasks.length > 0) {
-                if (lookup) $('#opentask_lists').empty();
-                if (refresh) $('#opentask_lists').empty();
-                $('#opentasks_state').addClass('d-none'); // hide event state
-                $('.task-wrapper').removeClass('d-none'); // show elements
-                tasks.forEach(task => {
-                    $('#opentask_lists').append( // render template
-                        `<div class="card card-task px-3 py-2 mb-3 mx-1 animate__animated animate__flipInX animate__faster">
-                            <div class="card-body p-0">
-                                <div class="d-flex align-items-center">
-                                    <div class="w-75">
-                                        <p class="font-weight-bold text-orange m-0">${task.ticket.ticket_no}</p>
-                                        <p class="font-weight-bold text-truncate m-0">${task.ticket.description}</p>
-                                        <span class="badge badge-pill text-light" style="background-color:${task.ticket.request_form.color}!important">${task.ticket.request_form.prefix}</span>
-                                        <span class="badge badge-light2 badge-pill">${task.ticket.reference_no}</span>
-                                        <span class="badge badge-orange-pastel badge-pill">${task.task_type.status.name}</span>
-                                        <p class="text-xs m-0 mt-2"><a href="/requests/${task.ticket.ticket_id}/view" class="text-muted">View Ticket</a></p>
-                                    </div>
-                                    <div class="ml-auto">
-                                        <button type="button" class="btn btn-sm btn-outline-orange get-task" data-task-id="${task.id}" data-toggle="tooltip" data-placement="top" title="Get task"><i class="fas fa-sm fa-plus"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`
-                    )
-                });
-                $('.tasks-spinner').addClass('d-none');
-            } else if (lookup && tasks.length == 0) {
-                $('#opentask_lists').html('<p class="text-center text-muted m-0">No event data found</p>')
-            } else {
-                $('#opentasks_state').removeClass('d-none'); // show elements
-                $('.task-wrapper').addClass('d-none'); // hide elements
-            }
-        }).catch(error => { // error
-            toastError(error.response.statusText);
-        });
-    }
-    getOpenTasks(null, null, false);
+    // // // // // // // // // // // // // // // //  TASK SEARCH BAR                          
+    // onClick Event
+     $("#execute_search_task").click(function () {
+        if ($("#pills-todo-tab").hasClass('active')) todosTbl.ajax.reload();
+        else if ($("#pills-complete-tab").hasClass('active')) completeTbl.ajax.reload();  
+        return false; // prevent refresh
+    });
+    // onSearch Event
+    $("#search_input_task").on('search', function () {
+        if ($("#pills-todo-tab").hasClass('active')) todosTbl.ajax.reload();
+        else if ($("#pills-complete-tab").hasClass('active')) completeTbl.ajax.reload();  
+        return false; // prevent refresh
+    });
+    // keyPress Event
+    $('#search_input_task').keypress(function(event){
+        let keycode = event.keyCode || event.which;
+        if (keycode == '13') {
+            if ($("#pills-todo-tab").hasClass('active')) todosTbl.ajax.reload();
+            else if ($("#pills-complete-tab").hasClass('active')) completeTbl.ajax.reload();  
+        }
+    });
+
+    // // // // // // // // // // // // // // // //  DROPDOWN FILTERS    
+    // apply filter
+    $("#btn_apply").click(function () {
+        if ($("#pills-todo-tab").hasClass('active')) todosTbl.ajax.reload();
+        else if ($("#pills-complete-tab").hasClass('active')) completeTbl.ajax.reload();  
+        return false; // prevent refresh
+    });
+    // clear filter
+    $("#btn_clear").click(function () {
+        $('#form-filter').trigger("reset");
+        $('#form-filter select').trigger("change");
+
+        if ($("#pills-todo-tab").hasClass('active')) todosTbl.ajax.reload();
+        else if ($("#pills-complete-tab").hasClass('active')) completeTbl.ajax.reload();  
+        return false; // prevent refresh
+    });
+    // close Dropdown 
+    $('#close_dropdown').click(function (){ toggleFilter() });
+    // close dropdown when click outside 
+    $(document).on('click', function (e) { toggleFilter() });
+    // prevent dropdown from closing
+    $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
+        if (e.clickEvent) e.preventDefault();      
+    });
 
     // get more open tasks on scroll
     $('.list-wrapper').scroll(function () {
@@ -265,28 +406,7 @@ $(document).ready(function () {
             };
         }
     });
-
-    // Search Bar onSearch Event
-    $("#search-input").on('search', function () {
-        let lookup = $('#search-input').val();
-        getOpenTasks(null, lookup, false)
-        return false; // prevent refresh
-    });
-
-    // // Search Bar keyPress Event
-    // $('#search-input').keypress(function (event) {
-    //     let lookup = $('#search-input').val();
-    //     let keycode = event.keyCode || event.which;
-    //     if (keycode == '13'); getOpenTasks(null, lookup, false)
-    // });
-
-    // Search Bar onClick Event
-    $("#execute-search").click(function () {
-        let lookup = $('#search-input').val();
-        getOpenTasks(null, lookup, false)
-        return false; // prevent refresh
-    });
-
+   
     // Events
     // get open tasks
     $('#opentask_lists').on('click', '.get-task', function () {
@@ -433,96 +553,8 @@ $(document).ready(function () {
         });
     });
 
-    let taskDetail = function(dt_data) {
-        let people = $.map(dt_data['officers'], function( value, i ) { return value.id })
-        
-        $("#detailModal").modal(); // show modal
-        $("#task_name").html(`"${dt_data['ticket'].ticket_no}"`);
-        $("#btn_share").prop('disabled', false).data('task', dt_data['id']) // add data attribute to button
-
-        // iterate owners
-        $('.people-wrapper').empty();
-        dt_data['officers'].forEach(person => {
-            let initials = `${person.first_name.charAt(0)}${person.last_name.charAt(0)}`
-            let name = `${person.full_name} ${person.user_id == actor ? '(you)' : ''}`
-            let formatDate = moment(person.date_assigned).format('MMM DD YYYY');
-            // draw template
-            $('.people-wrapper').append(`
-                <div class="dropdown mr-2">
-                    <a class="member-link" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <div class="member-profile member-profile-lg" data-toggle="tooltip" data-placement="top" title="${name}">${initials}</div>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg text-muted p-2" aria-labelledby="dropdownMenuLink">
-                        <ul class="list-group list-flush-dashed list-group-flush">
-                            <li class="list-group-item d-flex p-1">
-                                <small class="flex-grow-1">Name</small>
-                                <small>${name}</small>
-                            </li>
-                            <li class="list-group-item d-flex p-1">
-                                <small class="flex-grow-1">Date</small>
-                                <small>${formatDate}</small>
-                            </li>
-                            <li class="list-group-item d-flex p-1">
-                                <small class="flex-grow-1">Assign by</small>
-                                <small>${person.assignee ? `${person.assignee.name}` : '-'}</small>
-                            </li>
-                        </ul>
-                    </div>
-                </div>`
-            );
-        });
-
-        // task about
-        $('#task_ticket').html(dt_data['ticket'].ticket_no);
-        $('#task_form').html(dt_data['ticket'].request_form.name);
-        $('#task_description').html(dt_data['ticket'].description);
-        $('#task_type').html(dt_data['task_type'].status.name);
-        (dt_data['date_created']) ? $('#task_created').html(moment(dt_data['date_created']).format('DD MMMM YYYY h:mm:ss a')) : '';
-        (dt_data['date_completed']) ? $('#task_complete').html(moment(dt_data['date_completed']).format('DD MMMM YYYY h:mm:ss a')) : '';
-        $("#task_ticket_link").attr("href", `/requests/${dt_data['ticket'].ticket_id}/view`)
-    }
-
-    
-    // Search Bar onSearch Event
-   $("#search-input").on('search', function () {
-    table.ajax.reload();
-    return false; // prevent refresh
-    });
-
-    // Search Bar keyPress Event
-    $('#search-input').keypress(function(event){
-        let keycode = event.keyCode || event.which;
-        if (keycode == '13') table.ajax.reload();
-    });
-
-    // Search Bar onClick Event
-    $("#execute-search").click(function () {
-        table.ajax.reload();
-        return false; // prevent refresh
-    });
-
-    // Apply Filter
-    $("#btn_apply").click(function () {
-        table.ajax.reload();
-        return false; // prevent refresh
-    });
-
-    // Clear Filter
-    $("#btn_clear").click(function () {
-        $('#form-filter').trigger("reset");
-        $('#form-filter select').trigger("change");
-        table.ajax.reload();
-        return false; // prevent refresh
-    });
-
-    // Close Dropdown 
-    $('#close_dropdown').click(function (){ toggleFilter() });
-
-    // Close Dropdown When Click Outside 
-    $(document).on('click', function (e) { toggleFilter() });
-
-    // Dropdown Prevent From closing
-    $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
-        if (e.clickEvent) e.preventDefault();      
+    // walkthrough click event
+    $('.tour-me').click(function() {
+        exploreTask();
     });
 });

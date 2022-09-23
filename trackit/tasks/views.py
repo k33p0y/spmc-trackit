@@ -12,7 +12,7 @@ from requests.models import RequestFormStatus, Ticket, Notification
 @login_required
 @user_is_verified
 def mytasks(request):
-   status = RequestFormStatus.objects.filter(officer=request.user).distinct()
+   status = RequestFormStatus.objects.filter(officer=request.user).order_by('status__name').distinct()
    return render(request, 'pages/tasks/task.html', {'task_types' : status})
 
 # Create notification method

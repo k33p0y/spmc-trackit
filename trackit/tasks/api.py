@@ -10,10 +10,12 @@ from .serializers import (
 from .models import OpenTask, Task, Team
 from requests.models import Notification
 
+import datetime
+
 class TaskListViewSet(viewsets.ModelViewSet):    
    serializer_class = TasksListSerializer
-   queryset = Task.objects.all()
    permission_classes = [permissions.IsAuthenticated]
+   queryset = Task.objects.all()
    http_method_names = ['get', 'head',]
 
 class MyTaskListViewSet(viewsets.ModelViewSet):    
@@ -23,18 +25,42 @@ class MyTaskListViewSet(viewsets.ModelViewSet):
    http_method_names = ['get', 'head',]
 
    def get_queryset(self):
-      mytask = Task.objects.filter(officers=self.request.user, date_completed__isnull=True)
-      return mytask
+      # Search & Filter Parameters
+      search = self.request.query_params.get('search', None)
+      task_type = self.request.query_params.get('task_type', None)
+      date_from = self.request.query_params.get('date_from', None)
+      date_to = self.request.query_params.get('date_to', None)
+      
+      qs = Task.objects.filter(officers=self.request.user, date_completed__isnull=True)
+      
+      if search: qs = qs.filter(Q(ticket__ticket_no__icontains=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
+      if task_type: qs = qs.filter(task_type=task_type)
+      if date_from: qs = qs.filter(date_created__gte=date_from)
+      if date_to: qs = qs.filter(date_created__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
+      return qs
 
 class TaskListCompleteViewSet(viewsets.ModelViewSet):    
    serializer_class = TasksListSerializer
-   queryset = Task.objects.all()
    permission_classes = [permissions.IsAuthenticated]
+   queryset = Task.objects.all()
    http_method_names = ['get', 'head',]
 
    def get_queryset(self):
-      return Task.objects.filter(officers=self.request.user, date_completed__isnull=False).order_by('-date_completed')
- 
+      # Search & Filter Parameters
+      search = self.request.query_params.get('search', None)
+      task_type = self.request.query_params.get('task_type', None)
+      date_from = self.request.query_params.get('date_from', None)
+      date_to = self.request.query_params.get('date_to', None)
+      
+      qs = Task.objects.filter(officers=self.request.user, date_completed__isnull=False).order_by('-date_completed')
+      
+      if search: qs = qs.filter(Q(ticket__ticket_no__icontains=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
+      if task_type: qs = qs.filter(task_type=task_type)
+      if date_from: qs = qs.filter(date_completed__gte=date_from)
+      if date_to: qs = qs.filter(date_completed__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
+      
+      return qs
+   
 class RemoveTaskViewSet(viewsets.ModelViewSet):    
    serializer_class = RemoveTasksSerializer
    queryset = Task.objects.all()
@@ -56,7 +82,7 @@ class OpenTaskViewSet(viewsets.ModelViewSet):
    def get_queryset(self):
       search = self.request.query_params.get("search", None)
       qs = OpenTask.objects.filter(task_type__officer=self.request.user)
-      if search: qs = qs.filter(Q(ticket__ticket_no__iexact=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
+      if search: qs = qs.filter(Q(ticket__ticket_no__icontains=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
       return qs
 
 class RemoveTeamPersonViewSet(viewsets.ModelViewSet):    
