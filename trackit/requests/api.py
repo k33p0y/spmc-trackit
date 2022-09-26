@@ -205,6 +205,12 @@ class RequestFormStatusViewSet(viewsets.ReadOnlyModelViewSet):
          qs = RequestFormStatus.objects.all().order_by('id')
          if step: qs = qs.filter(pk=step)
          return qs
+      
+class RequestFormStatusDeleteViewSet(viewsets.ModelViewSet):    
+   serializer_class = RequestFormStatusSerializer
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   queryset = RequestFormStatus.objects.all()
+   http_method_names = ['head', 'delete']
 
 class AttachmentViewSet(viewsets.ModelViewSet):
    serializer_class = AttachmentSerializer

@@ -33,7 +33,28 @@ $(document).ready(function () {
 
    // Remove Status Fields
    $('.form-wrapper').on('click', '.btn-remove', function () {
-      $(this).parents("div.form-row").remove()
+      let form_row = $(this).parents("div.form-row");
+      if (form_row.data().formstatus) { // if row has data. // update modal
+         let id = form_row.data().formstatus
+         Swal.fire({
+            title: 'Are you sure?',
+            icon: 'question',
+            html: `<p class="text-secondary"> This will eliminate the data and related data present in this row. </p>`,
+            showCancelButton: true,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#17a2b8',
+         }).then((result) => {
+            if (result.value) {
+               axios.delete(`/api/requests/form/delete/status/${id}/`, { headers: axiosConfig }).then(res => { 
+                  toastSuccess('Success');
+                  $("#btn_submit").prop('disabled', false); // enable button
+                  $('#formModal').modal('toggle');
+                  table.ajax.reload();
+              })
+            }
+         });
+      }
+      else form_row.remove() // create modal
    });
 
    //Modal Cancel
@@ -271,7 +292,7 @@ $(document).ready(function () {
       let rowEl = $(this).parents('.form-row'); // parent row
       disableSelect(rowEl);
    });
-   // checkbox is_client on change event
+   // checkbox is_head on change event
    $('.form-wrapper').on('change', '.head-box', function () {
       let rowEl = $(this).parents('.form-row'); // parent row
       disableSelect(rowEl);

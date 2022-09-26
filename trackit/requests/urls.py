@@ -8,7 +8,8 @@ from .api import (
    NotificationDeleteViewSet,
    NotificationViewSet, 
    RequestFormCRUDViewSet, 
-   RequestFormStatusViewSet, 
+   RequestFormStatusViewSet,
+   RequestFormStatusDeleteViewSet, 
    RequestFormViewSet, 
    TicketActionViewSet,
    TicketCounterViewSet, 
@@ -33,6 +34,7 @@ router.register('api/requests/ticket/generate_reference', TicketGenerateReferenc
 router.register('api/requests/ticket/status', TicketStatusViewSet, basename='TicketStatus')
 router.register('api/requests/ticket/actions', TicketActionViewSet, basename='TicketAction')
 router.register('api/requests/form/status', RequestFormStatusViewSet, basename='RequestFormStatus')
+router.register('api/requests/form/delete/status', RequestFormStatusDeleteViewSet, basename='RequestFormStatusDelete')
 router.register('api/requests/formstatus/officer', FormStatusOfficerViewSet, basename='FormStatusOfficer')
 router.register('api/requests/attachments', AttachmentViewSet, basename='Attachment')
 router.register('api/user/notifications', NotificationViewSet, basename='Notification')
