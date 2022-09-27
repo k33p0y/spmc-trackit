@@ -394,7 +394,11 @@ class AttachmentSerializer(serializers.ModelSerializer):
    file_size = serializers.SerializerMethodField('get_file_size')
 
    def get_file_size(self, filename):
-      return filename.file.size
+      try:
+         return filename.file.size
+      except OSError as e:
+         pass
+      return 0
    
    class Meta:
       model = Attachment

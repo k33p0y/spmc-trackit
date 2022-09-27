@@ -8,8 +8,12 @@ class ResourcesSerializer(serializers.ModelSerializer):
     file_size = serializers.SerializerMethodField('get_file_size')
 
     def get_file_size(self, filename):
-        return filename.file.size
-    
+        try:
+            return filename.file.size
+        except OSError as e:
+            pass
+        return 0
+  
     class Meta:
         model = Resources
         fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'article', 'uploaded_at', 'uploaded_by']
@@ -55,8 +59,12 @@ class ResourcesSerializer(serializers.ModelSerializer):
     file_size = serializers.SerializerMethodField('get_file_size')
 
     def get_file_size(self, filename):
-        return filename.file.size
-    
+        try:
+            return filename.file.size
+        except OSError as e:
+            pass
+        return 0
+        
     class Meta:
         model = Resources
         fields =  ['id', 'file_name', 'file_type', 'file_size', 'file', 'article', 'uploaded_at', 'uploaded_by']
