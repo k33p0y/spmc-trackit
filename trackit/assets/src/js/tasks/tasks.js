@@ -406,7 +406,7 @@ $(document).ready(function () {
     });
    
     // Events
-    // get open tasks
+    // get/own open tasks
     $('#opentask_lists').on('click', '.get-task', function () {
         let opentask_id = $(this).data().taskId;
 
@@ -415,7 +415,8 @@ $(document).ready(function () {
             url: `/api/tasks/open/${opentask_id}/`,
             headers: axiosConfig
         }).then(results => {
-            // $(this).find('div.card-task');.addClass()
+            console.log(results.data.task_type.id)
+            socket_notification.send(JSON.stringify({ type: 'task_notification', data: { object_id: results.data.task_type.id, notification_type: 'action' } }))
             todosTbl.ajax.reload();
             getOpenTasks(null, null, true);
         }).catch(error => {
@@ -489,16 +490,16 @@ $(document).ready(function () {
     $('#btn_share').click(function () {
         $(this).prop('disabled', true);  // disable Button 
         let task = $(this).data().task;
-        
+        let people = $('#select2_people').val()
         axios({
             method: 'PUT',
             url: `/api/tasks/share/${task}/`,
             data: {
-                people: $('#select2_people').val(),
+                people: people,
             },
             headers: axiosConfig
         }).then(res => {
-            socket_notification.send(JSON.stringify({ type: 'task_notification', data: { object_id: res.data.id, notification_type: 'task' } }))
+            socket_notification.send(JSON.stringify({ type: 'task_notification', data: { object_id: people, notification_type: 'task_share' } }))
             todosTbl.ajax.reload();
             toastSuccess('Success'); // alert
             $("#shareModal").modal('toggle'); // close modal
@@ -519,6 +520,7 @@ $(document).ready(function () {
     $('.people-wrapper').on('click', '.item-remove', function () {
         let person = $(this).data().person;
         axios.delete(`/api/tasks/people/${person}/`, { headers: axiosConfig }).then(res => {
+            socket_notification.send(JSON.stringify({ type: 'task_notification', data: { object_id: person, notification_type: 'task_remove' } }))
             todosTbl.ajax.reload()
             toastSuccess('Success');
             $("#shareModal").modal('toggle'); // close modal

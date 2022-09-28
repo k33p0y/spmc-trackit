@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from easyaudit.models import CRUDEvent
 from requests.models import Ticket, Notification, Comment, RequestFormStatus
-from tasks.models import Task
+from tasks.models import Task, Team
 from core.models import User
 
 class NotificationConsumer(AsyncWebsocketConsumer):
@@ -51,7 +51,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 'notif_room_for_task_' + str(task.pk),
                 self.channel_name
             )
-           
            
         await self.accept()
 
@@ -150,22 +149,54 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                         'sender_channel_name': self.channel_name
                     }
                 )
-                    
         if text_data_json['type'] == 'task_notification': 
             object_id = text_data_json['data']['object_id']
             self.obj = await self.send_notification(object_id, text_data_json['data']['notification_type'])
+            notification_type = text_data_json['data']['notification_type']
             
-            if text_data_json['data']['notification_type'] == 'task': # notification for ticket action
-                    # send notification to group
-                    await self.channel_layer.group_send(
-                        'notif_room_for_task_' + str(self.obj['task']),
-                        {
-                            'type': 'notification_message',
-                            'notification': self.obj,
-                            'sender_channel_name': self.channel_name
-                        }
-                    )
-        
+            if notification_type == 'action': # notification for opentask
+                # send notification to status officer
+                await self.channel_layer.group_send(
+                    'notif_room_for_status_' + str(self.obj['status']),
+                    {
+                        'type': 'notification_message',
+                        'notification': self.obj,
+                        'sender_channel_name': self.channel_name
+                    }
+                )
+            if notification_type == 'task_remove' or notification_type == 'task_share': # notification for task person
+                # send notification to removed person
+                await self.channel_layer.group_send(
+                    'notif_room_for_user_' + str(self.obj['officer']),
+                    {
+                        'type': 'notification_message',
+                        'notification': self.obj,
+                        'sender_channel_name': self.channel_name
+                    }
+                )
+                
+                # send notification to task team
+                await self.channel_layer.group_send(
+                    'notif_room_for_task_' + str(self.obj['task']),
+                    {
+                        'type': 'notification_message',
+                        'notification': self.obj,
+                        'sender_channel_name': self.channel_name
+                    }
+                )
+            
+            if notification_type == 'task':
+                # send notification to task team
+                await self.channel_layer.group_send(
+                    'notif_room_for_task_' + str(self.obj['task']),
+                    {
+                        'type': 'notification_message',
+                        'notification': self.obj,
+                        'sender_channel_name': self.channel_name
+                    }
+                )
+            
+                
     # send notification
     async def notification_message(self, event):
         notification = event['notification']
@@ -246,7 +277,18 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             obj['status'] = str(formstatus.pk)
         if notification_type == 'task':
             task = Task.objects.get(pk=object_id)
-            obj['task'] = str(task.pk)        
+            obj['task'] = str(task.pk)  
+        if notification_type == 'task_share':
+            for person in object_id:
+                team = Team.objects.filter(member=person).latest('id')
+                obj['task'] = str(team.task.pk)
+                obj['officer'] = str(team.member.pk)
+        if notification_type == 'task_remove':
+            ctype = ContentType.objects.get(model='team')
+            log = CRUDEvent.objects.filter(object_id=object_id, content_type=ctype, event_type=CRUDEvent.DELETE).latest('datetime')
+            object_json_repr = json.loads(log.object_json_repr)
+            obj['task'] = str(object_json_repr[0]['fields']['task'])
+            obj['officer'] = str(object_json_repr[0]['fields']['member'])
         return obj
 
     @database_sync_to_async
@@ -311,7 +353,7 @@ class CommentConsumer(AsyncWebsocketConsumer):
         # send comment to websocket
         await self.send(text_data=json.dumps({
             'comment': comment
-        }));
+        }))
 
     @database_sync_to_async
     def get_tickets_related_to_user(self):
