@@ -72,7 +72,7 @@ class RequestFormCRUDSerializer(serializers.ModelSerializer):
       return request_form
 
    @transaction.atomic
-   def update(self, instance, validated_data):
+   def update(self, instance, validated_data): 
       instance.name = validated_data.get('name', instance.name)
       instance.prefix = validated_data.get('prefix', instance.prefix)
       instance.color = validated_data.get('color', instance.color)
@@ -90,23 +90,34 @@ class RequestFormCRUDSerializer(serializers.ModelSerializer):
       # update status
       # RequestFormStatus.objects.filter(form=instance).delete()
       for status in self.context['request'].data['status']:
-         ins = get_object_or_404(RequestFormStatus, pk=status['formstatus'])
-         ins.status_id = status['status']
-         ins.order = status['order']
-         ins.is_client_step = status['is_client']
-         ins.is_head_step = status['is_head']
-         ins.has_approving = status['has_approving']
-         ins.has_pass_fail = status['has_pass_fail']
-         ins.has_event = status['has_event']
-         ins.form = instance
-         
-         ins.officer.clear()
-         if status['officer']:
-            ins.officer.add(*status['officer'])
-         ins.save()
-  
+         try: 
+            ins = RequestFormStatus.objects.get(pk=status['formstatus'])
+            ins.status_id = status['status']
+            ins.order = status['order']
+            ins.is_client_step = status['is_client']
+            ins.is_head_step = status['is_head']
+            ins.has_approving = status['has_approving']
+            ins.has_pass_fail = status['has_pass_fail']
+            ins.has_event = status['has_event']
+            ins.form = instance
+            ins.officer.clear()
+            if status['officer']:
+               ins.officer.add(*status['officer'])
+            ins.save()
+         except RequestFormStatus.DoesNotExist:
+            form_status = RequestFormStatus.objects.create(
+               status_id = status['status'], 
+               order = status['order'], 
+               is_client_step = status['is_client'],
+               is_head_step = status['is_head'],
+               has_approving = status['has_approving'],
+               has_pass_fail = status['has_pass_fail'],
+               has_event = status['has_event'],
+               form = instance
+            )
+            form_status.officer.add(*status['officer'])
       return instance
-
+         
    def validate_name(self, name):
       if not name:
          raise serializers.ValidationError('This field may not be blank.')

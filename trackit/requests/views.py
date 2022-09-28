@@ -93,6 +93,7 @@ def view_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
    categories = ticket.category.all()
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
+   remark = None
 
    ### events
    events = Event.objects.filter(event_for=ticket.request_form, is_active=True) # events
@@ -106,16 +107,15 @@ def view_ticket(request, ticket_id):
    steps = RequestFormStatus.objects.select_related('form', 'status',).filter(form_id=ticket.request_form).order_by('order') # get all steps from ticket request form
    last_step = steps.latest('order') # get last step
    first_step = steps.first() # get first step
-   curr_step = steps.get(status_id=ticket.status) # get current step
+   try:
+      curr_step = steps.get(status_id=ticket.status) # get current step
+   except RequestFormStatus.DoesNotExist:
+      curr_step = last_step
    next_step = steps.get(order=curr_step.order+1) if not curr_step.status == last_step.status else curr_step # next current step
    prev_step = steps.get(order=curr_step.order-1) if not curr_step.status == first_step.status else curr_step # prev current step
    has_event_form = True if steps.filter(has_event=True) else False  # check if statuses has event
    officers = next_step.officer.all() # get officer in current status.
-   
-   ### tasks
-   ### get task officers of current step
-   task = ticket.tasks.filter(task_type__status=ticket.status).last()
-   ticket_officers = task.officers.all() if task else None
+   progress = round((curr_step.order / len(steps)) * 100) # get progress value
    
    ### iterate steps/status
    for step in steps:
@@ -123,9 +123,11 @@ def view_ticket(request, ticket_id):
       remarks = ticket.remarks.filter(ticket_id=ticket_id, status_id=step.status_id, is_approve=True) 
       if step.is_head_step and step.has_approving:
          remark = remarks.earliest('id') if remarks else None
-
-   remark = None
-   progress = round((curr_step.order / len(steps)) * 100) # get progress value
+   
+   ### tasks
+   ### get task officers of current step
+   task = ticket.tasks.filter(task_type__status=ticket.status).last()
+   ticket_officers = task.officers.all() if task else None
 
    context = {
       'ticket': ticket, 
