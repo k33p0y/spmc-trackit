@@ -6,10 +6,14 @@ const socket_notification = new WebSocket(url_ws_notification)
 socket_notification.onopen = function (event) {
     $('.online-status, .profile-online-status').removeClass('d-none')
     getAllNotifications();
+    getTasksNotification();
 }
 
 socket_notification.onmessage = function (event) {
-    if ('notification' in JSON.parse(event.data)) getAllNotifications(); // Notifications
+    if ('notification' in JSON.parse(event.data)) {
+        getAllNotifications(); // Notifications
+        getTasksNotification(); // Task Counter
+    }
 }
 
 socket_notification.onclose = function (event) {

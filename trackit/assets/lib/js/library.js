@@ -1,9 +1,5 @@
 $('body').tooltip({selector: '[data-toggle="tooltip"]'}); // initiate 
 
-// task counter for badge
-// temporary notifacation
-axios.get('/api/tasks/list/mytasks/').then(res => { $('#badge_task').html(res.data.count) });
-
 // Headers CSRF 
 function getCookie(name) {
    let cookieValue = null;
@@ -55,6 +51,11 @@ const getUserNotifications = function (page){
    let url = (page) ? page : '/api/user/notifications/';
    return axios.get(url).then(response=>response.data).catch(response=>response.data)
 };
+
+// task counter for sidebar notification\
+const getTasksNotification = function () {
+   axios.get('/api/tasks/list/mytasks/').then(res => { $('#badge_task').html((res.data.count > 0) ? res.data.count : '')});
+}
 
 // MIME TYPES REGISTER
 const media_type = new Object();
