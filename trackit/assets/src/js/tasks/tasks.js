@@ -210,9 +210,11 @@ $(document).ready(function () {
             {
                 data: "date_created",
                 render: function (data, type, row) {
-                    let date = moment(row.date_created).format('DD MMMM YYYY');
-                    let time = moment(row.date_created).format('h:mm:ss a');
-                    if (type == 'display') data = `<p class="title mb-0">${date}</p><span class="sub-title">${time}</span>`
+                    if (type == 'display') {
+                        var date = moment(row.date_created).format('DD MMMM YYYY');
+                        var time = moment(row.date_created).format('h:mm:ss a');
+                        data = `<p class="title mb-0">${date}</p><span class="sub-title">${time}</span>`
+                    }
                     return data
                 },
             }, // date_created
@@ -234,6 +236,7 @@ $(document).ready(function () {
                 orderable: false
             } // dropdown
         ],
+        "order": [[ 3, "desc" ]],
     }); // table end
     
     let completeTbl = $('#dt_completed').DataTable({
@@ -304,6 +307,7 @@ $(document).ready(function () {
                 orderable: false
             } // dropdown
         ],
+        "order": [[ 2, "desc" ]],
     }); // table end
 
 
