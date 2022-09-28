@@ -45,7 +45,10 @@ def create_task(ticket, formstatus_id, officers, request_user, remark):
    # department head step status 
    elif form_status.is_head_step: 
       task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
-      Team.objects.create(member_id=ticket.department.department_head.pk, task_id=task.pk, remark=remark)
+      try:
+         Team.objects.create(member_id=ticket.department.department_head.pk, task_id=task.pk, remark=remark)
+      except AttributeError:
+         pass
       create_task_notification(task, 'task')
     # if request param assign_by is not empty
    elif officers: 
@@ -68,8 +71,13 @@ def create_task(ticket, formstatus_id, officers, request_user, remark):
 def create_task_for_all_requests(request):
    tickets = Ticket.objects.filter(is_active=True)
    for ticket in tickets:
-      steps = RequestFormStatus.objects.select_related('form', 'status',).filter(form_id=ticket.request_form).order_by('order') # get all steps from ticket request form
-      curr_step = steps.get(status_id=ticket.status) # get current step
-      officers = curr_step.officer.all()[0].pk if len(curr_step.officer.all()) == 1 else []
-      create_task(ticket, curr_step.pk, officers, request.user, '')
+      task = ticket.tasks.filter(task_type__status=ticket.status).last()
+      if not task:
+         try:
+            steps = RequestFormStatus.objects.select_related('form', 'status',).filter(form_id=ticket.request_form).order_by('order') # get all steps from ticket request form
+            curr_step = steps.get(status_id=ticket.status) # get current step
+            officers = curr_step.officer.all()[0].pk if len(curr_step.officer.all()) == 1 else []
+            create_task(ticket, curr_step.pk, officers, request.user, '')
+         except RequestFormStatus.DoesNotExist:
+            pass
    return render(request, 'pages/tasks/create_task.html', {})
