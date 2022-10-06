@@ -126,7 +126,7 @@ def view_ticket(request, ticket_id):
    
    ### tasks
    ### get task officers of current step
-   task = ticket.tasks.filter(task_type__status=ticket.status).last()
+   task = ticket.tasks.filter(task_type__status=ticket.status, date_completed__isnull=True).last()
    ticket_officers = task.officers.all() if task else None
 
    context = {
@@ -194,8 +194,6 @@ def create_notification(object_id, ticket, sender):
                      
    if not log.user == requestor:
       Notification(log=log, user=requestor).save()
-
-
 
 # Remark Method
 def create_remark(object_id, ticket):
