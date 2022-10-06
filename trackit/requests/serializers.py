@@ -137,7 +137,7 @@ class RequestFormReadOnlySerializer(serializers.ModelSerializer):
    class Meta:
       model = RequestForm
       fields = ['id', 'name', 'color', 'prefix']
-
+      
 class StatusReadOnlySerializer(serializers.ModelSerializer):
    class Meta:
       model = Status
@@ -525,3 +525,20 @@ class FormStatusOfficerSerializer(serializers.ModelSerializer):
    class Meta: 
       model = RequestFormStatus
       fields = ('id', 'name', 'officer')
+              
+class StatusOfficerSerializer(serializers.ModelSerializer):
+   officers = serializers.SerializerMethodField()
+   
+   def get_officers(self, instance):
+      officer_list = []
+      for status in instance.form_statuses.all():
+         for user in status.officer.all():
+            officer = dict({'id': user.pk, 'name': str(user.get_full_name())})
+            if not officer in officer_list:
+               officer_list.append(officer)
+               
+      return officer_list             
+   
+   class Meta:
+      model = Status
+      fields = ['id', 'name', 'form_statuses', 'officers']

@@ -18,6 +18,7 @@ from .serializers import (
    RequestFormCRUDSerializer, 
    RequestFormListSerializer, 
    RequestFormStatusSerializer,
+   StatusOfficerSerializer,
    TicketActionSerializer,
    TicketCounterSerializer,
    TicketCRUDSerializer, 
@@ -29,7 +30,7 @@ from .serializers import (
 from .views import create_notification, create_remark, generate_reference
 from .permissions import CanGenerateReference
 from easyaudit.models import CRUDEvent
-from config.models import Remark
+from config.models import Remark, Status
 from core.models import User
 from tasks.models import Task
 
@@ -329,3 +330,8 @@ class FormStatusOfficerViewSet(viewsets.ReadOnlyModelViewSet):
       qs = RequestFormStatus.objects.all().order_by('id')
       if step: qs = qs.filter(pk=step)
       return qs
+   
+class StatusOfficerViewset(viewsets.ReadOnlyModelViewSet):
+   serializer_class = StatusOfficerSerializer
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   queryset = Status.objects.all()

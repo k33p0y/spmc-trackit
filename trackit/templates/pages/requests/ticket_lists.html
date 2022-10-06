@@ -83,7 +83,7 @@
                            {% endfor %}
                         </select>
                      </div>
-                      {% if user.is_superuser or user.is_staff %}
+                     {% if user.is_superuser or user.is_staff %}
                      <div class="form-group mb-1">
                         <label for="active-filter">By Task Officer </label>
                         <select class="form-control form-control-sm select-filter" id="officer-filter" name="officer-filter">

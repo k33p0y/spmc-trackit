@@ -170,12 +170,8 @@ $(document).ready(function () {
             data: "is_active",
             render: function (data, type, row) {
                if (type == 'display') {
-
-                  if (row.is_active == true) {
-                     data = "<i class='fas fa-check-circle text-success'></i>";
-                  } else {
-                     data = "<i class='fas fa-times-circle text-danger'></i>";
-                  }
+                  if (row.is_active == true) data = "<i class='fas fa-check-circle text-success'></i>";
+                  else data = "<i class='fas fa-times-circle text-danger'></i>";
                }
                return data
             }
@@ -188,19 +184,34 @@ $(document).ready(function () {
    // Select2 config
    $('.select-filter').select2();
 
-   // Type Filter on change
+   // Type filter on change
    $('#type-filter').on('change', function () { // category type dropdown
-      category_type = $("#type-filter option:selected").val();
+      let category_type = $("#type-filter option:selected").val();
       axios.get('/api/config/list/category', {params: {"category_type" : category_type}}, axiosConfig).then(res => {
          $("#category-filter")
             .empty()
             .append('<option value="">All</option>')
             .removeAttr('disabled');
 
-         res.data.forEach(category => {
-            $("#category-filter").append(`<option value='${category.id}'>${category.name}</option>`)
+         res.data.forEach(obj => {
+            $("#category-filter").append(`<option value='${obj.id}'>${obj.name}</option>`)
          });
        });
+   });
+   // Status filter on change
+   $('#status-filter').on('change', function () { // category type dropdown
+      let status = $("#status-filter option:selected").val();
+      if (status) {
+         axios.get(`/api/status/officer/${status}`).then(res => {
+            $("#officer-filter")
+               .empty()
+               .append('<option value="">All</option>')
+               .removeAttr('disabled');
+            if (res.data.officers.length > 1) 
+               res.data.officers.forEach(obj => $("#officer-filter").append(`<option value='${obj.id}'>${obj.name}</option>`));
+            else $("#officer-filter").append('<option disabled>No officer assigned</option>')
+         });
+      }
    });
 
    // Search Bar onSearch Event

@@ -11,6 +11,7 @@ from .api import (
    RequestFormStatusViewSet,
    RequestFormStatusDeleteViewSet, 
    RequestFormViewSet, 
+   StatusOfficerViewset,
    TicketActionViewSet,
    TicketCounterViewSet, 
    TicketCRUDViewSet, 
@@ -38,6 +39,7 @@ router.register('api/requests/form/delete/status', RequestFormStatusDeleteViewSe
 router.register('api/requests/formstatus/officer', FormStatusOfficerViewSet, basename='FormStatusOfficer')
 router.register('api/requests/attachments', AttachmentViewSet, basename='Attachment')
 router.register('api/user/notifications', NotificationViewSet, basename='Notification')
+router.register('api/status/officer', StatusOfficerViewset, basename='StatusOFficer')
 
 urlpatterns = [
    path('requests/lists', views.ticket, name='ticket'),
