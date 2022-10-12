@@ -18,50 +18,80 @@ $(document).ready(function () {
       "autoWidth": false,
       "serverside": true,
       "processing": true,
-      "pageLength": 25,
+      "ordering":false,
+      "paging": false,
       "ajax": {
          url: `/api/ticket/logs/?format=datatables`,
          type: "GET",
          data: {
             "tracking_num": getTrackingNum,
          },
-      },
+         // success: (res => {
+         //    res.data.forEach(row => {
+         //       console.log(row.ticket)
+         //    })
+         // })
+       },
       "columns": [
          { 
             data: null,
             render: function (data, type, row) {
-               if (type == 'display') {
-                  var date = moment(row.datetime).format('DD MMMM YYYY');
-                  data = `<p class="title mb-1">${date}</p>`
-               }
+               if (type == 'display') data = `<p class="title mb-1">${moment(row.datetime).format('DD MMMM YYYY')}</p>`
                return data
             },
          }, // DATE
          {
             data: null,
             render: function (data, type, row) {
-               if (type == 'display') {
-                  var time = moment(row.datetime).format('h:mm:ss a');
-                  data = `<p class="title mb-1">${time}</p>`
-               }
-               return data
+               if (type == 'display') data = `<p class="title mb-1">${moment(row.datetime).format('h:mm:ss a')}</p>`;
+               return data;
             },
          }, // TIME
          {
             data: "event_type",
             render: function (data, type, row) {
                if (type == 'display') {
-                  if (row.event_type === "Create") {
-                        data = `${row.event_type}`
-                  } else if (row.event_type === "Update") {
-                        if (row.changed_fields.reference_no) data = 'Generate Reference No';
-                        else if (row.changed_fields.status) data = `${row.changed_fields.status[0]}`; // index 0 for the current status, 1 for the previous status
-                        else if (row.changed_fields.form_data) data = 'Update';
+                  if (row.event_type === "Create") data = `${row.event_type}`;
+                  else if (row.event_type === "Update") {
+                     if (row.changed_fields.reference_no) data = 'Generate Reference No';
+                     else data = 'Update';
                   }
                }
                return data
             },
-         }, // STATUS
+         }, // ACTION
+         {
+            data: "changed_fields",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  if (row.changed_fields) {
+                     if (row.changed_fields.reference_no) data = row.changed_fields.reference_no[0];
+                     else if (row.changed_fields.status) data = `Status: ${row.changed_fields.status[0]}`;
+                     else if (row.changed_fields.description) data = `Title: ${row.changed_fields.description[0]}`;
+                     else if (row.changed_fields.is_active) data = `Is Active: ${row.changed_fields.is_active[0]}`;
+                     else if (row.changed_fields.form_data) data = 'Form: Request details';
+                     // else if (row.changed_fields.form) data = row.changed_fields.form[1];
+                  }
+               }
+               return data
+            },
+         }, // CHANGES OLD
+         {
+            data: "changed_fields",
+            render: function (data, type, row) {
+               if (type == 'display') {
+                  if (row.changed_fields) {
+                     if (row.changed_fields.reference_no) data = row.changed_fields.reference_no[1];
+                     else if (row.changed_fields.status) data = `Status: ${row.changed_fields.status[1]}`;
+                     else if (row.changed_fields.description) data = `Title: ${row.changed_fields.description[1]}`;
+                     else if (row.changed_fields.is_active) data = `Is Active: ${row.changed_fields.is_active[1]}`;
+                     else if (row.changed_fields.form_data) data = 'Form: Request details';
+                     // else if (row.changed_fields.form) data = row.changed_fields.form[1];
+                  }
+               }
+               return data
+            },
+         }, // CHANGES NEw
          {  
             data: null,
             render: function (data, type, row) {
@@ -69,19 +99,12 @@ $(document).ready(function () {
                if (row.event_type === "Update" && row.changed_fields.status) {
                   let is_approve = JSON.parse(`${row.remarks.is_approve}`);
                   let is_pass = JSON.parse(`${row.remarks.is_pass}`);
-               
                   if (is_approve != null) { // Has Approve
-                     if (is_approve) {
-                        data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Approved </span>";
-                     } else {
-                        data = "<span class='text-danger'> <i class='fas fa-sm fa-times-circle'></i> Disapproved </span>";
-                     }
+                     if (is_approve) data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Approved </span>";
+                     else data = "<span class='text-danger'> <i class='fas fa-sm fa-times-circle'></i> Disapproved </span>";
                   } else if (is_pass != null) { // Has Pass
-                     if (is_pass) {
-                        data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Passed </span>";
-                     } else {
-                        data = "<span class='text-danger'> <i class='fas fa-sm fa-times-circle'></i> Failed </span>";
-                     }
+                     if (is_pass) data = "<span class='text-success'> <i class='fas fa-sm fa-check-circle'></i> Passed </span>";
+                     else data = "<span class='text-danger'> <i class='fas fa-sm fa-times-circle'></i> Failed </span>";
                   } else data = ''
                }
                return data
@@ -90,10 +113,7 @@ $(document).ready(function () {
          { 
             data: "remarks",
             render: function (data, type, row) {
-               if (row.event_type === "Update" && row.changed_fields.reference_no) data = `Ref# ${row.changed_fields.reference_no[1]}`
-               else if (row.event_type === "Update" && row.changed_fields.status) data = `${row.remarks.remark}`
-               else if (row.event_type === "Update" && row.changed_fields.form_data) data = 'Change form details'
-               else data = ''
+               data = (row.event_type === "Update" && row.changed_fields.status) ? `${row.remarks.remark}` : '';
                return data 
             }
          }, // REMARK
@@ -101,7 +121,8 @@ $(document).ready(function () {
             data: "user",
             render: function (data, type, row) {
                if (type == 'display') {
-                  data = `${row.user.first_name} ${row.user.last_name}`
+                  let action_user = `${row.user.first_name} ${row.user.last_name}`;
+                  data = (row.ticket.task_officer.includes(action_user)) ? row.ticket.task_officer.join(', ') : action_user
                }
                return data
             },

@@ -1,4 +1,5 @@
 from asyncore import read
+from csv import excel_tab
 from datetime import date
 from rest_framework import serializers
 from django.db import transaction
@@ -444,16 +445,31 @@ class CRUDEventSerializer(serializers.ModelSerializer):
    def get_ticket(self, instance):
       object_json_repr = json.loads(instance.object_json_repr)
       object_id = None
+      status = None
+      task_officer = []
       if (object_json_repr[0]['model'] == 'requests.comment'): object_id = object_json_repr[0]['fields']['ticket']
-      if (object_json_repr[0]['model'] == 'requests.ticket'): object_id = instance.object_id
+      if (object_json_repr[0]['model'] == 'requests.ticket'): 
+         object_id = instance.object_id
+         try:
+            if instance.changed_fields['status']: 
+               status = instance.changed_fields['status'][0] # get old status
+         except:
+            pass
+         print(status)
       if object_id:
          ticket = Ticket.objects.get(pk=object_id)
+         if status: 
+            task_instance = ticket.tasks.filter(date_completed__isnull=False, task_type__status__name__iexact=status).last()
+            if task_instance:
+               for user in task_instance.officers.all():
+                  task_officer.append(str(user.get_full_name()))
          return {
             'ticket_no' : ticket.ticket_no,
-            'requestor' : '%s %s' % (ticket.requested_by.first_name, ticket.requested_by.last_name)
+            'requestor' : '%s %s' % (ticket.requested_by.first_name, ticket.requested_by.last_name),
+            'task_officer' : task_officer
          }
       return ''
-
+ 
    def get_remarks(self, instance):
       try:
          obj = Remark.objects.get(log_id=instance.id)
