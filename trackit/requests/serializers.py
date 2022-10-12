@@ -455,7 +455,6 @@ class CRUDEventSerializer(serializers.ModelSerializer):
                status = instance.changed_fields['status'][0] # get old status
          except:
             pass
-         print(status)
       if object_id:
          ticket = Ticket.objects.get(pk=object_id)
          if status: 

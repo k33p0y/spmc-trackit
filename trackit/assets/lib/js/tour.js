@@ -431,7 +431,6 @@ const exploreTask = function(request) {
     })
     .onexit(function(element) {  
         if (request) axiosTour(request, 'task')
-        console.log(request)
     })
     .start()
 }

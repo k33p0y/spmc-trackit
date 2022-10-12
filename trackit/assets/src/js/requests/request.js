@@ -132,7 +132,6 @@ $(document).ready(function () {
          {
             data: "status",
             render: function (data, type, row) {
-               // console.log(row)
                if (type == 'display') {
                   template = `<div> ${row.status.name}
                         <div class="progress progress-table mt-1">
@@ -149,7 +148,6 @@ $(document).ready(function () {
          {
             data: 'officers',
             render: function (data, type, row) {
-               // if (row.officers) console.log(row.officers) else console.log('empty')
                if (type == 'display') {
                   function memberItem() {
                      let template = '';

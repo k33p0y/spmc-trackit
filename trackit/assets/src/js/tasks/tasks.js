@@ -419,7 +419,6 @@ $(document).ready(function () {
             url: `/api/tasks/open/${opentask_id}/`,
             headers: axiosConfig
         }).then(results => {
-            console.log(results.data.task_type.id)
             socket_notification.send(JSON.stringify({ type: 'task_notification', data: { object_id: results.data.task_type.id, notification_type: 'action' } }))
             todosTbl.ajax.reload();
             getOpenTasks(null, null, true);

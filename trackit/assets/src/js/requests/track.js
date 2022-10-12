@@ -26,11 +26,6 @@ $(document).ready(function () {
          data: {
             "tracking_num": getTrackingNum,
          },
-         // success: (res => {
-         //    res.data.forEach(row => {
-         //       console.log(row.ticket)
-         //    })
-         // })
        },
       "columns": [
          { 
