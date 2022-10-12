@@ -1,7 +1,7 @@
 $(document).ready(function () {
-    const getOpenTasks = function (page, lookup, refresh) {
+    const getOpenTasks = function (page, filters, refresh) {
         let url = (page) ? page : '/api/tasks/open/';
-        let params = (lookup) ? { search: lookup } : '';
+        let params = (filters) ? filters : '';
     
         axios({
             method: 'GET',
@@ -10,8 +10,10 @@ $(document).ready(function () {
         }).then(response => {
             const tasks_api_next = response.data.next;
             const tasks = response.data.results;
-    
+            $('#load_more').addClass(' d-none')
+            
             if (tasks_api_next) { // check if there is next page to comment list API
+                $('#load_more').removeClass(' d-none').prop('disabled', false);
                 if (tasks_api_next.includes('socket')) { // check if host == socket
                     let nextpage = tasks_api_next.replace('socket', window.location.host) // change socket host to window.location.host
                     $('#tasks_nextpage_url').val(nextpage);
@@ -20,7 +22,7 @@ $(document).ready(function () {
     
             if (tasks.length > 0) {
                 if (refresh) $('#opentask_lists').empty();
-                $('#opentask_lists').empty();
+                // $('#opentask_lists').empty();
                 $('#opentasks_state').addClass('d-none'); // hide event state
                 $('.task-wrapper').removeClass('d-none'); // show elements
                 tasks.forEach(task => {
@@ -44,7 +46,7 @@ $(document).ready(function () {
                         </div>`
                     )
                 });
-                $('.tasks-spinner').addClass('d-none');
+                $('#button-text').html('Load more');
             } else if (lookup && tasks.length == 0) {
                 $('#opentask_lists').html('<p class="text-center text-muted m-0">No event data found</p>')
             } else {
@@ -56,6 +58,14 @@ $(document).ready(function () {
         });
     };
     getOpenTasks(null, null, false);
+
+    // get more open tasks on scroll
+    $('#load_more').click(function () {
+        if ($('#tasks_nextpage_url').val()) {
+            $('#button-text').html($('.tasks-spinner').html());
+            setTimeout(function () { getOpenTasks($('#tasks_nextpage_url').val()) }, 400);
+        };
+    });
 
     const taskDetail = function(dt_data) {
         let people = $.map(dt_data['officers'], function( value, i ) { return value.id })
@@ -336,21 +346,36 @@ $(document).ready(function () {
     // onClick Event
     $("#execute_search_opentask").click(function () {
         let lookup = $('#search_input_opentask').val();
-        getOpenTasks(null, lookup, false)
+        getOpenTasks(null, {search: lookup}, true)
         return false; // prevent refresh
     });
     // onSearch Event
     $("#search_input_opentask").on('search', function () {
         let lookup = $('#search_input_opentask').val();
-        getOpenTasks(null, lookup, false)
+        getOpenTasks(null, {search: lookup}, true)
         return false; // prevent refresh
     });
     // keyPress Event
     $('#search_input_opentask').keypress(function (event) {
         let lookup = $('#search_input_opentask').val();
         let keycode = event.keyCode || event.which;
-        if (keycode == '13') getOpenTasks(null, lookup, false)
+        if (keycode == '13') getOpenTasks(null, {search: lookup}, true)
     });
+    // apply filter
+    $("#btn_apply_ofilter").click(function () {
+        let status = $("#status-ofilter").val()
+        getOpenTasks(null, {task_type: status}, true)
+        return false; // prevent refresh
+    });
+    // clear filter
+    $("#btn_clear_ofilter").click(function () {
+        $('#form-ofilter').trigger("reset");
+        $('#form-ofilter select').trigger("change");
+        getOpenTasks(null, null, true)
+        return false; // prevent refresh
+    });
+    // close Dropdown 
+    $('#close_dropdown_ofilter').click(function (){ toggleFilter() });
 
     // // // // // // // // // // // // // // // //  TASK SEARCH BAR                          
     // onClick Event
@@ -392,23 +417,13 @@ $(document).ready(function () {
     });
     // close Dropdown 
     $('#close_dropdown').click(function (){ toggleFilter() });
-    // close dropdown when click outside 
-    $(document).on('click', function (e) { toggleFilter() });
     // prevent dropdown from closing
     $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
         if (e.clickEvent) e.preventDefault();      
     });
+    // close dropdown when click outside 
+    $(document).on('click', function (e) { toggleFilter() });
 
-    // get more open tasks on scroll
-    $('.list-wrapper').scroll(function () {
-        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-            if ($('#tasks_nextpage_url').val()) {
-                $('.tasks-spinner').removeClass('d-none');
-                setTimeout(function () { getOpenTasks($('#tasks_nextpage_url').val()) }, 400);
-            };
-        }
-    });
-   
     // Events
     // get/own open tasks
     $('#opentask_lists').on('click', '.get-task', function () {

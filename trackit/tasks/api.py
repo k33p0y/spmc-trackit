@@ -1,4 +1,5 @@
 from rest_framework import status, viewsets, permissions
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django.db.models import Q
 from .serializers import (
@@ -77,13 +78,17 @@ class OpenTaskViewSet(viewsets.ModelViewSet):
    serializer_class = OpenTasksSerializer
    queryset = OpenTask.objects.all()
    permission_classes = [permissions.IsAuthenticated]
+   paginator = PageNumberPagination()
+   paginator.page_size = 8
    http_method_names = ['get', 'head', 'put']
-
+   
    def get_queryset(self):
       search = self.request.query_params.get("search", None)
+      task_type = self.request.query_params.get("task_type", None)
       qs = OpenTask.objects.filter(task_type__officer=self.request.user)
       if search: qs = qs.filter(Q(ticket__ticket_no__icontains=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
-      return qs
+      if task_type: qs = qs.filter(task_type__status=task_type)
+      return qs.order_by('-id')
 
 class RemoveTeamPersonViewSet(viewsets.ModelViewSet):    
    serializer_class = RemoveTeamPersonSerializer

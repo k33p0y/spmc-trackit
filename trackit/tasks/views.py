@@ -17,7 +17,8 @@ from requests.models import RequestFormStatus, Ticket, Notification
 def mytasks(request):
    # status = Status.objects.filter(form_statuses__officer=request.user, is_active=True).order_by('name').distinct()
    status = Status.objects.filter(form_statuses__officer__isnull=False, is_active=True).order_by('name').distinct()
-   return render(request, 'pages/tasks/task.html', {'status' : status})
+   otasks = OpenTask.objects.filter(task_type__officer=request.user)
+   return render(request, 'pages/tasks/task.html', {'status' : status, 'otasks_count' : otasks.count()})
 
 # Create notification method
 def create_task_notification(instance, sender):
