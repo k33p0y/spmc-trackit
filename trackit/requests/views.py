@@ -164,13 +164,15 @@ def create_notification(object_id, ticket, sender):
    form_status = ticket.request_form.request_forms.get(status=ticket.status)
    task = ticket.tasks.filter(task_type__status=ticket.status).last()
    ticket_officers = task.officers.all() if task else None
-   
-   if sender == 'ticket':
-      officers = ticket_officers if ticket_officers else form_status.officer.all()
-      for officer in officers:
-         if not log.user == officer:
+
+   # notification for each officer
+   officers = ticket_officers if ticket_officers else form_status.officer.all()
+   for officer in officers:
+      if not log.user == officer:
+         if not officer == requestor:
             Notification(log=log, user=officer).save()
-      
+   
+   # notification for each officer
    if not form_status.is_client_step and not form_status.is_head_step:
       if not form_status.officer.all():
          for group in form_groups:
@@ -191,7 +193,8 @@ def create_notification(object_id, ticket, sender):
                for user in users:
                   if not log.user == user and not user == requestor:
                      Notification(log=log, user=user).save()
-                     
+   
+   # notification for requestor
    if not log.user == requestor:
       Notification(log=log, user=requestor).save()
 

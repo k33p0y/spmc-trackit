@@ -88,18 +88,24 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                         'sender_channel_name': self.channel_name
                     }
                 )
-            # notification to requestor
-            if text_data_json['data']['notification_type'] == 'ticket': # notification for ticket update
-                # send notification to requestor
-                await self.channel_layer.group_send(
-                    'notif_room_for_user_' + str(self.obj[' ']),
-                    {
-                        'type': 'notification_message',
-                        'notification': self.obj,
-                        'sender_channel_name': self.channel_name
-                    }
-                )
-
+            # send notification to requestor
+            await self.channel_layer.group_send(
+                'notif_room_for_user_' + str(self.obj['requestor_pk']),
+                {
+                    'type': 'notification_message',
+                    'notification': self.obj,
+                    'sender_channel_name': self.channel_name
+                }
+            )
+            # send notification to officer assigned
+            await self.channel_layer.group_send(
+                'notif_room_for_status_' + str(self.obj['fomstatus']),
+                {
+                    'type': 'notification_message',
+                    'notification': self.obj,
+                    'sender_channel_name': self.channel_name
+                }
+            )
             for group_id in self.obj['group_ids']:
                 # send notification to group
                 await self.channel_layer.group_send(
@@ -222,7 +228,9 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             ticket = Ticket.objects.get(ticket_id=object_id)
             date_created = ticket.date_created.replace(microsecond=0)
             date_modified = ticket.date_modified.replace(microsecond=0)
-            log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')        
+            log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')  
+            task = ticket.tasks.filter(task_type__form=ticket.request_form.pk, task_type__status=ticket.status).last()   
+            choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model   
 
             obj['ticket_id'] = str(ticket.pk)
             obj['ticket_no'] = ticket.ticket_no
@@ -232,8 +240,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             obj['requestor_pk'] = ticket.requested_by.pk
             obj['date_created'] = str(date_created)
             obj['date_modified'] = str(date_modified)
-
-            choices = dict(CRUDEvent.TYPES) # get choices from CRUD Event model
             obj['event_type'] = choices[log.event_type]
             if log.changed_fields:
                 changed_fields = json.loads(log.changed_fields)
@@ -241,11 +247,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                     obj['status'] = changed_fields['status'][0]
             else:
                 obj['status'] = ticket.status.name
+            obj['fomstatus'] = str(task.task_type.pk)
         if notification_type == 'comment':
             comment = Comment.objects.get(pk=object_id)
             date_created = comment.ticket.date_created.replace(microsecond=0)
             date_modified = comment.ticket.date_modified.replace(microsecond=0)
-            log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')        
+            log = CRUDEvent.objects.filter(object_id=object_id).latest('datetime')       
+            task = comment.ticket.tasks.filter(task_type__form=comment.ticket.request_form.pk, task_type__status=comment.ticket.status).last() 
             
             obj['ticket_id'] = str(comment.ticket.pk)
             obj['ticket_no'] = comment.ticket.ticket_no
@@ -255,7 +263,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             obj['requestor'] = comment.ticket.requested_by.get_full_name()
             obj['requestor_pk'] = comment.ticket.requested_by.pk
             obj['date_created'] = str(date_created)
-            obj['date_modified'] = str(date_modified)
+            obj['date_modified'] = str(date_modified)            
+            obj['fomstatus'] = str(task.task_type.pk)
         if notification_type == 'register':
             user = User.objects.get(pk=object_id)
             date_created = user.date_joined.replace(microsecond=0)
