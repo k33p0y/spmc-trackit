@@ -172,7 +172,7 @@ $(document).ready(function () {
                 "task_type": statusFilter,
                 "date_from": dateFromFilter,
                 "date_to": dateToFilter,
-            }
+            },
         },
         "columns": [
             {
@@ -452,7 +452,7 @@ $(document).ready(function () {
     });
 
     $('#dt_completed tbody').on('click', '.btn-view', function () {
-        const dt_data = completedTbl.row($(this).parents('tr')).data();
+        const dt_data = completeTbl.row($(this).parents('tr')).data();
         taskDetail(dt_data)
     });
 

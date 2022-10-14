@@ -182,6 +182,22 @@ $(document).ready(function () {
    // Select2 config
    $('.select-filter').select2();
 
+   // RequestForm filter on change
+   $('#requestform-filter').on('change', function () { // category type dropdown
+      let form = $("#requestform-filter option:selected").val();
+      if (form) {
+         axios.get(`/api/requests/forms/all/${form}/`).then(res => {
+            console.log(res.data.category_types)
+            $("#type-filter")
+               .empty()
+               .append('<option value="">All</option>')
+               .removeAttr('disabled');
+            if (res.data.category_types.length > 1) 
+               res.data.category_types.forEach(obj => $("#type-filter").append(`<option value='${obj.id}'>${obj.name}</option>`));
+            else $("#type-filter").append('<option disabled>No category types</option>')
+         });
+      }
+   });
    // Type filter on change
    $('#type-filter').on('change', function () { // category type dropdown
       let category_type = $("#type-filter option:selected").val();
