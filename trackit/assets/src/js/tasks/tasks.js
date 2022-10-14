@@ -10,7 +10,8 @@ $(document).ready(function () {
         }).then(response => {
             const tasks_api_next = response.data.next;
             const tasks = response.data.results;
-            $('#load_more').addClass(' d-none')
+            $('#load_more').addClass('d-none');
+            $('#otask_count').text(response.data.count)
             
             if (tasks_api_next) { // check if there is next page to comment list API
                 $('#load_more').removeClass(' d-none').prop('disabled', false);
@@ -47,7 +48,7 @@ $(document).ready(function () {
                     )
                 });
                 $('#button-text').html('Load more');
-            } else if (lookup && tasks.length == 0) {
+            } else if (filters && tasks.length == 0) {
                 $('#opentask_lists').html('<p class="text-center text-muted m-0">No event data found</p>')
             } else {
                 $('#opentasks_state').removeClass('d-none'); // show elements
@@ -231,6 +232,8 @@ $(document).ready(function () {
             {
                 data: null,
                 render: function (data, type, row) {
+                    let share_btn = (row.task_type.officers_len > 1) ? `<button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>` : '' ;
+                    let trash_btn = `<button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>`;
                     let template = `<div class="d-flex align-items-center justify-content-end actions">
                         <button class="action-item d-flex align-items-center text-secondary btn-view" type="button" data-toggle="tooltip" data-placement="top" title="Details">
                             <span class="fa-stack" style="font-size: 8px">
@@ -238,8 +241,8 @@ $(document).ready(function () {
                                 <i class="fas fa-info fa-stack-1x"></i>
                             </span>
                         </button>
-                        ${row.task_type.default_officer === 'single' && (row.task_type.is_client_step === false || row.task_type.is_head_step === false) ? '' : `<button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>`}
-                        ${row.officers.length > 1 ? `<button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>` : ''}
+                        ${(row.task_type.is_client_step || row.task_type.is_head_step) ? '' : share_btn}
+                        ${row.task_type.officers_len > 1 ? trash_btn : ''}
                     </div>`
                     return data = template
                 },
@@ -548,9 +551,14 @@ $(document).ready(function () {
     // remove todos task 
     $('#dt_mytasks tbody').on('click', '.btn-remove', function () {
         const dt_data = todosTbl.row($(this).parents('tr')).data();
+        let req_url = (dt_data.officers.length > 1) ? `/api/tasks/people/${dt_data.logged_in_officer}/` : `/api/tasks/remove/${dt_data.id}/`;
+        let req_method = (dt_data.officers.length > 1) ? 'DELETE' : 'PUT';
+        let msg1 = 'This removes you from the lists and prevents you from taking action on the request module.';
+        let msg2 = 'By doing this, it will be dropped from the lists and added back to the open tasks.';
+        
         Swal.fire({
-            title: 'Remove task',
-            html: '<p class="m-0">This removes you from the lists and prevents you from taking action on the request module.</p>',
+            title: 'Are You sure?',
+            html: `<p class="m-0">${dt_data.officers.length > 1 ? msg1 : msg2}</p>`,
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: 'Cancel',
@@ -560,8 +568,13 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.value) {
                 $(this).prop('disabled', true) // disable button
-                axios.delete(`/api/tasks/people/${dt_data.logged_in_officer}/`, { headers: axiosConfig }).then(res => {
-                    todosTbl.ajax.reload()
+                axios({
+                    method: req_method,
+                    url: req_url,
+                    headers: axiosConfig
+                }).then(res => {
+                    (res.config.method == 'put') ? getOpenTasks(null, null, true) : '';
+                    todosTbl.ajax.reload();
                     toastSuccess('Success');
                 }).catch(err => {
                     toastError(err.response.statusText)

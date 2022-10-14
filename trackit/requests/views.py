@@ -51,7 +51,7 @@ def detail_ticket(request, ticket_id):
    steps = RequestFormStatus.objects.select_related('form', 'status').filter(form_id=ticket.request_form).order_by('order') 
 
    ## tasks
-   task = ticket.tasks.filter(task_type__status=ticket.status).last()
+   task = ticket.tasks.filter(task_type__status=ticket.status, date_completed__isnull=True).last()
    ticket_officers = task.officers.all() if task else None
 
    if steps.latest('order').status.id != ticket.status.id or request.user.is_superuser:

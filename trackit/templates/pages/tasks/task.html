@@ -86,7 +86,10 @@
                                 <div class="ml-auto">
                                     <ul class="nav nav-pills nav-tasks" id="pillsTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link m-0 ml-1 active" id="pills-todo-tab" data-toggle="pill" href="#pills-todo" role="tab" aria-controls="pills-todo" aria-selected="true">To Do</a>
+                                            <a class="nav-link m-0 ml-1 active d-flex align-items-center" id="pills-todo-tab" data-toggle="pill" href="#pills-todo" role="tab" aria-controls="pills-todo" aria-selected="true">
+                                                <span>To Do</span>
+                                                {% comment %} <span class="badge badge-orange-pastel ml-1" id="task_count">12</span> {% endcomment %}
+                                            </a>    
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link m-0 ml-1" id="pills-complete-tab" data-toggle="pill" href="#pills-complete" role="tab" aria-controls="pills-complete" aria-selected="false">Completed</a>
@@ -155,7 +158,7 @@
                 <div class="card card-form shadow-sm mt-2 mb-1">
                     <div class="card-header d-flex align-items-center px-2 py-1">
                         <div class="card-title">open tasks
-                            <span class="badge badge-secondary mx-1">{{otasks_count}}</span>
+                            <span class="badge badge-secondary mx-1" id="otask_count"></span>
                         </div>
                         <div class="card-tools ml-auto">
                             <button type="button" class="btn btn-tool btn-minimize" data-toggle="collapse" data-target="#collapseDetail" aria-expanded="false" aria-controls="collapseDetail"></button>

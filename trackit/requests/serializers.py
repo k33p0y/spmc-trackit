@@ -165,7 +165,7 @@ class TicketListSerializer(serializers.ModelSerializer):
    
    def get_officers(self, instance):
       # getting current working officers per status
-      task = instance.tasks.filter(task_type__status=instance.status).last()
+      task = instance.tasks.filter(task_type__status=instance.status, date_completed__isnull=True).last()
       ticket_officers = MemberSerializer(task.officers.all(), many=True, context={"task_instance": task}).data if task else None
       return ticket_officers
 

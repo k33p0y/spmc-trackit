@@ -19,15 +19,14 @@ class StatusNameSerializer(serializers.ModelSerializer):
 
 class RequestFormStatusNameSerializer(serializers.ModelSerializer):
     status = StatusNameSerializer(read_only=True)
-    default_officer = serializers.SerializerMethodField()
+    officers_len = serializers.SerializerMethodField()
 
-    def get_default_officer(self, instance):
-        state = 'multiple' if instance.officer.count() > 1 else 'single' 
-        return state
+    def get_officers_len(self, instance):
+        return instance.officer.count()
 
     class Meta:
         model = RequestFormStatus
-        fields = ['id', 'status', 'is_client_step', 'is_head_step', 'default_officer']
+        fields = ['id', 'status', 'is_client_step', 'is_head_step', 'officers_len']
 
 class RequestFormReadOnlySerializer(serializers.ModelSerializer):
     
@@ -107,17 +106,12 @@ class TasksNotificationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RemoveTasksSerializer(serializers.ModelSerializer):
-    @transaction.atomic
     def update(self, instance, validated_data):
         officers = instance.officers.all()
-        # if pivot table members has more than 1 record
-        if len(officers) > 1:           
-            Team.objects.get(task_id=instance.pk, member_id=self.context['request'].user.pk).delete()
-        else:
-            otask = OpenTask.objects.create(ticket = instance.ticket, task_type = instance.task_type) # save isntance to opentask
-            Team.objects.filter(task_id=instance.pk).delete() # delete team task instance
-            instance.delete() # delete task instance
-            create_task_notification(otask, 'opentask')
+        otask = OpenTask.objects.create(ticket = instance.ticket, task_type = instance.task_type) # save isntance to opentask
+        Team.objects.filter(task_id=instance.pk).delete() # delete team task instance
+        instance.delete() # delete task instance
+        create_task_notification(otask, 'opentask')
         return instance
 
     class Meta:
