@@ -466,7 +466,7 @@ $(document).ready(function () {
         $('#select2_people').select2({ // select2 config
             allowClear: true,
             placeholder: 'Add people',
-            cache: true,
+            cache: false,
             ajax: {
                 url: `/api/requests/form/status/${dt_data['task_type'].id}/`,
                 dataType: 'json',
@@ -512,6 +512,7 @@ $(document).ready(function () {
         $(this).prop('disabled', true);  // disable Button 
         let task = $(this).data().task;
         let people = $('#select2_people').val()
+        
         axios({
             method: 'PUT',
             url: `/api/tasks/share/${task}/`,
@@ -523,7 +524,10 @@ $(document).ready(function () {
             socket_notification.send(JSON.stringify({ type: 'task_notification', data: { object_id: people, notification_type: 'task_share' } }))
             todosTbl.ajax.reload();
             toastSuccess('Success'); // alert
+            $('#select2_people').val([]).trigger('change') // clear select2
+            $('#people-error').text(null); // clear error text
             $("#shareModal").modal('toggle'); // close modal
+            
         }).catch(err => {
             toastError(err.response.statusText)
             if (err.response.data.people) {
@@ -535,6 +539,12 @@ $(document).ready(function () {
             }
             $('#btn_share').prop('disabled', false); // enable button
         });
+    });
+
+    // cancel button
+    $('#btn_cancel').click(function () {
+        $('#select2_people').val([]).trigger('change') // clear select2
+        $('#people-error').text(null); // clear error text
     });
 
     // remove person 

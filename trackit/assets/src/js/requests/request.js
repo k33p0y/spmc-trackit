@@ -192,7 +192,7 @@ $(document).ready(function () {
                .empty()
                .append('<option value="">All</option>')
                .removeAttr('disabled');
-            if (res.data.category_types.length > 1) 
+            if (res.data.category_types.length > 0) 
                res.data.category_types.forEach(obj => $("#type-filter").append(`<option value='${obj.id}'>${obj.name}</option>`));
             else $("#type-filter").append('<option disabled>No category types</option>')
          });
@@ -221,7 +221,7 @@ $(document).ready(function () {
                .empty()
                .append('<option value="">All</option>')
                .removeAttr('disabled');
-            if (res.data.officers.length > 1) 
+            if (res.data.officers.length > 0) 
                res.data.officers.forEach(obj => $("#officer-filter").append(`<option value='${obj.id}'>${obj.name}</option>`));
             else $("#officer-filter").append('<option disabled>No officer assigned</option>')
          });
