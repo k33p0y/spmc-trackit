@@ -45,6 +45,9 @@ $(document).ready(function() {
                 },
             }, // Attendance
             {
+                data: "venue",
+            }, // Venue
+            {
                 data: "is_active",
                 render: function (data, type, row) {
                     if (row.is_active === true) data = "<i class='fas fa-check-circle text-success'></i>";

@@ -42,7 +42,7 @@
       {% endif %}
 
       <div class="row">
-         <div class="col-12 col-sm-12 col-md-12 col-lg-4">                     
+         <div class="col-12">                     
             <div class="row" id="row-information">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
@@ -55,7 +55,7 @@
                      <div id="collapseInformation" class="collapse show">
                         <div class="card-body p-3">
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-12 col-lg-6 order-1 order-lg-1">
                                     <div class="card card-detail mt-2 mb-1" style="border-left-color:{{event.highlight}}">
                                         <div class="card-body p-0 m-0">
                                         <p class="context text-truncate">{{event.title}}</p>
@@ -63,7 +63,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <div class="col-12 col-lg-6 order-2 order-lg-3">
                                     <div class="card card-detail mt-2 mb-1" style="border-left-color:{{event.highlight}}">
                                     <div class="card-body p-0 m-0">
                                        <p class="context text-truncate">
@@ -75,7 +75,7 @@
                                     </div>
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <div class="col-12 col-lg-6 order-3 order-lg-5">
                                     <div class="card card-detail mt-2 mb-1" style="border-left-color:{{event.highlight}}">
                                     <div class="card-body p-0 m-0">
                                         <p class="context text-truncate">{{event.event_for.name}}</p>
@@ -83,7 +83,7 @@
                                     </div>
                                     </div>
                                 </div>
-                                 <div class="col-12">
+                                 <div class="col-12 col-lg-6 order-4 order-lg-2">
                                     <div class="card card-detail mt-2 mb-1" style="border-left-color:{{event.highlight}}">
                                     <div class="card-body p-0 m-0">
                                         <p class="context text-truncate">{{event.date_created|date:"d F Y h:i A"}} {% if event.created_by %} | {{event.created_by}} {% endif %}</p>
@@ -92,7 +92,7 @@
                                     </div>
                                 </div>
                                 {% if event.date_modified %}
-                                <div class="col-12">
+                                <div class="col-12 col-lg-6 order-5 order-lg-4">
                                     <div class="card card-detail mt-2 mb-1" style="border-left-color:{{event.highlight}}">
                                     <div class="card-body p-0 m-0">
                                         <p class="context text-truncate">{{event.date_modified|date:"d F Y h:i A"}} {% if event.modified_by %} | {{event.modified_by}} {% endif %}</p>
@@ -101,7 +101,7 @@
                                     </div>
                                 </div>
                                 {% endif %}
-                                 <div class="col-12">
+                                 <div class="col-12 col-lg-6 order-6 order-lg-6">
                                        <div class="card card-detail mt-2 mb-1" style="border-left-color:{{event.highlight}}">
                                           <div class="card-body p-0 m-0">
                                           <div class="mr-auto">
@@ -118,7 +118,7 @@
                </div>
             </div>
          </div>
-         <div class="col-12 col-sm-12 col-md-12 col-lg-8">
+         <div class="col-12">
             <div class="row" id="row-schedule">
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1"  style="border-bottom-left-radius: 5px !important;">
@@ -143,6 +143,7 @@
                                     <th>Time Start</th>
                                     <th>Time End</th>
                                     <th>Attendance</th>
+                                    <th>Venue</th>
                                     <th>Is Active</th>
                                  </tr>
                               </thead>
