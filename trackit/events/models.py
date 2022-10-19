@@ -30,7 +30,12 @@ class EventDate(models.Model):
     date = models.DateField(null=False, blank=False)
     time_start = models.TimeField(null=False, blank=False)
     time_end = models.TimeField(null=False, blank=False)
+    venue = models.CharField(max_length=255, null=False, blank=False)
+    address = models.URLField(max_length=200, blank=True)
     is_active = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return '%s, %s-%s' % (self.date, self.time_start, self.time_end)
 
     def date_start(self):
         return '%s %s' % (self.date, self.time_start)
