@@ -1,5 +1,7 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, get_object_or_404
 from .models import Event, EventDate, EventTicket
 from requests.models import RequestForm
@@ -47,3 +49,12 @@ def change_event(request, pk):
    event = get_object_or_404(Event.objects.prefetch_related('dates'), pk=pk)
    forms = RequestForm.objects.all()
    return render(request, 'pages/events/event_change.html', {'event' : event, 'forms' : forms})
+
+def is_string_an_url(url_string: str) -> bool:
+   validate_url = URLValidator(message=None)
+   try:
+      if (url_string): 
+         validate_url(url_string)
+   except ValidationError:
+      return False
+   return True

@@ -1,10 +1,14 @@
+import sched
 from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+
 from .models import Event, EventDate, EventTicket
 from config.models import Remark
 from requests.models import Ticket, RequestFormStatus
 from easyaudit.models import CRUDEvent
+
+from .views import is_string_an_url
 
 from core.serializers import UserInfoSerializer
 from requests.serializers import RequestFormReadOnlySerializer, StatusReadOnlySerializer
@@ -34,27 +38,45 @@ class EventListSerializer(serializers.ModelSerializer):
 class EventCRUDSerializer(serializers.ModelSerializer):
     created_by = UserInfoSerializer(read_only=True)
     modified_by = UserInfoSerializer(read_only=True)
+    dates = serializers.StringRelatedField(many=True, read_only=True)
 
     @transaction.atomic
     def create(self, validated_data):
-        schedules = self.context['request'].data['schedule']
         event = Event(
             title = validated_data['title'],
             subject = validated_data['subject'],
             highlight = validated_data['highlight'],
             event_for = validated_data['event_for'],
             created_by = self.context['request'].user,
-            modified_by =  self.context['request'].user
+            modified_by =  self.context['request'].user,
         )
         event.save()
-        for schedule in schedules:
+        
+        for schedule in self.context['request'].data['schedule']:
             EventDate.objects.create(
                 date=schedule['date'],
-                time_start=schedule['time_start'],
-                time_end=schedule['time_end'],
+                time_start=f"{schedule['time_start']}:00",
+                time_end=f"{schedule['time_end']}:00",
+                venue=schedule['venue'],
+                address=schedule['link'],
                 event=event
             )
-        return event
+        return event    
+    
+    def validate(self, data):
+        errors = []       
+        for schedule in self.initial_data['schedule']:
+            schedule_err = dict()   
+            if not schedule['date']: schedule_err['date'] = '*This field may not be blank.'
+            if not schedule['time_start']: schedule_err['time_start'] = '*This field may not be blank.'
+            if not schedule['time_end']: schedule_err['time_end'] = '*This field may not be blank.'
+            if not schedule['venue']: schedule_err['venue'] = '*This field may not be blank.'
+            if not is_string_an_url(schedule['link']): schedule_err['link'] = '*Not a valid url.'                
+            if schedule_err: 
+                errors.append(schedule_err)
+        if errors:
+           raise serializers.ValidationError({'dates': errors}) 
+        return data
     
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -66,13 +88,14 @@ class EventCRUDSerializer(serializers.ModelSerializer):
         instance.modified_by = self.context['request'].user
         instance.save()
 
-        schedules = self.context['request'].data['schedule']
-        for schedule in schedules:
+        for schedule in self.context['request'].data['schedule']:
             if schedule['id']: 
                 eventdate = get_object_or_404(EventDate, pk=schedule['id'])
                 eventdate.date = schedule['date']
                 eventdate.time_start = schedule['time_start']
                 eventdate.time_end = schedule['time_end']
+                eventdate.venue = schedule['venue']
+                eventdate.address = schedule['link']
                 eventdate.is_active = schedule['is_active']
                 eventdate.save()
             else:
@@ -80,6 +103,8 @@ class EventCRUDSerializer(serializers.ModelSerializer):
                     date=schedule['date'],
                     time_start=schedule['time_start'],
                     time_end=schedule['time_end'],
+                    venue=schedule['venue'],
+                    address=schedule['link'],
                     event=instance
                 )
         return instance
