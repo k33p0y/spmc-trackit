@@ -85,7 +85,9 @@ class OpenTaskViewSet(viewsets.ModelViewSet):
    def get_queryset(self):
       search = self.request.query_params.get("search", None)
       task_type = self.request.query_params.get("task_type", None)
-      qs = OpenTask.objects.filter(task_type__officer=self.request.user)
+      user_groups = list(self.request.user.groups.all())
+      qs = OpenTask.objects.filter(task_type__officer=self.request.user)            
+      qs = qs.filter (ticket__category__groups__in=user_groups) if qs.filter(ticket__category__groups__in=user_groups).exists() else qs      
       if search: qs = qs.filter(Q(ticket__ticket_no__icontains=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
       if task_type: qs = qs.filter(task_type__status=task_type)
       return qs.order_by('-id')
