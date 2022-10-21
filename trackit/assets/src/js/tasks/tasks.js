@@ -8,16 +8,16 @@ $(document).ready(function () {
             url: url,
             params: params
         }).then(response => {
-            const tasks_api_next = response.data.next;
+            let tasks_api_next = response.data.next;
             const tasks = response.data.results;
             $('#load_more').addClass('d-none');
             $('#otask_count').text(response.data.count)
-            
+
             if (tasks_api_next) { // check if there is next page to comment list API
                 $('#load_more').removeClass(' d-none').prop('disabled', false);
-                if (tasks_api_next.includes('socket')) { // check if host == socket
-                    let nextpage = tasks_api_next.replace('socket', window.location.host) // change socket host to window.location.host
-                    $('#tasks_nextpage_url').val(nextpage);
+                if (tasks_api_next.includes('socket')) {
+                    if (tasks_api_next.includes('http://')) tasks_api_next = tasks_api_next.replace('http://', 'https://');
+                    $('#tasks_nextpage_url').val(tasks_api_next.replace('socket', window.location.host)) // check if host == socket
                 } else $('#tasks_nextpage_url').val(tasks_api_next);
             } else $('#tasks_nextpage_url').val(null);
     
