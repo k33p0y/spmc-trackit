@@ -33,15 +33,16 @@ class RequestFormReadOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = RequestForm
         fields = ['id', 'name', 'color', 'prefix']
-
+        
 class TicketShortListSerializer(serializers.ModelSerializer):
     request_form = RequestFormReadOnlySerializer(read_only=True)
     requested_by = UserSerializer(read_only=True)
     department = DepartmentSerializer(read_only=True)
-
+    category = serializers.StringRelatedField(many=True)
+    
     class Meta:
         model = Ticket
-        fields = ('ticket_id', 'request_form', 'ticket_no', 'reference_no', 'description', 'department', 'requested_by')
+        fields = ('ticket_id', 'request_form', 'ticket_no', 'reference_no', 'description', 'department', 'requested_by', 'category')
 
 class MemberSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()

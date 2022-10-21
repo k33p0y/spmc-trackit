@@ -59,6 +59,15 @@
                                                 </select>
                                              </div>
                                              <div class="form-group mb-1">
+                                                <label for="category-filter">By Category </label>
+                                                <select class="form-control form-control-sm select-filter" id="category-filter" name="category-filter">
+                                                <option value="">All</option>
+                                                {% for category in categories %}
+                                                <option value={{category.id}}>{{category}}</option>
+                                                {% endfor %}
+                                                </select>
+                                            </div>
+                                             <div class="form-group mb-1">
                                                 <label for="date-filter">By Date </label>
                                                 <input type="date" class="form-control form-control-sm mb-2" id="date-from-filter" name="date-filter" placeholder="From">
                                                 <input type="date" class="form-control form-control-sm" id="date-to-filter" name="date-filter" placeholder="To">
@@ -183,11 +192,20 @@
                                             <form id="form-ofilter">
                                                 <div class="p-3 scrollable-menu">        
                                                     <div class="form-group mb-1">
-                                                        <label for="status-filter">By Status </label>
+                                                        <label for="status-ofilter">By Status </label>
                                                         <select class="form-control form-control-sm select-filter" id="status-ofilter" name="status-ofilter">
                                                         <option value="">All</option>
                                                         {% for stat in status %}
                                                         <option value={{stat.id}}>{{stat}}</option>
+                                                        {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group mb-1">
+                                                        <label for="category-ofilter">By Category </label>
+                                                        <select class="form-control form-control-sm select-filter" id="category-ofilter" name="category-ofilter">
+                                                        <option value="">All</option>
+                                                        {% for category in categories %}
+                                                        <option value={{category.id}}>{{category}}</option>
                                                         {% endfor %}
                                                         </select>
                                                     </div>
