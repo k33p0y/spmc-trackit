@@ -92,6 +92,7 @@ def detail_ticket(request, ticket_id):
 def view_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
    categories = ticket.category.all()
+   category_groups = Category.objects.filter(name__in=list(categories)).values_list('groups', flat=True)
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
    remark = None
 
@@ -114,7 +115,7 @@ def view_ticket(request, ticket_id):
    next_step = steps.get(order=curr_step.order+1) if not curr_step.status == last_step.status else curr_step # next current step
    prev_step = steps.get(order=curr_step.order-1) if not curr_step.status == first_step.status else curr_step # prev current step
    has_event_form = True if steps.filter(has_event=True) else False  # check if statuses has event
-   officers = next_step.officer.all() # get officer in current status.
+   officers = next_step.officer.all() if not next_step.officer.filter(groups__in=category_groups) else next_step.officer.filter(groups__in=category_groups)# get officer in current status.
    progress = round((curr_step.order / len(steps)) * 100) # get progress value
    
    ### iterate steps/status

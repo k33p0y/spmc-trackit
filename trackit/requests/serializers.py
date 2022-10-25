@@ -1,12 +1,13 @@
 from asyncore import read
 from csv import excel_tab
 from datetime import date
+from tokenize import group
 from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
 from .models import RequestForm, Ticket, RequestFormStatus, Notification, Attachment, Comment
-from config.models import Status, Remark
+from config.models import Status, Remark, Category
 from core.models import User
 from events.models import EventTicket
 from easyaudit.models import CRUDEvent
@@ -535,11 +536,26 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class FormStatusOfficerSerializer(serializers.ModelSerializer):
    name = serializers.ReadOnlyField(source='status.name')
-   officer = UserInfoSerializer(read_only=True, many=True)
+   officers = serializers.SerializerMethodField()
+   # officer = UserInfoSerializer(read_only=True, many=True)
+   
+   def get_officers(self, instance):
+      request = self.context['request']
+      ticket_id = request.query_params['ticket_id']
+      ticket= Ticket.objects.get(pk=ticket_id)
+      category_groups = Category.objects.filter(name__in=list(ticket.category.all())).values_list('groups', flat=True)
+      officers = instance.officer.all()
+      if category_groups:
+         if instance.officer.filter(groups__in=category_groups).exists():
+            officers = instance.officer.filter(groups__in=category_groups) 
+      officer_list = []
+      for officer in officers:
+         officer_list.append({'id' : officer.pk, 'name' : str(officer.get_full_name())})
+      return officer_list    
 
    class Meta: 
       model = RequestFormStatus
-      fields = ('id', 'name', 'officer')
+      fields = ('id', 'name', 'officers')
               
 class StatusOfficerSerializer(serializers.ModelSerializer):
    officers = serializers.SerializerMethodField()
