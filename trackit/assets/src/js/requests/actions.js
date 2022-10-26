@@ -17,14 +17,14 @@ $(document).ready(function () {
    // select2_nextstep on change
    $('#select2_nextstep').on('change', function () {
       let step_id = $("#select2_nextstep option:selected").data().formstatusid;
+      let ticket_id = $(".ticket-no").data().ticketId;
       $("#select2_officer").empty();
-      axios.get('/api/requests/formstatus/officer/', { params: { step: step_id } }, axiosConfig).then(res => {
+      axios.get('/api/requests/formstatus/officer/', { params: { step: step_id, ticket_id: ticket_id } }, axiosConfig).then(res => {
          let response = res.data.results.shift();
-         let officers = response.officer;
-
+         let officers = response.officers;
          if (officers.length == 1) {
             let person = officers.shift();
-            $("#select2_officer").attr('multiple', false).append(`<option value='${person.id}' selected>${person.name}</option>`)
+            $("#select2_officer").attr('multiple', false).select2().append(`<option value='${person.id}' selected>${person.name}</option>`)
          } else {
             $("#select2_officer").attr('multiple', true).select2({ placeholder: 'Select officer' });
             officers.forEach(person => $("#select2_officer").append(`<option value='${person.id}'>${person.name}</option>`));

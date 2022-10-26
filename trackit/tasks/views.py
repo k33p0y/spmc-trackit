@@ -7,7 +7,7 @@ from django.db.models import Q
 
 from .models import Task, Team, OpenTask
 from easyaudit.models import CRUDEvent
-from config.models import Status
+from config.models import Status, Category
 from requests.models import RequestFormStatus, Ticket, Notification
 
 
@@ -15,10 +15,19 @@ from requests.models import RequestFormStatus, Ticket, Notification
 @login_required
 @user_is_verified
 def mytasks(request):
+   otasks = OpenTask.objects.filter(task_type__officer=request.user)
    # status = Status.objects.filter(form_statuses__officer=request.user, is_active=True).order_by('name').distinct()
    status = Status.objects.filter(form_statuses__officer__isnull=False, is_active=True).order_by('name').distinct()
-   otasks = OpenTask.objects.filter(task_type__officer=request.user)
-   return render(request, 'pages/tasks/task.html', {'status' : status, 'otasks_count' : otasks.count()})
+   user_groups = list(request.user.groups.all())
+   categories = Category.objects.filter(is_active=True).order_by('name')
+   categories = categories.filter(groups__in=user_groups) if categories.filter(groups__in=user_groups).exists() else categories
+   
+   context = {
+      'otasks_count' : otasks.count(),
+      'status' : status,
+      'categories' : categories
+   }
+   return render(request, 'pages/tasks/task.html', context)
 
 # Create notification method
 def create_task_notification(instance, sender):

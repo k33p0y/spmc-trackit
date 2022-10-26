@@ -6,6 +6,7 @@ from .api import (
    RemoveTaskViewSet,
    RemoveTeamPersonViewSet,
    ShareTaskViewSet,
+   ShareTaskOfficersViewSet,
    TaskListCompleteViewSet, 
    TaskListViewSet)
 from . import views
@@ -17,6 +18,7 @@ router.register('api/tasks/list/completed', TaskListCompleteViewSet)
 router.register('api/tasks/remove', RemoveTaskViewSet)
 router.register('api/tasks/people', RemoveTeamPersonViewSet)
 router.register('api/tasks/share', ShareTaskViewSet)
+router.register('api/tasks/officers/share', ShareTaskOfficersViewSet)
 router.register('api/tasks/open', OpenTaskViewSet)
 
 urlpatterns = [

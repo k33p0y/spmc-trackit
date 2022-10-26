@@ -1,3 +1,4 @@
+from unicodedata import category
 from rest_framework import status, viewsets, permissions
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -7,6 +8,7 @@ from .serializers import (
    RemoveTasksSerializer, 
    RemoveTeamPersonSerializer,
    ShareTaskSerializer, 
+   ShareTaskOfficersSerializer,
    TasksListSerializer,)
 from .models import OpenTask, Task, Team
 from requests.models import Notification
@@ -29,6 +31,7 @@ class MyTaskListViewSet(viewsets.ModelViewSet):
       # Search & Filter Parameters
       search = self.request.query_params.get('search', None)
       task_type = self.request.query_params.get('task_type', None)
+      category = self.request.query_params.get('category', None)
       date_from = self.request.query_params.get('date_from', None)
       date_to = self.request.query_params.get('date_to', None)
       
@@ -36,6 +39,7 @@ class MyTaskListViewSet(viewsets.ModelViewSet):
       
       if search: qs = qs.filter(Q(ticket__ticket_no__icontains=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
       if task_type: qs = qs.filter(task_type__status=task_type)
+      if category: qs = qs.filter(ticket__category=category)
       if date_from: qs = qs.filter(date_created__gte=date_from)
       if date_to: qs = qs.filter(date_created__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
       return qs
@@ -50,6 +54,7 @@ class TaskListCompleteViewSet(viewsets.ModelViewSet):
       # Search & Filter Parameters
       search = self.request.query_params.get('search', None)
       task_type = self.request.query_params.get('task_type', None)
+      category = self.request.query_params.get('category', None)
       date_from = self.request.query_params.get('date_from', None)
       date_to = self.request.query_params.get('date_to', None)
       
@@ -57,6 +62,7 @@ class TaskListCompleteViewSet(viewsets.ModelViewSet):
       
       if search: qs = qs.filter(Q(ticket__ticket_no__icontains=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
       if task_type: qs = qs.filter(task_type__status=task_type)
+      if category: qs = qs.filter(ticket__category=category)
       if date_from: qs = qs.filter(date_completed__gte=date_from)
       if date_to: qs = qs.filter(date_completed__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
       
@@ -73,6 +79,12 @@ class ShareTaskViewSet(viewsets.ModelViewSet):
    queryset = Task.objects.all()
    permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['get', 'head', 'put']
+   
+class ShareTaskOfficersViewSet(viewsets.ModelViewSet):    
+   serializer_class = ShareTaskOfficersSerializer
+   permission_classes = [permissions.IsAuthenticated]
+   queryset = Task.objects.all()
+   http_method_names = ['get', 'head',]
 
 class OpenTaskViewSet(viewsets.ModelViewSet):    
    serializer_class = OpenTasksSerializer
@@ -85,9 +97,14 @@ class OpenTaskViewSet(viewsets.ModelViewSet):
    def get_queryset(self):
       search = self.request.query_params.get("search", None)
       task_type = self.request.query_params.get("task_type", None)
-      qs = OpenTask.objects.filter(task_type__officer=self.request.user)
+      category = self.request.query_params.get('category', None)
+      user_groups = list(self.request.user.groups.all())
+      
+      qs = OpenTask.objects.filter(task_type__officer=self.request.user, ticket__category__groups__in=user_groups)
+      
       if search: qs = qs.filter(Q(ticket__ticket_no__icontains=search) | Q(ticket__reference_no__icontains=search) | Q(ticket__description__icontains=search))
       if task_type: qs = qs.filter(task_type__status=task_type)
+      if category: qs = qs.filter(ticket__category=category)
       return qs.order_by('-id')
 
 class RemoveTeamPersonViewSet(viewsets.ModelViewSet):    
@@ -109,4 +126,3 @@ class RemoveTeamPersonViewSet(viewsets.ModelViewSet):
       for officer in officers:
          if not log.user_id == officer:
             Notification(log=log, user_id=officer).save()
-   

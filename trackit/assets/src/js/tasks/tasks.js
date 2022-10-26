@@ -8,16 +8,16 @@ $(document).ready(function () {
             url: url,
             params: params
         }).then(response => {
-            const tasks_api_next = response.data.next;
+            let tasks_api_next = response.data.next;
             const tasks = response.data.results;
             $('#load_more').addClass('d-none');
             $('#otask_count').text(response.data.count)
-            
+
             if (tasks_api_next) { // check if there is next page to comment list API
                 $('#load_more').removeClass(' d-none').prop('disabled', false);
-                if (tasks_api_next.includes('socket')) { // check if host == socket
-                    let nextpage = tasks_api_next.replace('socket', window.location.host) // change socket host to window.location.host
-                    $('#tasks_nextpage_url').val(nextpage);
+                if (tasks_api_next.includes('socket')) {
+                    if (tasks_api_next.includes('http://')) tasks_api_next = tasks_api_next.replace('http://', 'https://');
+                    $('#tasks_nextpage_url').val(tasks_api_next.replace('socket', window.location.host)) // check if host == socket
                 } else $('#tasks_nextpage_url').val(tasks_api_next);
             } else $('#tasks_nextpage_url').val(null);
     
@@ -27,6 +27,9 @@ $(document).ready(function () {
                 $('#opentasks_state').addClass('d-none'); // hide event state
                 $('.task-wrapper').removeClass('d-none'); // show elements
                 tasks.forEach(task => {
+                    let category = (task.ticket.category.length > 2) ? `${task.ticket.category.slice(0, 2).join(", ")}, .. +${task.ticket.category.length-2} more` : task.ticket.category.join(', ');
+                    let category_more = (task.ticket.category.length > 2) ? task.ticket.category.slice(2, task.ticket.category.length).join(", ") : '';
+                    
                     $('#opentask_lists').append( // render template
                         `<div class="card card-task px-3 py-2 mb-3 mx-1 animate__animated animate__flipInX animate__faster">
                             <div class="card-body p-0">
@@ -35,6 +38,7 @@ $(document).ready(function () {
                                         <p class="font-weight-bold text-orange m-0">${task.ticket.ticket_no}</p>
                                         <p class="font-weight-bold text-truncate m-0">${task.ticket.description}</p>
                                         <span class="badge badge-pill text-light" style="background-color:${task.ticket.request_form.color}!important">${task.ticket.request_form.prefix}</span>
+                                        <span class="badge badge-blue-pastel badge-pill" data-toggle="tooltip" data-placement="right" title="${category_more}">${category}</span>
                                         <span class="badge badge-light2 badge-pill">${task.ticket.reference_no}</span>
                                         <span class="badge badge-orange-pastel badge-pill">${task.task_type.status.name}</span>
                                         <p class="text-xs m-0 mt-2"><a href="/requests/${task.ticket.ticket_id}/view" class="text-muted">View Ticket</a></p>
@@ -49,7 +53,7 @@ $(document).ready(function () {
                 });
                 $('#button-text').html('Load more');
             } else if (filters && tasks.length == 0) {
-                $('#opentask_lists').html('<p class="text-center text-muted m-0">No event data found</p>')
+                $('#opentask_lists').html('<p class="text-center text-muted m-0">No open tasks data found</p>')
             } else {
                 $('#opentasks_state').removeClass('d-none'); // show elements
                 $('.task-wrapper').addClass('d-none'); // hide elements
@@ -150,6 +154,7 @@ $(document).ready(function () {
     // RETRIEVE / GET
     let searchInput = function() { return $('#search_input_task').val(); }
     let statusFilter = function() { return $('#status-filter').val(); }
+    let categoryFilter = function() { return $('#category-filter').val(); }
     let dateFromFilter = function() { return $('#date-from-filter').val(); }
     let dateToFilter = function() { return $('#date-to-filter').val(); }
 
@@ -170,6 +175,7 @@ $(document).ready(function () {
             data: {
                 "search": searchInput,
                 "task_type": statusFilter,
+                "category" : categoryFilter,
                 "date_from": dateFromFilter,
                 "date_to": dateToFilter,
             },
@@ -179,14 +185,13 @@ $(document).ready(function () {
                 data: "ticket",
                 render: function (data, type, row) {
                     let description = (row.ticket.description.length >= 50) ? `${row.ticket.description.substr(0, 50)}...` : row.ticket.description;
-                    let template = `<div class="d-flex align-items-center">
-                            <div class="mr-auto">
-                                <a href='/requests/${row.ticket.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket.ticket_no} </a>
-                                <p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
-                                <span class="badge badge-pill text-light" style="background-color:${row.ticket.request_form.color}!important">${row.ticket.request_form.prefix}</span>
-                                <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>
-                            </div>
-                        </div>`;
+                    let category = (row.ticket.category.length > 2) ? `${row.ticket.category.slice(0, 2).join(", ")}, .. +${row.ticket.category.length-2} more` : row.ticket.category.join(', ');
+                    let category_more = (row.ticket.category.length > 2) ? row.ticket.category.slice(2, row.ticket.category.length).join(", ") : '';
+                    let template = `<a href='/requests/${row.ticket.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket.ticket_no} </a>
+                        <p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
+                        <span class="badge badge-pill text-light" style="background-color:${row.ticket.request_form.color}!important">${row.ticket.request_form.prefix}</span>
+                        <span class="badge badge-blue-pastel badge-pill" data-toggle="tooltip" data-placement="right" title="${category_more}">${category}</span>
+                        <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>`;
                     if (type == 'display') data = template
                     return data
                 },
@@ -232,7 +237,7 @@ $(document).ready(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    let share_btn = (row.task_type.officers_len > 1) ? `<button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>` : '' ;
+                    let share_btn = (row.officers_len > 1) ? `<button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>` : '' ;
                     let trash_btn = `<button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>`;
                     let template = `<div class="d-flex align-items-center justify-content-end actions">
                         <button class="action-item d-flex align-items-center text-secondary btn-view" type="button" data-toggle="tooltip" data-placement="top" title="Details">
@@ -242,7 +247,7 @@ $(document).ready(function () {
                             </span>
                         </button>
                         ${(row.task_type.is_client_step || row.task_type.is_head_step) ? '' : share_btn}
-                        ${row.task_type.officers_len > 1 ? trash_btn : ''}
+                        ${row.officers_len > 1 ? trash_btn : ''}
                     </div>`
                     return data = template
                 },
@@ -269,6 +274,7 @@ $(document).ready(function () {
             data: {
                 "search": searchInput,
                 "task_type": statusFilter,
+                "category" : categoryFilter,
                 "date_from": dateFromFilter,
                 "date_to": dateToFilter,
             }
@@ -278,9 +284,12 @@ $(document).ready(function () {
                 data: "ticket",
                 render: function (data, type, row) {
                     let description = (row.ticket.description.length >= 60) ? `${row.ticket.description.substr(0, 60)}...` : row.ticket.description;
+                    let category = (row.ticket.category.length > 2) ? `${row.ticket.category.slice(0, 2).join(", ")}, .. +${row.ticket.category.length-2} more` : row.ticket.category.join(', ');
+                    let category_more = (row.ticket.category.length > 2) ? row.ticket.category.slice(2, row.ticket.category.length).join(", ") : '';
                     let template = `<a href='/requests/${row.ticket.ticket_id}/view' class='btn-link-orange action-link btn_view'> ${row.ticket.ticket_no} </a>
                         <p class="font-weight-bold m-0" data-toggle="tooltip" data-placement="top" title="${row.ticket.description}">${description}</p>
                         <span class="badge badge-pill text-light" style="background-color:${row.ticket.request_form.color}!important">${row.ticket.request_form.prefix}</span>
+                        <span class="badge badge-blue-pastel badge-pill" data-toggle="tooltip" data-placement="right" title="${category_more}">${category}</span>
                         <span class="badge badge-light2 badge-pill">${row.ticket.reference_no}</span>`;
                     if (type == 'display') data = template
                     return data
@@ -366,8 +375,10 @@ $(document).ready(function () {
     });
     // apply filter
     $("#btn_apply_ofilter").click(function () {
-        let status = $("#status-ofilter").val()
-        getOpenTasks(null, {task_type: status}, true)
+        let filters = new Object()
+        filters.task_type = $("#status-ofilter").val(),
+        filters.category = $("#category-ofilter").val(),
+        getOpenTasks(null, filters, true)
         return false; // prevent refresh
     });
     // clear filter
@@ -448,6 +459,7 @@ $(document).ready(function () {
     // detail task
     $('#dt_mytasks tbody').on('click', '.btn-view', function () {
         const dt_data = todosTbl.row($(this).parents('tr')).data();
+        console.log(dt_data)
         taskDetail(dt_data)
     });
 
@@ -468,15 +480,15 @@ $(document).ready(function () {
             placeholder: 'Add people',
             cache: false,
             ajax: {
-                url: `/api/requests/form/status/${dt_data['task_type'].id}/`,
+                url: `/api/tasks/officers/share/${dt_data['id']}/`,
                 dataType: 'json',
                 type: "GET",
                 processResults: function (data) {
                     return {
-                        results: $.map(data.officer, function (item) {
+                        results: $.map(data.officers, function (item) {
                             if ($.inArray(item.id, people) == -1) {
                                 return {
-                                    text: item.name,
+                                    text: `${item.first_name} ${item.last_name}`,
                                     slug: item.slug,
                                     id: item.id
                                 }
