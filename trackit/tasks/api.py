@@ -8,6 +8,7 @@ from .serializers import (
    RemoveTasksSerializer, 
    RemoveTeamPersonSerializer,
    ShareTaskSerializer, 
+   ShareTaskOfficersSerializer,
    TasksListSerializer,)
 from .models import OpenTask, Task, Team
 from requests.models import Notification
@@ -78,6 +79,12 @@ class ShareTaskViewSet(viewsets.ModelViewSet):
    queryset = Task.objects.all()
    permission_classes = [permissions.IsAuthenticated]
    http_method_names = ['get', 'head', 'put']
+   
+class ShareTaskOfficersViewSet(viewsets.ModelViewSet):    
+   serializer_class = ShareTaskOfficersSerializer
+   permission_classes = [permissions.IsAuthenticated]
+   queryset = Task.objects.all()
+   http_method_names = ['get', 'head',]
 
 class OpenTaskViewSet(viewsets.ModelViewSet):    
    serializer_class = OpenTasksSerializer
@@ -119,4 +126,3 @@ class RemoveTeamPersonViewSet(viewsets.ModelViewSet):
       for officer in officers:
          if not log.user_id == officer:
             Notification(log=log, user_id=officer).save()
-   

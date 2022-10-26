@@ -1,10 +1,11 @@
+from unicodedata import category
 from urllib import request
 from rest_framework import serializers
 from django.db import transaction
 
 from .models import OpenTask, Task, Team
 from core.models import User
-from config.models import Status
+from config.models import Category, Status
 from requests.models import Ticket, RequestForm, RequestFormStatus
 from core.serializers import UserInfoSerializer
 from config.serializers import DepartmentSerializer, UserSerializer
@@ -56,7 +57,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
     def serialize_team(self, instance):
         member = instance.team_members.filter(task=self.context["task_instance"]).first()
-
+        
         if member:
             return TeamInfoSerializer(member).data
         return {}
@@ -83,6 +84,7 @@ class TeamInfoSerializer(serializers.ModelSerializer):
 class TasksListSerializer(serializers.ModelSerializer):
     officers = serializers.SerializerMethodField()
     logged_in_officer = serializers.SerializerMethodField()
+    officers_len = serializers.SerializerMethodField()
     ticket = TicketShortListSerializer(read_only=True)
     task_type = RequestFormStatusNameSerializer(read_only=True)
 
@@ -94,11 +96,16 @@ class TasksListSerializer(serializers.ModelSerializer):
             if member == self.context['request'].user: 
                 return task.members.get(member=member).pk
         return ''
+    
+    def get_officers_len(self, task):
+        categories = task.ticket.category.all()
+        categoy_groups = Category.objects.filter(name__in=list(categories)).values_list('groups', flat=True)
+        return task.task_type.officer.filter(groups__in=categoy_groups).count()
 
     class Meta:
         model = Task
         fields = '__all__'
-        datatables_always_serialize = ('id', 'task_type', 'officers', 'logged_in_officer', 'date_created', 'date_completed')
+        datatables_always_serialize = ('id', 'task_type', 'officers', 'logged_in_officer', 'date_created', 'date_completed', 'officers_len')
 
 class TasksNotificationSerializer(serializers.ModelSerializer):
 
@@ -143,6 +150,19 @@ class ShareTaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['id', 'ticket', 'task_type', 'officers']
         read_only_fields = ['id', 'ticket', 'task_type']
+        
+        
+class ShareTaskOfficersSerializer(serializers.ModelSerializer):
+    officers = serializers.SerializerMethodField()
+    
+    def get_officers(self, task):
+        categories = task.ticket.category.all()
+        categoy_groups = Category.objects.filter(name__in=list(categories)).values_list('groups', flat=True)
+        return task.task_type.officer.filter(groups__in=categoy_groups).values('id', 'last_name', 'first_name') 
+    
+    class Meta:
+        model = Task
+        fields = ("id", "officers")
 
 class OpenTasksSerializer(serializers.ModelSerializer):
     ticket = TicketShortListSerializer(read_only=True)

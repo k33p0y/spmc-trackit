@@ -237,7 +237,7 @@ $(document).ready(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    let share_btn = (row.task_type.officers_len > 1) ? `<button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>` : '' ;
+                    let share_btn = (row.officers_len > 1) ? `<button class="action-item text-secondary btn-share" data-toggle="tooltip" data-placement="top" title='Share "${row.ticket.ticket_no}"'><i class="fas fa-lg fa-user-plus"></i></button>` : '' ;
                     let trash_btn = `<button class="action-item text-secondary btn-remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fas fa-lg fa-trash-alt"></i></button>`;
                     let template = `<div class="d-flex align-items-center justify-content-end actions">
                         <button class="action-item d-flex align-items-center text-secondary btn-view" type="button" data-toggle="tooltip" data-placement="top" title="Details">
@@ -247,7 +247,7 @@ $(document).ready(function () {
                             </span>
                         </button>
                         ${(row.task_type.is_client_step || row.task_type.is_head_step) ? '' : share_btn}
-                        ${row.task_type.officers_len > 1 ? trash_btn : ''}
+                        ${row.officers_len > 1 ? trash_btn : ''}
                     </div>`
                     return data = template
                 },
@@ -459,6 +459,7 @@ $(document).ready(function () {
     // detail task
     $('#dt_mytasks tbody').on('click', '.btn-view', function () {
         const dt_data = todosTbl.row($(this).parents('tr')).data();
+        console.log(dt_data)
         taskDetail(dt_data)
     });
 
@@ -479,15 +480,15 @@ $(document).ready(function () {
             placeholder: 'Add people',
             cache: false,
             ajax: {
-                url: `/api/requests/form/status/${dt_data['task_type'].id}/`,
+                url: `/api/tasks/officers/share/${dt_data['id']}/`,
                 dataType: 'json',
                 type: "GET",
                 processResults: function (data) {
                     return {
-                        results: $.map(data.officer, function (item) {
+                        results: $.map(data.officers, function (item) {
                             if ($.inArray(item.id, people) == -1) {
                                 return {
-                                    text: item.name,
+                                    text: `${item.first_name} ${item.last_name}`,
                                     slug: item.slug,
                                     id: item.id
                                 }
