@@ -336,13 +336,16 @@
                                  <p class="font-weight-bold text-uppercase m-0" style="color:{{scheduled_event.scheduled_event.event.highlight}}; font-size:14px !important;"> 
                                     {{scheduled_event.scheduled_event.date}} {{ scheduled_event.scheduled_event.time_start|time:"g:i A"}} - {{ scheduled_event.scheduled_event.time_end|time:"g:i A"}}
                                  </p>
-                                 <small class="text-secondary"> {{scheduled_event.scheduled_event.event}}</small>
-                                 {% if user.is_staff or user.is_superuser %}
-                                 <div class="mt-2">
-                                    <button type="button" class="btn btn-outline-success btn-block btn-sm m-0 mt-1" id="btn_present" data-attended="true" data-schedule-id="{{scheduled_event.pk}}" {% if not is_schedule_open  %} disabled {% endif %}> <span> Present </span> </button>
-                                    <button type="button" class="btn btn-outline-secondary btn-block btn-sm m-0 mt-1" id="btn_absent" data-attended="false" data-schedule-id="{{scheduled_event.pk}}" {% if not is_schedule_open %} disabled {% endif %} ><span> Absent </span> </button>
+                                 <p class="text-secondary m-0"> {{scheduled_event.scheduled_event.event}}</p>
+                                 <p class="text-secondary m-0"> {{scheduled_event.scheduled_event.venue}}</p>
+                                 {% if scheduled_event.scheduled_event.address %}<a href="{{scheduled_event.scheduled_event.address}}" class="m-0" target="_blank"><p class="m-0">{{scheduled_event.scheduled_event.address}}</p></a> {% endif %}
+
+                                 {% if user == ticket.requested_by or user.is_superuser %}
+                                 <div class="mt-3">
+                                    <button type="button" class="btn btn-outline-danger btn-sm m-0 px-4" id="btn_reshedule" data-attended="true" data-schedule-id="{{scheduled_event.pk}}"> <span> Reschedule </span> </button>
                                  </div>
                                  {% endif %}
+                                 
                               </div>
                            </div>
                            {% endif %}
@@ -350,10 +353,10 @@
                               {% if event_tickets %}
                               {% for event_ticket in event_tickets %}
                                  <li class="list-group-item d-flex text-muted px-2 py-1">
-                                    <div class="mr-auto text-truncate">{{ event_ticket.scheduled_event.date }} {{ event_ticket.scheduled_event.time_start }} - {{ event_ticket.scheduled_event.time_end }} ({{ event_ticket.scheduled_event.event }})</div>
+                                    <div class="mr-auto text-truncate">{{ event_ticket.scheduled_event.date }} {{ event_ticket4scheduled_event.time_start }} - {{ event_ticket.scheduled_event.time_end }} ({{ event_ticket.scheduled_event.event }})</div>
                                     <div style="width: 30% !important;">
                                        {% if event_ticket.attended %} <p class="p-0 m-0 text-right font-weight-bold text-success">Attended </p>
-                                       {% else %} <p class="p-0 m-0 text-right font-weight-bold text-secondary">Missed </p>
+                                       {% else %} <p class="p-0 m-0 text-right font-weight-bold text-secondary">Rescheduled </p>
                                        {% endif %}
                                     </div>
                                  </li>

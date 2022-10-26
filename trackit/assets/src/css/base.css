@@ -118,6 +118,15 @@ h1, h2,  h3, h4, h5, h6, small {
    background-color: #9e353f !important;
    box-shadow: none, 0 0 0 0 #9e353f72;
 }
+.btn-outline-danger {
+   border-color: #c44a56 !important;
+   color: #c44a56 !important; 
+}
+.btn-outline-danger:hover {
+   border-color: #ae3743 !important;
+   background-color: #ae3743 !important;
+   color: #fff !important; 
+}
 
 .btn-orange {
    background-color: #FD7E14;
