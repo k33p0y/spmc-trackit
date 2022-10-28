@@ -33,7 +33,7 @@ class EventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = '__all__'
-        datatables_always_serialize = ('id', 'subject')
+        datatables_always_serialize = ('id', 'subject',)
 
 class EventCRUDSerializer(serializers.ModelSerializer):
     created_by = UserInfoSerializer(read_only=True)
@@ -62,21 +62,6 @@ class EventCRUDSerializer(serializers.ModelSerializer):
                 event=event
             )
         return event    
-    
-    def validate(self, data):
-        errors = []       
-        for schedule in self.initial_data['schedule']:
-            schedule_err = dict()   
-            if not schedule['date']: schedule_err['date'] = '*This field may not be blank.'
-            if not schedule['time_start']: schedule_err['time_start'] = '*This field may not be blank.'
-            if not schedule['time_end']: schedule_err['time_end'] = '*This field may not be blank.'
-            if not schedule['venue']: schedule_err['venue'] = '*This field may not be blank.'
-            if not is_string_an_url(schedule['link']): schedule_err['link'] = '*Not a valid url.'                
-            if schedule_err: 
-                errors.append(schedule_err)
-        if errors:
-           raise serializers.ValidationError({'dates': errors}) 
-        return data
     
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -108,6 +93,21 @@ class EventCRUDSerializer(serializers.ModelSerializer):
                     event=instance
                 )
         return instance
+    
+    def validate(self, data):
+        errors = []       
+        for schedule in self.initial_data['schedule']:
+            schedule_err = dict()   
+            if not schedule['date']: schedule_err['date'] = '*This field may not be blank.'
+            if not schedule['time_start']: schedule_err['time_start'] = '*This field may not be blank.'
+            if not schedule['time_end']: schedule_err['time_end'] = '*This field may not be blank.'
+            if not schedule['venue']: schedule_err['venue'] = '*This field may not be blank.'
+            if not is_string_an_url(schedule['link']): schedule_err['link'] = '*Not a valid url.'                
+            if schedule_err: 
+                errors.append(schedule_err)
+        if errors:
+           raise serializers.ValidationError({'dates': errors}) 
+        return data
 
     class Meta:
         model = Event
@@ -122,14 +122,18 @@ class EventReadOnlySerializer(serializers.ModelSerializer):
 class EventDateSerializer(serializers.ModelSerializer):
     event = EventReadOnlySerializer(read_only=True)
     attendance = serializers.SerializerMethodField('get_attendance')
+    highlight = serializers.SerializerMethodField()
 
     def get_attendance(self, obj):
         return obj.participants.all().count()
+    
+    def get_highlight(self, obj):
+        return obj.event.highlight
 
     class Meta:
         model = EventDate
         fields = '__all__'
-        datatables_always_serialize = ('id',)
+        datatables_always_serialize = ('id', 'highlight', 'address')
 
 class EventDateCRUDSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -137,7 +141,10 @@ class EventDateCRUDSerializer(serializers.ModelSerializer):
             date = validated_data['date'],
             time_start = validated_data['time_start'],
             time_end = validated_data['time_end'],
-            event = validated_data['event']
+            venue = validated_data['venue'],
+            address = validated_data['address'],
+            event = validated_data['event'],
+            is_active = validated_data['is_active']
         )
         eventdate.save()
         return eventdate
@@ -146,6 +153,9 @@ class EventDateCRUDSerializer(serializers.ModelSerializer):
         instance.date = validated_data.get('date', instance.date)
         instance.time_start = validated_data.get('time_start', instance.time_start)
         instance.time_end = validated_data.get('time_end', instance.time_end)
+        instance.venue = validated_data.get('venue', instance.venue)
+        instance.address = validated_data.get('address', instance.address)
+        instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.event = validated_data.get('event', instance.event)
         instance.save()
         return instance
