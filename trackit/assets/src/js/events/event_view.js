@@ -100,12 +100,7 @@ $(document).ready(function() {
     // // add schedule
     $('#btn_add_schedule').click(function(e) {
         $("#scheduleModal").modal(); // open modal
-        $("#scheduleModal #txt_date").val(null); // date
-        $("#scheduleModal #txt_time_start").val(null); // time start
-        $("#scheduleModal #txt_time_end").val(null); // time end
-        $("#scheduleModal #txt_venue").val(null); // venue
-        $("#scheduleModal #txt_link").val(null); // url
-        $('#scheduleModal #chk_status').prop("checked", true); // is active
+        resetForm(); // reset form
         action = 'post';
         url = '/api/events/eventdate/schedule/';
     });
@@ -129,9 +124,9 @@ $(document).ready(function() {
         e.preventDefault();
         $(this).prop('disabled', true);
         let schedule_obj = new Object();
-        schedule_obj.date = $("#txt_date").val(); // date
-        schedule_obj.time_start = $("#txt_time_start").val(); // time start
-        schedule_obj.time_end = $("#txt_time_end").val(); // time end
+        schedule_obj.date = ($("#txt_date").val()) ? $("#txt_date").val() : null; // date
+        schedule_obj.time_start = ($("#txt_time_start").val()) ? $("#txt_time_start").val() : null; // time start
+        schedule_obj.time_end = ($("#txt_time_end").val()) ? $("#txt_time_end").val() : null; // time end
         schedule_obj.venue = $("#txt_venue").val(); // venue
         schedule_obj.address = $("#txt_link").val(); // url
         schedule_obj.is_active = ($('#chk_status').prop("checked") == true) ? true : false; // is active
@@ -143,12 +138,18 @@ $(document).ready(function() {
             data: schedule_obj,
             headers: axiosConfig,
         }).then(function (response) { // success
-            toastSuccess('Success');
-            $("#scheduleModal").modal('toggle'); // close modal
             $('#scheduleModal #btn_save_schedule').prop('disabled', false);
+            $("#scheduleModal").modal('toggle'); // close modal
+            toastSuccess('Success');
             table.ajax.reload();
         }).catch(function (error) { // error
-            console.log(error)
+            toastError(error.response.statusText)
+            if (error.response.data.date) showFieldErrors(error.response.data.date, 'date'); else removeFieldErrors('date');
+            if (error.response.data.time_start) showFieldErrors(error.response.data.time_start, 'time_start'); else removeFieldErrors('time_start');
+            if (error.response.data.time_end) showFieldErrors(error.response.data.time_end, 'time_end'); else removeFieldErrors('time_end');
+            if (error.response.data.venue) showFieldErrors(error.response.data.venue, 'venue'); else removeFieldErrors('venue');
+            if (error.response.data.address) showFieldErrors(error.response.data.address, 'link'); else removeFieldErrors('link');
+            $('#scheduleModal #btn_save_schedule').prop('disabled', false);
         });
     }); 
 
@@ -223,5 +224,34 @@ $(document).ready(function() {
             }
         });
         return success;
-    };    
+    };   
+
+    let resetForm = function (e) {
+        $('.event-form').trigger('reset');
+        $('.form-control').val(null);
+        $('.form-control-check').prop('checked', true)
+        removeFieldErrors('all');
+    }
+
+    let showFieldErrors = function(obj, field) {
+        // error message
+        let msg = '';
+        obj.forEach(error => {msg += `${error} `});
+        $(`#${field}_error`).html(`*${msg} `)
+        $(`#txt_${field}`).addClass('form-error')
+    };
+
+    let removeFieldErrors = function (field) {
+        switch(field) {
+            case 'all':
+                $('.form-control').removeClass('form-error');
+                $('.error-info').html(``)
+                break;
+            default:
+                $(`#txt_${field}`).removeClass('form-error');
+                $(`#${field}_error`).html(``)
+                break;
+        }
+    };
 });
+    

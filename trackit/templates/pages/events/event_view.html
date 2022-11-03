@@ -283,35 +283,35 @@
             </button>
          </div>
          <div class="modal-body">
-            <form>
+            <form class="event-form">
                <div class="form-group">
                   <label for="txt_date">Date <span class="text-danger">*</span></label>
                   <input type="date" class="form-control form-control-sm" id="txt_date">
-                  <small class="error-info date-error"></small>
+                  <small class="error-info date-error" id="date_error"></small>
                </div>
                <div class="form-group">
                   <label for="txt_time_start">Time Start <span class="text-danger">*</span></label>
                   <input type="time" class="form-control form-control-sm" id="txt_time_start">
-                  <small class="error-info time-start-error"></small>
+                  <small class="error-info time-start-error" id="time_start_error"></small>
                </div>
                <div class="form-group">
                   <label for="txt_time_end">Time End <span class="text-danger">*</span></label>
                   <input type="time" class="form-control form-control-sm" id="txt_time_end">
-                  <small class="error-info time-end-error"></small>
+                  <small class="error-info time-end-error" id="time_end_error"></small>
                </div>
                <div class="form-group">
                   <label for="txt_venue">Venue</label>
                   <input type="text" class="form-control form-control-sm" id="txt_venue" placeholder="Enter venue">
-                  <small class="error-info venue-error"></small>
+                  <small class="error-info venue-error" id="venue_error"></small>
                </div>
                <div class="form-group">
                   <label for="txt_link">URL</label>
                   <input type="url" class="form-control form-control-sm" id="txt_link" placeholder="Enter URL">
-                  <small class="error-info link-error"></small>
+                  <small class="error-info link-error" id="link_error"></small>
                </div>
                <div class="form-group">
                   <div class="icheck-material-green m-0">
-                      <input type="checkbox" id="chk_status" {% if event.is_active %} checked {% endif %} />
+                      <input type="checkbox" class="form-control-check" id="chk_status" {% if event.is_active %} checked {% endif %} />
                       <label for="chk_status">Is Active</label>
                   </div>
               </div>

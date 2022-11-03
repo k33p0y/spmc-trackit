@@ -2,6 +2,7 @@ import sched
 from rest_framework import serializers
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from datetime import datetime, date
 
 from .models import Event, EventDate, EventTicket
 from config.models import Remark
@@ -13,7 +14,7 @@ from .views import is_string_an_url
 from core.serializers import UserInfoSerializer
 from requests.serializers import RequestFormReadOnlySerializer, StatusReadOnlySerializer
 
-import datetime, uuid
+import uuid
 
 class EventListSerializer(serializers.ModelSerializer):
     created_by = UserInfoSerializer(read_only=True)
@@ -98,11 +99,11 @@ class EventCRUDSerializer(serializers.ModelSerializer):
         errors = []       
         for schedule in self.initial_data['schedule']:
             schedule_err = dict()   
-            if not schedule['date']: schedule_err['date'] = '*This field may not be blank.'
-            if not schedule['time_start']: schedule_err['time_start'] = '*This field may not be blank.'
-            if not schedule['time_end']: schedule_err['time_end'] = '*This field may not be blank.'
+            if not schedule['date']: schedule_err['date'] = '*This field may not be null.'
+            if not schedule['time_start']: schedule_err['time_start'] = '*This field may not be null.'
+            if not schedule['time_end']: schedule_err['time_end'] = '*This field may not be null.'
             if not schedule['venue']: schedule_err['venue'] = '*This field may not be blank.'
-            if not is_string_an_url(schedule['link']): schedule_err['link'] = '*Not a valid url.'                
+            if not is_string_an_url(schedule['link']): schedule_err['link'] = '*Enter a valid URL.'                
             if schedule_err: 
                 errors.append(schedule_err)
         if errors:
@@ -135,7 +136,7 @@ class EventDateSerializer(serializers.ModelSerializer):
         fields = '__all__'
         datatables_always_serialize = ('id', 'highlight', 'address')
 
-class EventDateCRUDSerializer(serializers.ModelSerializer):
+class EventDateCRUDSerializer(serializers.ModelSerializer):    
     def create(self, validated_data):
         eventdate = EventDate(
             date = validated_data['date'],
@@ -154,11 +155,23 @@ class EventDateCRUDSerializer(serializers.ModelSerializer):
         instance.time_start = validated_data.get('time_start', instance.time_start)
         instance.time_end = validated_data.get('time_end', instance.time_end)
         instance.venue = validated_data.get('venue', instance.venue)
-        instance.address = validated_data.get('address', instance.address)
+        instance.address = validated_data.get('address', instance.address)  
         instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.event = validated_data.get('event', instance.event)
         instance.save()
         return instance
+    
+    def validate_date(self, date):
+        if date < date.today():
+            raise serializers.ValidationError('Date must not be in the past.')
+        return date
+
+    def validate_time_end(self, time_end):
+        if self.initial_data.get('time_start'):
+            time_start = datetime.strptime(self.initial_data.get('time_start'), '%H:%M').time()
+            if time_end <= time_start:
+                raise serializers.ValidationError('End time must be later than the end time.')  
+        return time_end
 
     class Meta:
         model = EventDate
