@@ -1,7 +1,15 @@
 $(document).ready(function() {
+    
     // Local Variables
     let action, url;
-
+    let searchInput = function() { return $('#search_input').val(); }
+    let statusFilter = function() { return $('#status-filter').val(); }
+    let dateFromFilter = function() { return $('#date-from-filter').val(); }
+    let dateToFilter = function() { return $('#date-to-filter').val(); }
+    let timeStartFilter = function() { return $('#time-start-filter').val(); }
+    let timeEndFilter = function() { return $('#time-end-filter').val(); }
+    let activeFilter = function() { return $('#active-filter').val(); }
+    
     let table = $('#dt_schedules').DataTable({
         "searching": false,
         "responsive": true,
@@ -12,12 +20,19 @@ $(document).ready(function() {
         "language": {
             processing: $('#table_spinner').html()
         },
-        "pageLength": 10,
+        "pageLength": 15,
         "ajax": {
             url: '/api/events/eventdate/all/?format=datatables',
             type: "GET",
             data: {
                 "event": $('#event_id').data().eventId,
+                "search": searchInput,
+                "status" : statusFilter,
+                "date_from": dateFromFilter,
+                "date_to": dateToFilter,
+                "time_start" : timeStartFilter,
+                "time_end" : timeEndFilter,
+                "is_active" : activeFilter
             },
         },
         "columns": [
@@ -49,7 +64,29 @@ $(document).ready(function() {
             }, // Attendance
             {
                 data: "venue",
+                render: function (data, type, row) {
+                    link = (row.address) ? "<i class='fas fa-sm fa-link text-orange ml-2'></i>" : '';
+                    data = `${row.venue}${link}`
+                    return data
+                },
             }, // Venue
+            {
+                data: "state",
+                render: function (data, type, row) {
+                    switch(row.state.id) {
+                        case 1: 
+                            data = `<span class="badge badge-pill badge-success">${row.state.text}</span>` // upcoming
+                            break;
+                        case 2: 
+                            data = `<span class="badge badge-pill badge-primary">${row.state.text}</span>` // on going
+                            break;
+                        case 3: 
+                            data = `<span class="badge badge-pill badge-secondary">${row.state.text}</span>` // complete
+                            break;
+                    }
+                    return data
+                },
+            }, // Is Active
             {
                 data: "is_active",
                 render: function (data, type, row) {
@@ -65,13 +102,46 @@ $(document).ready(function() {
                 },
                 orderable : false,
             }, // Null
-            {
-                data: "id",
-                visible: false
-            }, // Id
         ],
         "order": [[0, "desc"], [1, "desc"]],
     }); // table end
+
+    // // // // // // // // // // // // // // // //  SEARCH AND FILTERS
+    $('.select-filter').select2(); // select2 config
+
+    $("#search_input").on('search', function () { // Search Bar onSearch Event
+        table.ajax.reload(); 
+        return false; // prevent refresh
+    });
+    $("#execute_search").click(function () { // Search Bar onClick Event
+        table.ajax.reload();
+        return false; // prevent refresh
+    });
+    $('#search_input').keypress(function(event) { // Search Bar keyPress Event
+        let keycode = event.keyCode || event.which;
+        if (keycode == '13') table.ajax.reload();
+    });
+    
+    // Apply Filter
+    $("#btn_apply").click(function () {
+        table.ajax.reload();
+        return false; // prevent refresh
+    });
+    // Clear Filter
+    $("#btn_clear").click(function () {
+        $('#form-filter').trigger("reset");
+        $('#form-filter select').trigger("change");
+        table.ajax.reload();
+        return false; // prevent refresh
+    });
+    // Close Dropdown 
+    $('#close_dropdown').click(function () { toggleFilter() });
+    // Close Dropdown When Click Outside 
+    $(document).on('click', function (e) { toggleFilter() });
+    // Dropdown Prevent From closing
+    $('.dropdown-filter').on('hide.bs.dropdown', function (e) {
+        if (e.clickEvent) e.preventDefault();
+    });
 
     // // view schedule
     $('#dt_schedules tbody').on('click', '.view-schdule', function () {
@@ -108,10 +178,12 @@ $(document).ready(function() {
     // // edit schedule
     $('#dt_schedules tbody').on('click', '.edit-schedule', function () {
         let dt_data = table.row($(this).parents('tr')).data();
+        console.log(moment(`${dt_data['date']} ${dt_data['time_start']}`).format("HH:mm"))
         $("#scheduleModal").modal(); // open modal
         $("#scheduleModal #txt_date").val(dt_data['date']); // date
-        $("#scheduleModal #txt_time_start").val(dt_data['time_start']); // time start
-        $("#scheduleModal #txt_time_end").val(dt_data['time_end']); // time end
+        // need to covert time format value to match with POST
+        $("#scheduleModal #txt_time_start").val(moment(`${dt_data['date']} ${dt_data['time_start']}`).format("HH:mm")); // time start
+        $("#scheduleModal #txt_time_end").val(moment(`${dt_data['date']} ${dt_data['time_end']}`).format("HH:mm")); // time end
         $("#scheduleModal #txt_venue").val(dt_data['venue']); // venue
         $("#scheduleModal #txt_link").val(dt_data['address']); // url
         $('#scheduleModal #chk_status').prop("checked", dt_data['is_active']); // is active
@@ -209,22 +281,6 @@ $(document).ready(function() {
             }            
         });
     };
-
-    let validateAttendance = function() {
-        var success = true;
-        $('.card-attendance').each(function() { // iterate rows
-            const present = $(this).find('div.col .present-box');
-            const absent = $(this).find('div.col .absent-box');
-
-            if (present.is(":checked") || absent.is(":checked")) {
-                $(this).removeClass('row-error');
-            } else {
-                $(this).addClass('row-error');
-                success = false;
-            }
-        });
-        return success;
-    };   
 
     let resetForm = function (e) {
         $('.event-form').trigger('reset');

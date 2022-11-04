@@ -44,18 +44,37 @@ class EventDateViewSet(viewsets.ModelViewSet):
    serializer_class = EventDateSerializer
    queryset = EventDate.objects.all()
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   http_method_names = ['get', 'head',]
 
    def get_queryset(self):
+      search = self.request.query_params.get("search", None)
       event = self.request.query_params.get("event", None)
+      status = self.request.query_params.get("status", None)
       dates = self.request.query_params.get("dates", None)
+      date_from = self.request.query_params.get('date_from', None)
+      date_to = self.request.query_params.get('date_to', None)
       time_start = self.request.query_params.get("time_start", None)
+      time_end = self.request.query_params.get("time_end", None)
       is_active = self.request.query_params.get("is_active", None)
+      
       now = datetime.datetime.now()
+      date_now = now.strftime("%Y-%m-%d")
+      time_now = now.strftime("%H:%M:%S")
       
       qs = EventDate.objects.order_by('date', 'time_start')
+      if search: qs = qs.filter(venue__icontains=search)
       if event: qs = qs.filter(event__id=event)
+      if status:
+         if status == '1': qs = qs.filter((Q(date__gte=date_now) & Q(time_start__gt=time_now)) | Q(date__gt=date_now)) # upcoming
+         if status == '2': qs = qs.filter(Q(date=date_now, time_start__lte=time_now) & Q(date=date_now, time_end__gte=time_now)) # ongoing
+         if status == '3': qs = qs.filter((Q(date__lte=date_now) & Q(time_start__lt=time_now)) & (Q(date__lte=date_now) & Q(time_end__lt=time_now))| Q(date__lt=date_now)) # complete
       if is_active: qs = qs.filter(is_active=json.loads(is_active))
-      if dates: qs = qs.filter((Q(date__gte=now.strftime('%Y-%m-%d')) & Q(time_start__gte=now.strftime('%H:%M:%S'))) | Q(date__gt=now.strftime('%Y-%m-%d')))
+      if dates: qs = qs.filter((Q(date__gte=date_now) & Q(time_start__gte=time_now)) | Q(date__gt=date_now))
+      if date_from: qs = qs.filter(date__gte=date_from)
+      if date_to: qs = qs.filter(date__lte=datetime.datetime.strptime(date_to + "23:59:59", '%Y-%m-%d%H:%M:%S'))
+      if time_start: qs = qs.filter(time_start__gte=time_start)
+      if time_end: qs = qs.filter(time_end__lte=time_end)
+
       return qs
       
  

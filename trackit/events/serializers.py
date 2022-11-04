@@ -96,14 +96,18 @@ class EventCRUDSerializer(serializers.ModelSerializer):
         return instance
     
     def validate(self, data):
-        errors = []       
+        errors = []
+        method = self.context['request'].method
         for schedule in self.initial_data['schedule']:
             schedule_err = dict()   
-            if not schedule['date']: schedule_err['date'] = '*This field may not be null.'
+            if not schedule['date']: schedule_err['date'] = '*This field may not be null.' 
             if not schedule['time_start']: schedule_err['time_start'] = '*This field may not be null.'
             if not schedule['time_end']: schedule_err['time_end'] = '*This field may not be null.'
             if not schedule['venue']: schedule_err['venue'] = '*This field may not be blank.'
-            if not is_string_an_url(schedule['link']): schedule_err['link'] = '*Enter a valid URL.'                
+            if not is_string_an_url(schedule['link']): schedule_err['link'] = '*Enter a valid URL.'   
+            if schedule['date'] and method == 'POST':
+                if datetime.strptime(schedule['date'], "%Y-%m-%d").date() < date.today(): schedule_err['date'] = '*Date must not be in the past.'
+            if schedule['time_end'] <= schedule['time_start']: schedule_err['time_end'] = '*End time must be later than the start time.'            
             if schedule_err: 
                 errors.append(schedule_err)
         if errors:
@@ -124,17 +128,32 @@ class EventDateSerializer(serializers.ModelSerializer):
     event = EventReadOnlySerializer(read_only=True)
     attendance = serializers.SerializerMethodField('get_attendance')
     highlight = serializers.SerializerMethodField()
+    state = serializers.SerializerMethodField()
 
     def get_attendance(self, obj):
         return obj.participants.all().count()
     
     def get_highlight(self, obj):
         return obj.event.highlight
+    
+    def get_state(self, obj):
+        now = datetime.now().strftime("%Y-%m-%d %H:%M")
+        date_today = datetime.strptime(now, "%Y-%m-%d %H:%M")
+        date_start = datetime.combine(obj.date, obj.time_start)
+        date_end = datetime.combine(obj.date, obj.time_end)
+        
+        if date_start > date_today: 
+            return {'id' : 1, 'text' :'Upcoming'}
+        elif date_today >= date_start and date_today <= date_end: 
+            return {'id' : 2, 'text' :'On Going'}
+        elif date_today > date_start and date_today > date_end: 
+            return {'id' : 3, 'text' :'Complete'}        
+        return None
 
     class Meta:
         model = EventDate
         fields = '__all__'
-        datatables_always_serialize = ('id', 'highlight', 'address')
+        datatables_always_serialize = ('id', 'highlight', 'address', 'state')
 
 class EventDateCRUDSerializer(serializers.ModelSerializer):    
     def create(self, validated_data):
@@ -162,15 +181,16 @@ class EventDateCRUDSerializer(serializers.ModelSerializer):
         return instance
     
     def validate_date(self, date):
-        if date < date.today():
-            raise serializers.ValidationError('Date must not be in the past.')
+        if self.context['request'].method == 'POST':
+            if date < date.today():
+                raise serializers.ValidationError('Date must not be in the past.')
         return date
 
     def validate_time_end(self, time_end):
         if self.initial_data.get('time_start'):
             time_start = datetime.strptime(self.initial_data.get('time_start'), '%H:%M').time()
             if time_end <= time_start:
-                raise serializers.ValidationError('End time must be later than the end time.')  
+                raise serializers.ValidationError('End time must be later than the start time.')  
         return time_end
 
     class Meta:

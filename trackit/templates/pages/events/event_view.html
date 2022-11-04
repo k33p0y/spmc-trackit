@@ -138,29 +138,33 @@
                                  </button>
                                  <div class="dropdown-menu dropdown-menu-lg dropdown-filter-menu">
                                     <form id="form-filter">
-                                       <div class="p-3 scrollable-menu">        
+                                       <div class="p-3 scrollable-menu">   
                                           <div class="form-group mb-1">
-                                             <label for="status-filter">By Status </label>
-                                             <select class="form-control form-control-sm select-filter" id="status-filter" name="status-filter">
+                                             <label for="active-filter">By Status </label>
+                                             <select class="form-control form-control-sm select-filter" id="status-filter">
                                                 <option value="">All</option>
-                                                {% for stat in status %}
-                                                <option value={{stat.id}}>{{stat}}</option>
-                                                {% endfor %}
+                                                <option value="1">Upcoming</option>
+                                                <option value="2">On Going</option>
+                                                <option value="3">Complete</option>
+                                             </select>
+                                          </div>     
+                                          <div class="form-group mb-1">
+                                             <label for="active-filter">By Active </label>
+                                             <select class="form-control form-control-sm select-filter" id="active-filter">
+                                                <option value="">All</option>
+                                                <option value="1">Yes</option>
+                                                <option value="0">No</option>
                                              </select>
                                           </div>
-                                          <div class="form-group mb-1">
-                                             <label for="category-filter">By Category </label>
-                                             <select class="form-control form-control-sm select-filter" id="category-filter" name="category-filter">
-                                             <option value="">All</option>
-                                             {% for category in categories %}
-                                             <option value={{category.id}}>{{category}}</option>
-                                             {% endfor %}
-                                             </select>
-                                         </div>
                                           <div class="form-group mb-1">
                                              <label for="date-filter">By Date </label>
                                              <input type="date" class="form-control form-control-sm mb-2" id="date-from-filter" name="date-filter" placeholder="From">
                                              <input type="date" class="form-control form-control-sm" id="date-to-filter" name="date-filter" placeholder="To">
+                                          </div>
+                                          <div class="form-group mb-1">
+                                             <label for="date-filter">By Time </label>
+                                             <input type="time" class="form-control form-control-sm mb-2" id="time-start-filter" name="time-filter">
+                                             <input type="time" class="form-control form-control-sm mb-2" id="time-end-filter" name="time-filter">
                                           </div>
                                        </div>
                                        <div class="dropdown-divider"></div>
@@ -172,11 +176,11 @@
                                     </form>
                                  </div>
                              </div>
-                             <div class="col-auto col-md-3 p-0" id="intro_search_mytask"> 
+                             <div class="col-auto col-md-3 p-0"> 
                                  <div class="input-group shadow-border">
-                                     <input type="search" class="form-control form-control-sm" placeholder="Search" id="search_input_task">
+                                     <input type="search" class="form-control form-control-sm" placeholder="Search" id="search_input">
                                      <div class="input-group-append">
-                                         <button class="btn btn-sm btn-outline-secondary" type="button" id="execute_search_task">
+                                         <button class="btn btn-sm btn-outline-secondary" type="button" id="execute_search">
                                              <i class="fas fa-sm fa-search"></i>
                                          </button>
                                      </div>
@@ -200,6 +204,7 @@
                                     <th>Time End</th>
                                     <th>Attendance</th>
                                     <th>Venue</th>
+                                    <th>Status</th>
                                     <th>Is Active</th>
                                     <th data-priority=2></th>
                                  </tr>

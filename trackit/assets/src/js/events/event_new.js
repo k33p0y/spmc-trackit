@@ -106,8 +106,8 @@ $(document).ready(function () {
 
     let showFieldErrors = function(obj, field) {
         // Add error class change border color to red
-        if (field == 'title') $(`#txt_${field}`).addClass('form-error');
         if (field == 'eventfor') $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
+        else $(`#txt_${field}`).addClass('form-error');
         // error message
         let msg = '';
         obj.forEach(error => {msg += `${error} `});
@@ -116,8 +116,8 @@ $(document).ready(function () {
 
     let removeFieldErrors = function(field) {
         // Remove error class for border color
-        if (field == 'title') $(`#txt_${field}`).removeClass('form-error');
-        if (field == 'preface') $(`#txt_${field}`).removeClass('form-error');
+        if (field == 'eventfor') $(`#select2_${field}`).next().find('.select2-selection').removeClass('form-error');
+        else $(`#txt_${field}`).removeClass('form-error');
         $(`#${field}_error`).html('');
     };
 
