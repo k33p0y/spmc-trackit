@@ -1,6 +1,7 @@
 // Fullcalendar plugin
 $(function() {
     var viewModalEl = new bootstrap.Modal(document.getElementById("modalViewEvent"), {});
+    var scheduleModalEl = new bootstrap.Modal(document.getElementById("scheduleModal"), {});
     var draggableEl = document.getElementById('event_lists');
     var draggable = new FullCalendar.Draggable(draggableEl, {
         itemSelector: '.event-card',
@@ -53,6 +54,8 @@ $(function() {
                             color: event.event.highlight,
                             event_id: event.event.id,
                             event_subject: event.event.subject,
+                            event_venue: event.venue,
+                            event_url: event.address,
                             attendance: event.attendance,
                         })
                     });
@@ -63,76 +66,103 @@ $(function() {
         eventReceive: function(info) { // when external event dropped receive
             if (info.event.allDay) info.revert();
             else {
-                Swal.fire({
-                    title: 'Review changes',
-                    html: `<p class="mb-1"> <b>Event:</b> ${info.event.title}</p>
-                        <p class="mb-1"> <b>Date Start: </b> ${moment(info.event.start).format('MMM DD, YYYY hh:mm:ss a')}</p>
-                        <p class="mb-1"> <b>Date End:</b> ${moment(info.event.start).format('MMM DD, YYYY hh:mm:ss a')}</p>`,
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonText: 'Save',
-                    cancelButtonText: 'Discard',
-                    confirmButtonColor: '#17a2b8',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        let method = 'POST'; // post event
-                        let url = `/api/events/eventdate/schedule/`; // update request url
-                        let event = info.event.id;
-                        saveEvent(info, event, method, url);
-                        info.revert();
-                    } else info.revert();
+                const date = moment(info.event.start).format('DD MMMM YYYY');
+                const start_time = moment(info.event.start).format('h:mm A');
+                const end_time = moment(info.event.start).add(1, "h").format("h:mm A");
+                scheduleModalEl.show();
+                $(".title-event").text(info.event.title); // venue
+                $(".title-datetime").text(`${date} ${start_time} - ${end_time}`); // datetime
+                $('#btn_save_schedule').click(function() {  // save modal event
+                    let method = 'POST';
+                    let url = '/api/events/eventdate/schedule/'; // update request url
+                    let eventObj = new Object();
+                    eventObj.date = moment(info.event.start).format('YYYY-MM-DD'); // date
+                    eventObj.time_start = moment(info.event.start).format('HH:mm'); // time start 24 hr format
+                    eventObj.time_end = moment(info.event.start).add(1, "h").format("HH:mm"); // time end 24 hr format
+                    eventObj.venue = $('#txt_venue').val(); // venue
+                    eventObj.address = $('#txt_link').val(); // link
+                    eventObj.event = info.event.id; // event
+                    saveEvent(info, eventObj, method, url);
+                    info.revert();
                 });
+                $('#btn_close_schedule').click(function() { info.revert(); }); // close modal
             }
         },
         eventResize: function(info) { // when event dropped resize
+            console.log(info.event)
+            const date = moment(info.event.start).format('dddd, DD MMMM YYYY');
+            const start_time = moment(info.event.start).format('h:mm A');
+            const end_time = moment(info.event.end).format('h:mm A');
+            const address = (info.event.extendedProps.event_url) ? "<i class='fas fa-xs fa-link text-orange'></i>" : '';
             Swal.fire({
                 title: 'Review changes',
                 html: `<p class="mb-1"> <b>Event:</b> ${info.event.title}</p>
-                    <p class="mb-1"> <b>Date Start: </b> ${moment(info.event.start).format('MMM DD, YYYY hh:mm:ss a')}</p>
-                    <p class="mb-1"> <b>Date End:</b> ${moment(info.event.end).format('MMM DD, YYYY hh:mm:ss a')}</p>`,
+                    <p class="mb-1"> <b>Date: </b> ${date}</p>
+                    <p class="mb-1"> <b>Time:</b> ${start_time} - ${end_time}</p>
+                    <p class="mb-1"> <b>Venue:</b> ${info.event.extendedProps.event_venue} ${address}</p> `,
                 icon: 'info',
                 showCancelButton: true,
+                reverseButtons: true,
                 confirmButtonText: 'Save',
                 cancelButtonText: 'Discard',
-                confirmButtonColor: '#17a2b8',
+                confirmButtonColor: '#f17f32'
             }).then((result) => {
                 if (result.isConfirmed) {
                     let method = 'PUT';
                     let url = `/api/events/eventdate/schedule/${parseInt(info.event.id)}/`; // update request url
-                    let event = info.event.extendedProps.event_id;
-                    saveEvent(info, event, method, url);
+                    let eventObj = new Object();
+                    eventObj.date = moment(info.event.start).format('YYYY-MM-DD'); // date
+                    eventObj.time_start = moment(info.event.start).format('HH:mm'); // time start 24 hr format
+                    eventObj.time_end = moment(info.event.end).format("HH:mm"); // time end 24 hr format
+                    eventObj.venue = info.event.extendedProps.event_venue; // venue
+                    eventObj.address = (info.event.extendedProps.event_url) ? info.event.extendedProps.event_url: ''; // link
+                    eventObj.event = info.event.extendedProps.event_id; // event
+                    saveEvent(info, eventObj, method, url);
                 } else info.revert();
             });
         },
         eventDrop: function(info) { // when event dropped dragged
+            const date = moment(info.event.start).format('dddd, DD MMMM YYYY');
+            const start_time = moment(info.event.start).format('h:mm A');
+            const end_time = moment(info.event.end).format('h:mm A');
+            const address = (info.event.extendedProps.event_url) ? "<i class='fas fa-xs fa-link text-orange'></i>" : '';
             Swal.fire({
                 title: 'Review changes',
                 html: `<p class="mb-1"> <b>Event:</b> ${info.event.title}</p>
-                    <p class="mb-1"> <b>Date Start: </b> ${moment(info.event.start).format('MMM DD, YYYY hh:mm:ss a')}</p>
-                    <p class="mb-1"> <b>Date End:</b> ${moment(info.event.end).format('MMM DD, YYYY hh:mm:ss a')}</p>`,
+                    <p class="mb-1"> <b>Date: </b> ${date}</p>
+                    <p class="mb-1"> <b>Time:</b> ${start_time} - ${end_time}</p>
+                    <p class="mb-1"> <b>Venue:</b> ${info.event.extendedProps.event_venue} ${address}</p> `,
                 icon: 'info',
                 showCancelButton: true,
+                reverseButtons: true,
                 confirmButtonText: 'Save',
-                confirmButtonColor: '#17a2b8',
+                confirmButtonColor: '#f17f32',
             }).then((result) => {
                 if (result.isConfirmed) {
                     let method = 'PUT'; // update event
                     let url = `/api/events/eventdate/schedule/${parseInt(info.event.id)}/`; // update request url
-                    let event = info.event.extendedProps.event_id;
-                    saveEvent(info, event, method, url);
+                    let eventObj = new Object();
+                    eventObj.date = moment(info.event.start).format('YYYY-MM-DD'); // date
+                    eventObj.time_start = moment(info.event.start).format('HH:mm'); // time start 24 hr format
+                    eventObj.time_end = moment(info.event.end).format("HH:mm"); // time end 24 hr format
+                    eventObj.venue = info.event.extendedProps.event_venue; // venue
+                    eventObj.address = (info.event.extendedProps.event_url) ? info.event.extendedProps.event_url: ''; // link
+                    eventObj.event = info.event.extendedProps.event_id; // event
+                    saveEvent(info, eventObj, method, url);
                 } else info.revert();
             });
         },
         eventClick: function(info) {  // when event is clicked
-            let date = moment(info.event.start).format('ddd, MMMM Do YYYY');
-            let time_start = moment(info.event.start).format('h:mm a');
-            let time_end = (info.event.end) ? moment(info.event.end).format('h:mm a') : time_start;
-
+            let date = moment(info.event.start).format('dddd, DD MMMM YYYY');
+            let time_start = moment(info.event.start).format('h:mm A');
+            let time_end = moment(info.event.end).format('h:mm A');
             viewModalEl.show();
             document.getElementById('event_title').innerHTML = info.event.title;
-            document.getElementById('event_subject').innerHTML = (info.event.extendedProps.event_subject) ? info.event.extendedProps.event_subject : '-';
-            document.getElementById('event_date_start').innerHTML = `${date} ${time_start}`;
-            document.getElementById('event_date_end').innerHTML = `${date} ${time_end}`;
+            document.getElementById('event_subject').innerHTML = (info.event.extendedProps.event_subject) ? info.event.extendedProps.event_subject : '';
+            document.getElementById('event_date').innerHTML = date;
+            document.getElementById('event_time').innerHTML = `${time_start} - ${time_end}`;
+            document.getElementById('event_venue').innerHTML = (info.event.extendedProps.event_venue);
+            document.getElementById('event_link').innerHTML = (info.event.extendedProps.event_url) ? info.event.extendedProps.event_url : '';
             document.getElementById('event_attendance').innerHTML = info.event.extendedProps.attendance;
             document.getElementById('btn_delete').setAttribute('schedule', info.event.id)
         },
@@ -140,36 +170,57 @@ $(function() {
     calendar.render();
 
     // save events fn
-    const saveEvent = function(info, event, method, url) {
-        let eventdateObj = new Object();
-        eventdateObj.date = moment(info.event.start).format('YYYY-MM-DD');
-        eventdateObj.time_start = moment(info.event.start).format('HH:mm:ss'); // 24 hr format
-        eventdateObj.time_end = (info.event.end) ? moment(info.event.end).format('HH:mm:ss') : eventdateObj.time_start; // 24 hr format
-        eventdateObj.event = event;
-
+    const saveEvent = function(info, eventObj, method, url) {
         axios({
             method: method,
             url: url,
             data: {
-                date : eventdateObj.date,
-                time_start : eventdateObj.time_start,
-                time_end : eventdateObj.time_end,
-                event : eventdateObj.event
+                date : eventObj.date,
+                time_start : eventObj.time_start,
+                time_end : eventObj.time_end,
+                venue : eventObj.venue,
+                address : eventObj.address,
+                event : eventObj.event,
+                is_active: true
             },
             headers: axiosConfig,
         }).then(res => { // success
             calendar.refetchEvents();
+            scheduleModalEl.hide()
             toastSuccess('Success');
         }).catch(err => { // error
             info.revert();
             toastError(err.response.statusText);
+            if (err.response.data.date) showFieldErrors(err.response.data.date, 'date'); else removeFieldErrors('date');
+            if (err.response.data.time_start) showFieldErrors(err.response.data.time_start, 'time_start'); else removeFieldErrors('ti   me_start');
+            if (err.response.data.time_end) showFieldErrors(err.response.data.time_end, 'time_end'); else removeFieldErrors('time_end');
+            if (err.response.data.venue) showFieldErrors(err.response.data.venue, 'venue'); else removeFieldErrors('venue');
+            if (err.response.data.address) showFieldErrors(err.response.data.address, 'link'); else removeFieldErrors('link');
         });
     }
+
+    const showFieldErrors = function(obj, field) {
+        // error message
+        let msg = '';
+        obj.forEach(error => {msg += `${error} `});
+        $(`#${field}_error`).html(`*${msg} `)
+
+        // Add error class change border color to red
+        if (field == 'eventfor') $(`#select2_${field}`).next().find('.select2-selection').addClass('form-error');
+        if (field == 'date') $('.info-datetime').addClass('error-info').text(`*${msg} `);
+        else $(`#txt_${field}`).addClass('form-error');
+    };
+
+    const removeFieldErrors = function(field) {
+        // Remove error class for border color
+        if (field == 'title') $(`#txt_${field}`).removeClass('form-error');
+        if (field == 'preface') $(`#txt_${field}`).removeClass('form-error');
+        $(`#${field}_error`).html('');
+    };
 
     // remove event using jQuery
     $('#btn_delete').click(function() { 
        let schedule = $(this).attr('schedule');
-
        axios({
             method: 'PATCH',
             url: `/api/events/eventdate/partial/${schedule}/`,
@@ -191,7 +242,7 @@ $(function() {
 $(document).ready(function() {
     // events
     const getEvents = function (page, lookup) {
-        let url = (page) ? page : '/api/events/all/?is_active=True';
+        let url = (page) ? page : '/api/events/calendar/all/?is_active=True';
         let params = (lookup) ? { search : lookup} : '';
 
         axios({ // get events 
@@ -208,14 +259,14 @@ $(document).ready(function() {
                 $('#event_lists').empty(); // empty lists
                 events.forEach(event => {
                     $('#event_lists').append( // render template
-                        `<div class="card event-card mt-2 mb-1" style="border-left-color:${event.highlight}" data-color="${event.highlight}" data-event="${event.id}">
+                        `<div class="card event-card mt-2 mb-1 animate__animated animate__flipInX animate__faster" style="border-left-color:${event.highlight}" data-color="${event.highlight}" data-event="${event.id}">
                             <div class="d-flex flex-row align-items-center event-card-wrap">
                                 <div class="d-flex-inline mr-auto">
                                     <p class="event-title">${event.title}</p>
                                     <span class="event-subject">${event.subject}</span>
                                 </div>
-                                <button type="button" class="btn btn-link btn-link-orange p-0 ml-2 event-edit" data-event="${event.id}"><i class="fas fa-sm fa-edit"></i></button>
-                                <button type="button" class="btn btn-link btn-link-orange p-0 ml-2 event-drag"><i class="fas fa-grip-vertical"></i></button>
+                                <button type="button" class="btn btn-link btn-link-secondary p-0 ml-2 event-edit" data-event="${event.id}"><i class="fas fa-sm fa-edit"></i></button>
+                                <button type="button" class="btn btn-link btn-link-secondary p-0 ml-2 event-drag"><i class="fas fa-grip-vertical"></i></button>
                             </div>
                         </div>`
                     )
@@ -288,8 +339,9 @@ $(document).ready(function() {
             headers: axiosConfig,
         }).then(function (response) { // success
             $.when(toastSuccess('Success')).then(() => {
+                $('#modalChangeEvent').modal('hide');  // hide modals
+                $('#btn_save').attr('disabled', false); // enable button
                 location.reload();
-                $('#btn_save').attr('disabled', false) // enable button
             }) // alert
         }).catch(function (error) { // error
             toastError(error.response.statusText);

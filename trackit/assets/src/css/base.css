@@ -163,6 +163,15 @@ h1, h2,  h3, h4, h5, h6, small {
 .btn-link-neutral:hover  {
    color: #e77619;
 }
+.btn-link-secondary {
+   color: #6c757d;
+}
+.btn-link-secondary:hover,
+.btn-link-secondary:focus,
+.btn-link-secondary:active,
+.btn-link-secondary:hover  {
+   color: #494f54;
+}
 .btn {
    border-radius: 5px !important;
    padding: 4px 10px;

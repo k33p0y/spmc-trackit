@@ -93,133 +93,180 @@
         </div>   
     </div>
 </section>
-{% endblock %}
 
-
-{% block modal %}
-<!-- update event -->
+<!-- update event modal -->
 <div class="modal fade" id="modalChangeEvent" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-   <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content text-sm">
-         <div class="modal-header">
-            <h6 class="modal-title">Update Event</h6>
-         </div>
-         <div class="modal-body">
-           <form>
-                <div class="form-row">
-                    <div class="form-group col-md-12"> <!-- Color -->
-                        <label>Highlight <span class="text-danger">*</span> </label>
-                        <div class="d-flex flex-wrap mb-2 mb-lg-0" id="color_picker" data-highlight="{{event.highlight}}">
-                            <button type="button" class="btn color-palette pine mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette jungle mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette moss mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette yale mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette sky mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette teal mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette grape mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette royal mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette redwood mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette persian mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette peanut mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette coffee mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette cider mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette sunflower mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette default mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette peach mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette dark mr-1 mb-1"></button>
-                            <button type="button" class="btn color-palette stone mb-1"></button>
-                        </div>
-                        <small class="error-info" id="color_error"></small>
-                    </div>
-                    <div class="form-group col-md-12">
-                        <label>Title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-sm form-text-required" placeholder="Enter event title" id="txt_title" value="{{event.title}}"> 
-                        <small class="error-info" id="title_error"></small>
-                    </div>
-                    <div class="form-group col-md-12">
-                        <label>Subject</label>
-                        <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter subject" id="txt_subject" maxlength=255>{{event.subject}}</textarea>
-                        <div class="d-flex">
-                            <small class="error-info" id="subject_error"></small>
-                        </div>
-                    </div>        
-                    <div class="form-group col-md-12">
-                        <label>Event For <span class="text-danger">*</span></label>
-                        <select class="form-control form-control-sm form-select-required" id="select2_eventfor" style="width: 100%">
-                            <option></option>
-                            {% for form in forms %}
-                            <option value={{form.id}}>{{form.name}}</option>
-                            {% endfor %}
-                        </select>
-                        <small class="error-info" id="eventfor_error"></small>
-                    </div>
-                    <div class="form-group col-md-12">
-                        <div class="icheck-material-green m-0">
-                            <input type="checkbox" id="chk_status" checked />
-                            <label for="chk_status">Is Active</label>
-                        </div>
-                    </div>
-                </div>
-            </form>
-         </div>
-
-         <div class="modal-footer">
-            <button type="button" class="btn btn-sm btn-light m-0 mr-2" id="btn_cancel" data-dismiss="modal">
-               <span>Cancel</span>
-            </button>
-            <button type="submit" class="btn btn-sm btn-orange m-0" id="btn_save"><span>Save</span></button>
-         </div>
-      </div>
-   </div>
-</div>
-
-<!-- view event -->
-<div class="modal fade" id="modalViewEvent" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content text-sm">
-         <div class="modal-header" id="event_header">Details</div>
-         <div class="modal-body">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex p-2 pt-3 pb-3"> 
-                    <div class="mr-auto list-modal-key">Event Title</div>
-                    <div class="font-weight-bold" style="width: 60% !important;">
-                        <p class="p-0 m-0 text-right" id="event_title"></p>
-                    </div>
-                </li>
-                <li class="list-group-item d-flex p-2 pt-3 pb-3">
-                    <div class="mr-auto list-modal-key">Event Subject</div>
-                    <div class="font-weight-bold" style="width: 60% !important;">
-                    <p class="p-0 m-0 text-right" id="event_subject"></p>
-                    </div>
-                </li>
+    <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content text-sm">
+          <div class="modal-header">
+             <h6 class="modal-title">Update Event</h6>
+          </div>
+          <div class="modal-body">
+            <form>
+                 <div class="form-row">
+                     <div class="form-group col-md-12"> <!-- Color -->
+                         <label>Highlight <span class="text-danger">*</span> </label>
+                         <div class="d-flex flex-wrap mb-2 mb-lg-0" id="color_picker" data-highlight="{{event.highlight}}">
+                             <button type="button" class="btn color-palette pine mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette jungle mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette moss mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette yale mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette sky mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette teal mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette grape mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette royal mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette redwood mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette persian mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette peanut mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette coffee mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette cider mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette sunflower mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette default mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette peach mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette dark mr-1 mb-1"></button>
+                             <button type="button" class="btn color-palette stone mb-1"></button>
+                         </div>
+                         <small class="error-info" id="color_error"></small>
+                     </div>
+                     <div class="form-group col-md-12">
+                         <label>Title <span class="text-danger">*</span></label>
+                         <input type="text" class="form-control form-control-sm form-text-required" placeholder="Enter event title" id="txt_title" value="{{event.title}}"> 
+                         <small class="error-info" id="title_error"></small>
+                     </div>
+                     <div class="form-group col-md-12">
+                         <label>Subject</label>
+                         <textarea type="text" class="form-control form-control-sm form-text-required" placeholder="Enter subject" id="txt_subject" maxlength=255>{{event.subject}}</textarea>
+                         <div class="d-flex">
+                             <small class="error-info" id="subject_error"></small>
+                         </div>
+                     </div>        
+                     <div class="form-group col-md-12">
+                         <label>Event For <span class="text-danger">*</span></label>
+                         <select class="form-control form-control-sm form-select-required" id="select2_eventfor" style="width: 100%">
+                             <option></option>
+                             {% for form in forms %}
+                             <option value={{form.id}}>{{form.name}}</option>
+                             {% endfor %}
+                         </select>
+                         <small class="error-info" id="eventfor_error"></small>
+                     </div>
+                     <div class="form-group col-md-12">
+                         <div class="icheck-material-green m-0">
+                             <input type="checkbox" id="chk_status" checked />
+                             <label for="chk_status">Is Active</label>
+                         </div>
+                     </div>
+                 </div>
+             </form>
+          </div>
+ 
+          <div class="modal-footer">
+             <button type="button" class="btn btn-sm btn-light m-0 mr-2" id="btn_cancel" data-dismiss="modal">
+                <span>Cancel</span>
+             </button>
+             <button type="submit" class="btn btn-sm btn-orange m-0" id="btn_save"><span>Save</span></button>
+          </div>
+       </div>
+    </div>
+ </div>
+ 
+ <!-- view event modal -->
+ <div class="modal fade" id="modalViewEvent" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+       <div class="modal-content text-sm">
+          <div class="modal-header" id="event_header">Event Details</div>
+          <div class="modal-body">
+             <ul class="list-group list-group-flush">
+                 <li class="list-group-item d-flex p-2 pt-3 pb-3"> 
+                     <div class="mr-auto list-modal-key">Event</div>
+                     <div class="w-75">
+                         <p class="p-0 m-0 text-right font-weight-bold" id="event_title"></p>
+                         <p class="p-0 m-0 text-right" id="event_subject"></p>
+                     </div>
+                 </li>
                  <li class="list-group-item d-flex p-2 pt-3 pb-3">
-                    <div class="mr-auto list-modal-key">Attendance</div>
-                    <div class="font-weight-bold" style="width: 60% !important;">
-                    <p class="p-0 m-0 text-right" id="event_attendance"></p>
+                     <div class="mr-auto list-modal-key">Date</div>
+                     <div class="w-75">
+                         <p class="p-0 m-0 text-right font-weight-bold" id="event_date"></p>
+                     </div>
+                 </li>
+                 <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto list-modal-key">Time</div>
+                     <div class="w-75">
+                         <p class="p-0 m-0 text-right font-weight-bold" id="event_time"></p>
+                     </div>
+                 </li>
+                 <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto list-modal-key">Venue</div>
+                     <div class="w-75">
+                         <p class="p-0 m-0 text-right font-weight-bold" id="event_venue"></p>
+                         <p class="p-0 m-0 text-right text-xs"><a href="#" id="event_link"></a></p>
+                     </div>
+                 </li>
+                 <li class="list-group-item d-flex p-2 pt-3 pb-3">
+                     <div class="mr-auto list-modal-key">Attendance</div>
+                     <div class="w-75">
+                         <p class="p-0 m-0 text-right font-weight-bold" id="event_attendance"></p>
+                     </div>
+                 </li>
+             </ul>
+          </div>
+          <div class="modal-footer">
+             <a href="#" class="mr-auto m-0 p-0 text-xs text-danger" id="btn_delete"> Remove </a>
+             <button type="button" class="btn btn-sm btn-light m-0" id="btn_cancel" data-dismiss="modal"><span>Close</span></button>
+          </div>
+       </div>
+    </div>
+ </div>
+ 
+ <!-- Schedule Modal -->
+ <div class="modal modal-schedule fade" id="scheduleModal" tabindex="-1" role="dialog" aria-labelledby="scheduleModal" aria-hidden="true">
+     <div class="modal-dialog" role="document">
+        <div class="modal-content text-sm">
+           <div class="modal-header align-items-center">
+              <div class="modal-title"> Add Schedule</div>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+              </button>
+           </div>
+           <div class="modal-body">
+             <div class="card card-info shadow-none mb-0">
+                 <div class="card-body d-flex align-items-start p-0 m-0">
+                    <div class="flex-fill">
+                       <p class="label"><i class="far fa-calendar"></i> Event</p>
+                       <p class="context text-truncate title-event" style="max-width:150px"></p>
+                       <p class="text-muted info info-event"></p>
                     </div>
-                </li>
-                <li class="list-group-item d-flex p-2 pt-3 pb-3">
-                    <div class="mr-auto list-modal-key">Date Start</div>
-                    <div class="font-weight-bold" style="width: 60% !important;">
-                    <p class="p-0 m-0 text-right" id="event_date_start"></p>
+                    <div class="flex-fill">
+                       <p class="label"><i class="far fa-clock"></i> Date and time </p>
+                       <p class="context text-truncate title-datetime"></p>
+                       <p class="text-muted info info-datetime"></p>
                     </div>
-                </li>
-                <li class="list-group-item d-flex p-2 pt-3 pb-3">
-                    <div class="mr-auto list-modal-key">Date End</div>
-                    <div class="font-weight-bold" style="width: 60% !important;">
-                    <p class="p-0 m-0 text-right" id="event_date_end"></p>
-                    </div>
-                </li>
-            </ul>
-         </div>
-         <div class="modal-footer">
-            <a class="mr-auto m-0 p-0 text-xs text-danger" id="btn_delete"> Remove? </a>
-            <button type="button" class="btn btn-sm btn-light m-0" id="btn_cancel" data-dismiss="modal"><span>Close</span></button>
-         </div>
-      </div>
-   </div>
-</div>
+                 </div>
+              </div>
+              <form class="event-form mt-2">
+                 <div class="form-group">
+                    <label for="txt_venue">Venue</label>
+                    <input type="text" class="form-control form-control-sm" id="txt_venue" placeholder="Enter venue">
+                    <small class="error-info venue-error" id="venue_error"></small>
+                 </div>
+                 <div class="form-group">
+                    <label for="txt_link">URL</label>
+                    <input type="url" class="form-control form-control-sm" id="txt_link" placeholder="Enter URL">
+                    <small class="error-info link-error" id="link_error"></small>
+                 </div>
+              </form>
+           </div>
+           <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-light m-0" id="btn_close_schedule" data-dismiss="modal"><span>Close</span> </button>
+              <button type="submit" class="btn btn-sm btn-orange m-0 ml-2" id="btn_save_schedule" data-event-id="{{event.pk}}"><span>Save</span> </button>
+           </div>
+        </div>
+     </div>
+  </div>
 {% endblock %}
+
+
 
 {% block extrascript %}
 <script type="text/javascript" src="{% static 'vendor/fullcalendar/lib/main.min.js' %}"></script>

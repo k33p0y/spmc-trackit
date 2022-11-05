@@ -193,3 +193,25 @@
 .list-modal-key {
    font-size: 12px !important;
 }
+
+.card-info {
+    padding: 14px;
+    background-color: #fff8f2;
+    border: 1px solid #ffd1b7;
+ } 
+.card-info .card-body .label {
+    color: #f17f32 !important;
+    text-transform: uppercase;
+    font-size: 10px !important;
+    margin-bottom: 4px;
+ }
+ .card-info .card-body .info {
+    font-size: 9px !important;
+    margin: 0;
+ }
+ .card-info .card-body .context {
+    font-size: 14px !important;
+    font-weight:bold !important;
+    color: #5f6b77;
+    margin:0;
+ }

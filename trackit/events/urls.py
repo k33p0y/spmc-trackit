@@ -8,12 +8,14 @@ from .api import (
     EventDatePartialViewSet, 
     EventDateViewSet, 
     EventListViewSet, 
+    EventListCalendarViewSet,
     EventTicketViewSet,
 )
 from . import views
 
 router = routers.DefaultRouter()
 router.register('api/events/all', EventListViewSet)
+router.register('api/events/calendar/all', EventListCalendarViewSet)
 router.register('api/events/event', EventCRUDViewSet)
 router.register('api/events/eventdate/all', EventDateViewSet)
 router.register('api/events/eventdate/calendar', EventDateCalendarViewSet)
