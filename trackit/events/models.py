@@ -51,3 +51,4 @@ class EventTicket(models.Model):
     scheduled_event = models.ForeignKey(EventDate, related_name='participants', on_delete=models.CASCADE)
     attended = models.BooleanField(null=True)
     remarks = models.CharField(max_length=100, null=True, blank=True)
+    is_reschedule = models.BooleanField(default=False)
