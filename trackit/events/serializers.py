@@ -9,7 +9,7 @@ from config.models import Remark
 from requests.models import Ticket, RequestFormStatus
 from easyaudit.models import CRUDEvent
 
-from .views import is_string_an_url
+from .views import is_string_an_url, update_ticket_status
 
 from core.serializers import UserInfoSerializer
 from requests.serializers import RequestFormReadOnlySerializer, StatusReadOnlySerializer
@@ -141,13 +141,13 @@ class EventDateSerializer(serializers.ModelSerializer):
         date_today = datetime.strptime(now, "%Y-%m-%d %H:%M")
         date_start = datetime.combine(obj.date, obj.time_start)
         date_end = datetime.combine(obj.date, obj.time_end)
-        
+    
         if date_start > date_today: 
             return {'id' : 1, 'text' :'Upcoming'}
         elif date_today >= date_start and date_today <= date_end: 
             return {'id' : 2, 'text' :'On Going'}
         elif date_today > date_start and date_today > date_end: 
-            return {'id' : 3, 'text' :'Complete'}        
+            return {'id' : 3, 'text' :'Ended'}        
         return None
 
     class Meta:
@@ -218,59 +218,58 @@ class EventTicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventTicket
         fields = '__all__'
+        
+class EventTicketAttendanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventTicket
+        fields = ('id', 'attended', 'remarks')
 
-class AttendanceSerializer(serializers.ModelSerializer):
-
+class EventDateAttendanceSerializer(serializers.ModelSerializer):
+    event = serializers.StringRelatedField()
+    schedule = serializers.SerializerMethodField()
+    participants = EventTicketAttendanceSerializer(many=True, read_only=True)
+    
     def update(self, instance, validated_data):
-        # perform save if instance is not equal to request
-        if not instance.attended == validated_data.get('attended'):
-            ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(instance.ticket.ticket_id))) # get ticket queryset
-            steps = RequestFormStatus.objects.select_related('form', 'status').filter(form=instance.scheduled_event.event.event_for).order_by('order')  # get status queryset
-            last_step = steps.latest('order') # get last step
-            first_step = steps.first() # get first step
-            curr_step = steps.get(status_id=ticket.status)
-            next_step = steps.get(order=curr_step.order+1) if not curr_step.status == last_step.status else curr_step # next current step
-            prev_step = steps.get(order=curr_step.order-1) if not curr_step.status == first_step.status else curr_step # prev current step
+        attendance = self.context['request'].data['attendance']
+        user = self.context['request'].user
+        for obj in attendance:
+            event_ticket = EventTicket.objects.get(pk=obj['id'])
+            if event_ticket.attended is None and obj['attended']: update_ticket_status(event_ticket, obj, user) # update ticket if instance is null and obj is true
+            elif event_ticket.attended and not obj['attended']: update_ticket_status(event_ticket, obj, user) # update ticket if instance is true and obj is false
+            elif event_ticket.attended is False and obj['attended']: update_ticket_status(event_ticket, obj, user) # update ticket if instance is false and obj is true
+            event_ticket.attended = True if obj['attended'] else None
+            event_ticket.save()
+        return instance
+    
+    def get_schedule(self, obj):
+        return '%s, %s-%s' % (obj.date, obj.time_start, obj.time_end)
+    
+    class Meta:
+        model = EventDate
+        fields = ('id', 'event', 'schedule', 'participants')
+        read_only_fields = ['venue', 'address',]
+               
+class RescheduleSerializer(serializers.ModelSerializer):
+    def update(self, instance, validated_data):
+        ticket = Ticket.objects.get(pk=instance.ticket.ticket_id   )  # get ticket queryset
+        steps =  RequestFormStatus.objects.select_related('form', 'status').filter(form=ticket.request_form).order_by('order')  # get status queryset
+        first_step = steps.first() # get first step
+        curr_step = steps.get(status_id=ticket.status)
+        prev_step = steps.get(order=curr_step.order-1) if not curr_step.status == first_step.status else curr_step # prev current step
+        
+        # update ticket status
+        ticket.status = prev_step.status  # if obj is True, proceed to next step else prev step
+        ticket.save()
 
-            if not validated_data.get('attended'): # if attended is False/Absent
-                ticket.status = prev_step.status
-                ticket.save()
+        # get log from easyaudit
+        log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
+        Remark.objects.create(ticket_id=ticket.pk, status=ticket.status, action_officer=self.context['request'].user, log=log) # create a remark
 
-                # get log from easyaudit
-                log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
-
-                # post action Remark
-                action = Remark(
-                    remark = 'Absent',
-                    ticket_id = ticket.pk,
-                    status = ticket.status,
-                    action_officer = self.context['request'].user,
-                    is_pass = False,
-                    log = log
-                )
-                action.save()
-            else: # if attended is True
-                ticket.status = next_step.status
-                ticket.save()
-
-                # get log from easyaudit
-                log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
-
-                # post action Remark
-                action = Remark(
-                    remark = 'Present',
-                    ticket_id = ticket.pk,
-                    status = ticket.status,
-                    action_officer = self.context['request'].user,
-                    is_pass = True,
-                    log = log
-                )
-                action.save()
-            
-            instance.attended = validated_data.get('attended', instance.attended)
-            instance.remarks = validated_data.get('remarks', instance.remarks)
-            instance.save()
-
+        # save instance
+        instance.attended = False
+        instance.remarks = validated_data.get('remarks', instance.remarks)
+        instance.is_reschedule = True
+        instance.save()
         return instance
 
     class Meta:

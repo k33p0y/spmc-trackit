@@ -40,7 +40,7 @@ $(document).ready(function() {
                 data: "date",
                 render: function (data, type, row) {
                     let date = moment(row.date).format('DD MMMM YYYY');
-                    data = `<a href='#' class='action-link view-schdule' style="color:${row.highlight}" data-toggle="tooltip" data-placement="top" title="View Attendance"> ${date} </a>`
+                    data = `<a href='#' class='action-link view-schedule' style="color:${row.highlight}" data-toggle="tooltip" data-placement="top" title="View Attendance"> ${date} </a>`
                     return data
                 },
             }, // Date
@@ -81,7 +81,7 @@ $(document).ready(function() {
                             data = `<span class="badge badge-pill badge-primary">${row.state.text}</span>` // on going
                             break;
                         case 3: 
-                            data = `<span class="badge badge-pill badge-secondary">${row.state.text}</span>` // complete
+                            data = `<span class="badge badge-pill badge-secondary">${row.state.text}</span>` // ended
                             break;
                     }
                     return data
@@ -97,7 +97,9 @@ $(document).ready(function() {
             }, // Is Active
             {
                 data: null,
-                render: function (data, type, row) { 
+                render: function (data, type, row) {
+                    // let template = `<a href='#' class='text-secondary view-schedule mr-2' data-toggle="tooltip" data-placement="top" title="View Attendance"><i class="fas fa-lg fa-clipboard-list"></i></a>
+                    //     <a href='#' class='text-secondary edit-schedule mr-2' data-toggle="tooltip" data-placement="top" title="Edit"><i class='fas fa-lg fa-edit'></i></a>` 
                     return `<a href='#' class='text-secondary edit-schedule' data-toggle="tooltip" data-placement="top" title="Edit"><i class='fas fa-lg fa-edit'></i></a>`
                 },
                 orderable : false,
@@ -144,7 +146,7 @@ $(document).ready(function() {
     });
 
     // // view schedule
-    $('#dt_schedules tbody').on('click', '.view-schdule', function () {
+    $('#dt_schedules tbody').on('click', '.view-schedule', function () {
         let dt_data = table.row($(this).parents('tr')).data();
         let date = moment(dt_data['date']).format('DD MMMM YYYY');
         let time_start = moment(dt_data['date'] + ' ' + dt_data['time_start']).format('h:mm A');
@@ -162,7 +164,7 @@ $(document).ready(function() {
         $("#viewSchedule .title-venue").text(dt_data['venue']); // title venue
         $("#viewSchedule .info-datetime").text(day); // title date
         $("#viewSchedule .info-venue").html((dt_data['address']) ? `<a href="${dt_data['address']}" class="text-secondary">${dt_data['address']}</a>` : null); // title venue
-        $('#viewSchedule #btn_save_attendance').attr('data-schedule-id', dt_data['id']); // set data value to button        
+        $('#viewSchedule #btn_save_attendance').prop('disabled', false).attr('data-schedule-id', dt_data['id']); // set data value to button        
         $('.attandance-wrap').empty(); // clear rows
         getEventTicket(`/api/events/eventticket/?schedule=${dt_data['id']}`, event_date)
     });
@@ -228,25 +230,30 @@ $(document).ready(function() {
     // // save attendance
     $('#btn_save_attendance').click(function(e) {
         e.preventDefault();
+        const scheduleId = $(this).data().scheduleId;
+        const attendance = new Array();
+        $('.card-attendance').each(function() { // iterate rows
+            if ($(this).find('div.col .attendance-box').length > 0) { // if element exists
+                let rowObj = new Object();
+                rowObj.id = $(this).data().attendanceId;
+                rowObj.attended = $(this).find('div.col .attendance-box').is(":checked");
+                attendance.push(rowObj);
+            }
+        });
 
-        if (validateAttendance()) {
-            $('#alert_error').addClass('d-none')
-            $('#alert_error small').html('')
+        if (attendance.length > 0) { // if array is not empty
             $(this).prop('disabled', true)
-            
-            $('.card-attendance').each(function() { // iterate rows
-                const id = $(this).data().attendanceId; // row id
-                const present = $(this).find('div.col .present-box');
-                let attended = present.is(":checked"); // get present bool value
-                axios.patch(`/api/events/attendance/${id}/`, {attended: attended}, {headers: axiosConfig});
+            // put request
+            axios.put(`/api/events/eventdate/attendnance/${scheduleId}/`, {attendance: attendance}, {headers: axiosConfig}).then(res => {
+                $.when(toastSuccess('Success')).then(() => 
+                    $("#viewSchedule").modal('hide'),
+                    $("#viewSchedule #btn_save_attendance").prop('disabled', true),
+                    table.ajax.reload()
+                );   
+            }).catch(err => {
+                toastError(err.response.statusText)
             });
-
-            $.when(toastSuccess('Success')).then(() => location.reload());
-        } else {
-            $('#alert_error').removeClass('d-none')
-            $('#alert_error small').html('*Please select an option.')
-        }
-        $(this).prop('disabled', false)
+        } else toastError('No attendance to record')           
     }); 
 
     let getEventTicket = function(url, event_date) {
@@ -254,21 +261,21 @@ $(document).ready(function() {
             if (res.data.count > 0 ) { // if response has data
                 $('#state_display').addClass('d-none'); // hide "No attendance yet" content
                 $('#attendance_table').removeClass('d-none'); // show row heading
-                // show save button if todate get passed event date else hide
-                (moment() >= event_date) ? $('#btn_save_event').removeClass('d-none') : $('#btn_save_event').addClass('d-none'); 
-
-                // iterate event tickets
-                res.data.results.forEach(obj => {
+                (moment() >= event_date) ? $('#btn_save_attendance').removeClass('d-none') : $('#btn_save_attendance').addClass('d-none');  // show save button if todate get passed event date else hide
+                (moment() <= event_date) ? $('#attendance_info').removeClass('d-none') : $('#attendance_info').addClass('d-none');  // show attendance_note a if todate get passed event date else hide
+                res.data.results.forEach(obj => { // iterate event tickets
+                    console.log(obj)
                     $('.attandance-wrap').append(
                         `<div class="card-attendance row" data-attendance-id=${obj.id}>
                             <div class="col">${obj.ticket.requested_by.name}</div>
                             <div class="col">${obj.ticket.ticket_no}</div>
                             <div class="col">${obj.ticket.status.name}</div>
                             <div class="col col-2">
+                                ${obj.is_reschedule ? '  Rescheduled' : `
                                 <div class="icheck-material-orange m-0">
-                                    <input type="checkbox" class="present-box" id="attendance_${obj.id}" ${obj.attended ? 'checked' : ''} ${moment() >= event_date ? '' : 'disabled'} />
+                                    <input type="checkbox" class="attendance-box" id="attendance_${obj.id}" ${obj.attended ? 'checked' : ''} ${moment() >= event_date ? '' : 'disabled'} />
                                     <label for="attendance_${obj.id}" class="mb-0"></label>
-                                </div>
+                                </div>`}
                             </div>
                         </div>`
                     )
@@ -276,8 +283,9 @@ $(document).ready(function() {
                 if (res.data.next) getEventTicket(res.data.next);
             } else {
                 $('#state_display').removeClass('d-none'); // show "No attendance yet" content
+                $('#attendance_info').addClass('d-none'); // hide info text
                 $('#attendance_table').addClass('d-none'); // hide row heading
-                $('#btn_save_event').addClass('d-none'); // hide save button
+                $('#btn_save_attendance').addClass('d-none'); // hide save button
             }            
         });
     };

@@ -67,8 +67,8 @@ $(document).ready(function () {
         localStorage.setItem('ticket-number', $(this).data('ticket-number'));
     });
 
-    // Attendance 
-    $('#btn_reshedule').click(function () {
+    // Events 
+    $('#btn_reshedule').click(function () { // reschedule
         Swal.fire({
             title: 'Remarks/Reason',
             input: 'textarea',
@@ -81,27 +81,25 @@ $(document).ready(function () {
             cancelButtonText: 'Cancel',
             confirmButtonText: 'Submit',
             reverseButtons: true,
-         }).then((result) => {
+            inputValidator: (value) => {
+                if (!value) return 'This field may not be blank'
+            }
+        }).then((result) => {
             $(this).prop('disabled', true) // disable button
-         });
+            if (result.value) {
+                const schedule_id =  $(this).data().scheduleId;
+                axios.put(`/api/events/reschedule/${schedule_id}/`, 
+                    {remarks: result.value}, 
+                    {headers: axiosConfig}
+                ).then(res => {
+                    $.when(toastSuccess('Success')).then(() => location.reload());
+                }).catch(err => {
+                    toastError(err.response.statusText);
+                    $(this).attr("disabled", false) // enable button
+                });
+            } else  $(this).prop('disabled', false); // enable button
+        });
     });
-
-
-    // $('#btn_present, #btn_absent').click(function () {
-    //     $(this).attr("disabled", true) // disable button
-    //     let attended = $(this).data().attended;
-    //     let schedule_id =  $(this).data().scheduleId;
-
-    //     axios.patch(`/api/events/attendance/${schedule_id}/`, 
-    //         {attended: attended}, 
-    //         {headers: axiosConfig}
-    //     ).then(res => {
-    //         $.when(toastSuccess('Success')).then(() => location.reload());
-    //     }).catch(err => {
-    //         toastError(err.response.statusText);
-    //         $(this).attr("disabled", false) // enable button
-    //     });
-    // });
 
     // walkthrough click event
     $('.tour-me').click(function() {

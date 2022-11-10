@@ -323,7 +323,7 @@
                <div class="col-12 col-sm-12">
                   <div class="card card-form mt-2 mb-1">
                      <div class="card-header d-flex align-items-center px-2 py-1">
-                        <div class="card-title">attendance</div>
+                        <div class="card-title">Events</div>
                         <div class="card-tools ml-auto">
                            <button type="button" class="btn btn-tool btn-minimize" data-toggle="collapse" data-target="#collapseAttendance" aria-expanded="false" aria-controls="collapseAttendance"></button>
                         </div>
@@ -339,13 +339,11 @@
                                  <p class="text-secondary m-0"> {{scheduled_event.scheduled_event.event}}</p>
                                  <p class="text-secondary m-0"> {{scheduled_event.scheduled_event.venue}}</p>
                                  {% if scheduled_event.scheduled_event.address %}<a href="{{scheduled_event.scheduled_event.address}}" class="m-0" target="_blank"><p class="m-0">{{scheduled_event.scheduled_event.address}}</p></a> {% endif %}
-
                                  {% if user == ticket.requested_by or user.is_superuser %}
                                  <div class="mt-3">
-                                    <button type="button" class="btn btn-outline-danger btn-sm m-0 px-4" id="btn_reshedule" data-attended="true" data-schedule-id="{{scheduled_event.pk}}"> <span> Reschedule </span> </button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm m-0 px-4" id="btn_reshedule" data-schedule-id="{{scheduled_event.pk}}"> <span> Reschedule </span> </button>
                                  </div>
                                  {% endif %}
-                                 
                               </div>
                            </div>
                            {% endif %}

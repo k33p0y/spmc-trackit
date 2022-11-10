@@ -3,13 +3,14 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django.db.models import Q
 from .serializers import (
-   AttendanceSerializer, 
    EventCRUDSerializer, 
    EventDateSerializer, 
+   EventDateAttendanceSerializer,
    EventDateCRUDSerializer, 
    EventDatePartialSerializer, 
    EventListSerializer,
    EventTicketSerializer,
+   RescheduleSerializer
 )
 from .models import Event, EventDate, EventTicket
 
@@ -89,7 +90,6 @@ class EventDateViewSet(viewsets.ModelViewSet):
 
       return qs
       
- 
 class EventDateCalendarViewSet(viewsets.ReadOnlyModelViewSet):    
    serializer_class = EventDateSerializer
    queryset = EventDate.objects.filter(is_active=True, event__is_active=True)
@@ -107,6 +107,12 @@ class EventDatePartialViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
    http_method_names = ['get', 'patch', 'head']
 
+class EventDateAttendanceViewSet(viewsets.ModelViewSet):    
+   serializer_class = EventDateAttendanceSerializer
+   queryset = EventDate.objects.all()
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   http_method_names = ['get', 'put', 'head']
+   
 class EventTicketViewSet(viewsets.ModelViewSet):    
    serializer_class = EventTicketSerializer
    queryset = EventTicket.objects.all()
@@ -121,11 +127,11 @@ class EventTicketViewSet(viewsets.ModelViewSet):
       if ticket: qs = qs.filter(ticket__id=ticket)
       return qs
 
-class AttedanceViewSet(viewsets.ModelViewSet):    
-   serializer_class = AttendanceSerializer
+class RescheduleViewSet(viewsets.ModelViewSet):    
+   serializer_class = RescheduleSerializer
    queryset = EventTicket.objects.all()
    http_method_names = ['get', 'put', 'patch']
-   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   permission_classes = [permissions.IsAuthenticated]
 
 
 

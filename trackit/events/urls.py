@@ -1,11 +1,12 @@
 from django.urls import path
 from rest_framework import routers
 from .api import (
-    AttedanceViewSet,
+    RescheduleViewSet,
     EventCRUDViewSet, 
     EventDateCalendarViewSet, 
     EventDateCRUDViewSet, 
     EventDatePartialViewSet, 
+    EventDateAttendanceViewSet,
     EventDateViewSet, 
     EventListViewSet, 
     EventListCalendarViewSet,
@@ -21,8 +22,9 @@ router.register('api/events/eventdate/all', EventDateViewSet)
 router.register('api/events/eventdate/calendar', EventDateCalendarViewSet)
 router.register('api/events/eventdate/schedule', EventDateCRUDViewSet)
 router.register('api/events/eventdate/partial', EventDatePartialViewSet)
+router.register('api/events/eventdate/attendnance', EventDateAttendanceViewSet)
 router.register('api/events/eventticket', EventTicketViewSet)
-router.register('api/events/attendance', AttedanceViewSet)
+router.register('api/events/reschedule', RescheduleViewSet)
 
 urlpatterns = [
     path('events/lists', views.event, name='event'),
