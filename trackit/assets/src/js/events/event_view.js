@@ -148,7 +148,7 @@ $(document).ready(function() {
     // // view schedule
     $('#dt_schedules tbody').on('click', '.view-schedule', function () {
         let dt_data = table.row($(this).parents('tr')).data();
-        let date = moment(dt_data['date']).format('DD MMMM YYYY');
+        let date = moment(dt_data['date']).format('ddd, DD MMM YYYY');
         let time_start = moment(dt_data['date'] + ' ' + dt_data['time_start']).format('h:mm A');
         let time_end = moment(dt_data['date'] + ' ' + dt_data['time_end']).format('h:mm A');
         let event_date = moment(dt_data['date'] + ' ' + dt_data['time_start']);
@@ -156,14 +156,13 @@ $(document).ready(function() {
         let duration_obj = moment.duration(moment(time_end, 'HH:mm a').diff(moment(time_start, 'HH:mm a')));
         let hours = parseInt(duration_obj.asHours())
         let mins = parseInt(duration_obj.asMinutes()) % 60;
+        let link = (dt_data['address']) ? `<a href="${dt_data['address']}" class="text-secondary" target="_blank" data-toggle="tooltip" data-placement="top" title="${dt_data['address']}"><i class="fas fa-sm fa-link"></i></a>` : null;
         
         $("#viewSchedule").modal(); // open modal
         $("#viewSchedule .title-datetime").text(`${date} ${time_start} - ${time_end}`); // title date
         $("#viewSchedule .title-duration").text(`${hours}h and ${mins}min`); // title venue
         $("#viewSchedule .title-participants").text(dt_data['attendance']); // title attendance
-        $("#viewSchedule .title-venue").text(dt_data['venue']); // title venue
-        $("#viewSchedule .info-datetime").text(day); // title date
-        $("#viewSchedule .info-venue").html((dt_data['address']) ? `<a href="${dt_data['address']}" class="text-secondary">${dt_data['address']}</a>` : null); // title venue
+        $("#viewSchedule .title-venue").html(`${dt_data['venue']} ${link}`); // title venue
         $('#viewSchedule #btn_save_attendance').prop('disabled', false).attr('data-schedule-id', dt_data['id']); // set data value to button        
         $('.attandance-wrap').empty(); // clear rows
         getEventTicket(`/api/events/eventticket/?schedule=${dt_data['id']}`, event_date)
@@ -269,9 +268,9 @@ $(document).ready(function() {
                         `<div class="card-attendance row" data-attendance-id=${obj.id}>
                             <div class="col">${obj.ticket.requested_by.name}</div>
                             <div class="col">${obj.ticket.ticket_no}</div>
-                            <div class="col">${obj.ticket.status.name}</div>
-                            <div class="col col-2">
-                                ${obj.is_reschedule ? '  Rescheduled' : `
+                            <div class="col d-none d-md-block">${obj.ticket.status.name}</div>
+                            <div class="col col-md-2">
+                                ${obj.is_reschedule ? 'Rescheduled' : `
                                 <div class="icheck-material-orange m-0">
                                     <input type="checkbox" class="attendance-box" id="attendance_${obj.id}" ${obj.attended ? 'checked' : ''} ${moment() >= event_date ? '' : 'disabled'} />
                                     <label for="attendance_${obj.id}" class="mb-0"></label>
