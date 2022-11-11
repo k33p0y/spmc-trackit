@@ -47,6 +47,18 @@
    font-style: italic;
 }
 
+.card-info {
+   padding: 14px;
+}
+.card-info .info-text {
+   color: #3e454d;
+   font-size: 10px !important;
+}
+.card-info-warning {
+   background-color: #fff9ea;
+   border: 1px solid #ffe084;
+}
+
 /* .container-fluid .form-actions .btn {
    padding-left: 12px;
    padding-right: 12px;

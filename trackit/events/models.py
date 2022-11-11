@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime, date
 from core.models import User
 from requests.models import Ticket, RequestForm
 
@@ -42,6 +43,14 @@ class EventDate(models.Model):
 
     def date_end(self):
         return '%s %s' % (self.date, self.time_end)
+    
+    @property
+    def is_past_due(self):
+        now = datetime.now().strftime("%Y-%m-%d %H:%M")
+        date_today = datetime.strptime(now, "%Y-%m-%d %H:%M")
+        date_start = datetime.combine(self.date, self.time_start)
+        date_end = datetime.combine(self.date, self.time_end)
+        return date_today > date_start and date_today > date_end
     
     class Meta:
         unique_together = [['event', 'date', 'time_start', 'time_end']]

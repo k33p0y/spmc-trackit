@@ -231,11 +231,13 @@
             </button>
          </div>
          <div class="modal-body overflow-auto">
-            <div class="mb-2 align-items-center" id="attendance_info">
-               <i class="fas fa-xs fa-info-circle text-danger"></i>
-               <small class="text-danger">Attendance check boxes are disabled until the event starts or ends.<small>
-            </div> 
-            <div class="card card-info shadow-none mb-0">
+            <div class="card card-info card-info-warning shadow-none py-2 mb-2" role="alert" id="attendance_info">
+               <div class="d-flex">
+                  <p class="text-xs m-0 mr-2"><i class="fas fa-exclamation-circle text-warning"></i></p>
+                  <p class="info-text m-0">Attendance check boxes are disabled until the event starts or ends.</p>
+               </div>
+            </div>
+            <div class="card card-info card-info-default shadow-none mb-0">
                <div class="card-body d-flex align-items-start p-0 m-0">
                   <div class="flex-fill">
                      <p class="label"><i class="far fa-calendar"></i> Date and time</p>

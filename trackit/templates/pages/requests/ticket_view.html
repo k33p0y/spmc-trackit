@@ -332,16 +332,24 @@
                         <div class="card-body p-3">
                            {% if scheduled_event %}
                            <div class="card card-schedule p-3 mb-3">
+                              {% if scheduled_event.scheduled_event.is_past_due %}
+                              <div class="card card-info card-info-warning shadow-none py-2 mb-2" role="alert">
+                                 <div class="d-flex">
+                                    <p class="text-xs m-0 mr-2"><i class="fas fa-exclamation-circle text-warning"></i></p>
+                                    <p class="info-text m-0">This event has ended. Schedule a new time if you weren't present at the event.</p>
+                                 </div>
+                              </div>
+                              {% endif %}
                               <div class="d-flex flex-column">
-                                 <p class="font-weight-bold text-uppercase m-0" style="color:{{scheduled_event.scheduled_event.event.highlight}}; font-size:14px !important;"> 
+                                 <p class="font-weight-bold text-uppercase text-orange m-0"> 
                                     {{scheduled_event.scheduled_event.date}} {{ scheduled_event.scheduled_event.time_start|time:"g:i A"}} - {{ scheduled_event.scheduled_event.time_end|time:"g:i A"}}
                                  </p>
-                                 <p class="text-secondary m-0"> {{scheduled_event.scheduled_event.event}}</p>
-                                 <p class="text-secondary m-0"> {{scheduled_event.scheduled_event.venue}}</p>
-                                 {% if scheduled_event.scheduled_event.address %}<a href="{{scheduled_event.scheduled_event.address}}" class="m-0" target="_blank"><p class="m-0">{{scheduled_event.scheduled_event.address}}</p></a> {% endif %}
+                                 <p class="text-secondary text-xs m-0"> {{scheduled_event.scheduled_event.event}}</p>
+                                 <p class="text-secondary text-xs m-0"> {{scheduled_event.scheduled_event.venue}}</p>
+                                 {% if scheduled_event.scheduled_event.address %}<a href="{{scheduled_event.scheduled_event.address}}" class="m-0 " target="_blank"><p class="m-0 text-xs">{{scheduled_event.scheduled_event.address}}</p></a> {% endif %}
                                  {% if user == ticket.requested_by or user.is_superuser %}
                                  <div class="mt-3">
-                                    <button type="button" class="btn btn-outline-danger btn-sm m-0 px-4" id="btn_reshedule" data-schedule-id="{{scheduled_event.pk}}"> <span> Reschedule </span> </button>
+                                    <button type="button" class="btn btn-light btn-sm m-0 px-3" id="btn_reshedule" data-schedule-id="{{scheduled_event.pk}}"> <span> Reschedule </span> </button>
                                  </div>
                                  {% endif %}
                               </div>

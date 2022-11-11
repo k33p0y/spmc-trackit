@@ -39,8 +39,22 @@
 
 .card-info {
    padding: 14px;
+}
+.card-info .info-text {
+   color: #3e454d;
+   font-size: 10px !important;
+}
+.card-info-default {
    background-color: #fff8f2;
    border: 1px solid #ffd1b7;
+}
+.card-info-warning {
+   background-color: #fff9ea;
+   border: 1px solid #ffe084;
+}
+.card-info-danger {
+   background-color: #ffe4e6;
+   border: 1px solid #c44a56 ;
 }
 
 .card-detail .card-body .label{
