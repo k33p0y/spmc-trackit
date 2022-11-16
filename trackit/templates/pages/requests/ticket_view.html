@@ -331,15 +331,19 @@
                      <div id="collapseAttendance" class="collapse show">
                         <div class="card-body p-3">
                            {% if scheduled_event %}
-                           <div class="card card-schedule p-3 mb-3">
-                              {% if scheduled_event.scheduled_event.is_past_due %}
-                              <div class="card card-info card-info-warning shadow-none py-2 mb-2" role="alert">
-                                 <div class="d-flex">
-                                    <p class="text-xs m-0 mr-2"><i class="fas fa-exclamation-circle text-warning"></i></p>
-                                    <p class="info-text m-0">This event has ended. Schedule a new time if you weren't present at the event.</p>
-                                 </div>
+                           {% if scheduled_event.scheduled_event.is_past_due %}
+                           <div class="card card-info card-info-warning shadow-none py-2 mb-2" role="alert">
+                              <div class="d-flex">
+                                 <p class="text-xs m-0 mr-2"><i class="fas fa-exclamation-circle text-warning"></i></p>
+                                 <p class="info-text m-0">
+                                    {% if user == ticket.requested_by %} This event has ended. Schedule a new time if you weren't present at the event.
+                                    {% elif user.is_superuser or user.is_staff %} This event has ended. The participant must schedule a new time.
+                                    {% endif %}
+                                 </p>
                               </div>
-                              {% endif %}
+                           </div>
+                           {% endif %}
+                           <div class="card card-schedule p-3 mb-3">
                               <div class="d-flex flex-column">
                                  <p class="font-weight-bold text-uppercase text-orange m-0"> 
                                     {{scheduled_event.scheduled_event.date}} {{ scheduled_event.scheduled_event.time_start|time:"g:i A"}} - {{ scheduled_event.scheduled_event.time_end|time:"g:i A"}}

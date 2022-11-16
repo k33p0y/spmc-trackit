@@ -86,12 +86,13 @@ $(document).ready(function () {
       let data = new Object();
       data.ticket = ticket
       data.remark = $('#txtarea-remark').val();
-      data.task = ($("#current_step").data().task) ? $("#current_step").data().task : null;
+      data.task = ($("#current_step").data().task) ? $("#current_step").data().task : null; // get if has current task
       data.is_approve = is_approve;
       data.is_pass = is_pass;
       data.status = status;
       data.formstatus = formstatus;
       data.assign_to = ($("#select2_officer").val()) ? $("#select2_officer").val() : '';
+      data.scheduled_event = ($("#current_step").data().scheduledEvent) ? $("#current_step").data().scheduledEvent : null; // get if has current event
       data.event_date = ($('#current_step').data().hasEvent) ? $("#select2_schedule").val() : '';
 
       axios({

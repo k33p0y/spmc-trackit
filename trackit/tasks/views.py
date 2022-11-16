@@ -60,7 +60,7 @@ def create_task(ticket, formstatus_id, officers, request_user, remark):
       except AttributeError:
          pass
       create_task_notification(task, 'task')
-    # if request param assign_by is not empty
+   # if request param assign_by is not empty
    elif officers: 
       task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
       if type(officers) is list:
@@ -72,11 +72,12 @@ def create_task(ticket, formstatus_id, officers, request_user, remark):
                remark=remark
             )
       else: 
-         Team.objects.create(member_id=officers, task_id=task.pk, remark=remark)
+         Team.objects.create(member_id=officers, task_id=task.pk, remark=remark) 
       create_task_notification(task, 'task')
    elif not last_step.order == form_status.order:
-      otask = OpenTask.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
-      create_task_notification(otask, 'opentask')
+      if not form_status.is_client_step and not form_status.is_head_step and form_status.officer.exists():
+         otask = OpenTask.objects.create(ticket_id=ticket.ticket_id, task_type=form_status)
+         create_task_notification(otask, 'opentask')
 
 def create_task_for_all_requests(request):
    tickets = Ticket.objects.filter(is_active=True)

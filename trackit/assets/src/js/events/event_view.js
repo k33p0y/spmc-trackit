@@ -263,15 +263,14 @@ $(document).ready(function() {
                 (moment() >= event_date) ? $('#btn_save_attendance').removeClass('d-none') : $('#btn_save_attendance').addClass('d-none');  // show save button if todate get passed event date else hide
                 (moment() <= event_date) ? $('#attendance_info').removeClass('d-none') : $('#attendance_info').addClass('d-none');  // show attendance_note a if todate get passed event date else hide
                 res.data.results.forEach(obj => { // iterate event tickets
-                    console.log(obj)
                     $('.attandance-wrap').append(
                         `<div class="card-attendance row" data-attendance-id=${obj.id}>
                             <div class="col">${obj.ticket.requested_by.name}</div>
-                            <div class="col">${obj.ticket.ticket_no}</div>
+                            <div class="col"> <a href="/requests/${obj.ticket.ticket_id}/view" class="btn-link-orange" target="_blank">${obj.ticket.ticket_no}</a></div>
                             <div class="col d-none d-md-block">${obj.ticket.status.name}</div>
                             <div class="col col-md-2">
-                                ${obj.is_reschedule ? 'Rescheduled' : `
-                                <div class="icheck-material-orange m-0">
+                                ${obj.is_reschedule ? 'Rescheduled' : 
+                                `<div class="icheck-material-orange m-0">
                                     <input type="checkbox" class="attendance-box" id="attendance_${obj.id}" ${obj.attended ? 'checked' : ''} ${moment() >= event_date ? '' : 'disabled'} />
                                     <label for="attendance_${obj.id}" class="mb-0"></label>
                                 </div>`}

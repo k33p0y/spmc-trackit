@@ -8,8 +8,10 @@ from .models import Event, EventDate, EventTicket
 from config.models import Remark
 from requests.models import Ticket, RequestFormStatus
 from easyaudit.models import CRUDEvent
+from tasks.models import Task, Team, OpenTask
 
 from .views import is_string_an_url, update_ticket_status
+from tasks.views import create_task_notification
 
 from core.serializers import UserInfoSerializer
 from requests.serializers import RequestFormReadOnlySerializer, StatusReadOnlySerializer
@@ -210,7 +212,7 @@ class TicketReadOnlySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        fields = ('ticket_no', 'requested_by', 'status')
+        fields = ('ticket_id', 'ticket_no', 'requested_by', 'status')
 
 class EventTicketSerializer(serializers.ModelSerializer):
     ticket = TicketReadOnlySerializer(read_only=True)
@@ -251,6 +253,7 @@ class EventDateAttendanceSerializer(serializers.ModelSerializer):
                
 class RescheduleSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
+        remarks = validated_data.get('remarks', instance.remarks)
         ticket = Ticket.objects.get(pk=instance.ticket.ticket_id   )  # get ticket queryset
         steps =  RequestFormStatus.objects.select_related('form', 'status').filter(form=ticket.request_form).order_by('order')  # get status queryset
         first_step = steps.first() # get first step
@@ -260,14 +263,19 @@ class RescheduleSerializer(serializers.ModelSerializer):
         # update ticket status
         ticket.status = prev_step.status  # if obj is True, proceed to next step else prev step
         ticket.save()
+        
+        # create task for self
+        task = Task.objects.create(ticket_id=ticket.ticket_id, task_type=prev_step)
+        Team.objects.create(member_id=ticket.requested_by.pk, task_id=task.pk, remark=remarks)
+        create_task_notification(task, 'task')
 
         # get log from easyaudit
         log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
-        Remark.objects.create(ticket_id=ticket.pk, status=ticket.status, action_officer=self.context['request'].user, log=log) # create a remark
+        Remark.objects.create(remark=remarks, ticket_id=ticket.pk, status=ticket.status, action_officer=self.context['request'].user, log=log) # create a remark
 
         # save instance
         instance.attended = False
-        instance.remarks = validated_data.get('remarks', instance.remarks)
+        instance.remarks = remarks
         instance.is_reschedule = True
         instance.save()
         return instance
