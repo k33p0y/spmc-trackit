@@ -396,11 +396,11 @@ class TicketActionSerializer(serializers.ModelSerializer):
       create_notification(str(ticket.ticket_id), ticket, 'action') # create notification instance
       return action
 
-   # def validate_ticket(self, ticket):
-   #    event_ticket = EventTicket.objects.filter(ticket=ticket, attended__isnull=True).first()
-   #    if event_ticket: # check if attendance has not yet performed. 
-   #       raise serializers.ValidationError({'attendance': 'Attendance has not yet tagged. '})     
-   #    return ticket
+   def validate_ticket(self, ticket):
+      event_ticket = EventTicket.objects.filter(ticket=ticket, attended__isnull=True).first()
+      if event_ticket: # check if attendance has not yet performed. 
+         raise serializers.ValidationError({'attendance': 'Attendance has not yet tagged. '})     
+      return ticket
     
    class Meta:
       model = Remark

@@ -68,6 +68,10 @@ class RequestFormStatus(models.Model):
     has_event = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    
+    @property
+    def is_not_for_task(self):
+        return not self.is_client_step and not self.is_head_step and not self.officer.exists()
 
 class Attachment(models.Model):
     file = models.FileField(upload_to=upload_file_url)

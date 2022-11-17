@@ -10,7 +10,7 @@ from config.models import Category, CategoryType, Department, Status, Remark
 from core.models import User
 from easyaudit.models import CRUDEvent
 from events.models import Event, EventTicket
-
+from tasks.models import OpenTask
 from core.decorators import user_is_verified
 
 import datetime
@@ -126,9 +126,10 @@ def view_ticket(request, ticket_id):
          remark = remarks.earliest('id') if remarks else None
    
    ### tasks
-   ### get task officers of current step
+      ### get task officers of current step
    task = ticket.tasks.filter(task_type__status=ticket.status, date_completed__isnull=True).last()
    ticket_officers = task.officers.all() if task else None
+   my_open_tasks = ticket.open_tasks.filter(task_type__status=ticket.status, task_type__officer=request.user).last()
 
    context = {
       'ticket': ticket, 
@@ -141,8 +142,9 @@ def view_ticket(request, ticket_id):
       'next_step':next_step,
       'last_step':last_step, 
       'officers':officers,
-      'task' : task,
+      'task' : task,      
       'ticket_officers': ticket_officers,
+      'my_open_tasks' : my_open_tasks,
       'remark': remark,
       'progress' : progress,
       'event_tickets' : event_tickets.filter(attended__isnull=False),
