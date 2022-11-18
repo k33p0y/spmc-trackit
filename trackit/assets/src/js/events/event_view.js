@@ -156,7 +156,7 @@ $(document).ready(function() {
         let duration_obj = moment.duration(moment(time_end, 'HH:mm a').diff(moment(time_start, 'HH:mm a')));
         let hours = parseInt(duration_obj.asHours())
         let mins = parseInt(duration_obj.asMinutes()) % 60;
-        let link = (dt_data['address']) ? `<a href="${dt_data['address']}" class="text-secondary" target="_blank" data-toggle="tooltip" data-placement="top" title="${dt_data['address']}"><i class="fas fa-sm fa-link"></i></a>` : null;
+        let link = (dt_data['address']) ? `<a href="${dt_data['address']}" class="text-secondary" target="_blank" data-toggle="tooltip" data-placement="top" title="${dt_data['address']}"><i class="fas fa-xs fa-link"></i></a>` : '';
         
         $("#viewSchedule").modal(); // open modal
         $("#viewSchedule .title-datetime").text(`${date} ${time_start} - ${time_end}`); // title date

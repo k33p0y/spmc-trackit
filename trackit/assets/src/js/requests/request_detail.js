@@ -21,7 +21,11 @@ $(document).ready(function () {
 
 
    $('#select2_categorytype').select2();
-   $('#select2_category').select2();
+   $('#select2_category').select2({ // categories select2
+      allowClear: true,
+      placeholder: 'Select category',
+      cache: true,
+   });
    $('.form-select').select2();
    $('.form-datetime').datetimepicker({
       icons: {
@@ -43,9 +47,8 @@ $(document).ready(function () {
 
    // SElECT ON CHANGE EVENT
    $('#select2_categorytype').on('change', function () { // category type dropdown
-      category_type = $("#select2_categorytype option:selected").val();
-
-      axios.get('/api/config/list/category', {
+      const category_type = $("#select2_categorytype option:selected").val();
+      axios.get('/api/config/list/category/dropdown', {
          params: {
             "category_type" : category_type,
             "is_active": 0
@@ -53,7 +56,6 @@ $(document).ready(function () {
       }, axiosConfig).then(res => {
          $("#select2_category")
             .empty()
-            .append('<option></option>')
             .removeAttr('disabled');
 
          res.data.forEach(category => {

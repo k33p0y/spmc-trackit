@@ -201,7 +201,7 @@ $(document).ready(function () {
    // Type filter on change
    $('#type-filter').on('change', function () { // category type dropdown
       let category_type = $("#type-filter option:selected").val();
-      axios.get('/api/config/list/category', {params: {"category_type" : category_type}}, axiosConfig).then(res => {
+      axios.get('/api/config/list/category/dropdown', {params: {"category_type" : category_type}}, axiosConfig).then(res => {
          $("#category-filter")
             .empty()
             .append('<option value="">All</option>')

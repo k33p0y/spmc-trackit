@@ -261,7 +261,7 @@ $(document).ready(function () {
    });
 
    $('#select2_categorytype').on('change', function () { // category type dropdown
-      axios.get('/api/config/list/category', {
+      axios.get('/api/config/list/category/dropdown', {
          params: {
             "category_type" : $("#select2_categorytype").val(),
             "is_active" : 0
@@ -271,7 +271,7 @@ $(document).ready(function () {
             .empty()
             .append('<option></option>')
             .removeAttr('disabled');
-
+            
          res.data.forEach(category => {
             $("#select2_category").append(`<option value='${category.id}'>${category.name}</option>`)
          });

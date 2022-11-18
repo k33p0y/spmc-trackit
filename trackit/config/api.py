@@ -63,12 +63,19 @@ class CategoryListViewSet(viewsets.ReadOnlyModelViewSet):
          if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
 
          return qs
+   
+class CategoryListDropdownViewSet(viewsets.ReadOnlyModelViewSet):
+   serializer_class = CategorySerializer
+   permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+   pagination_class = None
 
-   def paginate_queryset(self, queryset):
-      # Disable Pagination
-      if self.paginator and self.request.query_params.get(self.paginator.page_query_param, None) is None:
-         return None
-      return super().paginate_queryset(queryset)
+   def get_queryset(self):
+      category_type = self.request.query_params.get('category_type', None)
+      is_active = self.request.query_params.get('is_active', None)
+      qs = Category.objects.select_related('category_type').order_by('name')
+      if category_type: qs = qs.filter(category_type_id__exact=category_type)
+      if is_active: qs = qs.filter(is_active=True) if is_active == '0' else qs.filter(is_active=False)
+      return qs
 
 class CategoryViewSet(viewsets.ModelViewSet):    
    serializer_class = CategorySerializer
