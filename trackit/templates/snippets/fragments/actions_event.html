@@ -1,5 +1,5 @@
 <form class="form-actions mt-2">
-   {% if my_task or curr_step.is_not_for_task or user.is_superuser %} <!-- if  task officer or step is not for task -->  
+   {% if user in ticket_officers or curr_step.is_not_for_task or user.is_superuser %} <!-- if  task officer or step is not for task -->  
    <div class="form-group {% if user.is_staff or user.is_superuser %} {% elif curr_step.is_client_step or curr_step.is_head_step %} d-none {% endif %}">
       <label>Next Step: <span class="font-italic text-muted"> (Prev: {{prev_step.status}})</span></label> 
       <select class="form-control form-control-sm" id="select2_nextstep" style="width: 100%">
@@ -47,7 +47,7 @@
          <small class="text-danger error-action"></small>
       </div>
       {% endif %}
-   {% elif not my_task and my_open_tasks %}
+   {% elif not user in ticket_officers and my_open_tasks %}
    <div class="mt-3" id="intro_action">
       <button class="btn btn-block btn-orange btn-xs btn-add-task" type="button" data-opentask-id="{{my_open_tasks.pk}}"><span>Add Task</span></button>
       <small class="text-danger error-action"></small>

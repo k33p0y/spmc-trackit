@@ -100,6 +100,22 @@ $(document).ready(function () {
             } else  $(this).prop('disabled', false); // enable button
         });
     });
+    
+    // get task
+    $('.btn-add-task').click(function () {
+        let opentask_id = $(this).data().opentaskId;
+        axios({
+            method: 'PUT',
+            url: `/api/tasks/open/${opentask_id}/`,
+            headers: axiosConfig
+        }).then(results => {
+            socket_notification.send(JSON.stringify({ type: 'task_notification', data: { object_id: results.data.task_type.id, notification_type: 'action' } }))
+            $.when(toastSuccess('Success')).then(() => location.reload());
+        }).catch(error => {
+            toastError(error.response.statusText)
+        })
+    })
+
 
     // walkthrough click event
     $('.tour-me').click(function() {

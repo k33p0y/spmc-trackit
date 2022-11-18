@@ -150,8 +150,7 @@ class ShareTaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['id', 'ticket', 'task_type', 'officers']
         read_only_fields = ['id', 'ticket', 'task_type']
-        
-        
+                
 class ShareTaskOfficersSerializer(serializers.ModelSerializer):
     officers = serializers.SerializerMethodField()
     

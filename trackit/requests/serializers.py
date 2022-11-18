@@ -356,27 +356,13 @@ class TicketActionSerializer(serializers.ModelSerializer):
       event_date = self.context['request'].data['event_date'] # event_date request obj
       assign_officer = self.context['request'].data['assign_to'] # officers list request obj
       formstatus = self.context['request'].data['formstatus'] # formstatus id request obj
-
-      # update ticket status first
-      ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(validated_data['ticket'])))
-      ticket.status = validated_data['status']
-      ticket.save()
- 
-      # get log from easyaudit
-      log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
-   
-      # create action Remark
-      action = Remark(
-         ticket_id = ticket.ticket_id,
-         status = ticket.status,
-         remark = validated_data['remark'],
-         is_approve = validated_data['is_approve'],
-         is_pass = validated_data['is_pass'],
-         action_officer = current_user,
-         log = log
-      )  
-      action.save()
-
+      
+      ticket = get_object_or_404(Ticket, pk=uuid.UUID(str(validated_data['ticket']))) # ticket instance
+      
+      # check open task if not added for superuser and delete
+      if current_user.is_superuser:
+         OpenTask.objects.filter(ticket=ticket, task_type__status=ticket.status).delete()
+      
       # update task instance, mark complete\
       if active_task:
          task = Task.objects.get(pk=active_task)
@@ -391,17 +377,35 @@ class TicketActionSerializer(serializers.ModelSerializer):
 
       # post EventTicket if action has_event
       if event_date: EventTicket.objects.create(ticket_id=ticket.ticket_id, scheduled_event_id=event_date)
+
+      # update ticket status first
+      ticket.status = validated_data['status']
+      ticket.save()
+ 
+      # get log from easyaudit
+      log = CRUDEvent.objects.filter(object_id=ticket).latest('datetime') 
+   
+      # create action Remark
+      action = Remark.objects.create(
+         ticket_id = ticket.ticket_id,
+         status = ticket.status,
+         remark = validated_data['remark'],
+         is_approve = validated_data['is_approve'],
+         is_pass = validated_data['is_pass'],
+         action_officer = current_user,
+         log = log
+      )
          
       create_task(ticket, formstatus, assign_officer, current_user, action.remark) # create new task instance
       create_notification(str(ticket.ticket_id), ticket, 'action') # create notification instance
       return action
 
-   def validate_ticket(self, ticket):
-      event_ticket = EventTicket.objects.filter(ticket=ticket, attended__isnull=True).first()
-      if event_ticket: # check if attendance has not yet performed. 
-         raise serializers.ValidationError({'attendance': 'Attendance has not yet tagged. '})     
-      return ticket
-    
+   # def validate_ticket(self, ticket):
+   #    event_ticket = EventTicket.objects.filter(ticket=ticket, attended__isnull=True).first()
+   #    if event_ticket: # check if attendance has not yet performed. 
+   #       raise serializers.ValidationError({'attendance': 'Attendance has not yet tagged. '})     
+   #    return ticket
+     
    class Meta:
       model = Remark
       fields = ['id', 'remark', 'date_created', 'ticket', 'status', 'is_approve', 'is_pass', 'action_officer', 'log',]
