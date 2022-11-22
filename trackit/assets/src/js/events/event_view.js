@@ -271,7 +271,7 @@ $(document).ready(function() {
                             <div class="col"> <a href="/requests/${obj.ticket.ticket_id}/view" class="btn-link-orange" target="_blank">${obj.ticket.ticket_no}</a></div>
                             <div class="col d-none d-md-block">${obj.ticket.status.name}</div>
                             <div class="col col-md-2">
-                                ${obj.is_reschedule ? 'Rescheduled' : 
+                                ${obj.is_reschedule ? `Rescheduled <i class="fas fa-sm fa-info-circle text-orange" data-toggle="tooltip" data-placement="top" title="Remarks: ${obj.remarks}"></i>` :  
                                 `<div class="icheck-material-orange m-0">
                                     <input type="checkbox" class="attendance-box" id="attendance_${obj.id}" ${obj.attended ? 'checked' : ''} ${moment() >= event_date ? '' : 'disabled'} />
                                     <label for="attendance_${obj.id}" class="mb-0"></label>
