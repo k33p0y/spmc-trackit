@@ -171,6 +171,7 @@ $(document).ready(function() {
     // // add schedule
     $('#btn_add_schedule').click(function(e) {
         $("#scheduleModal").modal(); // open modal
+        $("#scheduleModal .modal-title").text('Add Schedule'); // title modal
         resetForm(); // reset form
         action = 'post';
         url = '/api/events/eventdate/schedule/';
@@ -181,6 +182,7 @@ $(document).ready(function() {
         let dt_data = table.row($(this).parents('tr')).data();
         console.log(moment(`${dt_data['date']} ${dt_data['time_start']}`).format("HH:mm"))
         $("#scheduleModal").modal(); // open modal
+        $("#scheduleModal .modal-title").text('Edit Schedule'); // title modal
         $("#scheduleModal #txt_date").val(dt_data['date']); // date
         // need to covert time format value to match with POST
         $("#scheduleModal #txt_time_start").val(moment(`${dt_data['date']} ${dt_data['time_start']}`).format("HH:mm")); // time start
