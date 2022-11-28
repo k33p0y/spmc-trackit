@@ -198,7 +198,8 @@
 .card-attendance {
    display: flex;
    align-items: center;
-   margin: 8px 0;
+   min-height: 38px;
+   margin: 6px 0;
    border-radius: 0.25rem;
    box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%);
 }
@@ -209,6 +210,7 @@
    color: #59626b;
    line-height: 14px; 
 }
+
 .row-error {
    border: 1px solid #dc3546a2 !important;
 }

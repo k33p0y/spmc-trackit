@@ -263,13 +263,25 @@
                   <p class="m-0 state-text">No attendance yet</p>
                </div>
             </div>
-            <div class="card-heading row d-none mt-3" id="attendance_table">
-               <div class="col">Participant</div>
-               <div class="col">Ticket</div>
-               <div class="col d-none d-md-block">Status</div>
-               <div class="col col-md-2">Attended</div>
+            <div class="attendance-wrapper d-none">
+               <div class="col-auto col-lg-4 p-0" id="attendance_search"> 
+                  <div class="input-group shadow-border mt-2">
+                     <input type="search" class="form-control form-control-sm" placeholder="Search by participant name or ticket no" id="search_participant"   >
+                     <div class="input-group-append">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="onSearchEventTicket()">
+                           <i class="fas fa-sm fa-search"></i>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+               <div class="card-heading row mt-2" id="attendance_table">
+                  <div class="col">Participant</div>
+                  <div class="col">Ticket</div>
+                  <div class="col d-none d-md-block">Status</div>
+                  <div class="col col-md-2">Attended</div>
+               </div>
+               <div class="attandance-list"></div>
             </div>
-            <div class="attandance-wrap"></div>
          </div>
          <div class="modal-footer">
             <button type="button" class="btn btn-sm btn-light m-0" id="btn_close_attendance" data-dismiss="modal"><span>Close</span> </button>

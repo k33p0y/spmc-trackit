@@ -216,6 +216,10 @@ class TicketReadOnlySerializer(serializers.ModelSerializer):
 
 class EventTicketSerializer(serializers.ModelSerializer):
     ticket = TicketReadOnlySerializer(read_only=True)
+    event_date = serializers.SerializerMethodField()
+    
+    def get_event_date(self, obj):
+        return '%s %s' % (obj.scheduled_event.date, obj.scheduled_event.time_start)
 
     class Meta:
         model = EventTicket

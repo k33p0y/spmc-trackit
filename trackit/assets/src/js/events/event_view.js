@@ -98,8 +98,6 @@ $(document).ready(function() {
             {
                 data: null,
                 render: function (data, type, row) {
-                    // let template = `<a href='#' class='text-secondary view-schedule mr-2' data-toggle="tooltip" data-placement="top" title="View Attendance"><i class="fas fa-lg fa-clipboard-list"></i></a>
-                    //     <a href='#' class='text-secondary edit-schedule mr-2' data-toggle="tooltip" data-placement="top" title="Edit"><i class='fas fa-lg fa-edit'></i></a>` 
                     return `<a href='#' class='text-secondary edit-schedule' data-toggle="tooltip" data-placement="top" title="Edit"><i class='fas fa-lg fa-edit'></i></a>`
                 },
                 orderable : false,
@@ -122,6 +120,10 @@ $(document).ready(function() {
     $('#search_input').keypress(function(event) { // Search Bar keyPress Event
         let keycode = event.keyCode || event.which;
         if (keycode == '13') table.ajax.reload();
+    });
+    $('#search_participant').keypress(function(event) { // Search Bar keyPress Event
+        let keycode = event.keyCode || event.which;
+        if (keycode == '13') onSearchEventTicket();
     });
     
     // Apply Filter
@@ -148,6 +150,7 @@ $(document).ready(function() {
     // // view schedule
     $('#dt_schedules tbody').on('click', '.view-schedule', function () {
         let dt_data = table.row($(this).parents('tr')).data();
+        let schedule_event = dt_data['id']
         let date = moment(dt_data['date']).format('ddd, DD MMM YYYY');
         let time_start = moment(dt_data['date'] + ' ' + dt_data['time_start']).format('h:mm A');
         let time_end = moment(dt_data['date'] + ' ' + dt_data['time_end']).format('h:mm A');
@@ -159,13 +162,16 @@ $(document).ready(function() {
         let link = (dt_data['address']) ? `<a href="${dt_data['address']}" class="text-secondary" target="_blank" data-toggle="tooltip" data-placement="top" title="${dt_data['address']}"><i class="fas fa-xs fa-link"></i></a>` : '';
         
         $("#viewSchedule").modal(); // open modal
+        $("#viewSchedule").data('schedule', schedule_event); // open modal
         $("#viewSchedule .title-datetime").text(`${date} ${time_start} - ${time_end}`); // title date
         $("#viewSchedule .title-duration").text(`${hours}h and ${mins}min`); // title venue
         $("#viewSchedule .title-participants").text(dt_data['attendance']); // title attendance
         $("#viewSchedule .title-venue").html(`${dt_data['venue']} ${link}`); // title venue
-        $('#viewSchedule #btn_save_attendance').prop('disabled', false).attr('data-schedule-id', dt_data['id']); // set data value to button        
-        $('.attandance-wrap').empty(); // clear rows
-        getEventTicket(`/api/events/eventticket/?schedule=${dt_data['id']}`, event_date)
+        $('#viewSchedule #btn_save_attendance').prop('disabled', false).attr('data-schedule-id', schedule_event); // set data value to button    
+        $('.attandance-list').empty(); // clear rows
+        (moment() >= event_date) ? $('#btn_save_attendance').removeClass('d-none') : $('#btn_save_attendance').addClass('d-none');  // show save button if todate get passed event date else hide
+        (moment() <= event_date) ? $('#attendance_info').removeClass('d-none') : $('#attendance_info').addClass('d-none');  // show attendance_note a if todate get passed event date else hide    
+        getEventTicket('/api/events/eventticket/', {schedule: schedule_event})
     });
 
     // // add schedule
@@ -244,7 +250,6 @@ $(document).ready(function() {
 
         if (attendance.length > 0) { // if array is not empty
             $(this).prop('disabled', true)
-            // put request
             axios.put(`/api/events/eventdate/attendnance/${scheduleId}/`, {attendance: attendance}, {headers: axiosConfig}).then(res => {
                 $.when(toastSuccess('Success')).then(() => 
                     $("#viewSchedule").modal('hide'),
@@ -256,66 +261,87 @@ $(document).ready(function() {
             });
         } else toastError('No attendance to record')           
     }); 
-
-    let getEventTicket = function(url, event_date) {
-        axios.get(url, axiosConfig).then(res => {
-            if (res.data.count > 0 ) { // if response has data
-                $('#state_display').addClass('d-none'); // hide "No attendance yet" content
-                $('#attendance_table').removeClass('d-none'); // show row heading
-                (moment() >= event_date) ? $('#btn_save_attendance').removeClass('d-none') : $('#btn_save_attendance').addClass('d-none');  // show save button if todate get passed event date else hide
-                (moment() <= event_date) ? $('#attendance_info').removeClass('d-none') : $('#attendance_info').addClass('d-none');  // show attendance_note a if todate get passed event date else hide
-                res.data.results.forEach(obj => { // iterate event tickets
-                    $('.attandance-wrap').append(
-                        `<div class="card-attendance row" data-attendance-id=${obj.id}>
-                            <div class="col">${obj.ticket.requested_by.name}</div>
-                            <div class="col"> <a href="/requests/${obj.ticket.ticket_id}/view" class="btn-link-orange" target="_blank">${obj.ticket.ticket_no}</a></div>
-                            <div class="col d-none d-md-block">${obj.ticket.status.name}</div>
-                            <div class="col col-md-2">
-                                ${obj.is_reschedule ? `Rescheduled <i class="fas fa-sm fa-info-circle text-orange" data-toggle="tooltip" data-placement="top" title="Remarks: ${obj.remarks}"></i>` :  
-                                `<div class="icheck-material-orange m-0">
-                                    <input type="checkbox" class="attendance-box" id="attendance_${obj.id}" ${obj.attended ? 'checked' : ''} ${moment() >= event_date ? '' : 'disabled'} />
-                                    <label for="attendance_${obj.id}" class="mb-0"></label>
-                                </div>`}
-                            </div>
-                        </div>`
-                    )
-                });
-                if (res.data.next) getEventTicket(res.data.next);
-            } else {
-                $('#state_display').removeClass('d-none'); // show "No attendance yet" content
-                $('#attendance_info').addClass('d-none'); // hide info text
-                $('#attendance_table').addClass('d-none'); // hide row heading
-                $('#btn_save_attendance').addClass('d-none'); // hide save button
-            }            
-        });
-    };
-
-    let resetForm = function (e) {
-        $('.event-form').trigger('reset');
-        $('.form-control').val(null);
-        $('.form-control-check').prop('checked', true)
-        removeFieldErrors('all');
-    }
-
-    let showFieldErrors = function(obj, field) {
-        // error message
-        let msg = '';
-        obj.forEach(error => {msg += `${error} `});
-        $(`#${field}_error`).html(`*${msg} `)
-        $(`#txt_${field}`).addClass('form-error')
-    };
-
-    let removeFieldErrors = function (field) {
-        switch(field) {
-            case 'all':
-                $('.form-control').removeClass('form-error');
-                $('.error-info').html(``)
-                break;
-            default:
-                $(`#txt_${field}`).removeClass('form-error');
-                $(`#${field}_error`).html(``)
-                break;
-        }
-    };
 });
+
+
+function getEventTicket(api_url, params) {
+    axios({
+        method : 'GET',
+        url : api_url,
+        params: params,
+        axiosConfig
+    }).then(res => {
+        if (res.data.count > 0 ) { // if response has data
+            $('#state_display').addClass('d-none'); // hide "No attendance yet" content
+            $('.attendance-wrapper').removeClass('d-none'); // show elements.
+            res.data.results.forEach(obj => { // iterate event tickets
+                $('.attandance-list').append(
+                    `<div class="card-attendance row" data-attendance-id=${obj.id}>
+                        <div class="col">${obj.ticket.requested_by.name}</div>
+                        <div class="col"> <a href="/requests/${obj.ticket.ticket_id}/view" class="btn-link-orange" target="_blank">${obj.ticket.ticket_no}</a></div>
+                        <div class="col d-none d-md-block">${obj.ticket.status.name}</div>
+                        <div class="col col-md-2">
+                            ${obj.is_reschedule ? `Rescheduled <i class="fas fa-info-circle text-warning" data-toggle="tooltip" data-placement="top" title="Remarks: ${obj.remarks}"></i>` :  
+                            `<div class="icheck-material-orange m-0">
+                                <input type="checkbox" class="attendance-box" id="attendance_${obj.id}" ${obj.attended ? 'checked' : ''} ${moment() >= moment(obj.event_date) ? '' : 'disabled'} />
+                                <label for="attendance_${obj.id}" class="mb-0"></label>
+                            </div>`}
+                        </div>
+                    </div>`
+                )
+            });
+
+            if (res.data.next) { // check if there is next page 
+                let next_page_url = res.data.next
+                if (next_page_url.includes('socket')) {
+                    if (next_page_url.includes('http://')) next_page_url = next_page_url.replace('http://', 'https://');
+                    getEventTicket(next_page_url.replace('socket', window.location.host));  // check if host == socket
+                } else  getEventTicket(next_page_url);
+            }
+
+        } else if (params.search && res.data.count == 0) {
+            $('.attandance-list').html('<p class="text-center text-muted my-2">No participants data found</p>')
+        }  else {
+            $('#state_display').removeClass('d-none'); // show "No attendance yet" content
+            $('#attendance_info').addClass('d-none'); // hide info text
+            $('.attendance-wrapper').addClass('d-none'); // show elements.
+            $('#btn_save_attendance').addClass('d-none'); // hide save button
+        }            
+    });
+};
+
+function onSearchEventTicket() {
+    let api_url = '/api/events/eventticket/';
+    let params = new Object();
+    params.schedule = $('#viewSchedule').data().schedule;
+    params.search = $('#search_participant').val();
+    $('.attandance-list').empty(); // clear rows
+    getEventTicket(api_url, params)
+}
+
+function resetForm() {
+    $('.event-form').trigger('reset');
+    $('.form-control').val(null);
+    $('.form-control-check').prop('checked', true)
+    removeFieldErrors('all');
+}
+
+function showFieldErrors(obj, field) {
+    // error message
+    let msg = '';
+    obj.forEach(error => {msg += `${error} `});
+    $(`#${field}_error`).html(`*${msg} `)
+    $(`#txt_${field}`).addClass('form-error')
+};
+
+function removeFieldErrors(field) {
+    if (field == 'all' ) {
+        $('.form-control').removeClass('form-error');
+        $('.error-info').html(``)
+    } else {
+        $(`#txt_${field}`).removeClass('form-error');
+        $(`#${field}_error`).html(``)
+    }
+};
+
     

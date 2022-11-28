@@ -120,9 +120,11 @@ class EventTicketViewSet(viewsets.ModelViewSet):
 
    def get_queryset(self):
       schedule = self.request.query_params.get("schedule", None)
+      search = self.request.query_params.get("search", None)
       ticket = self.request.query_params.get("ticket", None)
 
       qs = EventTicket.objects.all()
+      if search: qs = qs.filter(Q(ticket__requested_by__first_name__icontains=search) | Q(ticket__requested_by__last_name__icontains=search))
       if schedule: qs = qs.filter(scheduled_event__id=schedule)
       if ticket: qs = qs.filter(ticket__id=ticket)
       return qs
