@@ -100,6 +100,53 @@ $(document).ready(function () {
             } else  $(this).prop('disabled', false); // enable button
         });
     });
+
+    // Transfer Ticket Officer 
+    $('#select_person').select2({
+        allowClear: true,
+        placeholder: 'Select User',
+        cache: true,
+    });
+
+    $('#btn_transfer').click(function () { // transfer
+        $(this).prop('disabled', true); 
+        let task = $("#taskId").val();
+        let person = $('#select_person').val();
+        let remark = $('#txt_remark').val();
+
+        axios({
+            method: 'PUT',
+            url: `/api/tasks/transfer/${task}/`,
+            data: {
+                person: person,
+                remark: remark
+            },
+            headers: axiosConfig
+        }).then(res => {
+            $.when(toastSuccess('Success')).then(() => location.reload());
+            $('#select_person').val([]).trigger('change');
+            $('#text_remark').val(); 
+            $('#people-error').text(null); 
+            $("#transferModal").modal('toggle');
+        }).catch(err => {
+            toastError(err.response.statusText)
+            if (err.response.data.person) {
+                $('#select_person').next().find('.select2-selection').addClass('form-error');
+                $('#person-error').html(err.response.data.person.shift())
+            } else {
+                $('#select_person').next().find('.select2-selection').removeClass('form-error');
+                $('#person-error').html('')
+            }
+            if (err.response.data.remark) {
+                $('#txt_remark').addClass('form-error');
+                $('#remark_error').html(err.response.data.remark.shift())
+            } else {
+                $('#txt_remark').removeClass('form-error');
+                $('#remark_error').html('')
+            }
+            $('#btn_transfer').prop('disabled', false); // enable button
+        });
+    });
     
     // get task
     $('.btn-add-task').click(function () {
@@ -115,7 +162,6 @@ $(document).ready(function () {
             toastError(error.response.statusText)
         })
     })
-
 
     // walkthrough click event
     $('.tour-me').click(function() {

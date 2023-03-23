@@ -9,7 +9,8 @@ from .serializers import (
    RemoveTeamPersonSerializer,
    ShareTaskSerializer, 
    ShareTaskOfficersSerializer,
-   TasksListSerializer,)
+   TasksListSerializer,
+   TransferTaskSerializer)
 from .models import OpenTask, Task, Team
 from requests.models import Notification
 
@@ -85,6 +86,12 @@ class ShareTaskOfficersViewSet(viewsets.ModelViewSet):
    permission_classes = [permissions.IsAuthenticated]
    queryset = Task.objects.all()
    http_method_names = ['get', 'head',]
+
+class TransferTaskViewSet(viewsets.ModelViewSet):    
+   serializer_class = TransferTaskSerializer
+   queryset = Task.objects.all()
+   permission_classes = [permissions.IsAuthenticated]
+   http_method_names = ['get', 'head', 'put']
 
 class OpenTaskViewSet(viewsets.ModelViewSet):    
    serializer_class = OpenTasksSerializer

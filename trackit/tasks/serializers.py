@@ -163,6 +163,37 @@ class ShareTaskOfficersSerializer(serializers.ModelSerializer):
         model = Task
         fields = ("id", "officers")
 
+class TransferTaskSerializer(serializers.ModelSerializer):
+    def update(self, instance, validated_data):
+        try:
+            person = self.context['request'].data['person']
+            remark = self.context['request'].data['remark']
+            if person:
+                Team.objects.filter(task=instance.pk).delete()
+                team = Team.objects.create(
+                    task_id = instance.pk,
+                    member_id = int(person),
+                    assignee = self.context['request'].user,
+                    remark = remark
+                )
+        except:
+            pass
+        return instance
+
+    def validate(self, data):
+        if not self.context['request'].data['person'] and not self.context['request'].data['remark']:
+            raise serializers.ValidationError({'person': 'This field may not be blank.', 'remark': 'This field may not be blank.'})
+        elif not self.context['request'].data['person']:
+            raise serializers.ValidationError({'person': 'This field may not be blank.'}) 
+        elif not self.context['request'].data['remark']:
+            raise serializers.ValidationError({'remark': 'This field may not be blank.'})
+        return data
+
+    class Meta:
+        model = Task
+        fields = ['id', 'ticket', 'task_type', 'officers']
+        read_only_fields = ['id', 'ticket', 'task_type']
+
 class OpenTasksSerializer(serializers.ModelSerializer):
     ticket = TicketShortListSerializer(read_only=True)
     task_type = RequestFormStatusNameSerializer(read_only=True)

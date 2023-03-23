@@ -52,6 +52,14 @@ h1, h2,  h3, h4, h5, h6, small {
 .text-lg-height { line-height: 200%; }
 
 .alert-danger, .badge-danger {background-color: #c44a56 !important;}
+.alert-warning {
+   background-color: #fdf4cd !important;
+   border-color: #fcefb9 !important;
+   color: #826500 !important;
+}
+.alert-warning small {
+   color: #826500 !important;
+}
 
 .bt-primary {border-top: 4px solid #007bff;}
 .bt-secondary {border-top: 4px solid #6c757d;}

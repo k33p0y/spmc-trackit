@@ -152,20 +152,27 @@
                               </div>
                               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                                  <div class="card card-detail mt-2 mb-1">
-                                    <div class="card-body p-0 m-0">
-                                       <p class="context text-truncate">
-                                       {% if ticket_officers %}
-                                          {% for officer in ticket_officers %}
-                                             {% if not forloop.first %}
-                                                {% if forloop.last %} & {% else %}, {% endif %}
-                                             {% endif %}
-                                             {{officer}}
-                                          {% endfor %}
-                                       {% else %}
-                                          <span style="color: #e3e5ed"> None </span>
+                                    <div class="card-body p-0 m-0 d-flex align-items-center">
+                                       <div class="mr-auto text-truncate">
+                                          <p class="context text-truncate">
+                                          {% if ticket_officers %}
+                                             {% for officer in ticket_officers %}
+                                                {% if not forloop.first %}
+                                                   {% if forloop.last %} & {% else %}, {% endif %}
+                                                {% endif %}
+                                                {{officer}}
+                                             {% endfor %}
+                                          {% else %}
+                                             <span style="color: #e3e5ed"> None </span>
+                                          {% endif %}
+                                          </p>
+                                          <span class="label">Ticket Officer</span>
+                                       </div>
+                                       {% if user.is_superuser %}
+                                       <button type="button" class="btn btn-xs btn-light d-flex align-items-center" data-toggle="modal"  data-target="#transferModal" {% if not ticket_officers %} disabled {% endif %}> 
+                                          <span data-toggle="tooltip" data-placement="top" title="Transfer officer"><i class="fas fa-exchange-alt"></i></span> 
+                                       </button>                                          
                                        {% endif %}
-                                       </p>
-                                       <span class="label">Ticket Officer</span>
                                     </div>
                                  </div>
                               </div>
@@ -305,13 +312,17 @@
                                  {% if curr_step.has_approving %} <!-- APPROVAL -->
                                     {% if curr_step.is_head_step and ticket.department.department_head == user or user.is_superuser %} <!-- department head or superuser -->
                                        {% include '../../snippets/fragments/actions_approval.html' %}
-                                    {% elif curr_step.is_client_step and ticket.requested_by == user and user in ticket_officer or user.is_superuser %}  <!-- requestor or superuser-->
+                                    {% elif user in ticket_officers or user.is_superuser %} <!-- ticket officers or superuser -->
+                                       {% include '../../snippets/fragments/actions_approval.html' %}
+                                    {% elif curr_step.is_client_step and ticket.requested_by == user and user in ticket_officers or user.is_superuser %}  <!-- requestor or superuser-->
                                        {% include '../../snippets/fragments/actions_approval.html' %} 
                                     {% elif not curr_step.is_client_step and not curr_step.is_head_step and user.is_staff or user.is_superuser %}  <!-- staff or superuser -->
                                        {% include '../../snippets/fragments/actions_approval.html' %}                    
                                     {% endif %}
                                  {% elif curr_step.has_pass_fail %}  <!-- PASS/FAIL -->
-                                    {% if curr_step.is_client_step and ticket.requested_by == user or user.is_superuser %}  <!-- requestor or superuser-->
+                                    {% if curr_step.is_client_step and ticket.requested_by == user  or user.is_superuser %}  <!-- requestor or superuser-->
+                                       {% include '../../snippets/fragments/actions_pass_fail.html' %}
+                                    {% elif user in ticket_officers or user.is_superuser %} <!-- ticket officers or superuser -->
                                        {% include '../../snippets/fragments/actions_pass_fail.html' %}
                                     {% elif not curr_step.is_client_step and user.is_staff or user.is_superuser %} <!-- staff or superuser -->
                                        {% include '../../snippets/fragments/actions_pass_fail.html' %} 
@@ -336,7 +347,6 @@
                   </div>
                </div>
             </div>
-            
             
             {% comment %} ATTENDANCE SECTION {% endcomment %}
             {% if has_event_form %}
@@ -573,6 +583,49 @@
       </div>
    </div>
 </div>
+
+{% if user.is_superuser %}
+<div class="modal fade" id="transferModal" tabindex="-1" role="dialog" aria-labelledby="transferModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="transferModalLabel">Transfer Task<span id="task_name"></span></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-warning" role="alert">
+               <small> <strong>Note!</strong> Only super administrators may do this action. If you have access to this but are not authorized to do so, please tell us. contact the administrator. </small>
+            </div>
+            <div class="form-group">
+               <label>Transfer To</label>
+               <select class="form-control form-control-sm" id="select_person" style="width: 100%"> 
+                  <option></option>
+                  {% for user in users %}
+                     <option value="{{user.pk}}">{{user}}</option>
+                  {% endfor %}
+               </select>
+               <small class="error-info" id="person-error"></small>
+            </div>
+            <div class="form-group">
+               <label>Remarks </label>
+               <textarea class="form-control form-control-sm" id="txt_remark" placeholder="Enter remarks" rows="2"></textarea>
+               <small class="error-info" id="remark_error"></small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-light m-0 mr-2" id="btn_cancel" data-dismiss="modal">
+               <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-sm btn-orange m-0" id="btn_transfer" data-task="{{task.id}}"><span>Transfer</span></button>
+         </div>
+      </div>
+   </div>
+    
+   <input type="hidden" id="taskId" value="{{task.id}}">
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extrascript %}

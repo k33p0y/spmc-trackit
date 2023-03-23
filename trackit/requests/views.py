@@ -91,6 +91,7 @@ def detail_ticket(request, ticket_id):
 @permission_required('requests.view_ticket', raise_exception=True)
 def view_ticket(request, ticket_id):
    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
+   users = User.objects.filter(is_active=True).order_by('first_name')
    categories = ticket.category.all()
    category_groups = Category.objects.filter(name__in=list(categories)).values_list('groups', flat=True)
    attachments = Attachment.objects.filter(ticket_id=ticket_id).order_by('-uploaded_at')
@@ -126,12 +127,13 @@ def view_ticket(request, ticket_id):
          remark = remarks.earliest('id') if remarks else None
    
    ### tasks
-      ### get task officers of current step
+   ### get task officers of current step
    task = ticket.tasks.filter(task_type__status=ticket.status, date_completed__isnull=True).last()
    ticket_officers = task.officers.all() if task else None
    my_open_tasks = ticket.open_tasks.filter(task_type__status=ticket.status, task_type__officer=request.user).last()
 
    context = {
+      'users' : users,
       'ticket': ticket, 
       'categories' : categories,
       'attachments':attachments, 
