@@ -92,7 +92,7 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
             qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(request_form__group__in=user_groups) | Q(requested_by = self.request.user)).distinct()
             qs = qs.filter(Q(category__groups__in=user_groups) | Q(requested_by=self.request.user)) if qs.filter(category__groups__in=user_groups).exists() else qs
          else: 
-            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user), is_active=True).distinct()
+            qs = Ticket.objects.select_related('request_form', 'department', 'requested_by', 'status').prefetch_related('tasks').filter(Q(requested_by = self.request.user) | Q(department__department_head = self.request.user) | Q(tasks__officers = self.request.user), is_active=True).distinct()
          
          # Parameters
          if search: qs = qs.filter(Q(ticket_no__icontains=search) | Q(reference_no__icontains=search) | Q(description__icontains=search))
